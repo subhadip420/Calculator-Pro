@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'calculator_button.dart';
 import 'action_button.dart';
 
@@ -216,6 +219,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           if (finalResult.isNotEmpty) {
             result = finalResult;
             isEvaluated = true;
+
+            if (finalResult != 'Expression error') {
+              _saveToHistory(_equationController.text, finalResult);
+            }
           }
         }
       } else {
@@ -296,6 +303,37 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (len <= 13) return 36.0; // 8 se 13 numbers ke beech thoda chota
       return 28.0; // 13 ke baad minimum size aur scroll shuru
     }
+  }
+
+  // --- NAYA FUNCTION: History Save Karne Ke Liye ---
+  Future<void> _saveToHistory(String eq, String res) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Purani history fetch karein (Agar nahi hai to khali list banayein)
+    List<String> history = prefs.getStringList('calculator_history') ?? [];
+
+    // Date aur Time format karna (Jaise: 10-09-2026 20:23)
+    final now = DateTime.now();
+    String formattedDate = "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year} "
+        "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+
+    // Naya data JSON map mein banayein
+    Map<String, String> newEntry = {
+      'equation': eq,
+      'result': res,
+      'datetime': formattedDate,
+    };
+
+    // Nayi entry ko list ke shuru mein dalein (Latest pehle dikhega)
+    history.insert(0, jsonEncode(newEntry));
+
+    // Optional: History ko 50 items tak limit karein taaki storage full na ho
+    if (history.length > 50) {
+      history = history.sublist(0, 50);
+    }
+
+    // Wapas save karein
+    await prefs.setStringList('calculator_history', history);
   }
 
   @override
