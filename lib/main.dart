@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'calculator_button.dart';
-import 'action_button.dart'; // Naya reusable button file import kiya
+import 'action_button.dart';
 
 void main() {
   runApp(const CalculatorProApp());
@@ -32,7 +32,14 @@ class CalculatorScreen extends StatefulWidget {
 }
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
-  bool isScientific = true;
+  bool isScientific = false;
+  bool isEvaluated = false;
+
+  String equation = '';
+  String result = '';
+
+  final TextEditingController _equationController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   // Theme Colors
   final Color bgColor = const Color(0xFF0E131D);
@@ -44,20 +51,194 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final Color white = Colors.white;
 
   @override
+  void initState() {
+    super.initState();
+    // Screen open hote hi cursor show karne ke liye
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
+
+  @override
+  void dispose() {
+    _equationController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  // --- Basic Calculation Functions ---
+  double _add(double a, double b) => a + b;
+  double _subtract(double a, double b) => a - b;
+  double _multiply(double a, double b) => a * b;
+  double _divide(double a, double b) => a / b;
+  double _modulo(double a, double b) => a % b;
+
+  // --- Main Evaluation Logic ---
+  String _calculateResult(String eq) {
+    if (eq.isEmpty) return '';
+    try {
+      // 1. UI symbols ko standard math symbols mein convert karna
+      String sanitized = eq.replaceAll('×', '*').replaceAll('÷', '/');
+
+      // 2. Numbers aur operators ko alag-alag list mein todna
+      List<String> tokens = [];
+      String currentNum = '';
+
+      for (int i = 0; i < sanitized.length; i++) {
+        String char = sanitized[i];
+        if (['+', '-', '*', '/', '%'].contains(char)) {
+          // Negative numbers handle karna (e.g., shuru mein -5)
+          if (char == '-' && currentNum.isEmpty && (tokens.isEmpty || ['+', '-', '*', '/', '%'].contains(tokens.last))) {
+            currentNum += char;
+          } else {
+            if (currentNum.isNotEmpty) {
+              tokens.add(currentNum);
+              currentNum = '';
+            }
+            tokens.add(char);
+          }
+        } else {
+          currentNum += char;
+        }
+      }
+      if (currentNum.isNotEmpty) {
+        tokens.add(currentNum);
+      }
+
+      // 3. BODMAS Rule (Pehle Multiply, Divide, Modulo)
+      for (int i = 0; i < tokens.length; i++) {
+        if (tokens[i] == '*' || tokens[i] == '/' || tokens[i] == '%') {
+          double a = double.parse(tokens[i - 1]);
+          double b = double.parse(tokens[i + 1]);
+          double res = 0;
+
+          if (tokens[i] == '*') res = _multiply(a, b);
+          else if (tokens[i] == '/') res = _divide(a, b);
+          else if (tokens[i] == '%') res = _modulo(a, b);
+
+          tokens[i - 1] = res.toString();
+          tokens.removeAt(i);
+          tokens.removeAt(i);
+          i--;
+        }
+      }
+
+      // 4. BODMAS Rule (Fir Add, Subtract)
+      for (int i = 0; i < tokens.length; i++) {
+        if (tokens[i] == '+' || tokens[i] == '-') {
+          double a = double.parse(tokens[i - 1]);
+          double b = double.parse(tokens[i + 1]);
+          double res = 0;
+
+          if (tokens[i] == '+') res = _add(a, b);
+          else if (tokens[i] == '-') res = _subtract(a, b);
+
+          tokens[i - 1] = res.toString();
+          tokens.removeAt(i);
+          tokens.removeAt(i);
+          i--;
+        }
+      }
+
+      // 5. Final output format (Remove decimal if it's a whole number)
+      if (tokens.length == 1) {
+        double finalRes = double.parse(tokens[0]);
+        if (finalRes == finalRes.toInt()) {
+          return finalRes.toInt().toString();
+        }
+        // Trim extra zeros for decimals
+        return finalRes.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+      }
+      return '';
+    } catch (e) {
+      // Agar formula abhi incomplete hai (jaise "5+"), to purana result hi dikhao
+      return result;
+    }
+  }
+
+  // --- Button Press Handler ---
+  void _onKeyPress(String key) {
+    // Agar input ke baad focus hat jaye, to wapas focus laane ke liye
+    if (!_focusNode.hasFocus) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    }
+
+    setState(() {
+      int cursorPos = _equationController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = _equationController.text.length; // Default to end
+
+      if (key == 'AC') {
+        _equationController.clear();
+        result = '';
+        isEvaluated = false;
+      }
+      else if (key == 'BACK') {
+        if (_equationController.text.isNotEmpty && cursorPos > 0) {
+          // Cursor se theek pehle wala character delete karna
+          String text = _equationController.text;
+          String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
+
+          _equationController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: cursorPos - 1),
+          );
+
+          isEvaluated = false;
+          result = _calculateResult(_equationController.text);
+        }
+      }
+      else if (key == '=') {
+        if (_equationController.text.isNotEmpty) {
+          String finalResult = _calculateResult(_equationController.text);
+          if (finalResult.isNotEmpty) {
+            result = finalResult;
+            isEvaluated = true;
+          }
+        }
+      }
+      else {
+        if (isEvaluated) {
+          // Agar ans aane ke baad operator dabaya, to pichle ans ke aage judega
+          if (['+', '-', '×', '÷', '%'].contains(key)) {
+            _equationController.text = result + key;
+            _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+          } else {
+            // Naya number dabaya toh purana clear ho jayega
+            _equationController.text = key;
+            _equationController.selection = TextSelection.collapsed(offset: 1);
+          }
+          isEvaluated = false;
+        } else {
+          // Jaha cursor hai waha naya text insert karna
+          String text = _equationController.text;
+          String newText = text.substring(0, cursorPos) + key + text.substring(cursorPos);
+
+          _equationController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: cursorPos + key.length),
+          );
+        }
+        // Real-time calculation preview
+        result = _calculateResult(_equationController.text);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
         child: Column(
           children: [
-            // 1. Top Bar Design using Reusable ActionButton
+            // Top Bar
             _buildTopBar(),
 
-            // 2. Edit Text Section wrapped in Card View
+            // Flexible and Dynamic Edit Text Section
             Expanded(
-              flex: 2,
+              flex: isScientific ? 2 : 3,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Card(
                   color: surfaceColor.withOpacity(0.3),
                   elevation: 0,
@@ -71,41 +252,68 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text('log(10.48528)', style: TextStyle(color: textGrey, fontSize: 18)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              '=',
-                              style: TextStyle(color: Color(0xFFFFDCBF), fontSize: 18, fontWeight: FontWeight.bold),
+                        // 1. Input Section with Native Cursor & Tap Support
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _equationController,
+                                    focusNode: _focusNode,
+                                    readOnly: true, // System keyboard ko rokne ke liye
+                                    showCursor: !isEvaluated, // Result aane par cursor hide hoga
+                                    cursorColor: cyanColor,
+                                    cursorWidth: 3,
+                                    cursorHeight: isScientific ? 26 : 32,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: textGrey,
+                                      fontSize: isScientific ? 22 : 28,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                    onTap: () {
+                                      // Tap karne par focus wapas layega
+                                      FocusScope.of(context).requestFocus(_focusNode);
+                                    },
+                                  ),
+                                ),
+                                if (isEvaluated && _equationController.text.isNotEmpty) ...[
+                                  const SizedBox(width: 4),
+                                  const Text(
+                                    '=',
+                                    style: TextStyle(color: Color(0xFFFFDCBF), fontSize: 22, fontWeight: FontWeight.bold),
+                                  ),
+                                ]
+                              ],
                             ),
-                          ],
-                        ),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Text('1.02058', style: TextStyle(fontSize: 46, fontWeight: FontWeight.w300)),
-                              Container(width: 3, height: 40, margin: const EdgeInsets.only(left: 4), color: cyanColor),
-                            ],
                           ),
                         ),
-                        // const SizedBox(height: 10),
-                        // Align(
-                        //   alignment: Alignment.centerLeft,
-                        //   child: OutlinedButton.icon(
-                        //     onPressed: () {},
-                        //     icon: const Icon(Icons.copy, size: 14, color: Colors.white70),
-                        //     label: const Text('COPY', style: TextStyle(fontSize: 12, color: Colors.white70)),
-                        //     style: OutlinedButton.styleFrom(
-                        //       backgroundColor: surfaceColor.withOpacity(0.5),
-                        //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        //       side: BorderSide(color: Colors.white.withOpacity(0.1)),
-                        //     ),
-                        //   ),
-                        // )
+
+                        const SizedBox(height: 8),
+
+                        // 2. Result Section (Fake Cursor removed)
+                        if (result.isNotEmpty)
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                                result,
+                                style: TextStyle(
+                                    fontSize: isEvaluated
+                                        ? (isScientific ? 46 : 64)
+                                        : (isScientific ? 24 : 32),
+                                    fontWeight: isEvaluated ? FontWeight.w300 : FontWeight.normal,
+                                    color: isEvaluated ? Colors.white : Colors.white.withOpacity(0.4)
+                                )
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -113,9 +321,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
 
-            // 3. Responsive Keypad Area
+            // Responsive Keypad Area
             Expanded(
-              flex: 5,
+              flex: isScientific ? 5 : 4,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 child: Column(
@@ -124,98 +332,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            //CalculatorButton(text: 'log10', textColor: cyanColor, bgColor: surfaceColor, onTap: () {}),
-                            CalculatorButton(
-                              text: 'log10',
-                              textColor: cyanColor,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              // Custom text size
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'sin',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'cos',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'tan',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'ln',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'deg',
-                              textColor: cyanColor,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
+                            CalculatorButton(text: 'log10', textColor: cyanColor, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('log10(')),
+                            CalculatorButton(text: 'sin', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('sin(')),
+                            CalculatorButton(text: 'cos', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('cos(')),
+                            CalculatorButton(text: 'tan', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('tan(')),
+                            CalculatorButton(text: 'ln', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('ln(')),
+                            CalculatorButton(text: 'deg', textColor: cyanColor, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('deg')),
                           ],
                         ),
                       ),
                       Expanded(
                         child: Row(
                           children: [
-                            CalculatorButton(
-                              text: 'log2',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'x²',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: '(',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: ')',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'rad',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
-                            CalculatorButton(
-                              text: 'Inv',
-                              textColor: white,
-                              bgColor: surfaceColor,
-                              fontSize: 14,
-                              onTap: () {},
-                            ),
+                            CalculatorButton(text: 'log2', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('log2(')),
+                            CalculatorButton(text: 'x²', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('²')),
+                            CalculatorButton(text: '(', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('(')),
+                            CalculatorButton(text: ')', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress(')')),
+                            CalculatorButton(text: 'rad', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('rad')),
+                            CalculatorButton(text: 'Inv', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('Inv')),
                           ],
                         ),
                       ),
@@ -223,100 +357,55 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     Expanded(
                       child: Row(
                         children: [
-                          if (isScientific)
-                            CalculatorButton(text: 'x!', textColor: cyanColor, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            text: 'AC',
-                            textColor: redColor,
-                            bgColor: surfaceColor.withOpacity(0.8),
-                            onTap: () {},
-                          ),
-                          CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            icon: Icons.backspace_outlined,
-                            textColor: cyanColor,
-                            bgColor: surfaceColor,
-                            onTap: () {},
-                          ),
-                          CalculatorButton(
-                            text: '÷',
-                            textColor: white,
-                            bgColor: orangeColor.withOpacity(0.15),
-                            fontSize: 30,
-                            onTap: () {},
-                          ),
+                          if (isScientific) CalculatorButton(text: 'x!', textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('!')),
+                          CalculatorButton(text: 'AC', textColor: redColor, bgColor: surfaceColor.withOpacity(0.8), onTap: () => _onKeyPress('AC')),
+                          CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('%')),
+                          CalculatorButton(icon: Icons.backspace_outlined, textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('BACK')),
+                          CalculatorButton(text: '÷', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('÷')),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Row(
                         children: [
-                          if (isScientific)
-                            CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            text: '×',
-                            textColor: white,
-                            bgColor: orangeColor.withOpacity(0.15),
-                            fontSize: 30,
-                            onTap: () {},
-                          ),
+                          if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('^')),
+                          CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('7')),
+                          CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('8')),
+                          CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('9')),
+                          CalculatorButton(text: '×', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('×')),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Row(
                         children: [
-                          if (isScientific)
-                            CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            text: '−',
-                            textColor: white,
-                            bgColor: orangeColor.withOpacity(0.15),
-                            fontSize: 30,
-                            onTap: () {},
-                          ),
+                          if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('√(')),
+                          CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('4')),
+                          CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('5')),
+                          CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('6')),
+                          CalculatorButton(text: '−', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('-')),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Row(
                         children: [
-                          if (isScientific)
-                            CalculatorButton(text: 'π', textColor: cyanColor, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            text: '+',
-                            textColor: white,
-                            bgColor: orangeColor.withOpacity(0.15),
-                            fontSize: 30,
-                            onTap: () {},
-                          ),
+                          if (isScientific) CalculatorButton(text: 'π', textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('π')),
+                          CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('1')),
+                          CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('2')),
+                          CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('3')),
+                          CalculatorButton(text: '+', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('+')),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Row(
                         children: [
-                          if (isScientific)
-                            CalculatorButton(text: 'e', textColor: cyanColor, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, onTap: () {}),
-                          CalculatorButton(
-                            text: '=',
-                            textColor: white,
-                            bgColor: orangeColor,
-                            fontSize: 30,
-                            onTap: () {},
-                          ),
+                          if (isScientific) CalculatorButton(text: 'e', textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('e')),
+                          CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('00')),
+                          CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('0')),
+                          CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('.')),
+                          CalculatorButton(text: '=', textColor: white, bgColor: orangeColor, fontSize: 30, onTap: () => _onKeyPress('=')),
                         ],
                       ),
                     ),
@@ -325,7 +414,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
 
-            // 4. Test Banner Ad
+            // Test Banner Ad
             Container(
               width: double.infinity,
               height: 50,
@@ -342,7 +431,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  // Top bar ui function inside main file
   Widget _buildTopBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -351,29 +439,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         children: [
           Row(
             children: [
-              ActionButton(
-                icon: Icons.menu,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
-              ),
+              ActionButton(icon: Icons.menu, contentColor: textGrey, bgColor: surfaceColor.withOpacity(0.5), onTap: () {}),
               const SizedBox(width: 8),
-              ActionButton(
-                icon: Icons.picture_in_picture_alt,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
-              ),
+              ActionButton(icon: Icons.picture_in_picture_alt, contentColor: textGrey, bgColor: surfaceColor.withOpacity(0.5), onTap: () {}),
             ],
           ),
           Row(
             children: [
-              ActionButton(
-                icon: Icons.history,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
-              ),
+              ActionButton(icon: Icons.history, contentColor: textGrey, bgColor: surfaceColor.withOpacity(0.5), onTap: () {}),
               const SizedBox(width: 8),
               ActionButton(
                 text: 'Σ',
@@ -387,12 +460,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              ActionButton(
-                icon: Icons.more_vert,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
-              ),
+              ActionButton(icon: Icons.more_vert, contentColor: textGrey, bgColor: surfaceColor.withOpacity(0.5), onTap: () {}),
             ],
           ),
         ],
