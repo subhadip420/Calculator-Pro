@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 import 'calculator_button.dart';
 import 'action_button.dart';
 
@@ -34,6 +35,7 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   bool isScientific = false;
   bool isEvaluated = false;
+  bool isDegreeMode = true;
 
   String equation = '';
   String result = '';
@@ -80,95 +82,254 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double _modulo(double a, double b) => a % b;
 
   // --- Main Evaluation Logic ---
+  // String _calculateResult(String eq) {
+  //   if (eq.isEmpty) return '';
+  //   try {
+  //     // 1. UI symbols ko standard math symbols mein convert karna
+  //     String sanitized = eq.replaceAll('×', '*').replaceAll('÷', '/');
+  //
+  //     // 2. Numbers aur operators ko alag-alag list mein todna
+  //     List<String> tokens = [];
+  //     String currentNum = '';
+  //
+  //     for (int i = 0; i < sanitized.length; i++) {
+  //       String char = sanitized[i];
+  //       if (['+', '-', '*', '/', '%'].contains(char)) {
+  //         // Negative numbers handle karna (e.g., shuru mein -5)
+  //         if (char == '-' &&
+  //             currentNum.isEmpty &&
+  //             (tokens.isEmpty || ['+', '-', '*', '/', '%'].contains(tokens.last))) {
+  //           currentNum += char;
+  //         } else {
+  //           if (currentNum.isNotEmpty) {
+  //             tokens.add(currentNum);
+  //             currentNum = '';
+  //           }
+  //           tokens.add(char);
+  //         }
+  //       } else {
+  //         currentNum += char;
+  //       }
+  //     }
+  //     if (currentNum.isNotEmpty) {
+  //       tokens.add(currentNum);
+  //     }
+  //
+  //     // 3. BODMAS Rule (Pehle Multiply, Divide, Modulo)
+  //     for (int i = 0; i < tokens.length; i++) {
+  //       if (tokens[i] == '*' || tokens[i] == '/' || tokens[i] == '%') {
+  //         double a = double.parse(tokens[i - 1]);
+  //         double b = double.parse(tokens[i + 1]);
+  //         double res = 0;
+  //
+  //         if (tokens[i] == '*')
+  //           res = _multiply(a, b);
+  //         else if (tokens[i] == '/')
+  //           res = _divide(a, b);
+  //         else if (tokens[i] == '%')
+  //           res = _modulo(a, b);
+  //
+  //         tokens[i - 1] = res.toString();
+  //         tokens.removeAt(i);
+  //         tokens.removeAt(i);
+  //         i--;
+  //       }
+  //     }
+  //
+  //     // 4. BODMAS Rule (Fir Add, Subtract)
+  //     for (int i = 0; i < tokens.length; i++) {
+  //       if (tokens[i] == '+' || tokens[i] == '-') {
+  //         double a = double.parse(tokens[i - 1]);
+  //         double b = double.parse(tokens[i + 1]);
+  //         double res = 0;
+  //
+  //         if (tokens[i] == '+')
+  //           res = _add(a, b);
+  //         else if (tokens[i] == '-')
+  //           res = _subtract(a, b);
+  //
+  //         tokens[i - 1] = res.toString();
+  //         tokens.removeAt(i);
+  //         tokens.removeAt(i);
+  //         i--;
+  //       }
+  //     }
+  //
+  //     // 5. Final output format (Remove decimal if it's a whole number)
+  //     if (tokens.length == 1) {
+  //       double finalRes = double.parse(tokens[0]);
+  //       if (finalRes == finalRes.toInt()) {
+  //         return finalRes.toInt().toString();
+  //       }
+  //       // Trim extra zeros for decimals
+  //       return finalRes.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //     }
+  //     return '';
+  //   } catch (e) {
+  //     // Agar formula abhi incomplete hai (jaise "5+"), to purana result hi dikhao
+  //     return result;
+  //   }
+  // }
+  //
+  // void _onKeyPress(String key) {
+  //   if (!_focusNode.hasFocus) {
+  //     FocusScope.of(context).requestFocus(_focusNode);
+  //   }
+  //
+  //   setState(() {
+  //     int cursorPos = _equationController.selection.baseOffset;
+  //     if (cursorPos < 0) cursorPos = _equationController.text.length;
+  //
+  //     bool isOperator = ['+', '-', '×', '÷', '%'].contains(key);
+  //
+  //     // Spaces hata diye, ab input pehle jaisa normal hoga
+  //     String inputKey = key;
+  //
+  //     if (key == 'AC') {
+  //       _equationController.clear();
+  //       result = '';
+  //       isEvaluated = false;
+  //     } else if (key == 'BACK') {
+  //       if (_equationController.text.isNotEmpty && cursorPos > 0) {
+  //         String text = _equationController.text;
+  //
+  //         // Backspace bhi normal 1 character delete karega
+  //         String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
+  //         _equationController.value = TextEditingValue(
+  //           text: newText,
+  //           selection: TextSelection.collapsed(offset: cursorPos - 1),
+  //         );
+  //         isEvaluated = false;
+  //         result = _calculateResult(_equationController.text);
+  //       }
+  //     } else if (key == '=') {
+  //       if (_equationController.text.isNotEmpty) {
+  //         String finalResult = _calculateResult(_equationController.text);
+  //         if (finalResult.isNotEmpty) {
+  //           result = finalResult;
+  //           isEvaluated = true;
+  //         }
+  //       }
+  //     } else {
+  //       if (isEvaluated) {
+  //         if (isOperator) {
+  //           _equationController.text = result + inputKey;
+  //           _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+  //         } else {
+  //           _equationController.text = inputKey;
+  //           _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
+  //         }
+  //         isEvaluated = false;
+  //       } else {
+  //         // ---- Duplicate / Replace Operator Logic (Bina space ke) ----
+  //         String before = _equationController.text.substring(0, cursorPos);
+  //         String after = _equationController.text.substring(cursorPos);
+  //
+  //         if (isOperator && before.isNotEmpty) {
+  //           String lastChar = before[before.length - 1];
+  //
+  //           // Agar last character operator hai
+  //           if (['+', '-', '×', '÷', '%'].contains(lastChar)) {
+  //             if (lastChar == key) {
+  //               // Same operator hai toh kuch mat karo (Ignore)
+  //               return;
+  //             } else {
+  //               // Alag operator hai toh replace kar do
+  //               String newBefore = before.substring(0, before.length - 1) + inputKey;
+  //               _equationController.value = TextEditingValue(
+  //                 text: newBefore + after,
+  //                 selection: TextSelection.collapsed(offset: newBefore.length),
+  //               );
+  //               result = _calculateResult(_equationController.text);
+  //               return;
+  //             }
+  //           }
+  //         }
+  //         // -------------------------------------------------------------
+  //
+  //         // Normal Insertion
+  //         String newText = before + inputKey + after;
+  //         _equationController.value = TextEditingValue(
+  //           text: newText,
+  //           selection: TextSelection.collapsed(offset: before.length + inputKey.length),
+  //         );
+  //       }
+  //       result = _calculateResult(_equationController.text);
+  //     }
+  //   });
+
+  //   // Auto-Scroll Logic
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients &&
+  //         _equationController.selection.baseOffset == _equationController.text.length) {
+  //       _scrollController.animateTo(
+  //         _scrollController.position.maxScrollExtent,
+  //         duration: const Duration(milliseconds: 100),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  // --- Perfect Scientific Evaluation Logic ---
   String _calculateResult(String eq) {
     if (eq.isEmpty) return '';
     try {
-      // 1. UI symbols ko standard math symbols mein convert karna
-      String sanitized = eq.replaceAll('×', '*').replaceAll('÷', '/');
+      // 1. UI symbols ko math_expressions format mein map karna
+      String sanitized = eq
+          .replaceAll('×', '*')
+          .replaceAll('÷', '/')
+          .replaceAll('π', '3.141592653589793')
+          .replaceAll('e', '2.718281828459045')
+          .replaceAll('√(', 'sqrt(')
+          .replaceAll('²', '^2');
 
-      // 2. Numbers aur operators ko alag-alag list mein todna
-      List<String> tokens = [];
-      String currentNum = '';
+      // math_expressions natively 'ln' support karta hai.
+      // log10 aur log2 ko hum ln ke through convert kar rahe hain for perfect accuracy.
+      sanitized = sanitized
+          .replaceAll('log10(', '(1/2.302585092994046)*ln(')
+          .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
 
-      for (int i = 0; i < sanitized.length; i++) {
-        String char = sanitized[i];
-        if (['+', '-', '*', '/', '%'].contains(char)) {
-          // Negative numbers handle karna (e.g., shuru mein -5)
-          if (char == '-' &&
-              currentNum.isEmpty &&
-              (tokens.isEmpty || ['+', '-', '*', '/', '%'].contains(tokens.last))) {
-            currentNum += char;
-          } else {
-            if (currentNum.isNotEmpty) {
-              tokens.add(currentNum);
-              currentNum = '';
-            }
-            tokens.add(char);
-          }
-        } else {
-          currentNum += char;
-        }
-      }
-      if (currentNum.isNotEmpty) {
-        tokens.add(currentNum);
+      // 2. Degree vs Radian Logic
+      // math_expressions by default radians use karta hai. Agar mode Degree hai,
+      // toh hum sin/cos/tan ke aandar (pi/180) multiply kar dete hain.
+      if (isDegreeMode) {
+        sanitized = sanitized
+            .replaceAll('sin(', 'sin(0.017453292519943295*')
+            .replaceAll('cos(', 'cos(0.017453292519943295*')
+            .replaceAll('tan(', 'tan(0.017453292519943295*');
       }
 
-      // 3. BODMAS Rule (Pehle Multiply, Divide, Modulo)
-      for (int i = 0; i < tokens.length; i++) {
-        if (tokens[i] == '*' || tokens[i] == '/' || tokens[i] == '%') {
-          double a = double.parse(tokens[i - 1]);
-          double b = double.parse(tokens[i + 1]);
-          double res = 0;
-
-          if (tokens[i] == '*')
-            res = _multiply(a, b);
-          else if (tokens[i] == '/')
-            res = _divide(a, b);
-          else if (tokens[i] == '%')
-            res = _modulo(a, b);
-
-          tokens[i - 1] = res.toString();
-          tokens.removeAt(i);
-          tokens.removeAt(i);
-          i--;
-        }
+      // 3. Auto-close Brackets (Real-time preview ke liye bohot zaroori)
+      // Agar user ne "sin(30" type kiya hai, to code automatic ")" add kar dega error se bachne ke liye
+      int openParens = sanitized.split('(').length - 1;
+      int closeParens = sanitized.split(')').length - 1;
+      for (int i = 0; i < (openParens - closeParens); i++) {
+        sanitized += ')';
       }
 
-      // 4. BODMAS Rule (Fir Add, Subtract)
-      for (int i = 0; i < tokens.length; i++) {
-        if (tokens[i] == '+' || tokens[i] == '-') {
-          double a = double.parse(tokens[i - 1]);
-          double b = double.parse(tokens[i + 1]);
-          double res = 0;
+      // 4. Parser Magic (Equation ko mathematically solve karna)
+      Parser p = Parser();
+      Expression exp = p.parse(sanitized);
+      ContextModel cm = ContextModel();
+      double eval = exp.evaluate(EvaluationType.REAL, cm);
 
-          if (tokens[i] == '+')
-            res = _add(a, b);
-          else if (tokens[i] == '-')
-            res = _subtract(a, b);
+      // 5. Final Output Formatting
+      if (eval.isNaN || eval.isInfinite) return 'Error';
 
-          tokens[i - 1] = res.toString();
-          tokens.removeAt(i);
-          tokens.removeAt(i);
-          i--;
-        }
+      // Decimal ke baad extra zeros hatane ke liye
+      if (eval == eval.toInt()) {
+        return eval.toInt().toString();
       }
+      return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
 
-      // 5. Final output format (Remove decimal if it's a whole number)
-      if (tokens.length == 1) {
-        double finalRes = double.parse(tokens[0]);
-        if (finalRes == finalRes.toInt()) {
-          return finalRes.toInt().toString();
-        }
-        // Trim extra zeros for decimals
-        return finalRes.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-      }
-      return '';
     } catch (e) {
-      // Agar formula abhi incomplete hai (jaise "5+"), to purana result hi dikhao
+      // Agar formula incomplete hai, toh purana result hi dikhao
       return result;
     }
   }
 
+  // --- Button Press Handler Update ---
   void _onKeyPress(String key) {
     if (!_focusNode.hasFocus) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -178,9 +339,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       int cursorPos = _equationController.selection.baseOffset;
       if (cursorPos < 0) cursorPos = _equationController.text.length;
 
-      bool isOperator = ['+', '-', '×', '÷', '%'].contains(key);
+      // Degree aur Radian mode toggle karna (Iska output turant result me dikhega)
+      if (key == 'deg') {
+        isDegreeMode = true;
+        result = _calculateResult(_equationController.text);
+        return;
+      } else if (key == 'rad') {
+        isDegreeMode = false;
+        result = _calculateResult(_equationController.text);
+        return;
+      } else if (key == 'Inv') {
+        // Future feature: Jab aap Inv dabayein to UI me sin ki jagah asin dikhne lage
+        return;
+      }
 
-      // Spaces hata diye, ab input pehle jaisa normal hoga
+      bool isOperator = ['+', '-', '×', '÷', '%', '^'].contains(key);
       String inputKey = key;
 
       if (key == 'AC') {
@@ -190,20 +363,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       } else if (key == 'BACK') {
         if (_equationController.text.isNotEmpty && cursorPos > 0) {
           String text = _equationController.text;
-
-          // Backspace bhi normal 1 character delete karega
           String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
           _equationController.value = TextEditingValue(
             text: newText,
             selection: TextSelection.collapsed(offset: cursorPos - 1),
           );
           isEvaluated = false;
-          result = _calculateResult(_equationController.text);
         }
       } else if (key == '=') {
         if (_equationController.text.isNotEmpty) {
           String finalResult = _calculateResult(_equationController.text);
-          if (finalResult.isNotEmpty) {
+          if (finalResult.isNotEmpty && finalResult != 'Error') {
             result = finalResult;
             isEvaluated = true;
           }
@@ -219,20 +389,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           }
           isEvaluated = false;
         } else {
-          // ---- Duplicate / Replace Operator Logic (Bina space ke) ----
+          // Duplicate / Replace Operator Logic
           String before = _equationController.text.substring(0, cursorPos);
           String after = _equationController.text.substring(cursorPos);
 
           if (isOperator && before.isNotEmpty) {
             String lastChar = before[before.length - 1];
-
-            // Agar last character operator hai
-            if (['+', '-', '×', '÷', '%'].contains(lastChar)) {
+            if (['+', '-', '×', '÷', '%', '^'].contains(lastChar)) {
               if (lastChar == key) {
-                // Same operator hai toh kuch mat karo (Ignore)
                 return;
               } else {
-                // Alag operator hai toh replace kar do
                 String newBefore = before.substring(0, before.length - 1) + inputKey;
                 _equationController.value = TextEditingValue(
                   text: newBefore + after,
@@ -243,20 +409,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               }
             }
           }
-          // -------------------------------------------------------------
 
-          // Normal Insertion
           String newText = before + inputKey + after;
           _equationController.value = TextEditingValue(
             text: newText,
             selection: TextSelection.collapsed(offset: before.length + inputKey.length),
           );
         }
+      }
+
+      // Type karte hi real-time answer calculate karna
+      if (key != '=' && key != 'AC') {
         result = _calculateResult(_equationController.text);
       }
     });
 
-    // Auto-Scroll Logic
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients &&
           _equationController.selection.baseOffset == _equationController.text.length) {
