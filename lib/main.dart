@@ -169,82 +169,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     }
   }
 
-  // --- Button Press Handler ---
-  // void _onKeyPress(String key) {
-  //   // Agar input ke baad focus hat jaye, to wapas focus laane ke liye
-  //   if (!_focusNode.hasFocus) {
-  //     FocusScope.of(context).requestFocus(_focusNode);
-  //   }
-  //
-  //   setState(() {
-  //     int cursorPos = _equationController.selection.baseOffset;
-  //     if (cursorPos < 0) cursorPos = _equationController.text.length; // Default to end
-  //
-  //     if (key == 'AC') {
-  //       _equationController.clear();
-  //       result = '';
-  //       isEvaluated = false;
-  //     } else if (key == 'BACK') {
-  //       if (_equationController.text.isNotEmpty && cursorPos > 0) {
-  //         // Cursor se theek pehle wala character delete karna
-  //         String text = _equationController.text;
-  //         String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
-  //
-  //         _equationController.value = TextEditingValue(
-  //           text: newText,
-  //           selection: TextSelection.collapsed(offset: cursorPos - 1),
-  //         );
-  //
-  //         isEvaluated = false;
-  //         result = _calculateResult(_equationController.text);
-  //       }
-  //     } else if (key == '=') {
-  //       if (_equationController.text.isNotEmpty) {
-  //         String finalResult = _calculateResult(_equationController.text);
-  //         if (finalResult.isNotEmpty) {
-  //           result = finalResult;
-  //           isEvaluated = true;
-  //         }
-  //       }
-  //     } else {
-  //       if (isEvaluated) {
-  //         // Agar ans aane ke baad operator dabaya, to pichle ans ke aage judega
-  //         if (['+', '-', '×', '÷', '%'].contains(key)) {
-  //           _equationController.text = result + key;
-  //           _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
-  //         } else {
-  //           // Naya number dabaya toh purana clear ho jayega
-  //           _equationController.text = key;
-  //           _equationController.selection = TextSelection.collapsed(offset: 1);
-  //         }
-  //         isEvaluated = false;
-  //       } else {
-  //         // Jaha cursor hai waha naya text insert karna
-  //         String text = _equationController.text;
-  //         String newText = text.substring(0, cursorPos) + key + text.substring(cursorPos);
-  //
-  //         _equationController.value = TextEditingValue(
-  //           text: newText,
-  //           selection: TextSelection.collapsed(offset: cursorPos + key.length),
-  //         );
-  //       }
-  //       // Real-time calculation preview
-  //       result = _calculateResult(_equationController.text);
-  //     }
-  //   });
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_scrollController.hasClients &&
-  //         _equationController.selection.baseOffset == _equationController.text.length) {
-  //       // Agar cursor ekdum last mein hai, toh max scroll kar do
-  //       _scrollController.animateTo(
-  //         _scrollController.position.maxScrollExtent,
-  //         duration: const Duration(milliseconds: 100),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
-
   void _onKeyPress(String key) {
     if (!_focusNode.hasFocus) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -345,23 +269,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
 
-  // 1. Text ki length ke hisaab se Font Size set karega
-  // double _getDynamicFontSize() {
-  //   if (isEvaluated) return isScientific ? 22.0 : 28.0;
-  //
-  //   int len = _equationController.text.length;
-  //   // Kitne characters ke baad shrink karna hai (2nd line full hone ka limit)
-  //   int maxTwoLines = isScientific ? 35 : 20;
-  //
-  //   if (len <= maxTwoLines) {
-  //     return isScientific ? 28.0 : 46.0; // Normal size (1st & 2nd line)
-  //   } else if (len <= maxTwoLines + 10) {
-  //     return isScientific ? 22.0 : 34.0; // Shrink size (Single line)
-  //   } else {
-  //     return isScientific ? 18.0 : 26.0; // Minimum size (Horizontal scroll shuru)
-  //   }
-  // }
-
   double _getDynamicFontSize() {
     if (isEvaluated) return isScientific ? 22.0 : 28.0;
 
@@ -377,20 +284,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       return 28.0;                 // 13 ke baad minimum size aur scroll shuru
     }
   }
-
-  // 2. Text ki length ke hisaab se Lines set karega
-  // int _getMaxLines() {
-  //   if (isEvaluated) return 1;
-  //
-  //   int len = _equationController.text.length;
-  //   int maxTwoLines = isScientific ? 35 : 20;
-  //
-  //   if (len <= maxTwoLines) {
-  //     return 2; // 2nd line tak wrap hone dega
-  //   } else {
-  //     return 1; // 2nd line full hone ke baad Single line kar dega (Scroll on)
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -419,61 +312,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
-
-                      //children: [
-                      // 1. Input Section with Native Cursor & Tap Support
-                      // Expanded(
-                      //   child: Align(
-                      //     alignment: Alignment.bottomRight,
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.end,
-                      //       children: [
-                      //         Expanded(
-                      //           child: TextField(
-                      //             controller: _equationController,
-                      //             focusNode: _focusNode,
-                      //             readOnly: true,
-                      //             showCursor: !isEvaluated,
-                      //             cursorColor: cyanColor,
-                      //             cursorWidth: 3,
-                      //
-                      //             // 1. CHANGE HERE: Cursor height ko text size ke hisab se dynamic banaya
-                      //             cursorHeight: isEvaluated ? (isScientific ? 26 : 32) : (isScientific ? 50 : 64),
-                      //
-                      //             textAlign: TextAlign.right,
-                      //
-                      //             // 2. CHANGE HERE: Font size condition reverse kar di
-                      //             style: TextStyle(
-                      //               color: textGrey,
-                      //               // Agar '=' click hua hai to CHOTA, warna BADA (Input time pe)
-                      //               fontSize: isEvaluated ? (isScientific ? 22 : 28) : (isScientific ? 46 : 64),
-                      //             ),
-                      //
-                      //             decoration: const InputDecoration(
-                      //               border: InputBorder.none,
-                      //               isDense: true,
-                      //               contentPadding: EdgeInsets.zero,
-                      //             ),
-                      //             onTap: () {
-                      //               FocusScope.of(context).requestFocus(_focusNode);
-                      //             },
-                      //           ),
-                      //         ),
-                      //         if (isEvaluated && _equationController.text.isNotEmpty) ...[
-                      //           const SizedBox(width: 4),
-                      //           const Text(
-                      //             '=',
-                      //             style: TextStyle(
-                      //               color: Color(0xFFFFDCBF),
-                      //               fontSize: 22,
-                      //               fontWeight: FontWeight.bold,
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       children: [
                         // 1. Input Section with Native Cursor, Tap Support & Auto-Shrink
                         Expanded(
@@ -523,13 +361,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                     },
                                   ),
                                 ),
-                                // if (isEvaluated && _equationController.text.isNotEmpty) ...[
-                                //   const SizedBox(width: 4),
-                                //   const Text(
-                                //     '=',
-                                //     style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                                //   ),
-                                // ]
                               ],
                             ),
                           ),
