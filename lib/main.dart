@@ -329,68 +329,156 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   //   }
   // }
 
+  // String _calculateResult(String eq, {bool isFinalCall = false}) {
+  //   if (eq.isEmpty) return '';
+  //
+  //   // 1. PRE-VALIDATION: Agar equation galat symbols se start hoti hai (^, !, ×, ÷, %)
+  //   if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
+  //     return 'Expression error';
+  //   }
+  //
+  //   // 2. FACTORIAL CHECK: Agar '!' ke theek baad koi number ya bracket aa jaye (jaise !3 ya !(5))
+  //   if (RegExp(r'![0-9(]').hasMatch(eq)) {
+  //     return 'Expression error';
+  //   }
+  //
+  //   try {
+  //     // UI symbols ko math_expressions format mein map karna
+  //     String sanitized = eq
+  //         .replaceAll('×', '*')
+  //         .replaceAll('÷', '/')
+  //         .replaceAll('π', '3.141592653589793')
+  //         .replaceAll('e', '2.718281828459045')
+  //         .replaceAll('√(', 'sqrt(')
+  //         .replaceAll('²', '^2');
+  //
+  //     sanitized = sanitized
+  //         .replaceAll('log10(', '(1/2.302585092994046)*ln(')
+  //         .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
+  //
+  //     if (isDegreeMode) {
+  //       sanitized = sanitized
+  //           .replaceAll('sin(', 'sin(0.017453292519943295*')
+  //           .replaceAll('cos(', 'cos(0.017453292519943295*')
+  //           .replaceAll('tan(', 'tan(0.017453292519943295*');
+  //     }
+  //
+  //     // Auto-close Brackets
+  //     int openParens = sanitized.split('(').length - 1;
+  //     int closeParens = sanitized.split(')').length - 1;
+  //     for (int i = 0; i < (openParens - closeParens); i++) {
+  //       sanitized += ')';
+  //     }
+  //
+  //     // Parser Magic
+  //     Parser p = Parser();
+  //     Expression exp = p.parse(sanitized);
+  //     ContextModel cm = ContextModel();
+  //     double eval = exp.evaluate(EvaluationType.REAL, cm);
+  //
+  //     // Agar division by zero jaisi koi infinity value aa jaye
+  //     if (eval.isNaN || eval.isInfinite) return 'Expression error';
+  //
+  //     // Final Output Formatting
+  //     if (eval == eval.toInt()) {
+  //       return eval.toInt().toString();
+  //     }
+  //     return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //
+  //   } catch (e) {
+  //     // 3. FINAL CHECK: Agar user ne '=' dabaya hai aur error aayi, toh Error dikhao
+  //     if (isFinalCall) {
+  //       return 'Expression error';
+  //     }
+  //     // Warna typing ke waqt purana result hi screen par chhod do
+  //     return result;
+  //   }
+  // }
+
   String _calculateResult(String eq, {bool isFinalCall = false}) {
     if (eq.isEmpty) return '';
 
-    // 1. PRE-VALIDATION: Agar equation galat symbols se start hoti hai (^, !, ×, ÷, %)
+    // 1. PRE-VALIDATION: Agar equation galat symbols se shuru hoti hai
     if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
-      return 'Expression error';
-    }
-
-    // 2. FACTORIAL CHECK: Agar '!' ke theek baad koi number ya bracket aa jaye (jaise !3 ya !(5))
-    if (RegExp(r'![0-9(]').hasMatch(eq)) {
-      return 'Expression error';
+      return isFinalCall ? 'Expression error' : '';
     }
 
     try {
-      // UI symbols ko math_expressions format mein map karna
-      String sanitized = eq
+      String sanitized = eq;
+
+      // 2. IMPLICIT MULTIPLICATION (Smart Auto-Multiply)
+      // Rule A: Number ke theek baad Root, Function, Pi, e ya Bracket aaye (Jaise 5√9 -> 5*√9, 5sin -> 5*sin, 5( -> 5*()
+      sanitized = sanitized.replaceAllMapped(
+          RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
+              (Match m) => '${m[1]}*${m[2]}'
+      );
+
+      // Rule B: Bracket close ya Factorial ke baad kuch aaye (Jaise )5 -> )*5, 5!2 -> 5!*2)
+      sanitized = sanitized.replaceAllMapped(
+          RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
+              (Match m) => '${m[1]}*${m[2]}'
+      );
+
+      // Rule C: Constants ke beech mein ya baad mein aaye (Jaise πe -> π*e, π5 -> π*5)
+      sanitized = sanitized.replaceAllMapped(
+          RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
+              (Match m) => '${m[1]}*${m[2]}'
+      );
+
+      // 3. UI SYMBOLS KO MATH FORMAT ME BADALNA
+      sanitized = sanitized
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
           .replaceAll('π', '3.141592653589793')
           .replaceAll('e', '2.718281828459045')
-          .replaceAll('√(', 'sqrt(')
+          .replaceAll('√', 'sqrt(') // FIX: UI mein '√' dikhega, par math engine 'sqrt(' read karega
           .replaceAll('²', '^2');
 
       sanitized = sanitized
           .replaceAll('log10(', '(1/2.302585092994046)*ln(')
           .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
 
+      // Degree to Radian conversion
       if (isDegreeMode) {
         sanitized = sanitized
-            .replaceAll('sin(', 'sin(0.017453292519943295*')
-            .replaceAll('cos(', 'cos(0.017453292519943295*')
-            .replaceAll('tan(', 'tan(0.017453292519943295*');
+            .replaceAll('sin(', 'sin((3.141592653589793/180)*')
+            .replaceAll('cos(', 'cos((3.141592653589793/180)*')
+            .replaceAll('tan(', 'tan((3.141592653589793/180)*');
       }
 
-      // Auto-close Brackets
+      // 4. AUTO-CLOSE BRACKETS
+      // Ab ye background mein hidden 'sqrt(' wale brackets ko bhi perfectly close karega
       int openParens = sanitized.split('(').length - 1;
       int closeParens = sanitized.split(')').length - 1;
       for (int i = 0; i < (openParens - closeParens); i++) {
         sanitized += ')';
       }
 
-      // Parser Magic
+      // 5. PARSE AND EVALUATE
       Parser p = Parser();
       Expression exp = p.parse(sanitized);
       ContextModel cm = ContextModel();
       double eval = exp.evaluate(EvaluationType.REAL, cm);
 
-      // Agar division by zero jaisi koi infinity value aa jaye
+      // Agar math error aaye jaise (1/0)
       if (eval.isNaN || eval.isInfinite) return 'Expression error';
 
-      // Final Output Formatting
+      // Negative zero fix
+      if (eval == -0.0) eval = 0.0;
+
+      // Output Formatting
       if (eval == eval.toInt()) {
         return eval.toInt().toString();
       }
       return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
 
     } catch (e) {
-      // 3. FINAL CHECK: Agar user ne '=' dabaya hai aur error aayi, toh Error dikhao
+      // 6. ERROR HANDLING
+      // Agar user ne = daba diya hai aur format galat hai, toh properly error dikhao
       if (isFinalCall) {
         return 'Expression error';
       }
-      // Warna typing ke waqt purana result hi screen par chhod do
+      // Type karte waqt error aaye (jaise 5+) toh purana result hold karo
       return result;
     }
   }
@@ -682,24 +770,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           Expanded(
                             child: Row(
                               children: [
-                                CalculatorButton(text: 'log10', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('log10(')),
-                                CalculatorButton(text: 'sin', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('sin(')),
-                                CalculatorButton(text: 'cos', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('cos(')),
-                                CalculatorButton(text: 'tan', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('tan(')),
-                                CalculatorButton(text: 'ln', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('ln(')),
-                                CalculatorButton(text: 'deg', textColor: cyanColor, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('deg')),
+                                CalculatorButton(text: 'log10', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log10(')),
+                                CalculatorButton(text: 'sin', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('sin(')),
+                                CalculatorButton(text: 'cos', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('cos(')),
+                                CalculatorButton(text: 'tan', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('tan(')),
+                                CalculatorButton(text: 'ln', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('ln(')),
+                                CalculatorButton(text: 'deg', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('deg')),
                               ],
                             ),
                           ),
                           Expanded(
                             child: Row(
                               children: [
-                                CalculatorButton(text: 'log2', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('log2(')),
-                                CalculatorButton(text: 'x²', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('²')),
-                                CalculatorButton(text: '(', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('(')),
-                                CalculatorButton(text: ')', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress(')')),
-                                CalculatorButton(text: 'rad', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('rad')),
-                                CalculatorButton(text: 'Inv', textColor: white, bgColor: surfaceColor, fontSize: 14, onTap: () => _onKeyPress('Inv')),
+                                CalculatorButton(text: 'log2', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log2(')),
+                                CalculatorButton(text: 'x²', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('²')),
+                                CalculatorButton(text: '(', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('(')),
+                                CalculatorButton(text: ')', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress(')')),
+                                CalculatorButton(text: 'rad', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('rad')),
+                                CalculatorButton(text: 'Inv', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('Inv')),
                               ],
                             ),
                           ),
@@ -707,9 +795,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              if (isScientific) CalculatorButton(text: 'x!', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('!')),
+                              if (isScientific) CalculatorButton(text: 'x!', textColor: white, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('!')),
                               CalculatorButton(text: 'AC', textColor: Colors.orangeAccent, bgColor: surfaceColor, onTap: () => _onKeyPress('AC')),
-                              CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('%')),
+                              CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('%')),
                               CalculatorButton(icon: Icons.backspace_outlined, textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('BACK')),
                               CalculatorButton(text: '÷', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('÷')),
                             ],
@@ -718,7 +806,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('^')),
+                              if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('^')),
                               CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('7')),
                               CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('8')),
                               CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('9')),
@@ -729,7 +817,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('√(')),
+                              if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('√')),
                               CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('4')),
                               CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('5')),
                               CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('6')),
@@ -740,7 +828,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              if (isScientific) CalculatorButton(text: 'π', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('π')),
+                              if (isScientific) CalculatorButton(text: 'π', textColor: white, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('π')),
                               CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('1')),
                               CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('2')),
                               CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('3')),
@@ -751,7 +839,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              if (isScientific) CalculatorButton(text: 'e', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('e')),
+                              if (isScientific) CalculatorButton(text: 'e', textColor: white, bgColor: surfaceColor,fontSize: 18, onTap: () => _onKeyPress('e')),
                               CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('00')),
                               CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('0')),
                               CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('.')),
