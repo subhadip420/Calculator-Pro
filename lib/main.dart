@@ -841,51 +841,216 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         clipBehavior: Clip.none,
                         children: [
 
+                          // // ----------------------------------------------------
+                          // // BACKGROUND LAYER: HISTORY PANEL
+                          // // ----------------------------------------------------
+                          // AnimatedOpacity(
+                          //   // NAYA: Dragging ke waqt instantly update hoga, warna smooth 300ms
+                          //   duration: Duration(milliseconds: _isDragging ? 0 : 300),
+                          //   opacity: _isDragging
+                          //       ? (_dragOffset / keypadHeight).clamp(0.0, 1.0) // Finger ke hisab se fade hoga
+                          //       : (isHistoryOpen ? 1.0 : 0.0),
+                          //   child: Container(
+                          //     height: keypadHeight,
+                          //     width: double.infinity,
+                          //     child: _historyList.isEmpty
+                          //         ? const Center(
+                          //         child: Text(
+                          //             'No History yet',
+                          //             style: TextStyle(color: Color(0xFFDBC2AD), fontSize: 16)
+                          //         )
+                          //     )
+                          //         : ListView.builder(
+                          //       padding: const EdgeInsets.all(16),
+                          //       itemCount: _historyList.length,
+                          //       itemBuilder: (context, index) {
+                          //         final item = jsonDecode(_historyList[index]);
+                          //         return Container(
+                          //           margin: const EdgeInsets.only(bottom: 12),
+                          //           padding: const EdgeInsets.all(16),
+                          //           decoration: BoxDecoration(
+                          //             color: surfaceColor.withOpacity(0.3),
+                          //             borderRadius: BorderRadius.circular(16),
+                          //             border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          //           ),
+                          //           child: Column(
+                          //             crossAxisAlignment: CrossAxisAlignment.end,
+                          //             children: [
+                          //               Text(item['datetime'] ?? '', style: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 12)),
+                          //               const SizedBox(height: 4),
+                          //               Text(item['equation'] ?? '', style: TextStyle(color: textGrey, fontSize: 18)),
+                          //               const SizedBox(height: 4),
+                          //               Text(item['result'] ?? '', style: TextStyle(color: cyanColor, fontSize: 24, fontWeight: FontWeight.bold)),
+                          //             ],
+                          //           ),
+                          //         );
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+
                           // ----------------------------------------------------
-                          // BACKGROUND LAYER: HISTORY PANEL
+                          // BACKGROUND LAYER: HISTORY PANEL (Redesigned)
                           // ----------------------------------------------------
                           AnimatedOpacity(
-                            // NAYA: Dragging ke waqt instantly update hoga, warna smooth 300ms
                             duration: Duration(milliseconds: _isDragging ? 0 : 300),
                             opacity: _isDragging
-                                ? (_dragOffset / keypadHeight).clamp(0.0, 1.0) // Finger ke hisab se fade hoga
+                                ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
                                 : (isHistoryOpen ? 1.0 : 0.0),
-                            child: Container(
-                              height: keypadHeight,
-                              width: double.infinity,
-                              child: _historyList.isEmpty
-                                  ? const Center(
-                                  child: Text(
-                                      'No History yet',
-                                      style: TextStyle(color: Color(0xFFDBC2AD), fontSize: 16)
-                                  )
-                              )
-                                  : ListView.builder(
-                                padding: const EdgeInsets.all(16),
-                                itemCount: _historyList.length,
-                                itemBuilder: (context, index) {
-                                  final item = jsonDecode(_historyList[index]);
+                            child: Builder(
+                                builder: (context) {
+                                  // 1. DATE-WISE GROUPING LOGIC
+                                  Map<String, List<Map<String, dynamic>>> groupedHistory = {};
+                                  DateTime now = DateTime.now();
+                                  String todayStr = "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
+                                  DateTime yesterday = now.subtract(const Duration(days: 1));
+                                  String yesterdayStr = "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
+
+                                  for (String entry in _historyList) {
+                                    Map<String, dynamic> item = jsonDecode(entry);
+                                    String fullDateTime = item['datetime'] ?? '';
+                                    List<String> parts = fullDateTime.split(' ');
+                                    String datePart = parts.isNotEmpty ? parts[0] : '';
+
+                                    String displayDate = datePart;
+                                    if (datePart == todayStr) {
+                                      displayDate = 'Today';
+                                    } else if (datePart == yesterdayStr) {
+                                      displayDate = 'Yesterday';
+                                    }
+
+                                    if (!groupedHistory.containsKey(displayDate)) {
+                                      groupedHistory[displayDate] = [];
+                                    }
+                                    groupedHistory[displayDate]!.add(item);
+                                  }
+
                                   return Container(
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
+                                    height: keypadHeight,
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(10.0), // Bahar ka margin
+                                    child: Card(
                                       color: surfaceColor.withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(color: Colors.white.withOpacity(0.05)),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Text(item['datetime'] ?? '', style: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 12)),
-                                        const SizedBox(height: 4),
-                                        Text(item['equation'] ?? '', style: TextStyle(color: textGrey, fontSize: 18)),
-                                        const SizedBox(height: 4),
-                                        Text(item['result'] ?? '', style: TextStyle(color: cyanColor, fontSize: 24, fontWeight: FontWeight.bold)),
-                                      ],
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                        side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          // 2. TOP BAR (Back, Title, Delete)
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 2.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    IconButton(
+                                                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                                                      onPressed: () => setState(() => isHistoryOpen = false),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    const Text('History', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                                                  ],
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.delete_outline, color: redColor),
+                                                  onPressed: () async {
+                                                    // Clear History Logic
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    await prefs.remove('calculator_history');
+                                                    setState(() {
+                                                      _historyList.clear();
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // 3. GROUPED HISTORY ITEMS
+                                          Expanded(
+                                            child: _historyList.isEmpty
+                                                ? Center(child: Text('No History yet', style: TextStyle(color: textGrey, fontSize: 16)))
+                                                : ListView(
+                                              // Pura ListView left aur right se thoda padding lega
+                                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                              children: groupedHistory.entries.map((entry) {
+                                                return Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    // 1. DATE ROW (Upar left side mein Today/Date)
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 12.0, top: 8.0, left: 4.0),
+                                                      child: Text(
+                                                        entry.key,
+                                                        style: TextStyle(color: cyanColor, fontSize: 14, fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ),
+
+                                                    // 2. ITEMS (Date ke niche full width cards)
+                                                    ...entry.value.map((item) {
+                                                      // Saved format "10-09-2026 20:23" me se sirf time (20:23) nikalna
+                                                      String fullDateTime = item['datetime'] ?? '';
+                                                      String timePart = fullDateTime.contains(' ') ? fullDateTime.split(' ')[1] : '';
+
+                                                      return Container(
+                                                        width: double.infinity, // Full width card
+                                                        margin: const EdgeInsets.only(bottom: 12),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                                        decoration: BoxDecoration(
+                                                          color: bgColor.withOpacity(0.5), // Inner card color
+                                                          borderRadius: BorderRadius.circular(16),
+                                                        ),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.end, // Text right align
+                                                          children: [
+                                                            // Time (Left side upar)
+                                                            Align(
+                                                              alignment: Alignment.centerLeft,
+                                                              child: Text(
+                                                                timePart,
+                                                                style: TextStyle(color: textGrey.withOpacity(0.6), fontSize: 11),
+                                                              ),
+                                                            ),
+
+                                                            const SizedBox(height: 4),
+                                                            // Equation (Font chhota kiya - 16)
+                                                            Text(
+                                                              item['equation'] ?? '',
+                                                              style: TextStyle(color: textGrey, fontSize: 16),
+                                                            ),
+
+                                                            const SizedBox(height: 4),
+                                                            // Result (Font chhota kiya - 20)
+                                                            Text(
+                                                              item['result'] ?? '',
+                                                              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ],
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+
+                                          // 4. BOTTOM HINT TEXT
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
+                                            child: Text(
+                                              'Swipe for options',
+                                              style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
-                                },
-                              ),
+                                }
                             ),
                           ),
 
