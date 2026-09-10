@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 //import 'package:math_expressions/math_expressions.dart';
 import 'package:math_expressions/math_expressions.dart' hide Stack;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -330,15 +331,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     // Date aur Time format karna (Jaise: 10-09-2026 20:23)
     final now = DateTime.now();
-    String formattedDate = "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year} "
+    String formattedDate =
+        "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year} "
         "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
 
     // Naya data JSON map mein banayein
-    Map<String, String> newEntry = {
-      'equation': eq,
-      'result': res,
-      'datetime': formattedDate,
-    };
+    Map<String, String> newEntry = {'equation': eq, 'result': res, 'datetime': formattedDate};
 
     // Nayi entry ko list ke shuru mein dalein (Latest pehle dikhega)
     history.insert(0, jsonEncode(newEntry));
@@ -826,11 +824,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   return TweenAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 350),
                     curve: Curves.easeOutCubic,
-                    tween: Tween<double>(
-                      end: isScientific ? 200.0 : 300.0,
-                    ),
+                    tween: Tween<double>(end: isScientific ? 200.0 : 300.0),
                     builder: (context, topFlex, child) {
-
                       // Flex aur Height Calculation
                       double totalFlex = 700.0;
                       double keypadFlex = totalFlex - topFlex;
@@ -840,55 +835,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       return Stack(
                         clipBehavior: Clip.none,
                         children: [
-
-                          // // ----------------------------------------------------
-                          // // BACKGROUND LAYER: HISTORY PANEL
-                          // // ----------------------------------------------------
-                          // AnimatedOpacity(
-                          //   // NAYA: Dragging ke waqt instantly update hoga, warna smooth 300ms
-                          //   duration: Duration(milliseconds: _isDragging ? 0 : 300),
-                          //   opacity: _isDragging
-                          //       ? (_dragOffset / keypadHeight).clamp(0.0, 1.0) // Finger ke hisab se fade hoga
-                          //       : (isHistoryOpen ? 1.0 : 0.0),
-                          //   child: Container(
-                          //     height: keypadHeight,
-                          //     width: double.infinity,
-                          //     child: _historyList.isEmpty
-                          //         ? const Center(
-                          //         child: Text(
-                          //             'No History yet',
-                          //             style: TextStyle(color: Color(0xFFDBC2AD), fontSize: 16)
-                          //         )
-                          //     )
-                          //         : ListView.builder(
-                          //       padding: const EdgeInsets.all(16),
-                          //       itemCount: _historyList.length,
-                          //       itemBuilder: (context, index) {
-                          //         final item = jsonDecode(_historyList[index]);
-                          //         return Container(
-                          //           margin: const EdgeInsets.only(bottom: 12),
-                          //           padding: const EdgeInsets.all(16),
-                          //           decoration: BoxDecoration(
-                          //             color: surfaceColor.withOpacity(0.3),
-                          //             borderRadius: BorderRadius.circular(16),
-                          //             border: Border.all(color: Colors.white.withOpacity(0.05)),
-                          //           ),
-                          //           child: Column(
-                          //             crossAxisAlignment: CrossAxisAlignment.end,
-                          //             children: [
-                          //               Text(item['datetime'] ?? '', style: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 12)),
-                          //               const SizedBox(height: 4),
-                          //               Text(item['equation'] ?? '', style: TextStyle(color: textGrey, fontSize: 18)),
-                          //               const SizedBox(height: 4),
-                          //               Text(item['result'] ?? '', style: TextStyle(color: cyanColor, fontSize: 24, fontWeight: FontWeight.bold)),
-                          //             ],
-                          //           ),
-                          //         );
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
-
                           // ----------------------------------------------------
                           // BACKGROUND LAYER: HISTORY PANEL (Redesigned)
                           // ----------------------------------------------------
@@ -898,159 +844,199 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
                                 : (isHistoryOpen ? 1.0 : 0.0),
                             child: Builder(
-                                builder: (context) {
-                                  // 1. DATE-WISE GROUPING LOGIC
-                                  Map<String, List<Map<String, dynamic>>> groupedHistory = {};
-                                  DateTime now = DateTime.now();
-                                  String todayStr = "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
-                                  DateTime yesterday = now.subtract(const Duration(days: 1));
-                                  String yesterdayStr = "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
+                              builder: (context) {
+                                // 1. DATE-WISE GROUPING LOGIC
+                                Map<String, List<Map<String, dynamic>>> groupedHistory = {};
+                                DateTime now = DateTime.now();
+                                String todayStr =
+                                    "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
+                                DateTime yesterday = now.subtract(const Duration(days: 1));
+                                String yesterdayStr =
+                                    "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
 
-                                  for (String entry in _historyList) {
-                                    Map<String, dynamic> item = jsonDecode(entry);
-                                    String fullDateTime = item['datetime'] ?? '';
-                                    List<String> parts = fullDateTime.split(' ');
-                                    String datePart = parts.isNotEmpty ? parts[0] : '';
+                                for (String entry in _historyList) {
+                                  Map<String, dynamic> item = jsonDecode(entry);
+                                  String fullDateTime = item['datetime'] ?? '';
+                                  List<String> parts = fullDateTime.split(' ');
+                                  String datePart = parts.isNotEmpty ? parts[0] : '';
 
-                                    String displayDate = datePart;
-                                    if (datePart == todayStr) {
-                                      displayDate = 'Today';
-                                    } else if (datePart == yesterdayStr) {
-                                      displayDate = 'Yesterday';
-                                    }
-
-                                    if (!groupedHistory.containsKey(displayDate)) {
-                                      groupedHistory[displayDate] = [];
-                                    }
-                                    groupedHistory[displayDate]!.add(item);
+                                  String displayDate = datePart;
+                                  if (datePart == todayStr) {
+                                    displayDate = 'Today';
+                                  } else if (datePart == yesterdayStr) {
+                                    displayDate = 'Yesterday';
                                   }
 
-                                  return Container(
-                                    height: keypadHeight,
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(10.0), // Bahar ka margin
-                                    child: Card(
-                                      color: surfaceColor.withOpacity(0.3),
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(24),
-                                        side: BorderSide(color: Colors.white.withOpacity(0.05)),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          // 2. TOP BAR (Back, Title, Delete)
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 2.0),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    IconButton(
-                                                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                                                      onPressed: () => setState(() => isHistoryOpen = false),
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    const Text('History', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                                                  ],
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(Icons.delete_outline, color: redColor),
-                                                  onPressed: () async {
-                                                    // Clear History Logic
-                                                    final prefs = await SharedPreferences.getInstance();
-                                                    await prefs.remove('calculator_history');
-                                                    setState(() {
-                                                      _historyList.clear();
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-
-                                          // 3. GROUPED HISTORY ITEMS
-                                          Expanded(
-                                            child: _historyList.isEmpty
-                                                ? Center(child: Text('No History yet', style: TextStyle(color: textGrey, fontSize: 16)))
-                                                : ListView(
-                                              // Pura ListView left aur right se thoda padding lega
-                                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                                              children: groupedHistory.entries.map((entry) {
-                                                return Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    // 1. DATE ROW (Upar left side mein Today/Date)
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: 12.0, top: 8.0, left: 4.0),
-                                                      child: Text(
-                                                        entry.key,
-                                                        style: TextStyle(color: cyanColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ),
-
-                                                    // 2. ITEMS (Date ke niche full width cards)
-                                                    ...entry.value.map((item) {
-                                                      // Saved format "10-09-2026 20:23" me se sirf time (20:23) nikalna
-                                                      String fullDateTime = item['datetime'] ?? '';
-                                                      String timePart = fullDateTime.contains(' ') ? fullDateTime.split(' ')[1] : '';
-
-                                                      return Container(
-                                                        width: double.infinity, // Full width card
-                                                        margin: const EdgeInsets.only(bottom: 12),
-                                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                                        decoration: BoxDecoration(
-                                                          color: bgColor.withOpacity(0.5), // Inner card color
-                                                          borderRadius: BorderRadius.circular(16),
-                                                        ),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.end, // Text right align
-                                                          children: [
-                                                            // Time (Left side upar)
-                                                            Align(
-                                                              alignment: Alignment.centerLeft,
-                                                              child: Text(
-                                                                timePart,
-                                                                style: TextStyle(color: textGrey.withOpacity(0.6), fontSize: 11),
-                                                              ),
-                                                            ),
-
-                                                            const SizedBox(height: 4),
-                                                            // Equation (Font chhota kiya - 16)
-                                                            Text(
-                                                              item['equation'] ?? '',
-                                                              style: TextStyle(color: textGrey, fontSize: 16),
-                                                            ),
-
-                                                            const SizedBox(height: 4),
-                                                            // Result (Font chhota kiya - 20)
-                                                            Text(
-                                                              item['result'] ?? '',
-                                                              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ],
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-
-                                          // 4. BOTTOM HINT TEXT
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
-                                            child: Text(
-                                              'Swipe for options',
-                                              style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
+                                  if (!groupedHistory.containsKey(displayDate)) {
+                                    groupedHistory[displayDate] = [];
+                                  }
+                                  groupedHistory[displayDate]!.add(item);
                                 }
+
+                                return Container(
+                                  height: keypadHeight,
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(10.0), // Bahar ka margin
+                                  child: Card(
+                                    color: surfaceColor.withOpacity(0.3),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                      side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        // 2. TOP BAR (Back, Title, Delete)
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 2.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.arrow_back_ios_new,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    onPressed: () => setState(() => isHistoryOpen = false),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  const Text(
+                                                    'History',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.delete_outline, color: redColor),
+                                                onPressed: () async {
+                                                  // Clear History Logic
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  await prefs.remove('calculator_history');
+                                                  setState(() {
+                                                    _historyList.clear();
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        // 3. GROUPED HISTORY ITEMS
+                                        Expanded(
+                                          child: _historyList.isEmpty
+                                              ? Center(
+                                                  child: Text(
+                                                    'No History yet',
+                                                    style: TextStyle(color: textGrey, fontSize: 16),
+                                                  ),
+                                                )
+                                              : ListView(
+                                                  // Pura ListView left aur right se thoda padding lega
+                                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                                  children: groupedHistory.entries.map((entry) {
+                                                    return Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        // 1. DATE ROW (Upar left side mein Today/Date)
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(
+                                                            bottom: 12.0,
+                                                            top: 8.0,
+                                                            left: 4.0,
+                                                          ),
+                                                          child: Text(
+                                                            entry.key,
+                                                            style: TextStyle(
+                                                              color: cyanColor,
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        // 2. ITEMS (Date ke niche full width cards)
+                                                        ...entry.value.map((item) {
+                                                          // Saved format "10-09-2026 20:23" me se sirf time (20:23) nikalna
+                                                          String fullDateTime = item['datetime'] ?? '';
+                                                          String timePart = fullDateTime.contains(' ')
+                                                              ? fullDateTime.split(' ')[1]
+                                                              : '';
+
+                                                          return Container(
+                                                            width: double.infinity,
+                                                            // Full width card
+                                                            margin: const EdgeInsets.only(bottom: 12),
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 16,
+                                                              vertical: 12,
+                                                            ),
+                                                            decoration: BoxDecoration(
+                                                              color: bgColor.withOpacity(0.5), // Inner card color
+                                                              borderRadius: BorderRadius.circular(16),
+                                                            ),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                              // Text right align
+                                                              children: [
+                                                                // Time (Left side upar)
+                                                                Align(
+                                                                  alignment: Alignment.centerLeft,
+                                                                  child: Text(
+                                                                    timePart,
+                                                                    style: TextStyle(
+                                                                      color: textGrey.withOpacity(0.6),
+                                                                      fontSize: 11,
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(height: 4),
+                                                                // Equation (Font chhota kiya - 16)
+                                                                Text(
+                                                                  item['equation'] ?? '',
+                                                                  style: TextStyle(color: textGrey, fontSize: 16),
+                                                                ),
+
+                                                                const SizedBox(height: 4),
+                                                                // Result (Font chhota kiya - 20)
+                                                                Text(
+                                                                  item['result'] ?? '',
+                                                                  style: const TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      ],
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                        ),
+
+                                        // 4. BOTTOM HINT TEXT
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
+                                          child: Text(
+                                            'Swipe for options',
+                                            style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
 
@@ -1174,7 +1160,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                     duration: const Duration(milliseconds: 250),
                                                     curve: Curves.easeOutCubic,
                                                     tween: Tween<double>(
-                                                      end: isEvaluated ? (isScientific ? 46.0 : 64.0) : (isScientific ? 24.0 : 32.0),
+                                                      end: isEvaluated
+                                                          ? (isScientific ? 46.0 : 64.0)
+                                                          : (isScientific ? 24.0 : 32.0),
                                                     ),
                                                     builder: (context, animatedResultSize, child) {
                                                       return Text(
@@ -1182,7 +1170,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                         style: TextStyle(
                                                           fontSize: animatedResultSize,
                                                           fontWeight: isEvaluated ? FontWeight.w300 : FontWeight.normal,
-                                                          color: isEvaluated ? Colors.white : Colors.white.withOpacity(0.8),
+                                                          color: isEvaluated
+                                                              ? Colors.white
+                                                              : Colors.white.withOpacity(0.8),
                                                         ),
                                                       );
                                                     },
@@ -1209,24 +1199,96 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           Expanded(
                                             child: Row(
                                               children: [
-                                                CalculatorButton(text: 'log10', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log10(')),
-                                                CalculatorButton(text: 'sin', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('sin(')),
-                                                CalculatorButton(text: 'cos', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('cos(')),
-                                                CalculatorButton(text: 'tan', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('tan(')),
-                                                CalculatorButton(text: 'ln', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('ln(')),
-                                                CalculatorButton(text: 'deg', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('deg')),
+                                                CalculatorButton(
+                                                  text: 'log10',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('log10('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'sin',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('sin('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'cos',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('cos('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'tan',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('tan('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'ln',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('ln('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'deg',
+                                                  textColor: cyanColor,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('deg'),
+                                                ),
                                               ],
                                             ),
                                           ),
                                           Expanded(
                                             child: Row(
                                               children: [
-                                                CalculatorButton(text: 'log2', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log2(')),
-                                                CalculatorButton(text: 'x²', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('²')),
-                                                CalculatorButton(text: '(', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('(')),
-                                                CalculatorButton(text: ')', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress(')')),
-                                                CalculatorButton(text: 'rad', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('rad')),
-                                                CalculatorButton(text: 'Inv', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('Inv')),
+                                                CalculatorButton(
+                                                  text: 'log2',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('log2('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'x²',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('²'),
+                                                ),
+                                                CalculatorButton(
+                                                  text: '(',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('('),
+                                                ),
+                                                CalculatorButton(
+                                                  text: ')',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress(')'),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'rad',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('rad'),
+                                                ),
+                                                CalculatorButton(
+                                                  text: 'Inv',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('Inv'),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1234,55 +1296,208 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              if (isScientific) CalculatorButton(text: 'x!', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('!')),
-                                              CalculatorButton(text: 'AC', textColor: Colors.orangeAccent, bgColor: surfaceColor, onTap: () => _onKeyPress('AC')),
-                                              CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('%')),
-                                              CalculatorButton(icon: Icons.backspace_outlined, textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('BACK')),
-                                              CalculatorButton(text: '÷', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('÷')),
+                                              if (isScientific)
+                                                CalculatorButton(
+                                                  text: 'x!',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('!'),
+                                                ),
+                                              CalculatorButton(
+                                                text: 'AC',
+                                                textColor: Colors.orangeAccent,
+                                                bgColor: surfaceColor,
+                                                onTap: () => _onKeyPress('AC'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '%',
+                                                textColor: cyanColor,
+                                                bgColor: surfaceColor,
+                                                fontSize: 18,
+                                                onTap: () => _onKeyPress('%'),
+                                              ),
+                                              CalculatorButton(
+                                                icon: Icons.backspace_outlined,
+                                                textColor: cyanColor,
+                                                bgColor: surfaceColor,
+                                                onTap: () => _onKeyPress('BACK'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '÷',
+                                                textColor: white,
+                                                bgColor: orangeColor.withOpacity(0.15),
+                                                fontSize: 30,
+                                                onTap: () => _onKeyPress('÷'),
+                                              ),
                                             ],
                                           ),
                                         ),
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('^')),
-                                              CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('7')),
-                                              CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('8')),
-                                              CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('9')),
-                                              CalculatorButton(text: '×', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('×')),
+                                              if (isScientific)
+                                                CalculatorButton(
+                                                  text: 'xʸ',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('^'),
+                                                ),
+                                              CalculatorButton(
+                                                text: '7',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('7'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '8',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('8'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '9',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('9'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '×',
+                                                textColor: white,
+                                                bgColor: orangeColor.withOpacity(0.15),
+                                                fontSize: 30,
+                                                onTap: () => _onKeyPress('×'),
+                                              ),
                                             ],
                                           ),
                                         ),
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('√')),
-                                              CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('4')),
-                                              CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('5')),
-                                              CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('6')),
-                                              CalculatorButton(text: '−', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('-')),
+                                              if (isScientific)
+                                                CalculatorButton(
+                                                  text: '√x',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('√'),
+                                                ),
+                                              CalculatorButton(
+                                                text: '4',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('4'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '5',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('5'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '6',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('6'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '−',
+                                                textColor: white,
+                                                bgColor: orangeColor.withOpacity(0.15),
+                                                fontSize: 30,
+                                                onTap: () => _onKeyPress('-'),
+                                              ),
                                             ],
                                           ),
                                         ),
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              if (isScientific) CalculatorButton(text: 'π', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('π')),
-                                              CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('1')),
-                                              CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('2')),
-                                              CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('3')),
-                                              CalculatorButton(text: '+', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('+')),
+                                              if (isScientific)
+                                                CalculatorButton(
+                                                  text: 'π',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('π'),
+                                                ),
+                                              CalculatorButton(
+                                                text: '1',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('1'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '2',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('2'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '3',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('3'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '+',
+                                                textColor: white,
+                                                bgColor: orangeColor.withOpacity(0.15),
+                                                fontSize: 30,
+                                                onTap: () => _onKeyPress('+'),
+                                              ),
                                             ],
                                           ),
                                         ),
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              if (isScientific) CalculatorButton(text: 'e', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('e')),
-                                              CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('00')),
-                                              CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('0')),
-                                              CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('.')),
-                                              CalculatorButton(text: '=', textColor: white, bgColor: orangeColor, fontSize: 30, onTap: () => _onKeyPress('=')),
+                                              if (isScientific)
+                                                CalculatorButton(
+                                                  text: 'e',
+                                                  textColor: white,
+                                                  bgColor: surfaceColor,
+                                                  fontSize: 18,
+                                                  onTap: () => _onKeyPress('e'),
+                                                ),
+                                              CalculatorButton(
+                                                text: '00',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('00'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '0',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('0'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '.',
+                                                textColor: white,
+                                                bgColor: surfaceColor,
+                                                fontSize: 25,
+                                                onTap: () => _onKeyPress('.'),
+                                              ),
+                                              CalculatorButton(
+                                                text: '=',
+                                                textColor: white,
+                                                bgColor: orangeColor,
+                                                fontSize: 30,
+                                                onTap: () => _onKeyPress('='),
+                                              ),
                                             ],
                                           ),
                                         ),
