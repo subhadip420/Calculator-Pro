@@ -272,10 +272,78 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   // }
 
   // --- Perfect Scientific Evaluation Logic ---
-  String _calculateResult(String eq) {
+  // String _calculateResult(String eq) {
+  //   if (eq.isEmpty) return '';
+  //   try {
+  //     // 1. UI symbols ko math_expressions format mein map karna
+  //     String sanitized = eq
+  //         .replaceAll('×', '*')
+  //         .replaceAll('÷', '/')
+  //         .replaceAll('π', '3.141592653589793')
+  //         .replaceAll('e', '2.718281828459045')
+  //         .replaceAll('√(', 'sqrt(')
+  //         .replaceAll('²', '^2');
+  //
+  //     // math_expressions natively 'ln' support karta hai.
+  //     // log10 aur log2 ko hum ln ke through convert kar rahe hain for perfect accuracy.
+  //     sanitized = sanitized
+  //         .replaceAll('log10(', '(1/2.302585092994046)*ln(')
+  //         .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
+  //
+  //     // 2. Degree vs Radian Logic
+  //     // math_expressions by default radians use karta hai. Agar mode Degree hai,
+  //     // toh hum sin/cos/tan ke aandar (pi/180) multiply kar dete hain.
+  //     if (isDegreeMode) {
+  //       sanitized = sanitized
+  //           .replaceAll('sin(', 'sin(0.017453292519943295*')
+  //           .replaceAll('cos(', 'cos(0.017453292519943295*')
+  //           .replaceAll('tan(', 'tan(0.017453292519943295*');
+  //     }
+  //
+  //     // 3. Auto-close Brackets (Real-time preview ke liye bohot zaroori)
+  //     // Agar user ne "sin(30" type kiya hai, to code automatic ")" add kar dega error se bachne ke liye
+  //     int openParens = sanitized.split('(').length - 1;
+  //     int closeParens = sanitized.split(')').length - 1;
+  //     for (int i = 0; i < (openParens - closeParens); i++) {
+  //       sanitized += ')';
+  //     }
+  //
+  //     // 4. Parser Magic (Equation ko mathematically solve karna)
+  //     Parser p = Parser();
+  //     Expression exp = p.parse(sanitized);
+  //     ContextModel cm = ContextModel();
+  //     double eval = exp.evaluate(EvaluationType.REAL, cm);
+  //
+  //     // 5. Final Output Formatting
+  //     if (eval.isNaN || eval.isInfinite) return 'Error';
+  //
+  //     // Decimal ke baad extra zeros hatane ke liye
+  //     if (eval == eval.toInt()) {
+  //       return eval.toInt().toString();
+  //     }
+  //     return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //
+  //   } catch (e) {
+  //     // Agar formula incomplete hai, toh purana result hi dikhao
+  //     return result;
+  //   }
+  // }
+
+  String _calculateResult(String eq, {bool isFinalCall = false}) {
     if (eq.isEmpty) return '';
+
+    // 1. PRE-VALIDATION: Agar equation galat symbols se start hoti hai (^, !, ×, ÷, %)
+    if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
+      return 'Expression error';
+    }
+
+    // 2. FACTORIAL CHECK: Agar '!' ke theek baad koi number ya bracket aa jaye (jaise !3 ya !(5))
+    if (RegExp(r'![0-9(]').hasMatch(eq)) {
+      return 'Expression error';
+    }
+
     try {
-      // 1. UI symbols ko math_expressions format mein map karna
+      // UI symbols ko math_expressions format mein map karna
       String sanitized = eq
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
@@ -284,15 +352,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           .replaceAll('√(', 'sqrt(')
           .replaceAll('²', '^2');
 
-      // math_expressions natively 'ln' support karta hai.
-      // log10 aur log2 ko hum ln ke through convert kar rahe hain for perfect accuracy.
       sanitized = sanitized
           .replaceAll('log10(', '(1/2.302585092994046)*ln(')
           .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
 
-      // 2. Degree vs Radian Logic
-      // math_expressions by default radians use karta hai. Agar mode Degree hai,
-      // toh hum sin/cos/tan ke aandar (pi/180) multiply kar dete hain.
       if (isDegreeMode) {
         sanitized = sanitized
             .replaceAll('sin(', 'sin(0.017453292519943295*')
@@ -300,31 +363,34 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             .replaceAll('tan(', 'tan(0.017453292519943295*');
       }
 
-      // 3. Auto-close Brackets (Real-time preview ke liye bohot zaroori)
-      // Agar user ne "sin(30" type kiya hai, to code automatic ")" add kar dega error se bachne ke liye
+      // Auto-close Brackets
       int openParens = sanitized.split('(').length - 1;
       int closeParens = sanitized.split(')').length - 1;
       for (int i = 0; i < (openParens - closeParens); i++) {
         sanitized += ')';
       }
 
-      // 4. Parser Magic (Equation ko mathematically solve karna)
+      // Parser Magic
       Parser p = Parser();
       Expression exp = p.parse(sanitized);
       ContextModel cm = ContextModel();
       double eval = exp.evaluate(EvaluationType.REAL, cm);
 
-      // 5. Final Output Formatting
-      if (eval.isNaN || eval.isInfinite) return 'Error';
+      // Agar division by zero jaisi koi infinity value aa jaye
+      if (eval.isNaN || eval.isInfinite) return 'Expression error';
 
-      // Decimal ke baad extra zeros hatane ke liye
+      // Final Output Formatting
       if (eval == eval.toInt()) {
         return eval.toInt().toString();
       }
       return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
 
     } catch (e) {
-      // Agar formula incomplete hai, toh purana result hi dikhao
+      // 3. FINAL CHECK: Agar user ne '=' dabaya hai aur error aayi, toh Error dikhao
+      if (isFinalCall) {
+        return 'Expression error';
+      }
+      // Warna typing ke waqt purana result hi screen par chhod do
       return result;
     }
   }
@@ -370,10 +436,31 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           );
           isEvaluated = false;
         }
+      // } else if (key == '=') {
+      //   if (_equationController.text.isNotEmpty) {
+      //     String finalResult = _calculateResult(_equationController.text);
+      //     if (finalResult.isNotEmpty && finalResult != 'Error') {
+      //       result = finalResult;
+      //       isEvaluated = true;
+      //     }
+      //   }
+      // } else {
+      //   if (isEvaluated) {
+      //     if (isOperator) {
+      //       _equationController.text = result + inputKey;
+      //       _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+      //     } else {
+      //       _equationController.text = inputKey;
+      //       _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
+      //     }
+      //     isEvaluated = false;
+      //   } else {
+
       } else if (key == '=') {
         if (_equationController.text.isNotEmpty) {
-          String finalResult = _calculateResult(_equationController.text);
-          if (finalResult.isNotEmpty && finalResult != 'Error') {
+          // NAYA LOGIC: Yahan isFinalCall ko true pass kiya hai
+          String finalResult = _calculateResult(_equationController.text, isFinalCall: true);
+          if (finalResult.isNotEmpty) {
             result = finalResult;
             isEvaluated = true;
           }
@@ -381,14 +468,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       } else {
         if (isEvaluated) {
           if (isOperator) {
-            _equationController.text = result + inputKey;
-            _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+            // NAYA LOGIC: Agar "Expression error" aaya hai aur uske baad + dabaya toh error clear ho jayega
+            if (result == 'Expression error') {
+              _equationController.text = inputKey;
+              _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
+            } else {
+              _equationController.text = result + inputKey;
+              _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+            }
           } else {
             _equationController.text = inputKey;
             _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
           }
           isEvaluated = false;
         } else {
+          // ... (Aapka Duplicate / Replace Operator aur baaki Normal Insertion ka logic yahan bilkul same rahega) ...
           // Duplicate / Replace Operator Logic
           String before = _equationController.text.substring(0, cursorPos);
           String after = _equationController.text.substring(cursorPos);
