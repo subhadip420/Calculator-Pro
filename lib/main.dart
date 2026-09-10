@@ -888,9 +888,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           child: Row(
                             children: [
                               if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('^')),
-                              CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('7')),
-                              CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('8')),
-                              CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('9')),
+                              CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('7')),
+                              CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('8')),
+                              CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('9')),
                               CalculatorButton(text: '×', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('×')),
                             ],
                           ),
@@ -899,9 +899,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           child: Row(
                             children: [
                               if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('√(')),
-                              CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('4')),
-                              CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('5')),
-                              CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('6')),
+                              CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('4')),
+                              CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('5')),
+                              CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('6')),
                               CalculatorButton(text: '−', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('-')),
                             ],
                           ),
@@ -910,9 +910,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           child: Row(
                             children: [
                               if (isScientific) CalculatorButton(text: 'π', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('π')),
-                              CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('1')),
-                              CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('2')),
-                              CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('3')),
+                              CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('1')),
+                              CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('2')),
+                              CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('3')),
                               CalculatorButton(text: '+', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('+')),
                             ],
                           ),
@@ -921,9 +921,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           child: Row(
                             children: [
                               if (isScientific) CalculatorButton(text: 'e', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('e')),
-                              CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('00')),
-                              CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('0')),
-                              CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, onTap: () => _onKeyPress('.')),
+                              CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('00')),
+                              CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('0')),
+                              CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('.')),
                               CalculatorButton(text: '=', textColor: white, bgColor: orangeColor, fontSize: 30, onTap: () => _onKeyPress('=')),
                             ],
                           ),
