@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:math_expressions/math_expressions.dart';
@@ -917,7 +918,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           Row(
             children: [
               ActionButton(
-                text: 'Σ',
+                // text: 'Σ',
+                icon: Icons.functions_rounded,
                 contentColor: isScientific ? const Color(0xFF003640) : textGrey,
                 bgColor: isScientific ? cyanColor : surfaceColor.withOpacity(0.5),
                 boxShadow: isScientific ? [BoxShadow(color: cyanColor.withOpacity(0.5), blurRadius: 15)] : [],
@@ -942,10 +944,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
               const SizedBox(width: 8),
               ActionButton(
-                icon: Icons.more_vert,
+                icon: Icons.settings_outlined,
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+                },
               ),
             ],
           ),
