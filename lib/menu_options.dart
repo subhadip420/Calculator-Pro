@@ -2,16 +2,53 @@ import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'action_button.dart'; // NAYA: Aapke custom ActionButton ko import kiya
 
-class MenuOptions extends StatelessWidget {
+// 1. NAYA: StatelessWidget se StatefulWidget me convert kiya taaki scroll track kar sakein
+class MenuOptions extends StatefulWidget {
   final VoidCallback onClose;
 
   const MenuOptions({super.key, required this.onClose});
 
+  @override
+  State<MenuOptions> createState() => _MenuOptionsState();
+}
+
+class _MenuOptionsState extends State<MenuOptions> {
   // Main screen wale same theme colors yahan define kiye
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
+
+  // 2. NAYA: Scroll tracking ke liye variables
+  late ScrollController _scrollController;
+  bool _showTopSearch = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+
+    // NAYA: Scroll Listener - Check karta hai ki kitna scroll hua hai
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 80 && !_showTopSearch) {
+        // Agar 80px se zyada scroll ho gaya toh top search button dikhao
+        setState(() {
+          _showTopSearch = true;
+        });
+      } else if (_scrollController.offset <= 80 && _showTopSearch) {
+        // Upar aane par wapas hide kar do
+        setState(() {
+          _showTopSearch = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +70,48 @@ class MenuOptions extends StatelessWidget {
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
                     onTap: () {
-                      // NAYA: Settings Page open karega
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
                     },
                   ),
 
+                  const SizedBox(width: 16),
+
                   // Center: Title
-                  const Text(
-                    'More Options', // NAYA TITLE
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  const Expanded( // Expanded ki wajah se Back button automatically right me chala jayega
+                    child: Text(
+                      'Tools & Converters',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
+
+                  // 3. NAYA: Conditional Search Button (Sirf scroll karne par dikhega)
+                  if (_showTopSearch) ...[
+                    ActionButton(
+                      icon: Icons.search_rounded,
+                      contentColor: textGrey,
+                      bgColor: surfaceColor.withOpacity(0.5),
+                      onTap: () {
+                        // Jab tap hoga toh smoothly wapas top par scroll kar dega
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8), // Search aur Back ke beech gap
+                  ],
 
                   // Right: Back Button (Ab ActionButton use ho raha hai)
                   ActionButton(
                     icon: Icons.arrow_forward_ios_rounded,
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
-                    onTap: onClose, // Back dabaate hi menu slide wapas ho jayega
+                    onTap: widget.onClose, // widget.onClose kyunki ye StatefulWidget hai
                   ),
                 ],
               ),
@@ -58,6 +120,7 @@ class MenuOptions extends StatelessWidget {
             // --- 2. SCROLLABLE CONTENT ---
             Expanded(
               child: SingleChildScrollView(
+                controller: _scrollController, // NAYA: Controller attach kiya
                 physics: const BouncingScrollPhysics(), // Premium smooth scroll
                 padding: const EdgeInsets.fromLTRB(18, 5, 18, 14),
                 child: Column(
@@ -66,17 +129,17 @@ class MenuOptions extends StatelessWidget {
                     // Search Bar Widget Call kiya
                     _buildSearchBar(),
 
-                    const SizedBox(height: 14), // Dono ke beech ka gap
+                    const SizedBox(height: 14),
                     // Favourite Card Widget Call kiya
                     _buildFavouriteCard(),
 
-                    const SizedBox(height: 14), // Naya gap Favourite aur next items ke beech
-                    // --- CATEGORY TEXT ---
-                    // --- CARD VIEW WALA SECTION ---
+                    const SizedBox(height: 14),
+
+                    // --- CARD VIEW WALA SECTION 1 ---
                     Container(
                       padding: const EdgeInsets.only(top: 12.0, left: 10.0, right: 10.0, bottom: 0),
                       decoration: BoxDecoration(
-                        color: surfaceColor.withOpacity(0.2), // Outer Card Background
+                        color: surfaceColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
@@ -87,7 +150,7 @@ class MenuOptions extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
                             child: Text(
-                              'Unit Converters', // Category Title
+                              'Unit Converters',
                               style: TextStyle(
                                 color: textGrey.withOpacity(0.7),
                                 fontSize: 13,
@@ -97,12 +160,91 @@ class MenuOptions extends StatelessWidget {
                             ),
                           ),
 
-                          // Naya Menu Item
-                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Length', 'Convert length'),
+                          // Menu Items
+                          _buildMenuItem(
+                            'assets/images/percentage-discount-symbol.png',
+                            'Length',
+                            'Meters, inches, feet & more',
+                          ),
+                          _buildMenuItem(
+                            'assets/images/percentage-discount-symbol.png',
+                            'Weight & Mass',
+                            'Kilograms, pounds, ounces...',
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Area',
+                              'Square meters, acres, hectares...'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Volume',
+                              'Liters, gallons, cubic meters...'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Temperature',
+                              'Celsius, Fahrenheit, Kelvin'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Speed',
+                              'km/h, mph, knots & more'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Pressure',
+                              'Pascal, bar, psi, atm...'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Energy',
+                              'Joules, calories, kWh...'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Power',
+                              'Watts, kilowatts, horsepower...'
+                          ),
+                          _buildMenuItem(
+                              'assets/images/percentage-discount-symbol.png',
+                              'Data Storage',
+                              'Bytes, MB, GB, TB, PB...'
+                          ),
+                        ],
+                      ),
+                    ),
 
-                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Length', 'Convert length'),
+                    const SizedBox(height: 14),
 
-                          // Agar aur unit converters add karne ho toh unhe yahan niche add kar sakte hain
+                    // --- CARD VIEW WALA SECTION 2 ---
+                    Container(
+                      padding: const EdgeInsets.only(top: 12.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: surfaceColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // --- CATEGORY TEXT ---
+                          Padding(
+                            padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
+                            child: Text(
+                              'Other Tools', // Naya Category Title
+                              style: TextStyle(
+                                color: textGrey.withOpacity(0.7),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+
+                          // Menu Items
+                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Discount', 'Calculate discounts'),
+                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'EMI Calculator', 'Loan & Mortgage'),
                         ],
                       ),
                     ),
@@ -120,7 +262,7 @@ class MenuOptions extends StatelessWidget {
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: surfaceColor.withOpacity(0.4), // Card background
+        color: surfaceColor.withOpacity(0.4),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
@@ -132,7 +274,6 @@ class MenuOptions extends StatelessWidget {
           hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
           prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
           border: InputBorder.none,
-          // Default line hide karne ke liye
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),
       ),
@@ -151,16 +292,13 @@ class MenuOptions extends StatelessWidget {
       child: Row(
         children: [
           const Icon(Icons.star_rounded, color: Colors.orangeAccent, size: 24),
-          // Star Icon
           const SizedBox(width: 16),
           const Text(
             'Favourite',
             style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const Spacer(),
-          // Isse baaki space khali rahegi
           Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
-          // Right Arrow (Optional premium look)
         ],
       ),
     );
@@ -169,33 +307,31 @@ class MenuOptions extends StatelessWidget {
   // Stylish Menu Item Design (Image + Card View)
   Widget _buildMenuItem(String imagePath, String title, String subtitle) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0), // Cards ke beech ka gap
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          color: surfaceColor.withOpacity(0.4), // Main Card Background
+          color: surfaceColor.withOpacity(0.4),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.05)), // Premium border
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
         ),
         child: Row(
           children: [
             // Image Box
             Image.asset(
-              imagePath, // Yahan aapki asset image aayegi
+              imagePath,
               width: 50,
               height: 50,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
-                // Fallback icon in case image is missing
                 return const Icon(Icons.image_not_supported, color: Colors.white54, size: 30);
               },
             ),
 
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
 
             // Text Content
             Expanded(
-              // Expanded zaroori hai taaki lamba text screen se bahar na jaye
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -209,7 +345,7 @@ class MenuOptions extends StatelessWidget {
               ),
             ),
 
-            // Right Arrow (Premium Card Look ke liye)
+            // Right Arrow
             Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
           ],
         ),
