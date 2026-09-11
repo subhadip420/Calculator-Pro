@@ -353,463 +353,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: bgColor,
-  //     body: SafeArea(
-  //       // 1. MASTER ANIMATION: Pura layout smoothly shift hoga
-  //       child: TweenAnimationBuilder<double>(
-  //         duration: const Duration(milliseconds: 300),
-  //         curve: Curves.easeOutCubic,
-  //         tween: Tween<double>(
-  //           // Scientific mode par flex 200, normal mode par 300
-  //           end: isScientific ? 200.0 : 300.0,
-  //         ),
-  //         builder: (context, topFlex, child) {
-  //           return Column(
-  //             children: [
-  //               // Top Bar
-  //               _buildTopBar(),
-  //
-  //               // Flexible and Dynamic Edit Text Section
-  //               Expanded(
-  //                 // 2. SMOOTH FLEX: 300 se 200 smoothly shift hoga
-  //                 flex: topFlex.toInt(),
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(10.0),
-  //                   child: Card(
-  //                     color: surfaceColor.withOpacity(0.3),
-  //                     elevation: 0,
-  //                     shape: RoundedRectangleBorder(
-  //                       borderRadius: BorderRadius.circular(24),
-  //                       side: BorderSide(color: Colors.white.withOpacity(0.05)),
-  //                     ),
-  //                     child: Padding(
-  //                       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-  //                       child: Column(
-  //                         mainAxisAlignment: MainAxisAlignment.end,
-  //                         crossAxisAlignment: CrossAxisAlignment.end,
-  //                         children: [
-  //                           // 1. Input Section
-  //                           Expanded(
-  //                             child: Align(
-  //                               alignment: Alignment.bottomRight,
-  //                               child: Row(
-  //                                 mainAxisAlignment: MainAxisAlignment.end,
-  //                                 children: [
-  //                                   Expanded(
-  //                                     child: TweenAnimationBuilder<double>(
-  //                                       duration: const Duration(milliseconds: 250),
-  //                                       curve: Curves.easeOutCubic,
-  //                                       tween: Tween<double>(end: _getDynamicFontSize()),
-  //                                       builder: (context, animatedSize, child) {
-  //                                         return TextField(
-  //                                           controller: _equationController,
-  //                                           focusNode: _focusNode,
-  //                                           scrollController: _scrollController,
-  //                                           readOnly: true,
-  //                                           showCursor: !isEvaluated,
-  //                                           cursorColor: cyanColor,
-  //                                           cursorWidth: 3,
-  //                                           cursorHeight: animatedSize + 4,
-  //                                           textAlign: TextAlign.right,
-  //                                           // FIX: Comment hata kar maxLines zaroor add karein
-  //                                           maxLines: 1,
-  //                                           minLines: 1,
-  //                                           style: TextStyle(color: white, fontSize: animatedSize),
-  //                                           decoration: const InputDecoration(
-  //                                             border: InputBorder.none,
-  //                                             isDense: true,
-  //                                             contentPadding: EdgeInsets.zero,
-  //                                           ),
-  //                                           onTap: () {
-  //                                             FocusScope.of(context).requestFocus(_focusNode);
-  //                                           },
-  //                                         );
-  //                                       },
-  //                                     ),
-  //                                   ),
-  //                                   // if (isEvaluated && _equationController.text.isNotEmpty) ...[
-  //                                   //   const SizedBox(width: 4),
-  //                                   //   const Text(
-  //                                   //     '=',
-  //                                   //     style: TextStyle(color: Color(0xFFFFDCBF), fontSize: 22, fontWeight: FontWeight.bold),
-  //                                   //   ),
-  //                                   // ]
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                           ),
-  //
-  //                           // 2. Result Section
-  //                           if (result.isNotEmpty)
-  //                             FittedBox(
-  //                               fit: BoxFit.scaleDown,
-  //                               alignment: Alignment.centerRight,
-  //                               child: TweenAnimationBuilder<double>(
-  //                                 duration: const Duration(milliseconds: 250),
-  //                                 curve: Curves.easeOutCubic,
-  //                                 tween: Tween<double>(
-  //                                   end: isEvaluated ? (isScientific ? 46.0 : 64.0) : (isScientific ? 24.0 : 32.0),
-  //                                 ),
-  //                                 builder: (context, animatedResultSize, child) {
-  //                                   return Text(
-  //                                     result,
-  //                                     style: TextStyle(
-  //                                       fontSize: animatedResultSize,
-  //                                       fontWeight: isEvaluated ? FontWeight.w300 : FontWeight.normal,
-  //                                       color: isEvaluated ? Colors.white : Colors.white.withOpacity(0.8),
-  //                                     ),
-  //                                   );
-  //                                 },
-  //                               ),
-  //                             ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //
-  //               // Responsive Keypad Area
-  //               Expanded(
-  //                 // 3. KEYPAD SMOOTH FLEX: 700 - topFlex (matlab 400 se 500 shift hoga)
-  //                 flex: 700 - topFlex.toInt(),
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-  //                   child: Column(
-  //                     children: [
-  //                       if (isScientific) ...[
-  //                         Expanded(
-  //                           child: Row(
-  //                             children: [
-  //                               CalculatorButton(
-  //                                 text: 'log10',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('log10('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'sin',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('sin('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'cos',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('cos('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'tan',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('tan('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'ln',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('ln('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'deg',
-  //                                 textColor: cyanColor,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('deg'),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                         Expanded(
-  //                           child: Row(
-  //                             children: [
-  //                               CalculatorButton(
-  //                                 text: 'log2',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('log2('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'x²',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('²'),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: '(',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('('),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: ')',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress(')'),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'rad',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('rad'),
-  //                               ),
-  //                               CalculatorButton(
-  //                                 text: 'Inv',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('Inv'),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ],
-  //                       Expanded(
-  //                         child: Row(
-  //                           children: [
-  //                             if (isScientific)
-  //                               CalculatorButton(
-  //                                 text: 'x!',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('!'),
-  //                               ),
-  //                             CalculatorButton(
-  //                               text: 'AC',
-  //                               textColor: Colors.orangeAccent,
-  //                               bgColor: surfaceColor,
-  //                               onTap: () => _onKeyPress('AC'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '%',
-  //                               textColor: cyanColor,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 18,
-  //                               onTap: () => _onKeyPress('%'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               icon: Icons.backspace_outlined,
-  //                               textColor: cyanColor,
-  //                               bgColor: surfaceColor,
-  //                               onTap: () => _onKeyPress('BACK'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '÷',
-  //                               textColor: white,
-  //                               bgColor: orangeColor.withOpacity(0.15),
-  //                               fontSize: 30,
-  //                               onTap: () => _onKeyPress('÷'),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         child: Row(
-  //                           children: [
-  //                             if (isScientific)
-  //                               CalculatorButton(
-  //                                 text: 'xʸ',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('^'),
-  //                               ),
-  //                             CalculatorButton(
-  //                               text: '7',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('7'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '8',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('8'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '9',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('9'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '×',
-  //                               textColor: white,
-  //                               bgColor: orangeColor.withOpacity(0.15),
-  //                               fontSize: 30,
-  //                               onTap: () => _onKeyPress('×'),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         child: Row(
-  //                           children: [
-  //                             if (isScientific)
-  //                               CalculatorButton(
-  //                                 text: '√x',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('√'),
-  //                               ),
-  //                             CalculatorButton(
-  //                               text: '4',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('4'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '5',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('5'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '6',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('6'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '−',
-  //                               textColor: white,
-  //                               bgColor: orangeColor.withOpacity(0.15),
-  //                               fontSize: 30,
-  //                               onTap: () => _onKeyPress('-'),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         child: Row(
-  //                           children: [
-  //                             if (isScientific)
-  //                               CalculatorButton(
-  //                                 text: 'π',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('π'),
-  //                               ),
-  //                             CalculatorButton(
-  //                               text: '1',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('1'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '2',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('2'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '3',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('3'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '+',
-  //                               textColor: white,
-  //                               bgColor: orangeColor.withOpacity(0.15),
-  //                               fontSize: 30,
-  //                               onTap: () => _onKeyPress('+'),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         child: Row(
-  //                           children: [
-  //                             if (isScientific)
-  //                               CalculatorButton(
-  //                                 text: 'e',
-  //                                 textColor: white,
-  //                                 bgColor: surfaceColor,
-  //                                 fontSize: 18,
-  //                                 onTap: () => _onKeyPress('e'),
-  //                               ),
-  //                             CalculatorButton(
-  //                               text: '00',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('00'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '0',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('0'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '.',
-  //                               textColor: white,
-  //                               bgColor: surfaceColor,
-  //                               fontSize: 25,
-  //                               onTap: () => _onKeyPress('.'),
-  //                             ),
-  //                             CalculatorButton(
-  //                               text: '=',
-  //                               textColor: white,
-  //                               bgColor: orangeColor,
-  //                               fontSize: 30,
-  //                               onTap: () => _onKeyPress('='),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //
-  //               // Test Banner Ad
-  //               Container(
-  //                 width: double.infinity,
-  //                 height: 50,
-  //                 color: Colors.white,
-  //                 alignment: Alignment.center,
-  //                 child: const Text(
-  //                   'Test Banner Ad (320x50)',
-  //                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-  //                 ),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -947,8 +490,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                         // 1. DATE ROW (Upar left side mein Today/Date)
                                                         Padding(
                                                           padding: const EdgeInsets.only(
-                                                            bottom: 12.0,
-                                                            top: 8.0,
+                                                            bottom: 4.0,
+                                                            top: 2.0,
                                                             left: 4.0,
                                                           ),
                                                           child: Text(
@@ -956,7 +499,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                             style: TextStyle(
                                                               color: cyanColor,
                                                               fontSize: 14,
-                                                              fontWeight: FontWeight.bold,
+                                                              //fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
                                                         ),
@@ -974,8 +517,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                             // Full width card
                                                             margin: const EdgeInsets.only(bottom: 12),
                                                             padding: const EdgeInsets.symmetric(
-                                                              horizontal: 16,
-                                                              vertical: 12,
+                                                              horizontal: 12,
+                                                              vertical: 5,
                                                             ),
                                                             decoration: BoxDecoration(
                                                               color: bgColor.withOpacity(0.5), // Inner card color
@@ -991,20 +534,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                                   child: Text(
                                                                     timePart,
                                                                     style: TextStyle(
-                                                                      color: textGrey.withOpacity(0.6),
+                                                                      color: textGrey.withOpacity(0.8),
                                                                       fontSize: 11,
                                                                     ),
                                                                   ),
                                                                 ),
 
-                                                                const SizedBox(height: 4),
+                                                                const SizedBox(height: 0),
                                                                 // Equation (Font chhota kiya - 16)
                                                                 Text(
                                                                   item['equation'] ?? '',
                                                                   style: TextStyle(color: textGrey, fontSize: 16),
                                                                 ),
 
-                                                                const SizedBox(height: 4),
+                                                                const SizedBox(height: 0),
                                                                 // Result (Font chhota kiya - 20)
                                                                 Text(
                                                                   item['result'] ?? '',
@@ -1026,7 +569,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
                                         // 4. BOTTOM HINT TEXT
                                         Padding(
-                                          padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
+                                          padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
                                           child: Text(
                                             'Swipe for options',
                                             style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12),
@@ -1558,24 +1101,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ),
           Row(
             children: [
-              // ActionButton(
-              //   icon: Icons.history,
-              //   contentColor: textGrey,
-              //   bgColor: surfaceColor.withOpacity(0.5),
-              //   onTap: () {},
-              // ),
-              ActionButton(
-                icon: Icons.history,
-                // Agar open hai toh cyan color dikhega, warna grey
-                contentColor: isHistoryOpen ? cyanColor : textGrey,
-                bgColor: isHistoryOpen ? cyanColor.withOpacity(0.1) : surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  setState(() {
-                    isHistoryOpen = !isHistoryOpen; // NAYA: History Toggle Logic
-                  });
-                },
-              ),
-              const SizedBox(width: 8),
               ActionButton(
                 text: 'Σ',
                 contentColor: isScientific ? const Color(0xFF003640) : textGrey,
@@ -1584,6 +1109,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 onTap: () {
                   setState(() {
                     isScientific = !isScientific;
+                  });
+                },
+              ),
+              const SizedBox(width: 8),
+              ActionButton(
+                icon: Icons.history,
+                // Agar open hai toh cyan color dikhega, warna grey
+                contentColor: isHistoryOpen ? cyanColor : textGrey,
+                bgColor: isHistoryOpen ? cyanColor.withOpacity(0.1) : surfaceColor.withOpacity(0.5),
+                onTap: () {
+                  setState(() {
+                    isHistoryOpen = !isHistoryOpen; // NAYA: History Toggle Logic
                   });
                 },
               ),
