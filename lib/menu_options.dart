@@ -180,22 +180,15 @@ class MenuOptions extends StatelessWidget {
         child: Row(
           children: [
             // Image Box
-            Container(
-              //padding: const EdgeInsets.all(5),
-              // decoration: BoxDecoration(
-              //   color: surfaceColor.withOpacity(0.8), // Image ke piche ka background
-              //   borderRadius: BorderRadius.circular(12),
-              // ),
-              child: Image.asset(
-                imagePath, // Yahan aapki asset image aayegi
-                width: 50,
-                height: 50,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  // Fallback icon in case image is missing
-                  return const Icon(Icons.image_not_supported, color: Colors.white54, size: 30);
-                },
-              ),
+            Image.asset(
+              imagePath, // Yahan aapki asset image aayegi
+              width: 50,
+              height: 50,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback icon in case image is missing
+                return const Icon(Icons.image_not_supported, color: Colors.white54, size: 30);
+              },
             ),
 
             const SizedBox(width: 16),
