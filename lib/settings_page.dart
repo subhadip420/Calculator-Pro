@@ -1,14 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPreferences import kiya
 import 'action_button.dart';
 
-class SettingsPage extends StatelessWidget {
+// NAYA: StatefulWidget banaya taaki toggle state update ho sake
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   // Main screen wale same theme colors
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
+
+  // Toggle ke liye variable
+  bool _isHapticsEnabled = true; // Default ON rahega
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHapticsSetting(); // App khulte hi setting load hogi
+  }
+
+  // SharedPreferences se load karne ka function
+  Future<void> _loadHapticsSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+    });
+  }
+
+  // SharedPreferences me save karne ka function
+  Future<void> _toggleHaptics(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('haptics_enabled', value);
+    setState(() {
+      _isHapticsEnabled = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +55,29 @@ class SettingsPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 children: [
-                  // Back Button (Action Button)
+                  // Back Button
                   ActionButton(
                     icon: Icons.arrow_back_ios_new_rounded,
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
                     onTap: () {
-                      Navigator.pop(context); // Settings se wapas aane ke liye
+                      Navigator.pop(context);
                     },
                   ),
 
-                  // Title (Center aligned)
+                  const SizedBox(width: 16), // Button aur title ke beech gap
+
+                  // Title (Ab Left aligned hai)
                   const Expanded(
                     child: Text(
                       'Settings',
-                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 22, // Size thoda bada kiya premium look ke liye
                           fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
-
-                  // Dummy spacing taaki title center mein rahe
-                  const SizedBox(width: 48),
                 ],
               ),
             ),
@@ -68,15 +99,22 @@ class SettingsPage extends StatelessWidget {
                         // Action here
                       },
                     ),
+
+                    // NAYA: Haptics option with Toggle Button
                     _buildSettingsItem(
                       icon: Icons.vibration_rounded,
-                      title: 'Haptics & Sound',
-                      subtitle: 'Manage vibration feedback',
+                      title: 'Haptic Feedback', // Sound hata diya
+                      subtitle: 'Enable vibration on tap',
                       iconColor: const Color(0xFFFF9500),
-                      onTap: () {
-                        // Action here
-                      },
+                      // Custom trailing widget (Switch) bheja
+                      trailing: Switch(
+                        value: _isHapticsEnabled,
+                        activeColor: cyanColor,
+                        inactiveTrackColor: surfaceColor.withOpacity(0.8),
+                        onChanged: (value) => _toggleHaptics(value),
+                      ),
                     ),
+
                     _buildSettingsItem(
                       icon: Icons.help_outline_rounded,
                       title: 'Help & Support',
@@ -86,6 +124,7 @@ class SettingsPage extends StatelessWidget {
                         // Action here
                       },
                     ),
+
                     _buildSettingsItem(
                       icon: Icons.star_outline_rounded,
                       title: 'Rate Us',
@@ -95,6 +134,7 @@ class SettingsPage extends StatelessWidget {
                         // Action here
                       },
                     ),
+
                     _buildSettingsItem(
                       icon: Icons.info_outline_rounded,
                       title: 'About',
@@ -114,34 +154,34 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  // Settings ke Item ka Design
+  // Settings ke Item ka Design (Ab Card View me hai)
   Widget _buildSettingsItem({
     required IconData icon,
     required String title,
     required String subtitle,
     required Color iconColor,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
+    Widget? trailing, // NAYA: Custom right side widget (Arrow ya Switch ke liye)
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0), // Cards ke beech thoda gap
+      padding: const EdgeInsets.only(bottom: 12.0),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         splashColor: iconColor.withOpacity(0.1),
         highlightColor: iconColor.withOpacity(0.05),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+          // NAYA: Card Design add kiya (MenuOptions jaisa)
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: surfaceColor.withOpacity(0.4), // Premium Card Background
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
+          ),
           child: Row(
             children: [
               // Icon Box
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: surfaceColor.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(icon, color: iconColor, size: 28),
-              ),
+              Icon(icon, color: iconColor, size: 28),
               const SizedBox(width: 16),
 
               // Text Content
@@ -169,8 +209,8 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
 
-              // Right Arrow Icon
-              Icon(
+              // Right Arrow Icon ya Custom Widget (jaise Switch)
+              trailing ?? Icon(
                 Icons.arrow_forward_ios_rounded,
                 color: textGrey.withOpacity(0.3),
                 size: 16,
