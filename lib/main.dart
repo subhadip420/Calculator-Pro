@@ -7,6 +7,7 @@ import 'package:math_expressions/math_expressions.dart' hide Stack;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'calculator_button.dart';
 import 'action_button.dart';
+import 'custom_dialog.dart';
 
 void main() {
   runApp(const CalculatorProApp());
@@ -353,6 +354,36 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
 
+  // --- NAYA FUNCTION: Clear History Dialog ---
+  void _showClearHistoryDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Clear History',
+          subtitle: 'Are you sure you want to delete all your calculation history?',
+          isSingleButton: false,
+          primaryButtonText: 'Delete',
+          primaryButtonBgColor: redColor, // App ka red theme color
+          primaryButtonTextColor: bgColor, // Dark text for contrast
+          secondaryButtonText: 'Cancel',
+          onPrimaryPressed: () async {
+            // 1. Pehle Dialog ko close karein
+            Navigator.of(context).pop();
+
+            // 2. Phir History clear karne ka logic chalayein
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove('calculator_history');
+            setState(() {
+              _historyList.clear();
+              isHistoryOpen = false;
+            });
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -458,14 +489,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                               ),
                                               IconButton(
                                                 icon: Icon(Icons.delete_outline, color: redColor),
-                                                onPressed: () async {
-                                                  // Clear History Logic
-                                                  final prefs = await SharedPreferences.getInstance();
-                                                  await prefs.remove('calculator_history');
-                                                  setState(() {
-                                                    _historyList.clear();
-                                                  });
-                                                },
+                                                // onPressed: () async {
+                                                //   Clear History Logic
+                                                //   final prefs = await SharedPreferences.getInstance();
+                                                //   await prefs.remove('calculator_history');
+                                                //   setState(() {
+                                                //     _historyList.clear();
+                                                //   });
+                                                // },
+                                                onPressed: _showClearHistoryDialog,
                                               ),
                                             ],
                                           ),
@@ -1109,6 +1141,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 onTap: () {
                   setState(() {
                     isScientific = !isScientific;
+                    isHistoryOpen = false;
                   });
                 },
               ),
