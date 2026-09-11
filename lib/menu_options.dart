@@ -19,6 +19,10 @@ class _MenuOptionsState extends State<MenuOptions> {
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
 
+  // NAYA: Expand/Collapse track karne ke liye variables
+  bool _isUnitExpanded = true;
+  bool _isOtherExpanded = true;
+
   // 2. NAYA: Scroll tracking ke liye variables
   late ScrollController _scrollController;
   bool _showTopSearch = false;
@@ -133,120 +137,243 @@ class _MenuOptionsState extends State<MenuOptions> {
                     // Favourite Card Widget Call kiya
                     _buildFavouriteCard(),
 
+                    // const SizedBox(height: 14),
+                    //
+                    // // --- CATEGORY TEXT ---
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
+                    //   child: Text(
+                    //     'Unit Converters',
+                    //     style: TextStyle(
+                    //       color: Colors.cyanAccent,
+                    //       fontSize: 16,
+                    //       fontWeight: FontWeight.bold,
+                    //       letterSpacing: 1.2,
+                    //     ),
+                    //   ),
+                    // ),
+                    //
+                    // // --- CARD VIEW WALA SECTION 1 ---
+                    // Container(
+                    //   padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                    //   decoration: BoxDecoration(
+                    //     color: surfaceColor.withOpacity(0.2),
+                    //     borderRadius: BorderRadius.circular(24),
+                    //     border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    //   ),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //
+                    //
+                    //       // Menu Items
+                    //       _buildMenuItem(
+                    //         'assets/images/percentage-discount-symbol.png',
+                    //         'Length',
+                    //         'Meters, inches, feet & more',
+                    //       ),
+                    //       _buildMenuItem(
+                    //         'assets/images/percentage-discount-symbol.png',
+                    //         'Weight & Mass',
+                    //         'Kilograms, pounds, ounces...',
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Area',
+                    //           'Square meters, acres, hectares...'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Volume',
+                    //           'Liters, gallons, cubic meters...'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Temperature',
+                    //           'Celsius, Fahrenheit, Kelvin'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Speed',
+                    //           'km/h, mph, knots & more'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Pressure',
+                    //           'Pascal, bar, psi, atm...'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Energy',
+                    //           'Joules, calories, kWh...'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Power',
+                    //           'Watts, kilowatts, horsepower...'
+                    //       ),
+                    //       _buildMenuItem(
+                    //           'assets/images/percentage-discount-symbol.png',
+                    //           'Data Storage',
+                    //           'Bytes, MB, GB, TB, PB...'
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    //
+                    // const SizedBox(height: 14),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
+                    //   child: Text(
+                    //     'Other Tools',
+                    //     style: TextStyle(
+                    //       color: Colors.cyanAccent,
+                    //       fontSize: 16,
+                    //       fontWeight: FontWeight.bold,
+                    //       letterSpacing: 1.2,
+                    //     ),
+                    //   ),
+                    // ),
+                    //
+                    // // --- CARD VIEW WALA SECTION 2 ---
+                    // Container(
+                    //   padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                    //   decoration: BoxDecoration(
+                    //     color: surfaceColor.withOpacity(0.2),
+                    //     borderRadius: BorderRadius.circular(24),
+                    //     border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    //   ),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       // Menu Items
+                    //       _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Discount', 'Calculate discounts'),
+                    //       _buildMenuItem('assets/images/percentage-discount-symbol.png', 'EMI Calculator', 'Loan & Mortgage'),
+                    //     ],
+                    //   ),
+                    // ),
+
                     const SizedBox(height: 14),
 
-                    // --- CARD VIEW WALA SECTION 1 ---
-                    Container(
-                      padding: const EdgeInsets.only(top: 12.0, left: 10.0, right: 10.0, bottom: 0),
-                      decoration: BoxDecoration(
-                        color: surfaceColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // --- CATEGORY TEXT ---
-                          Padding(
-                            padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
-                            child: Text(
+                    // --- CATEGORY 1: UNIT CONVERTERS ---
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          _isUnitExpanded = !_isUnitExpanded; // Open hai to close, close hai to open
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Text left, arrow right
+                          children: [
+                            const Text(
                               'Unit Converters',
                               style: TextStyle(
-                                color: textGrey.withOpacity(0.7),
-                                fontSize: 13,
+                                color: Colors.cyanAccent,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
                               ),
                             ),
-                          ),
-
-                          // Menu Items
-                          _buildMenuItem(
-                            'assets/images/percentage-discount-symbol.png',
-                            'Length',
-                            'Meters, inches, feet & more',
-                          ),
-                          _buildMenuItem(
-                            'assets/images/percentage-discount-symbol.png',
-                            'Weight & Mass',
-                            'Kilograms, pounds, ounces...',
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Area',
-                              'Square meters, acres, hectares...'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Volume',
-                              'Liters, gallons, cubic meters...'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Temperature',
-                              'Celsius, Fahrenheit, Kelvin'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Speed',
-                              'km/h, mph, knots & more'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Pressure',
-                              'Pascal, bar, psi, atm...'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Energy',
-                              'Joules, calories, kWh...'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Power',
-                              'Watts, kilowatts, horsepower...'
-                          ),
-                          _buildMenuItem(
-                              'assets/images/percentage-discount-symbol.png',
-                              'Data Storage',
-                              'Bytes, MB, GB, TB, PB...'
-                          ),
-                        ],
+                            // Expand/Collapse Arrow Icon
+                            Icon(
+                              _isUnitExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                              color: Colors.cyanAccent,
+                              size: 24,
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+
+                    // --- CARD VIEW SECTION 1 (Smooth Animation ke sath) ---
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCubic,
+                      child: _isUnitExpanded
+                          ? Container(
+                        padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                        decoration: BoxDecoration(
+                          color: surfaceColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Length', 'Meters, inches, feet & more'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Weight & Mass', 'Kilograms, pounds, ounces...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Area', 'Square meters, acres, hectares...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Volume', 'Liters, gallons, cubic meters...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Temperature', 'Celsius, Fahrenheit, Kelvin'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Speed', 'km/h, mph, knots & more'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Pressure', 'Pascal, bar, psi, atm...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Energy', 'Joules, calories, kWh...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Power', 'Watts, kilowatts, horsepower...'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Data Storage', 'Bytes, MB, GB, TB, PB...'),
+                          ],
+                        ),
+                      )
+                          : const SizedBox.shrink(), // Agar close hai toh space zero ho jayega
                     ),
 
                     const SizedBox(height: 14),
 
-                    // --- CARD VIEW WALA SECTION 2 ---
-                    Container(
-                      padding: const EdgeInsets.only(top: 12.0, left: 10.0, right: 10.0, bottom: 0),
-                      decoration: BoxDecoration(
-                        color: surfaceColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // --- CATEGORY TEXT ---
-                          Padding(
-                            padding: const EdgeInsets.only(left: 2.0, bottom: 10.0),
-                            child: Text(
-                              'Other Tools', // Naya Category Title
+                    // --- CATEGORY 2: OTHER TOOLS ---
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          _isOtherExpanded = !_isOtherExpanded;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Other Tools',
                               style: TextStyle(
-                                color: textGrey.withOpacity(0.7),
-                                fontSize: 13,
+                                color: Colors.cyanAccent,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
                               ),
                             ),
-                          ),
-
-                          // Menu Items
-                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Discount', 'Calculate discounts'),
-                          _buildMenuItem('assets/images/percentage-discount-symbol.png', 'EMI Calculator', 'Loan & Mortgage'),
-                        ],
+                            Icon(
+                              _isOtherExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                              color: Colors.cyanAccent,
+                              size: 24,
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+
+                    // --- CARD VIEW SECTION 2 ---
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCubic,
+                      child: _isOtherExpanded
+                          ? Container(
+                        padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                        decoration: BoxDecoration(
+                          color: surfaceColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Discount', 'Calculate discounts'),
+                            _buildMenuItem('assets/images/percentage-discount-symbol.png', 'EMI Calculator', 'Loan & Mortgage'),
+                          ],
+                        ),
+                      )
+                          : const SizedBox.shrink(),
                     ),
                   ],
                 ),
