@@ -58,55 +58,34 @@ class MenuOptions extends StatelessWidget {
               ),
             ),
 
-            // --- 2. SCROLLABLE CONTENT ---
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(), // Premium smooth scroll
+              child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Menu Items
-                    _buildMenuItem(
-                      Icons.palette_outlined,
-                      'Theme Settings',
-                      'Change app colors & look',
-                      cyanColor, // Aapka theme cyan color
-                    ),
-                    _buildMenuItem(
-                      Icons.vibration_rounded,
-                      'Haptics & Sound',
-                      'Manage vibration feedback',
-                      const Color(0xFFFF9500),
-                    ),
-                    _buildMenuItem(
-                      Icons.help_outline_rounded,
-                      'Help & Support',
-                      'Learn how to use features',
-                      Colors.greenAccent,
-                    ),
-                    _buildMenuItem(
-                      Icons.star_outline_rounded,
-                      'Rate Us',
-                      'Love Calculator Pro?',
-                      Colors.yellow,
-                    ),
-                    _buildMenuItem(
-                      Icons.info_outline_rounded,
-                      'About',
-                      'Version 1.0.0',
-                      textGrey,
-                    ),
-
-                    // Scroll hint at the bottom
-                    const SizedBox(height: 80),
-                    Center(
-                      child: Text(
-                        'Swipe left or tap Back to return',
-                        style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12),
+                    // Search Bar Card View
+                    Container(
+                      decoration: BoxDecoration(
+                        color: surfaceColor.withOpacity(0.4), // Card background
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        cursorColor: cyanColor,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
+                          prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
+                          border: InputBorder.none, // Default line hide karne ke liye
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 100),
+
+                    const SizedBox(height: 24),
+
                   ],
                 ),
               ),
