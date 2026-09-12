@@ -86,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,13 +115,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
 
+                    // Share App
                     _buildSettingsItem(
-                      icon: Icons.help_outline_rounded,
-                      title: 'Help & Support',
-                      subtitle: 'Learn how to use features',
-                      iconColor: Colors.greenAccent,
+                      icon: Icons.share_rounded,
+                      title: 'Share App',
+                      subtitle: 'Share Calculator Pro with friends',
+                      iconColor: Colors.blueAccent, // Share ke liye blue color
                       onTap: () {
-                        // Action here
+                        // Action here (Baad mein share package add karenge)
                       },
                     ),
 
@@ -132,6 +133,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       iconColor: Colors.yellow,
                       onTap: () {
                         // Action here
+                      },
+                    ),
+
+                    _buildSettingsItem(
+                      icon: Icons.help_outline_rounded,
+                      title: 'Help & Support',
+                      subtitle: 'Learn how to use features',
+                      iconColor: Colors.greenAccent,
+                      onTap: () {
+                        // Action here
+                      },
+                    ),
+
+                    // Privacy Policy
+                    _buildSettingsItem(
+                      icon: Icons.privacy_tip_outlined, // Privacy ke liye shield/tip icon
+                      title: 'Privacy Policy',
+                      subtitle: 'Read our terms & policies',
+                      iconColor: Colors.tealAccent, // Privacy ke liye teal color
+                      onTap: () {
+                        // Action here (Baad mein link open karne ka code likhenge)
                       },
                     ),
 
@@ -172,7 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
         highlightColor: iconColor.withOpacity(0.05),
         child: Container(
           // NAYA: Card Design add kiya (MenuOptions jaisa)
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
           decoration: BoxDecoration(
             color: surfaceColor.withOpacity(0.4), // Premium Card Background
             borderRadius: BorderRadius.circular(16),
@@ -193,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title,
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600
                       ),
                     ),
