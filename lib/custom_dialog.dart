@@ -4,6 +4,7 @@ class CustomDialog extends StatelessWidget {
   // Texts
   final String title;
   final String? subtitle;
+  final Widget? customContent;
   final bool isSingleButton;
   final String primaryButtonText;
   final String? secondaryButtonText;
@@ -31,6 +32,7 @@ class CustomDialog extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.customContent,
     this.isSingleButton = false,
     required this.primaryButtonText,
     this.secondaryButtonText,
@@ -90,6 +92,11 @@ class CustomDialog extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+            ],
+
+            if (customContent != null) ...[
+              const SizedBox(height: 8),
+              customContent!, // Ye hamara clickable email yahan dikhayega
             ],
 
             const SizedBox(height: 24),
