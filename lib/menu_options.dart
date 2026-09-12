@@ -1,5 +1,7 @@
 import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'action_button.dart'; // NAYA: Aapke custom ActionButton ko import kiya
 
 // 1. NAYA: StatelessWidget se StatefulWidget me convert kiya taaki scroll track kar sakein
@@ -26,12 +28,13 @@ class _MenuOptionsState extends State<MenuOptions> {
   // 2. NAYA: Scroll tracking ke liye variables
   late ScrollController _scrollController;
   bool _showTopSearch = false;
+  bool _isHapticsEnabled = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-
+    _loadHapticsSetting();
     // NAYA: Scroll Listener - Check karta hai ki kitna scroll hua hai
     _scrollController.addListener(() {
       if (_scrollController.offset > 80 && !_showTopSearch) {
@@ -54,6 +57,13 @@ class _MenuOptionsState extends State<MenuOptions> {
     super.dispose();
   }
 
+  Future<void> _loadHapticsSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,6 +84,9 @@ class _MenuOptionsState extends State<MenuOptions> {
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
                     onTap: () {
+                      if (_isHapticsEnabled) {
+                        HapticFeedback.lightImpact(); // Halka sa premium vibration
+                      }
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
                     },
                   ),
@@ -115,7 +128,12 @@ class _MenuOptionsState extends State<MenuOptions> {
                     icon: Icons.arrow_forward_ios_rounded,
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
-                    onTap: widget.onClose, // widget.onClose kyunki ye StatefulWidget hai
+                    onTap:(){
+                      if (_isHapticsEnabled) {
+                        HapticFeedback.lightImpact(); // Halka sa premium vibration
+                      }
+                      widget.onClose();
+                    }// widget.onClose kyunki ye StatefulWidget hai
                   ),
                 ],
               ),

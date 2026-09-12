@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 //import 'package:math_expressions/math_expressions.dart';
@@ -47,6 +48,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   bool isScientific = false;
   bool isEvaluated = false;
   bool isDegreeMode = true;
+  bool _isHapticsEnabled = true; // NAYA: Haptic check karne ke liye
 
   bool isHistoryOpen = false; // NAYA: History panel state
   List<String> _historyList = []; // NAYA: History data store karne ke liye
@@ -86,6 +88,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     super.initState();
     _loadHistory();
     _loadAd();
+    _loadHapticsSetting();
     // Screen open hote hi cursor show karne ke liye
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -117,6 +120,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _historyList = prefs.getStringList('calculator_history') ?? [];
+    });
+  }
+
+  Future<void> _loadHapticsSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
     });
   }
 
@@ -229,6 +239,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   // --- Button Press Handler Update ---
   void _onKeyPress(String key) {
+
+    if (_isHapticsEnabled) {
+      HapticFeedback.selectionClick(); // Halka sa premium vibration
+    }
+
     if (!_focusNode.hasFocus) {
       FocusScope.of(context).requestFocus(_focusNode);
     }
@@ -941,6 +956,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 contentColor: isMenuOpen ? cyanColor : textGrey,
                 bgColor: isMenuOpen ? cyanColor.withOpacity(0.1) : surfaceColor.withOpacity(0.5),
                 onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
                   setState(() {
                     isMenuOpen = !isMenuOpen;
                     // NAYA: Pura screen width lega
@@ -953,7 +971,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 icon: Icons.picture_in_picture_alt,
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {},
+                onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
+                },
               ),
             ],
           ),
@@ -966,6 +988,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 bgColor: isScientific ? cyanColor : surfaceColor.withOpacity(0.5),
                 boxShadow: isScientific ? [BoxShadow(color: cyanColor.withOpacity(0.5), blurRadius: 15)] : [],
                 onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
                   setState(() {
                     isScientific = !isScientific;
                     isHistoryOpen = false;
@@ -979,6 +1004,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 contentColor: isHistoryOpen ? cyanColor : textGrey,
                 bgColor: isHistoryOpen ? cyanColor.withOpacity(0.1) : surfaceColor.withOpacity(0.5),
                 onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
                   setState(() {
                     isHistoryOpen = !isHistoryOpen; // NAYA: History Toggle Logic
                   });
@@ -990,6 +1018,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
                 onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
                 },
               ),

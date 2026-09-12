@@ -1,5 +1,6 @@
 import 'package:calculator_pro/privacy_policy_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPreferences import kiya
 import 'package:url_launcher/url_launcher.dart';
 import 'action_button.dart';
@@ -64,6 +65,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     contentColor: textGrey,
                     bgColor: surfaceColor.withOpacity(0.5),
                     onTap: () {
+                      if (_isHapticsEnabled) {
+                        HapticFeedback.lightImpact(); // Halka sa premium vibration
+                      }
                       Navigator.pop(context);
                     },
                   ),
@@ -99,7 +103,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Change app colors & look',
                       iconColor: cyanColor,
                       onTap: () {
-                        // Action here
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
+                        // "Coming Soon" Dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                              title: 'Coming Soon!',
+                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                              isSingleButton: true,
+                              primaryButtonText: 'Okay',
+                              onPrimaryPressed: () {
+                                if (_isHapticsEnabled) {
+                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                }
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
 
@@ -125,7 +149,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Share Calculator Pro with friends',
                       iconColor: Colors.blueAccent, // Share ke liye blue color
                       onTap: () {
-                        // Action here (Baad mein share package add karenge)
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
+                        // "Coming Soon" Dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                              title: 'Coming Soon!',
+                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                              isSingleButton: true,
+                              primaryButtonText: 'Okay',
+                              onPrimaryPressed: () {
+                                if (_isHapticsEnabled) {
+                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                }
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
 
@@ -135,7 +179,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Love Calculator Pro?',
                       iconColor: Colors.yellow,
                       onTap: () {
-                        // Action here
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
+                        // "Coming Soon" Dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                              title: 'Coming Soon!',
+                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                              isSingleButton: true,
+                              primaryButtonText: 'Okay',
+                              onPrimaryPressed: () {
+                                if (_isHapticsEnabled) {
+                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                }
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
 
@@ -145,6 +209,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Learn how to use features',
                       iconColor: Colors.greenAccent,
                       onTap: () {
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -185,6 +252,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               isSingleButton: true,
                               primaryButtonText: 'Close',
                               onPrimaryPressed: () {
+                                if (_isHapticsEnabled) {
+                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                }
                                 Navigator.of(context).pop();
                               },
                             );
@@ -200,6 +270,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Read our terms & policies',
                       iconColor: Colors.tealAccent, // Privacy ke liye teal color
                       onTap: () {
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
                         // NAYA: Click karte hi Privacy Policy page open hoga
                         Navigator.push(
                           context,
@@ -214,6 +287,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Version 1.0.0',
                       iconColor: textGrey,
                       onTap: () {
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        }
                         // NAYA: About par click karte hi Custom Dialog open hoga
                         showDialog(
                           context: context,
@@ -224,6 +300,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               isSingleButton: true, // Aapki requirement: Single button
                               primaryButtonText: 'Got it',
                               onPrimaryPressed: () {
+                                if (_isHapticsEnabled) {
+                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                }
                                 Navigator.of(context).pop(); // Button click par dialog band ho jayega
                               },
                             );
