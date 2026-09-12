@@ -71,6 +71,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   BannerAd? _bannerAd;
   bool _isLoaded = false;
+
   // Google Test Ad Unit ID (Android ke liye)
   final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
 
@@ -239,7 +240,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   // --- Button Press Handler Update ---
   void _onKeyPress(String key) {
-
     if (_isHapticsEnabled) {
       HapticFeedback.selectionClick(); // Halka sa premium vibration
     }
@@ -417,8 +417,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           subtitle: 'Are you sure you want to delete all your calculation history?',
           isSingleButton: false,
           primaryButtonText: 'Delete',
-          primaryButtonBgColor: redColor, // App ka red theme color
-          primaryButtonTextColor: bgColor, // Dark text for contrast
+          primaryButtonBgColor: redColor,
+          // App ka red theme color
+          primaryButtonTextColor: bgColor,
+          // Dark text for contrast
           secondaryButtonText: 'Cancel',
           onPrimaryPressed: () async {
             // 1. Pehle Dialog ko close karein
@@ -445,283 +447,166 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         child: Column(
           children: [
             // 1. HORIZONTAL SLIDER (Menu Side-by-Side Slide Hoga)
-        // 1. HORIZONTAL SLIDER (Full Screen Menu Side-by-Side)
-        Expanded(
-        child: Builder(
-        builder: (context) {
-          // NAYA: Phone ki exact width calculate kar rahe hain
-          double screenWidth = MediaQuery.of(context).size.width;
+            // 1. HORIZONTAL SLIDER (Full Screen Menu Side-by-Side)
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  // NAYA: Phone ki exact width calculate kar rahe hain
+                  double screenWidth = MediaQuery.of(context).size.width;
 
-      return Stack(
-      clipBehavior: Clip.none,
-      children: [
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // ----------------------------------------------------
+                      // LEFT SIDE: MENU SCREEN (Ab Full Screen Hoga)
+                      // ----------------------------------------------------
+                      // ----------------------------------------------------
+                      // LEFT SIDE: FULL SCREEN MENU
+                      // ----------------------------------------------------
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
+                        curve: Curves.easeOutCubic,
+                        left: _isMenuDragging ? _menuDragOffset - screenWidth : (isMenuOpen ? 0 : -screenWidth),
+                        width: screenWidth,
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          // --- NAYA: MENU PAR BHI REAL-TIME FINGER TRACKING ---
+                          onHorizontalDragStart: (details) {
+                            setState(() {
+                              _isMenuDragging = true;
+                              // Drag shuru hote hi current position pakad lega
+                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                            });
+                          },
+                          onHorizontalDragUpdate: (details) {
+                            setState(() {
+                              _menuDragOffset += details.delta.dx;
+                              // Screen se bahar na jaye isliye limits set ki hain
+                              if (_menuDragOffset < 0) _menuDragOffset = 0;
+                              if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
+                            });
+                          },
+                          onHorizontalDragEnd: (details) {
+                            setState(() {
+                              _isMenuDragging = false;
+                              // Speed mein swipe kiya toh direct open/close
+                              if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
+                                isMenuOpen = true;
+                              } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
+                                isMenuOpen = false;
+                              } else {
+                                // Aadhi screen swipe pe auto-snap
+                                isMenuOpen = _menuDragOffset > (screenWidth / 2);
+                              }
+                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                            });
+                          },
+                          // ---------------------------------------------------
+                          child: MenuOptions(
+                            onClose: () {
+                              setState(() {
+                                isMenuOpen = false;
+                                _menuDragOffset = 0.0;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
 
-        // ----------------------------------------------------
-        // LEFT SIDE: MENU SCREEN (Ab Full Screen Hoga)
-        // ----------------------------------------------------
-        // ----------------------------------------------------
-        // LEFT SIDE: FULL SCREEN MENU
-        // ----------------------------------------------------
-        AnimatedPositioned(
-          duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
-          curve: Curves.easeOutCubic,
-          left: _isMenuDragging ? _menuDragOffset - screenWidth : (isMenuOpen ? 0 : -screenWidth),
-          width: screenWidth,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            // --- NAYA: MENU PAR BHI REAL-TIME FINGER TRACKING ---
-            onHorizontalDragStart: (details) {
-              setState(() {
-                _isMenuDragging = true;
-                // Drag shuru hote hi current position pakad lega
-                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-              });
-            },
-            onHorizontalDragUpdate: (details) {
-              setState(() {
-                _menuDragOffset += details.delta.dx;
-                // Screen se bahar na jaye isliye limits set ki hain
-                if (_menuDragOffset < 0) _menuDragOffset = 0;
-                if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
-              });
-            },
-            onHorizontalDragEnd: (details) {
-              setState(() {
-                _isMenuDragging = false;
-                // Speed mein swipe kiya toh direct open/close
-                if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
-                  isMenuOpen = true;
-                } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                  isMenuOpen = false;
-                } else {
-                  // Aadhi screen swipe pe auto-snap
-                  isMenuOpen = _menuDragOffset > (screenWidth / 2);
-                }
-                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-              });
-            },
-            // ---------------------------------------------------
-            child: MenuOptions(
-              onClose: () {
-                setState(() {
-                  isMenuOpen = false;
-                  _menuDragOffset = 0.0;
-                });
-              },
-            ),
-          ),
-        ),
+                      // ----------------------------------------------------
+                      // RIGHT SIDE: MAIN CALCULATOR APP
+                      // ----------------------------------------------------
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
+                        curve: Curves.easeOutCubic,
+                        left: _isMenuDragging ? _menuDragOffset : (isMenuOpen ? screenWidth : 0),
+                        right: _isMenuDragging ? -_menuDragOffset : (isMenuOpen ? -screenWidth : 0),
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          // --- HORIZONTAL FINGER TRACKING ---
+                          onHorizontalDragStart: (details) {
+                            setState(() {
+                              _isMenuDragging = true;
+                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                            });
+                          },
+                          onHorizontalDragUpdate: (details) {
+                            setState(() {
+                              _menuDragOffset += details.delta.dx;
+                              if (_menuDragOffset < 0) _menuDragOffset = 0;
+                              if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
+                            });
+                          },
+                          onHorizontalDragEnd: (details) {
+                            setState(() {
+                              _isMenuDragging = false;
+                              if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
+                                isMenuOpen = true;
+                              } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
+                                isMenuOpen = false;
+                              } else {
+                                isMenuOpen = _menuDragOffset > (screenWidth / 2);
+                              }
+                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                            });
+                          },
+                          // ---------------------------------------------
+                          child: Container(
+                            color: bgColor, // Background color taki piche ka menu chhip sake
+                            // --- AAPKA PURANA LAYOUT BUILDER (Jisme History Vertical Slide hoti hai) ---
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return TweenAnimationBuilder<double>(
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeOutCubic,
+                                  tween: Tween<double>(end: isScientific ? 200.0 : 300.0),
+                                  builder: (context, topFlex, child) {
+                                    double totalFlex = 700.0;
+                                    double keypadFlex = totalFlex - topFlex;
+                                    double keypadHeight = constraints.maxHeight * (keypadFlex / totalFlex);
 
-        // ----------------------------------------------------
-        // RIGHT SIDE: MAIN CALCULATOR APP
-        // ----------------------------------------------------
-        AnimatedPositioned(
-          duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
-          curve: Curves.easeOutCubic,
-          left: _isMenuDragging ? _menuDragOffset : (isMenuOpen ? screenWidth : 0),
-          right: _isMenuDragging ? -_menuDragOffset : (isMenuOpen ? -screenWidth : 0),
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            // --- HORIZONTAL FINGER TRACKING ---
-            onHorizontalDragStart: (details) {
-              setState(() {
-                _isMenuDragging = true;
-                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-              });
-            },
-            onHorizontalDragUpdate: (details) {
-              setState(() {
-                _menuDragOffset += details.delta.dx;
-                if (_menuDragOffset < 0) _menuDragOffset = 0;
-                if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
-              });
-            },
-            onHorizontalDragEnd: (details) {
-              setState(() {
-                _isMenuDragging = false;
-                if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
-                  isMenuOpen = true;
-                } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                  isMenuOpen = false;
-                } else {
-                  isMenuOpen = _menuDragOffset > (screenWidth / 2);
-                }
-                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-              });
-            },
-            // ---------------------------------------------
-            child: Container(
-              color: bgColor, // Background color taki piche ka menu chhip sake
+                                    return Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        // VERTICAL BACKGROUND: HISTORY PANEL
+                                        AnimatedOpacity(
+                                          duration: Duration(milliseconds: _isDragging ? 0 : 300),
+                                          opacity: _isDragging
+                                              ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
+                                              : (isHistoryOpen ? 1.0 : 0.0),
+                                          child: Builder(
+                                            builder: (context) {
+                                              Map<String, List<Map<String, dynamic>>> groupedHistory = {};
+                                              DateTime now = DateTime.now();
+                                              String todayStr =
+                                                  "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
+                                              DateTime yesterday = now.subtract(const Duration(days: 1));
+                                              String yesterdayStr =
+                                                  "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
 
-                        // --- AAPKA PURANA LAYOUT BUILDER (Jisme History Vertical Slide hoti hai) ---
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return TweenAnimationBuilder<double>(
-                              duration: const Duration(milliseconds: 350),
-                              curve: Curves.easeOutCubic,
-                              tween: Tween<double>(end: isScientific ? 200.0 : 300.0),
-                              builder: (context, topFlex, child) {
-                                double totalFlex = 700.0;
-                                double keypadFlex = totalFlex - topFlex;
-                                double keypadHeight = constraints.maxHeight * (keypadFlex / totalFlex);
+                                              for (String entry in _historyList) {
+                                                Map<String, dynamic> item = jsonDecode(entry);
+                                                String fullDateTime = item['datetime'] ?? '';
+                                                List<String> parts = fullDateTime.split(' ');
+                                                String datePart = parts.isNotEmpty ? parts[0] : '';
+                                                String displayDate = datePart;
+                                                if (datePart == todayStr)
+                                                  displayDate = 'Today';
+                                                else if (datePart == yesterdayStr)
+                                                  displayDate = 'Yesterday';
 
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    // VERTICAL BACKGROUND: HISTORY PANEL
-                                    AnimatedOpacity(
-                                      duration: Duration(milliseconds: _isDragging ? 0 : 300),
-                                      opacity: _isDragging
-                                          ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
-                                          : (isHistoryOpen ? 1.0 : 0.0),
-                                      child: Builder(
-                                        builder: (context) {
-                                          Map<String, List<Map<String, dynamic>>> groupedHistory = {};
-                                          DateTime now = DateTime.now();
-                                          String todayStr = "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
-                                          DateTime yesterday = now.subtract(const Duration(days: 1));
-                                          String yesterdayStr = "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
+                                                if (!groupedHistory.containsKey(displayDate))
+                                                  groupedHistory[displayDate] = [];
+                                                groupedHistory[displayDate]!.add(item);
+                                              }
 
-                                          for (String entry in _historyList) {
-                                            Map<String, dynamic> item = jsonDecode(entry);
-                                            String fullDateTime = item['datetime'] ?? '';
-                                            List<String> parts = fullDateTime.split(' ');
-                                            String datePart = parts.isNotEmpty ? parts[0] : '';
-                                            String displayDate = datePart;
-                                            if (datePart == todayStr) displayDate = 'Today';
-                                            else if (datePart == yesterdayStr) displayDate = 'Yesterday';
-
-                                            if (!groupedHistory.containsKey(displayDate)) groupedHistory[displayDate] = [];
-                                            groupedHistory[displayDate]!.add(item);
-                                          }
-
-                                          return Container(
-                                            height: keypadHeight,
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Card(
-                                              color: surfaceColor.withOpacity(0.3),
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(24),
-                                                side: BorderSide(color: Colors.white.withOpacity(0.05)),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 2.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            IconButton(
-                                                              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                                                              onPressed: () => setState(() => isHistoryOpen = false),
-                                                            ),
-                                                            const SizedBox(width: 4),
-                                                            const Text('History', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                                                          ],
-                                                        ),
-                                                        IconButton(
-                                                          icon: Icon(Icons.delete_outline, color: redColor),
-                                                          onPressed: _showClearHistoryDialog,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: _historyList.isEmpty
-                                                        ? Center(child: Text('No History yet', style: TextStyle(color: textGrey, fontSize: 16)))
-                                                        : ListView(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                                                      children: groupedHistory.entries.map((entry) {
-                                                        return Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(bottom: 4.0, top: 2.0, left: 4.0),
-                                                              child: Text(entry.key, style: TextStyle(color: cyanColor, fontSize: 14)),
-                                                            ),
-                                                            ...entry.value.map((item) {
-                                                              String fullDateTime = item['datetime'] ?? '';
-                                                              String timePart = fullDateTime.contains(' ') ? fullDateTime.split(' ')[1] : '';
-                                                              return Container(
-                                                                width: double.infinity,
-                                                                margin: const EdgeInsets.only(bottom: 12),
-                                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                                                                decoration: BoxDecoration(
-                                                                  color: bgColor.withOpacity(0.5),
-                                                                  borderRadius: BorderRadius.circular(16),
-                                                                ),
-                                                                child: Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children: [
-                                                                    Align(alignment: Alignment.centerLeft, child: Text(timePart, style: TextStyle(color: textGrey.withOpacity(0.8), fontSize: 11))),
-                                                                    Text(item['equation'] ?? '', style: TextStyle(color: textGrey, fontSize: 16)),
-                                                                    Text(item['result'] ?? '', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          ],
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
-                                                    child: Text('Swipe for options', style: TextStyle(color: textGrey.withOpacity(0.4), fontSize: 12)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-
-                                    // VERTICAL FOREGROUND: CALCULATOR (Slides Down)
-                                    AnimatedPositioned(
-                                      duration: Duration(milliseconds: _isDragging ? 0 : 350),
-                                      curve: Curves.easeOutCubic,
-                                      top: _isDragging ? _dragOffset : (isHistoryOpen ? keypadHeight : 0),
-                                      bottom: _isDragging ? -_dragOffset : (isHistoryOpen ? -keypadHeight : 0),
-                                      left: 0,
-                                      right: 0,
-                                      child: Column(
-                                        children: [
-                                          _buildTopBar(),
-                                          Expanded(
-                                            flex: topFlex.toInt(),
-                                            child: GestureDetector(
-                                              behavior: HitTestBehavior.opaque,
-                                              onVerticalDragStart: (details) {
-                                                setState(() {
-                                                  _isDragging = true;
-                                                  _dragOffset = isHistoryOpen ? keypadHeight : 0.0;
-                                                });
-                                              },
-                                              onVerticalDragUpdate: (details) {
-                                                setState(() {
-                                                  _dragOffset += details.delta.dy;
-                                                  if (_dragOffset < 0) _dragOffset = 0;
-                                                  if (_dragOffset > keypadHeight) _dragOffset = keypadHeight;
-                                                });
-                                              },
-                                              onVerticalDragEnd: (details) {
-                                                setState(() {
-                                                  _isDragging = false;
-                                                  if (details.primaryVelocity != null && details.primaryVelocity! > 300) isHistoryOpen = true;
-                                                  else if (details.primaryVelocity != null && details.primaryVelocity! < -300) isHistoryOpen = false;
-                                                  else isHistoryOpen = _dragOffset > (keypadHeight / 2);
-                                                });
-                                              },
-                                              child: Padding(
+                                              return Container(
+                                                height: keypadHeight,
+                                                width: double.infinity,
                                                 padding: const EdgeInsets.all(10.0),
                                                 child: Card(
                                                   color: surfaceColor.withOpacity(0.3),
@@ -730,207 +615,641 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                     borderRadius: BorderRadius.circular(24),
                                                     side: BorderSide(color: Colors.white.withOpacity(0.05)),
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Align(
-                                                            alignment: Alignment.bottomRight,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          right: 8.0,
+                                                          top: 4.0,
+                                                          bottom: 2.0,
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Row(
                                                               children: [
-                                                                Expanded(
-                                                                  child: TweenAnimationBuilder<double>(
-                                                                    duration: const Duration(milliseconds: 250),
-                                                                    curve: Curves.easeOutCubic,
-                                                                    tween: Tween<double>(end: _getDynamicFontSize()),
-                                                                    builder: (context, animatedSize, child) {
-                                                                      return TextField(
-                                                                        controller: _equationController,
-                                                                        focusNode: _focusNode,
-                                                                        scrollController: _scrollController,
-                                                                        readOnly: true,
-                                                                        showCursor: !isEvaluated,
-                                                                        cursorColor: cyanColor,
-                                                                        cursorWidth: 3,
-                                                                        cursorHeight: animatedSize + 4,
-                                                                        textAlign: TextAlign.right,
-                                                                        maxLines: 1,
-                                                                        minLines: 1,
-                                                                        style: TextStyle(color: white, fontSize: animatedSize),
-                                                                        decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
-                                                                        onTap: () => FocusScope.of(context).requestFocus(_focusNode),
-                                                                      );
-                                                                    },
+                                                                IconButton(
+                                                                  icon: const Icon(
+                                                                    Icons.arrow_back_ios_new,
+                                                                    color: Colors.white,
+                                                                    size: 20,
+                                                                  ),
+                                                                  onPressed: () =>
+                                                                      setState(() => isHistoryOpen = false),
+                                                                ),
+                                                                const SizedBox(width: 4),
+                                                                const Text(
+                                                                  'History',
+                                                                  style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 18,
+                                                                    fontWeight: FontWeight.bold,
                                                                   ),
                                                                 ),
                                                               ],
                                                             ),
+                                                            IconButton(
+                                                              icon: Icon(Icons.delete_outline, color: redColor),
+                                                              onPressed: _showClearHistoryDialog,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: _historyList.isEmpty
+                                                            ? Center(
+                                                                child: Text(
+                                                                  'No History yet',
+                                                                  style: TextStyle(color: textGrey, fontSize: 16),
+                                                                ),
+                                                              )
+                                                            : ListView(
+                                                                padding: const EdgeInsets.symmetric(
+                                                                  horizontal: 16,
+                                                                  vertical: 0,
+                                                                ),
+                                                                children: groupedHistory.entries.map((entry) {
+                                                                  return Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                          bottom: 4.0,
+                                                                          top: 2.0,
+                                                                          left: 4.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          entry.key,
+                                                                          style: TextStyle(
+                                                                            color: cyanColor,
+                                                                            fontSize: 14,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      ...entry.value.map((item) {
+                                                                        String fullDateTime = item['datetime'] ?? '';
+                                                                        String timePart = fullDateTime.contains(' ')
+                                                                            ? fullDateTime.split(' ')[1]
+                                                                            : '';
+                                                                        return Container(
+                                                                          width: double.infinity,
+                                                                          margin: const EdgeInsets.only(bottom: 12),
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                            horizontal: 12,
+                                                                            vertical: 5,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            color: bgColor.withOpacity(0.5),
+                                                                            borderRadius: BorderRadius.circular(16),
+                                                                          ),
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                                            children: [
+                                                                              Align(
+                                                                                alignment: Alignment.centerLeft,
+                                                                                child: Text(
+                                                                                  timePart,
+                                                                                  style: TextStyle(
+                                                                                    color: textGrey.withOpacity(0.8),
+                                                                                    fontSize: 11,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                item['equation'] ?? '',
+                                                                                style: TextStyle(
+                                                                                  color: textGrey,
+                                                                                  fontSize: 16,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                item['result'] ?? '',
+                                                                                style: const TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontSize: 20,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }).toList(),
+                                                                    ],
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
+                                                        child: Text(
+                                                          'Swipe for options',
+                                                          style: TextStyle(
+                                                            color: textGrey.withOpacity(0.4),
+                                                            fontSize: 12,
                                                           ),
                                                         ),
-                                                        if (result.isNotEmpty)
-                                                          FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            alignment: Alignment.centerRight,
-                                                            child: TweenAnimationBuilder<double>(
-                                                              duration: const Duration(milliseconds: 250),
-                                                              curve: Curves.easeOutCubic,
-                                                              tween: Tween<double>(end: isEvaluated ? (isScientific ? 46.0 : 64.0) : (isScientific ? 24.0 : 32.0)),
-                                                              builder: (context, animatedResultSize, child) {
-                                                                return Text(result, style: TextStyle(fontSize: animatedResultSize, fontWeight: isEvaluated ? FontWeight.w300 : FontWeight.normal, color: isEvaluated ? Colors.white : Colors.white.withOpacity(0.8)));
-                                                              },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+
+                                        // VERTICAL FOREGROUND: CALCULATOR (Slides Down)
+                                        AnimatedPositioned(
+                                          duration: Duration(milliseconds: _isDragging ? 0 : 350),
+                                          curve: Curves.easeOutCubic,
+                                          top: _isDragging ? _dragOffset : (isHistoryOpen ? keypadHeight : 0),
+                                          bottom: _isDragging ? -_dragOffset : (isHistoryOpen ? -keypadHeight : 0),
+                                          left: 0,
+                                          right: 0,
+                                          child: Column(
+                                            children: [
+                                              _buildTopBar(),
+                                              Expanded(
+                                                flex: topFlex.toInt(),
+                                                child: GestureDetector(
+                                                  behavior: HitTestBehavior.opaque,
+                                                  onVerticalDragStart: (details) {
+                                                    setState(() {
+                                                      _isDragging = true;
+                                                      _dragOffset = isHistoryOpen ? keypadHeight : 0.0;
+                                                    });
+                                                  },
+                                                  onVerticalDragUpdate: (details) {
+                                                    setState(() {
+                                                      _dragOffset += details.delta.dy;
+                                                      if (_dragOffset < 0) _dragOffset = 0;
+                                                      if (_dragOffset > keypadHeight) _dragOffset = keypadHeight;
+                                                    });
+                                                  },
+                                                  onVerticalDragEnd: (details) {
+                                                    setState(() {
+                                                      _isDragging = false;
+                                                      if (details.primaryVelocity != null &&
+                                                          details.primaryVelocity! > 300)
+                                                        isHistoryOpen = true;
+                                                      else if (details.primaryVelocity != null &&
+                                                          details.primaryVelocity! < -300)
+                                                        isHistoryOpen = false;
+                                                      else
+                                                        isHistoryOpen = _dragOffset > (keypadHeight / 2);
+                                                    });
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: Card(
+                                                      color: surfaceColor.withOpacity(0.3),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(24),
+                                                        side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(
+                                                          horizontal: 20.0,
+                                                          vertical: 16.0,
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Align(
+                                                                alignment: Alignment.bottomRight,
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: TweenAnimationBuilder<double>(
+                                                                        duration: const Duration(milliseconds: 250),
+                                                                        curve: Curves.easeOutCubic,
+                                                                        tween: Tween<double>(
+                                                                          end: _getDynamicFontSize(),
+                                                                        ),
+                                                                        builder: (context, animatedSize, child) {
+                                                                          return TextField(
+                                                                            controller: _equationController,
+                                                                            focusNode: _focusNode,
+                                                                            scrollController: _scrollController,
+                                                                            readOnly: true,
+                                                                            showCursor: !isEvaluated,
+                                                                            cursorColor: cyanColor,
+                                                                            cursorWidth: 3,
+                                                                            cursorHeight: animatedSize + 4,
+                                                                            textAlign: TextAlign.right,
+                                                                            maxLines: 1,
+                                                                            minLines: 1,
+                                                                            style: TextStyle(
+                                                                              color: white,
+                                                                              fontSize: animatedSize,
+                                                                            ),
+                                                                            decoration: const InputDecoration(
+                                                                              border: InputBorder.none,
+                                                                              isDense: true,
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                            ),
+                                                                            onTap: () => FocusScope.of(
+                                                                              context,
+                                                                            ).requestFocus(_focusNode),
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                      ],
+                                                            if (result.isNotEmpty)
+                                                              FittedBox(
+                                                                fit: BoxFit.scaleDown,
+                                                                alignment: Alignment.centerRight,
+                                                                child: TweenAnimationBuilder<double>(
+                                                                  duration: const Duration(milliseconds: 250),
+                                                                  curve: Curves.easeOutCubic,
+                                                                  tween: Tween<double>(
+                                                                    end: isEvaluated
+                                                                        ? (isScientific ? 46.0 : 64.0)
+                                                                        : (isScientific ? 24.0 : 32.0),
+                                                                  ),
+                                                                  builder: (context, animatedResultSize, child) {
+                                                                    return Text(
+                                                                      result,
+                                                                      style: TextStyle(
+                                                                        fontSize: animatedResultSize,
+                                                                        fontWeight: isEvaluated
+                                                                            ? FontWeight.w300
+                                                                            : FontWeight.normal,
+                                                                        color: isEvaluated
+                                                                            ? Colors.white
+                                                                            : Colors.white.withOpacity(0.8),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
 
-                                          // KEYPAD AREA
-                                          Expanded(
-                                            flex: keypadFlex.toInt(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                              child: Column(
-                                                children: [
-                                                  if (isScientific) ...[
-                                                    Expanded(
-                                                      child: Row(
-                                                        children: [
-                                                          CalculatorButton(text: 'log10', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log10(')),
-                                                          CalculatorButton(text: 'sin', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('sin(')),
-                                                          CalculatorButton(text: 'cos', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('cos(')),
-                                                          CalculatorButton(text: 'tan', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('tan(')),
-                                                          CalculatorButton(text: 'ln', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('ln(')),
-                                                          CalculatorButton(text: 'deg', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('deg')),
-                                                        ],
+                                              // KEYPAD AREA
+                                              Expanded(
+                                                flex: keypadFlex.toInt(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                                  child: Column(
+                                                    children: [
+                                                      if (isScientific) ...[
+                                                        Expanded(
+                                                          child: Row(
+                                                            children: [
+                                                              CalculatorButton(
+                                                                text: 'log10',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('log10('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'sin',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('sin('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'cos',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('cos('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'tan',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('tan('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'ln',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('ln('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'deg',
+                                                                textColor: cyanColor,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('deg'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Row(
+                                                            children: [
+                                                              CalculatorButton(
+                                                                text: 'log2',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('log2('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'x²',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('²'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '(',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('('),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: ')',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress(')'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'rad',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('rad'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: 'Inv',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('Inv'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            if (isScientific)
+                                                              CalculatorButton(
+                                                                text: 'x!',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('!'),
+                                                              ),
+                                                            CalculatorButton(
+                                                              text: 'AC',
+                                                              textColor: Colors.orangeAccent,
+                                                              bgColor: surfaceColor,
+                                                              onTap: () => _onKeyPress('AC'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '%',
+                                                              textColor: cyanColor,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 18,
+                                                              onTap: () => _onKeyPress('%'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              icon: Icons.backspace_outlined,
+                                                              textColor: cyanColor,
+                                                              bgColor: surfaceColor,
+                                                              onTap: () => _onKeyPress('BACK'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '÷',
+                                                              textColor: white,
+                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              fontSize: 30,
+                                                              onTap: () => _onKeyPress('÷'),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Row(
-                                                        children: [
-                                                          CalculatorButton(text: 'log2', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('log2(')),
-                                                          CalculatorButton(text: 'x²', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('²')),
-                                                          CalculatorButton(text: '(', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('(')),
-                                                          CalculatorButton(text: ')', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress(')')),
-                                                          CalculatorButton(text: 'rad', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('rad')),
-                                                          CalculatorButton(text: 'Inv', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('Inv')),
-                                                        ],
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            if (isScientific)
+                                                              CalculatorButton(
+                                                                text: 'xʸ',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('^'),
+                                                              ),
+                                                            CalculatorButton(
+                                                              text: '7',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('7'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '8',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('8'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '9',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('9'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '×',
+                                                              textColor: white,
+                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              fontSize: 30,
+                                                              onTap: () => _onKeyPress('×'),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        if (isScientific) CalculatorButton(text: 'x!', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('!')),
-                                                        CalculatorButton(text: 'AC', textColor: Colors.orangeAccent, bgColor: surfaceColor, onTap: () => _onKeyPress('AC')),
-                                                        CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('%')),
-                                                        CalculatorButton(icon: Icons.backspace_outlined, textColor: cyanColor, bgColor: surfaceColor, onTap: () => _onKeyPress('BACK')),
-                                                        CalculatorButton(text: '÷', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('÷')),
-                                                      ],
-                                                    ),
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            if (isScientific)
+                                                              CalculatorButton(
+                                                                text: '√x',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('√'),
+                                                              ),
+                                                            CalculatorButton(
+                                                              text: '4',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('4'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '5',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('5'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '6',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('6'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '−',
+                                                              textColor: white,
+                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              fontSize: 30,
+                                                              onTap: () => _onKeyPress('-'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            if (isScientific)
+                                                              CalculatorButton(
+                                                                text: 'π',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('π'),
+                                                              ),
+                                                            CalculatorButton(
+                                                              text: '1',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('1'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '2',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('2'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '3',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('3'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '+',
+                                                              textColor: white,
+                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              fontSize: 30,
+                                                              onTap: () => _onKeyPress('+'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            if (isScientific)
+                                                              CalculatorButton(
+                                                                text: 'e',
+                                                                textColor: white,
+                                                                bgColor: surfaceColor,
+                                                                fontSize: 18,
+                                                                onTap: () => _onKeyPress('e'),
+                                                              ),
+                                                            CalculatorButton(
+                                                              text: '00',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('00'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '0',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('0'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '.',
+                                                              textColor: white,
+                                                              bgColor: surfaceColor,
+                                                              fontSize: 25,
+                                                              onTap: () => _onKeyPress('.'),
+                                                            ),
+                                                            CalculatorButton(
+                                                              text: '=',
+                                                              textColor: white,
+                                                              bgColor: orangeColor,
+                                                              fontSize: 30,
+                                                              onTap: () => _onKeyPress('='),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        if (isScientific) CalculatorButton(text: 'xʸ', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('^')),
-                                                        CalculatorButton(text: '7', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('7')),
-                                                        CalculatorButton(text: '8', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('8')),
-                                                        CalculatorButton(text: '9', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('9')),
-                                                        CalculatorButton(text: '×', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('×')),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        if (isScientific) CalculatorButton(text: '√x', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('√')),
-                                                        CalculatorButton(text: '4', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('4')),
-                                                        CalculatorButton(text: '5', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('5')),
-                                                        CalculatorButton(text: '6', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('6')),
-                                                        CalculatorButton(text: '−', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('-')),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        if (isScientific) CalculatorButton(text: 'π', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('π')),
-                                                        CalculatorButton(text: '1', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('1')),
-                                                        CalculatorButton(text: '2', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('2')),
-                                                        CalculatorButton(text: '3', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('3')),
-                                                        CalculatorButton(text: '+', textColor: white, bgColor: orangeColor.withOpacity(0.15), fontSize: 30, onTap: () => _onKeyPress('+')),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        if (isScientific) CalculatorButton(text: 'e', textColor: white, bgColor: surfaceColor, fontSize: 18, onTap: () => _onKeyPress('e')),
-                                                        CalculatorButton(text: '00', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('00')),
-                                                        CalculatorButton(text: '0', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('0')),
-                                                        CalculatorButton(text: '.', textColor: white, bgColor: surfaceColor, fontSize: 25, onTap: () => _onKeyPress('.')),
-                                                        CalculatorButton(text: '=', textColor: white, bgColor: orangeColor, fontSize: 30, onTap: () => _onKeyPress('=')),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-      ],
-      ); // NAYA: Stack ka return yahan close hoga
-        }, // NAYA: Builder ka function yahan close hoga
-        ), // Builder close
-        ), // Expanded close
+                    ],
+                  ); // NAYA: Stack ka return yahan close hoga
+                }, // NAYA: Builder ka function yahan close hoga
+              ), // Builder close
+            ), // Expanded close
 
-            // 2. FIXED BANNER AD (Bilkul niche fix rahega)
-            // Container(
-            //   width: double.infinity,
-            //   height: 50,
-            //   color: Colors.white,
-            //   alignment: Alignment.center,
-            //   child: const Text(
-            //     'Test Banner Ad (320x50)',
-            //     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            //   ),
-            // ),
-            // 2. FIXED BANNER AD (Bilkul niche fix rahega)
             _isLoaded && _bannerAd != null
                 ? Container(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              alignment: Alignment.center,
-              child: AdWidget(ad: _bannerAd!),
-            )
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    alignment: Alignment.center,
+                    child: AdWidget(ad: _bannerAd!),
+                  )
                 : const SizedBox(
-              width: double.infinity,
-              height: 50, // Jab tak ad load na ho, khali space
-            ),
+                    width: double.infinity,
+                    height: 50, // Jab tak ad load na ho, khali space
+                  ),
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildTopBar() {
     return Padding(
@@ -940,17 +1259,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         children: [
           Row(
             children: [
-              // ActionButton(
-              //   icon: Icons.menu,
-              //   contentColor: textGrey,
-              //   bgColor: surfaceColor.withOpacity(0.5),
-              //   onTap: () {
-              //     setState(() {
-              //       isMenuOpen = !isMenuOpen;
-              //       _menuDragOffset = isMenuOpen ? maxMenuWidth : 0.0;
-              //     });
-              //   },
-              // ),
               ActionButton(
                 icon: Icons.menu,
                 contentColor: isMenuOpen ? cyanColor : textGrey,
