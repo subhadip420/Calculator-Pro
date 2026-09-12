@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 //import 'package:math_expressions/math_expressions.dart';
 import 'package:math_expressions/math_expressions.dart' hide Stack;
@@ -11,7 +12,9 @@ import 'action_button.dart';
 import 'custom_dialog.dart';
 import 'menu_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   runApp(const CalculatorProApp());
 }
 
@@ -64,6 +67,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double _menuDragOffset = 0.0;
   final double maxMenuWidth = 250.0;
 
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+  // Google Test Ad Unit ID (Android ke liye)
+  final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
+
   // Theme Colors
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
@@ -77,6 +85,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   void initState() {
     super.initState();
     _loadHistory();
+    _loadAd();
     // Screen open hote hi cursor show karne ke liye
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -85,6 +94,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   void dispose() {
+    _bannerAd?.dispose();
     _equationController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
@@ -108,6 +118,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     setState(() {
       _historyList = prefs.getStringList('calculator_history') ?? [];
     });
+  }
+
+  void _loadAd() {
+    _bannerAd = BannerAd(
+      adUnitId: _adUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner, // 320x50 size
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          setState(() {
+            _isLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          ad.dispose();
+        },
+      ),
+    )..load();
   }
 
   String _calculateResult(String eq, {bool isFinalCall = false}) {
@@ -858,15 +888,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         ), // Expanded close
 
             // 2. FIXED BANNER AD (Bilkul niche fix rahega)
-            Container(
-              width: double.infinity,
-              height: 50,
-              color: Colors.white,
+            // Container(
+            //   width: double.infinity,
+            //   height: 50,
+            //   color: Colors.white,
+            //   alignment: Alignment.center,
+            //   child: const Text(
+            //     'Test Banner Ad (320x50)',
+            //     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            //   ),
+            // ),
+            // 2. FIXED BANNER AD (Bilkul niche fix rahega)
+            _isLoaded && _bannerAd != null
+                ? Container(
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
               alignment: Alignment.center,
-              child: const Text(
-                'Test Banner Ad (320x50)',
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
+              child: AdWidget(ad: _bannerAd!),
+            )
+                : const SizedBox(
+              width: double.infinity,
+              height: 50, // Jab tak ad load na ho, khali space
             ),
           ],
         ),

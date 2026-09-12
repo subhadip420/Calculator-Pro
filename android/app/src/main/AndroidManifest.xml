@@ -3,6 +3,12 @@
         android:label="calculator_pro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- NAYA: Aapka Real Google AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5454466291921987~2009924462"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -20,6 +26,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
