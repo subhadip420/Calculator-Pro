@@ -1,6 +1,9 @@
+import 'package:calculator_pro/privacy_policy_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPreferences import kiya
+import 'package:url_launcher/url_launcher.dart';
 import 'action_button.dart';
+import 'custom_dialog.dart';
 
 // NAYA: StatefulWidget banaya taaki toggle state update ho sake
 class SettingsPage extends StatefulWidget {
@@ -142,7 +145,51 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Learn how to use features',
                       iconColor: Colors.greenAccent,
                       onTap: () {
-                        // Action here
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                              title: 'Support & Feedback',
+                              subtitle: 'We would love to hear from you! For any queries, bugs, or feedback, please email us at:',
+
+                              // NAYA: Clickable Blue Email Address
+                              customContent: GestureDetector(
+                                onTap: () async {
+                                  final Uri emailUri = Uri(
+                                    scheme: 'mailto',
+                                    path: 'support.sptechstudios@gmail.com',
+                                    query: 'subject=App Feedback - Calculator Pro',
+                                  );
+
+                                  // canLaunchUrl check hata bhi sakte hain ya mode pass kar sakte hain
+                                  try {
+                                    await launchUrl(
+                                      emailUri,
+                                      mode: LaunchMode.externalApplication, // NAYA: External app me force kholne ke liye
+                                    );
+                                  } catch (e) {
+                                    debugPrint("Could not launch email app: $e");
+                                  }
+                                },
+                                child: const Text(
+                                  'support.sptechstudios@gmail.com',
+                                  style: TextStyle(
+                                    color: Colors.cyanAccent, // Premium Blue Color
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+
+                              isSingleButton: true,
+                              primaryButtonText: 'Close',
+                              onPrimaryPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
 
@@ -153,7 +200,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Read our terms & policies',
                       iconColor: Colors.tealAccent, // Privacy ke liye teal color
                       onTap: () {
-                        // Action here (Baad mein link open karne ka code likhenge)
+                        // NAYA: Click karte hi Privacy Policy page open hoga
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
+                        );
                       },
                     ),
 
@@ -163,7 +214,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Version 1.0.0',
                       iconColor: textGrey,
                       onTap: () {
-                        // Action here
+                        // NAYA: About par click karte hi Custom Dialog open hoga
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                              title: 'Calculator Pro',
+                              subtitle: 'Version 1.0.0\n\nA premium calculator and multi-tool designed for seamless daily use.',
+                              isSingleButton: true, // Aapki requirement: Single button
+                              primaryButtonText: 'Got it',
+                              onPrimaryPressed: () {
+                                Navigator.of(context).pop(); // Button click par dialog band ho jayega
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
                   ],
