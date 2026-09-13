@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:calculator_pro/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,10 +10,25 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:math_expressions/math_expressions.dart';
 import 'package:math_expressions/math_expressions.dart' hide Stack;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'calculator_button.dart';
 import 'action_button.dart';
 import 'custom_dialog.dart';
 import 'menu_options.dart';
+
+import 'package:flutter_overlay_window/flutter_overlay_window.dart'; // NAYA IMPORT
+
+// --- NAYA: FLOATING WINDOW KA ENTRY POINT (Background Isolate) ---
+@pragma("vm:entry-point")
+void overlayMain() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MiniFloatingCalculator(), // Iska code hum niche banayenge
+    ),
+  );
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +86,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double _menuDragOffset = 0.0;
   final double maxMenuWidth = 250.0;
 
+  // --- NAYA: Mini Mode ke variables ---
+  // bool isMiniMode = false;
+  // double miniOffsetDx = 50.0;
+  // double miniOffsetDy = 100.0;
+
   BannerAd? _bannerAd;
   bool _isLoaded = false;
 
@@ -90,6 +112,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     _loadHistory();
     _loadAd();
     _loadHapticsSetting();
+
+    // NAYA FIX: Floating window se message sunne ke liye Listener
+    FlutterOverlayWindow.overlayListener.listen((event) {
+      if (event == 'openApp') {
+        // 1. Background se app ko wapas screen par lao (Kotlin command)
+        const MethodChannel('com.sptechstudios/app').invokeMethod('openApp');
+
+        // 2. App open hone ke baad floating window ko band kardo
+        FlutterOverlayWindow.closeOverlay();
+      }
+    });
+
     // Screen open hote hi cursor show karne ke liye
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -441,6 +475,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    // if (isMiniMode) {
+    //   return _buildMiniCalculator();
+    // }
+
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
@@ -1275,13 +1314,57 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 },
               ),
               const SizedBox(width: 8),
+              // ActionButton(
+              //   icon: Icons.picture_in_picture_alt,
+              //   contentColor: textGrey,
+              //   bgColor: surfaceColor.withOpacity(0.5),
+              //   // onTap: () {
+              //   //   if (_isHapticsEnabled) {
+              //   //     HapticFeedback.lightImpact(); // Halka sa premium vibration
+              //   //   }
+              //   // },
+              // ),
               ActionButton(
                 icon: Icons.picture_in_picture_alt,
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) {
-                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                onTap: () async {
+                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
+
+                  try {
+                    bool isGranted = await FlutterOverlayWindow.isPermissionGranted();
+                    if (!isGranted) {
+                      await FlutterOverlayWindow.requestPermission();
+                      return;
+                    }
+
+                    if (await FlutterOverlayWindow.isActive()) {
+                      await FlutterOverlayWindow.closeOverlay();
+                      await Future.delayed(const Duration(milliseconds: 300));
+                    }
+
+                    // Window show karo (Fixed Pixel Size diya taaki bada na ho)
+                    await FlutterOverlayWindow.showOverlay(
+                      enableDrag: true,
+                      overlayTitle: "Calculator Pro",
+                      overlayContent: "Floating Calculator",
+                      flag: OverlayFlag.defaultFlag,
+                      visibility: NotificationVisibility.visibilityPublic,
+                      positionGravity: PositionGravity.auto,
+                      width: 550,  // NAYA FIX: Mobile ke hisab se pixel size
+                      height: 850, // NAYA FIX: Mobile ke hisab se pixel size
+                    );
+
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      try {
+                        const MethodChannel('com.sptechstudios/app').invokeMethod('minimizeApp');
+                      } catch (e) {
+                        debugPrint("Minimize error: $e");
+                      }
+                    });
+
+                  } catch (e) {
+                    debugPrint("Overlay open error: $e");
                   }
                 },
               ),
@@ -1335,6 +1418,345 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  // --- NAYA: Floating Mini Calculator UI ---
+  // Widget _buildMiniCalculator() {
+  //   return Scaffold(
+  //     backgroundColor: bgColor, // Pura background dark rahega
+  //     body: SafeArea(
+  //       child: Stack(
+  //         children: [
+  //           Positioned(
+  //             left: miniOffsetDx,
+  //             top: miniOffsetDy,
+  //             child: GestureDetector(
+  //               // Floating window ko screen par drag karne ka logic
+  //               onPanUpdate: (details) {
+  //                 setState(() {
+  //                   miniOffsetDx += details.delta.dx;
+  //                   miniOffsetDy += details.delta.dy;
+  //                 });
+  //               },
+  //               child: Container(
+  //                 width: 260, // Mini width
+  //                 height: 420, // Mini height
+  //                 decoration: BoxDecoration(
+  //                   color: surfaceColor,
+  //                   borderRadius: BorderRadius.circular(24),
+  //                   border: Border.all(color: cyanColor.withOpacity(0.4), width: 1.5),
+  //                   boxShadow: [
+  //                     BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, spreadRadius: 5)
+  //                   ],
+  //                 ),
+  //                 child: Column(
+  //                   children: [
+  //                     // --- TOP BAR (Expand Button & Drag Handle) ---
+  //                     Container(
+  //                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //                       decoration: BoxDecoration(
+  //                         color: surfaceColor,
+  //                         borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+  //                       ),
+  //                       child: Row(
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           // Expand Button (Wapas full screen aane ke liye)
+  //                           InkWell(
+  //                             onTap: () {
+  //                               if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //                               setState(() => isMiniMode = false); // Wapas normal app
+  //                             },
+  //                             child: Container(
+  //                               padding: const EdgeInsets.all(6),
+  //                               decoration: BoxDecoration(
+  //                                 color: bgColor,
+  //                                 shape: BoxShape.circle,
+  //                               ),
+  //                               child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 16),
+  //                             ),
+  //                           ),
+  //                           // Drag Indicator
+  //                           Icon(Icons.drag_handle_rounded, color: textGrey.withOpacity(0.4), size: 20),
+  //                           const SizedBox(width: 28), // Balance karne ke liye
+  //                         ],
+  //                       ),
+  //                     ),
+  //
+  //                     // --- DISPLAY SCREEN ---
+  //                     Container(
+  //                       width: double.infinity,
+  //                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //                       color: bgColor.withOpacity(0.5),
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.end,
+  //                         children: [
+  //                           Text(
+  //                             _equationController.text.isEmpty ? '0' : _equationController.text,
+  //                             maxLines: 1,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(color: textGrey.withOpacity(0.8), fontSize: 16),
+  //                           ),
+  //                           const SizedBox(height: 4),
+  //                           Text(
+  //                             result.isEmpty ? '0' : result,
+  //                             maxLines: 1,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //
+  //                     const Divider(height: 1, color: Colors.white10),
+  //
+  //                     // --- BASIC KEYPAD ---
+  //                     Expanded(
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.all(8.0),
+  //                         child: Column(
+  //                           children: [
+  //                             Expanded(child: Row(children: [
+  //                               CalculatorButton(text: 'AC', textColor: orangeColor, bgColor: surfaceColor, fontSize: 16, onTap: ()=>_onKeyPress('AC')),
+  //                               CalculatorButton(icon: Icons.backspace_outlined, textColor: cyanColor, bgColor: surfaceColor, onTap: ()=>_onKeyPress('BACK')),
+  //                               CalculatorButton(text: '%', textColor: cyanColor, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('%')),
+  //                               CalculatorButton(text: '÷', textColor: Colors.white, bgColor: orangeColor.withOpacity(0.2), fontSize: 22, onTap: ()=>_onKeyPress('÷')),
+  //                             ])),
+  //                             Expanded(child: Row(children: [
+  //                               CalculatorButton(text: '7', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('7')),
+  //                               CalculatorButton(text: '8', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('8')),
+  //                               CalculatorButton(text: '9', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('9')),
+  //                               CalculatorButton(text: '×', textColor: Colors.white, bgColor: orangeColor.withOpacity(0.2), fontSize: 22, onTap: ()=>_onKeyPress('×')),
+  //                             ])),
+  //                             Expanded(child: Row(children: [
+  //                               CalculatorButton(text: '4', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('4')),
+  //                               CalculatorButton(text: '5', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('5')),
+  //                               CalculatorButton(text: '6', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('6')),
+  //                               CalculatorButton(text: '−', textColor: Colors.white, bgColor: orangeColor.withOpacity(0.2), fontSize: 24, onTap: ()=>_onKeyPress('-')),
+  //                             ])),
+  //                             Expanded(child: Row(children: [
+  //                               CalculatorButton(text: '1', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('1')),
+  //                               CalculatorButton(text: '2', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('2')),
+  //                               CalculatorButton(text: '3', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('3')),
+  //                               CalculatorButton(text: '+', textColor: Colors.white, bgColor: orangeColor.withOpacity(0.2), fontSize: 22, onTap: ()=>_onKeyPress('+')),
+  //                             ])),
+  //                             Expanded(child: Row(children: [
+  //                               CalculatorButton(text: '00', textColor: Colors.white, bgColor: surfaceColor, fontSize: 16, onTap: ()=>_onKeyPress('00')),
+  //                               CalculatorButton(text: '0', textColor: Colors.white, bgColor: surfaceColor, fontSize: 18, onTap: ()=>_onKeyPress('0')),
+  //                               CalculatorButton(text: '.', textColor: Colors.white, bgColor: surfaceColor, fontSize: 20, onTap: ()=>_onKeyPress('.')),
+  //                               CalculatorButton(text: '=', textColor: Colors.white, bgColor: orangeColor, fontSize: 22, onTap: ()=>_onKeyPress('=')),
+  //                             ])),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+}// End CalculatorScreenState class
+
+// --- FLOATING WINDOW UI ---
+class MiniFloatingCalculator extends StatefulWidget {
+  const MiniFloatingCalculator({super.key});
+
+  @override
+  State<MiniFloatingCalculator> createState() => _MiniFloatingCalculatorState();
+}
+
+class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
+  String equation = "";
+  String result = "0";
+
+  final Color bgColor = const Color(0xFF0E131D);
+  final Color surfaceColor = const Color(0xFF1E2638);
+  final Color cyanColor = const Color(0xFF4CD7F6);
+  final Color orangeColor = const Color(0xFFFF9500);
+
+  void _onPress(String text) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      if (text == 'AC') {
+        equation = "";
+        result = "0";
+      } else if (text == 'BACK') {
+        if (equation.isNotEmpty) {
+          equation = equation.substring(0, equation.length - 1);
+        }
+      } else if (text == '=') {
+        try {
+          String sanitized = equation.replaceAll('×', '*').replaceAll('÷', '/');
+          Parser p = Parser();
+          Expression exp = p.parse(sanitized);
+          double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+          result = eval == eval.toInt() ? eval.toInt().toString() : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+        } catch (e) {
+          result = "Error";
+        }
+      } else {
+        equation += text;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      elevation: 0,
+      child: Container(
+        width: double.infinity,  // Native window (550px) ke hisab se auto-fit hoga
+        height: double.infinity,
+        margin: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
+          // boxShadow: [
+          //   BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, spreadRadius: 2)
+          // ],
+        ),
+        child: Column(
+          children: [
+            // --- TOP BAR (Expand Button, Title & Close Button) ---
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 1. EXPAND BUTTON (Full App Open Karega)
+                  // 1. EXPAND BUTTON (Full App Open Karega)
+                  InkWell(
+                    onTap: () async {
+                      HapticFeedback.selectionClick();
+
+                      try {
+                        // NAYA FIX: Android Native Intent se soye hue App ko force wake up karna
+                        final AndroidIntent intent = AndroidIntent(
+                          action: 'action_main',
+                          package: 'com.sptechstudios.calculator_pro',
+                          componentName: 'com.sptechstudios.calculator_pro.MainActivity',
+                          flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK], // Background se kholne ki permission
+                        );
+                        await intent.launch();
+                      } catch (e) {
+                        debugPrint("Error waking up app: $e");
+                      }
+
+                      // App screen par aate hi floating window band kardo
+                      FlutterOverlayWindow.closeOverlay();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                      child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+                    ),
+                  ),
+
+                  // 2. TITLE
+                  const Text('Calc Pro', style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+
+                  // 3. CLOSE 'X' BUTTON (Sirf Window Band Karega)
+                  InkWell(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      FlutterOverlayWindow.closeOverlay();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                      child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // --- DISPLAY ---
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              color: bgColor.withOpacity(0.5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(equation.isEmpty ? ' ' : equation, maxLines: 1, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                  const SizedBox(height: 2),
+                  Text(result, maxLines: 1, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+
+            // --- KEYPAD ---
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Column(
+                  children: [
+                    _buildRow(['AC', 'BACK', '%', '÷']),
+                    _buildRow(['7', '8', '9', '×']),
+                    _buildRow(['4', '5', '6', '-']),
+                    _buildRow(['1', '2', '3', '+']),
+                    _buildRow(['00', '0', '.', '=']),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRow(List<String> buttons) {
+    return Expanded(
+      child: Row(
+        children: buttons.map((text) {
+          Color txtColor = Colors.white;
+          Color bgCol = surfaceColor;
+
+          if (text == 'AC') {
+            txtColor = orangeColor;
+          } else if (text == 'BACK' || text == '%') {
+            txtColor = cyanColor;
+          } else if (['÷', '×', '-', '+', '='].contains(text)) {
+            bgCol = orangeColor.withOpacity(0.2);
+            if (text == '=') {
+              bgCol = orangeColor;
+              txtColor = Colors.white;
+            }
+          }
+
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: InkWell(
+                onTap: () => _onPress(text),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: text == 'BACK'
+                        ? Icon(Icons.backspace_outlined, color: txtColor, size: 16)
+                        : Text(text, style: TextStyle(color: txtColor, fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
