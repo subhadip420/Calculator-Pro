@@ -475,7 +475,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     // if (isMiniMode) {
     //   return _buildMiniCalculator();
     // }
@@ -1314,16 +1313,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              // ActionButton(
-              //   icon: Icons.picture_in_picture_alt,
-              //   contentColor: textGrey,
-              //   bgColor: surfaceColor.withOpacity(0.5),
-              //   // onTap: () {
-              //   //   if (_isHapticsEnabled) {
-              //   //     HapticFeedback.lightImpact(); // Halka sa premium vibration
-              //   //   }
-              //   // },
-              // ),
               ActionButton(
                 icon: Icons.picture_in_picture_alt,
                 contentColor: textGrey,
@@ -1343,18 +1332,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       await Future.delayed(const Duration(milliseconds: 300));
                     }
 
-                    // Window show karo (Fixed Pixel Size diya taaki bada na ho)
-                    // await FlutterOverlayWindow.showOverlay(
-                    //   enableDrag: true,
-                    //   overlayTitle: "Calculator Pro",
-                    //   overlayContent: "Floating Calculator",
-                    //   flag: OverlayFlag.defaultFlag,
-                    //   visibility: NotificationVisibility.visibilityPublic,
-                    //   positionGravity: PositionGravity.auto,
-                    //   width: 550,  // NAYA FIX: Mobile ke hisab se pixel size
-                    //   height: 850, // NAYA FIX: Mobile ke hisab se pixel size
-                    // );
-
                     await FlutterOverlayWindow.showOverlay(
                       enableDrag: true,
                       overlayTitle: "Calculator Pro",
@@ -1362,7 +1339,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       flag: OverlayFlag.defaultFlag,
                       visibility: NotificationVisibility.visibilityPublic,
                       positionGravity: PositionGravity.auto,
-                      width: -2,  // FIX: Isko -2 hi rakhna hai
+                      width: -2,
+                      // FIX: Isko -2 hi rakhna hai
                       height: -2, // FIX: Isko -2 hi rakhna hai
                     );
 
@@ -1373,7 +1351,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         debugPrint("Minimize error: $e");
                       }
                     });
-
                   } catch (e) {
                     debugPrint("Overlay open error: $e");
                   }
@@ -1432,7 +1409,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       ),
     );
   }
-}// End CalculatorScreenState class
+} // End CalculatorScreenState class
 
 // --- FLOATING WINDOW UI ---
 class MiniFloatingCalculator extends StatefulWidget {
@@ -1471,7 +1448,9 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
           Parser p = Parser();
           Expression exp = p.parse(sanitized);
           double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-          result = eval == eval.toInt() ? eval.toInt().toString() : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+          result = eval == eval.toInt()
+              ? eval.toInt().toString()
+              : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
         } catch (e) {
           result = "Error";
         }
@@ -1486,179 +1465,208 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     return Material(
       color: Colors.transparent,
       elevation: 0,
-      child: Center(
+      //child: Center(
+      child: Align(
+        alignment: Alignment.topLeft,
         child: Container(
           width: _calcWidth,
           height: _calcHeight,
-          margin: const EdgeInsets.all(8),
+          margin: const EdgeInsets.all(0),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(15),
             border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, spreadRadius: 2)
-            ],
           ),
-          child: Stack(
+          child: Column(
             children: [
-              // --- 1. MAIN UI CONTENT ---
-              Column(
-                children: [
-                  // --- TOP BAR (Yahan se Drag hoga) ---
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: surfaceColor,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // EXPAND BUTTON
-                        InkWell(
-                          onTap: () async {
-                            HapticFeedback.selectionClick();
-                            try {
-                              final AndroidIntent intent = AndroidIntent(
-                                action: 'action_main',
-                                package: 'com.sptechstudios.calculator_pro',
-                                componentName: 'com.sptechstudios.calculator_pro.MainActivity',
-                                flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
-                              );
-                              await intent.launch();
-                            } catch (e) {
-                              debugPrint("Error waking up app: $e");
-                            }
-                            FlutterOverlayWindow.closeOverlay();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                            child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
-                          ),
-                        ),
-
-                        // NAYA FIX: 'Calc Pro' hata kar Drag Handle Icon lagaya
-                        const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
-
-                        // CLOSE BUTTON
-                        InkWell(
-                          onTap: () {
-                            HapticFeedback.selectionClick();
-                            FlutterOverlayWindow.closeOverlay();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                            child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
-                          ),
-                        ),
-                      ],
-                    ),
+              // --- 1. TOP BAR (Yahan se Drag hoga) ---
+              Listener(
+                onPointerDown: (_) {
+                  // FIX 2: Top Bar touch karte hi Native Drag ON
+                  FlutterOverlayWindow.resizeOverlay(
+                    _calcWidth.toInt(),
+                    _calcHeight.toInt(),
+                    true,
+                  ).catchError((e) {});
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(14)), // Matching border radius
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // EXPAND BUTTON
+                      InkWell(
+                        onTap: () async {
+                          HapticFeedback.selectionClick();
+                          try {
+                            final AndroidIntent intent = AndroidIntent(
+                              action: 'action_main',
+                              package: 'com.sptechstudios.calculator_pro',
+                              componentName: 'com.sptechstudios.calculator_pro.MainActivity',
+                              flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+                            );
+                            await intent.launch();
+                          } catch (e) {
+                            debugPrint("Error waking up app: $e");
+                          }
+                          FlutterOverlayWindow.closeOverlay();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                          child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+                        ),
+                      ),
 
-                  // --- NAYA FIX: BAAKI UI KO GESTURE DETECTOR MEIN WRAP KIYA ---
-                  // Is area par finger move karne se window drag nahi hogi
-                  // --- DISPLAY & KEYPAD AREA ---
-                  // (Native Android rule ki wajah se pura window draggable rahega)
-                  Expanded(
-                    child: Column(
-                      children: [
-                        // DISPLAY
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          color: bgColor.withOpacity(0.5),
+                      // NAYA FIX: 'Calc Pro' hata kar Drag Handle Icon lagaya
+                      const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
+
+                      // CLOSE BUTTON
+                      InkWell(
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          FlutterOverlayWindow.closeOverlay();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                          child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // --- 2. DISPLAY & KEYPAD AREA ---
+              // Is area par finger move karne se window drag nahi hogi
+              Expanded(
+                child: Listener(
+                  onPointerDown: (_) {
+                    // FIX 2: Body touch karte hi Native Drag OFF (Taki body se drag na ho)
+                    FlutterOverlayWindow.resizeOverlay(
+                      _calcWidth.toInt(),
+                      _calcHeight.toInt(),
+                      false,
+                    ).catchError((e) {});
+                  },
+                  child: Column(
+                    children: [
+                      // DISPLAY
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        color: bgColor.withOpacity(0.5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              equation.isEmpty ? ' ' : equation,
+                              maxLines: 1,
+                              style: const TextStyle(color: Colors.white54, fontSize: 12),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              result,
+                              maxLines: 1,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // KEYPAD
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(equation.isEmpty ? ' ' : equation, maxLines: 1, style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                              const SizedBox(height: 2),
-                              Text(result, maxLines: 1, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                              _buildRow(['AC', 'BACK', '%', '÷']),
+                              _buildRow(['7', '8', '9', '×']),
+                              _buildRow(['4', '5', '6', '-']),
+                              _buildRow(['1', '2', '3', '+']),
+                              _buildRow(['00', '0', '.', '=']),
                             ],
                           ),
                         ),
-
-                        // KEYPAD
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Column(
-                              children: [
-                                _buildRow(['AC', 'BACK', '%', '÷']),
-                                _buildRow(['7', '8', '9', '×']),
-                                _buildRow(['4', '5', '6', '-']),
-                                _buildRow(['1', '2', '3', '+']),
-                                _buildRow(['00', '0', '.', '=']),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              // --- 2. BOTTOM-RIGHT RESIZE HANDLE ---
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    setState(() {
-                      _calcWidth += details.delta.dx;
-                      _calcHeight += details.delta.dy;
-                      _calcWidth = _calcWidth.clamp(180.0, 350.0);
-                      _calcHeight = _calcHeight.clamp(280.0, 550.0);
-                    });
-                  },
-                  child: Container(
-                    width: 35, height: 35,
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.4), size: 10),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
 
-              // --- 3. BOTTOM-LEFT RESIZE HANDLE ---
-              Positioned(
-                left: 0,
-                bottom: 0,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    setState(() {
-                      _calcWidth -= details.delta.dx;
-                      _calcHeight += details.delta.dy;
-                      _calcWidth = _calcWidth.clamp(180.0, 350.0);
-                      _calcHeight = _calcHeight.clamp(280.0, 550.0);
-                    });
-                  },
-                  child: Container(
-                    width: 35, height: 35,
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
+              // --- 3. NAYA BOTTOM BAR (Resize Handles ke liye) ---
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), // Icons ko padding di
+                decoration: BoxDecoration(
+                  color: surfaceColor, // Top bar jaisa alag background color
+                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)), // Niche ka curve
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Bottom-Left Resize Icon
+                    GestureDetector(
+                      onPanUpdate: (details) {
+                        setState(() {
+                          _calcWidth -= details.delta.dx;
+                          _calcHeight += details.delta.dy;
+                          _calcWidth = _calcWidth.clamp(180.0, 350.0);
+                          _calcHeight = _calcHeight.clamp(280.0, 550.0);
+                        });
+                        FlutterOverlayWindow.resizeOverlay(
+                          _calcWidth.toInt(),
+                          _calcHeight.toInt(),
+                          false,
+                        ).catchError((e) {});
+                      },
+                      child: Container(
+                        color: Colors.transparent, // Touch properly catch karne ke liye
                         padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.4), size: 10),
+                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.5), size: 14),
                       ),
                     ),
-                  ),
+
+                    // Bottom-Right Resize Icon
+                    GestureDetector(
+                      onPanUpdate: (details) {
+                        setState(() {
+                          _calcWidth += details.delta.dx;
+                          _calcHeight += details.delta.dy;
+                          _calcWidth = _calcWidth.clamp(180.0, 350.0);
+                          _calcHeight = _calcHeight.clamp(280.0, 550.0);
+                        });
+                        FlutterOverlayWindow.resizeOverlay(
+                          _calcWidth.toInt(),
+                          _calcHeight.toInt(),
+                          false,
+                        ).catchError((e) {});
+                      },
+                      child: Container(
+                        color: Colors.transparent, // Touch properly catch karne ke liye
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.5), size: 14),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
+          // --- YAHAN TAK REPLACE KAREIN ---
         ),
       ),
     );
   }
+
   Widget _buildRow(List<String> buttons) {
     return Expanded(
       child: Row(
@@ -1689,7 +1697,10 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   child: Center(
                     child: text == 'BACK'
                         ? Icon(Icons.backspace_outlined, color: txtColor, size: 16)
-                        : Text(text, style: TextStyle(color: txtColor, fontSize: 16, fontWeight: FontWeight.bold)),
+                        : Text(
+                            text,
+                            style: TextStyle(color: txtColor, fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ),
