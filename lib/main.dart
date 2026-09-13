@@ -1344,6 +1344,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     }
 
                     // Window show karo (Fixed Pixel Size diya taaki bada na ho)
+                    // await FlutterOverlayWindow.showOverlay(
+                    //   enableDrag: true,
+                    //   overlayTitle: "Calculator Pro",
+                    //   overlayContent: "Floating Calculator",
+                    //   flag: OverlayFlag.defaultFlag,
+                    //   visibility: NotificationVisibility.visibilityPublic,
+                    //   positionGravity: PositionGravity.auto,
+                    //   width: 550,  // NAYA FIX: Mobile ke hisab se pixel size
+                    //   height: 850, // NAYA FIX: Mobile ke hisab se pixel size
+                    // );
+
                     await FlutterOverlayWindow.showOverlay(
                       enableDrag: true,
                       overlayTitle: "Calculator Pro",
@@ -1351,8 +1362,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       flag: OverlayFlag.defaultFlag,
                       visibility: NotificationVisibility.visibilityPublic,
                       positionGravity: PositionGravity.auto,
-                      width: 550,  // NAYA FIX: Mobile ke hisab se pixel size
-                      height: 850, // NAYA FIX: Mobile ke hisab se pixel size
+                      width: -2,  // FIX: Isko -2 hi rakhna hai
+                      height: -2, // FIX: Isko -2 hi rakhna hai
                     );
 
                     Future.delayed(const Duration(milliseconds: 100), () {
@@ -1565,6 +1576,204 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 }// End CalculatorScreenState class
 
 // --- FLOATING WINDOW UI ---
+// class MiniFloatingCalculator extends StatefulWidget {
+//   const MiniFloatingCalculator({super.key});
+//
+//   @override
+//   State<MiniFloatingCalculator> createState() => _MiniFloatingCalculatorState();
+// }
+//
+// class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
+//   String equation = "";
+//   String result = "0";
+//
+//   final Color bgColor = const Color(0xFF0E131D);
+//   final Color surfaceColor = const Color(0xFF1E2638);
+//   final Color cyanColor = const Color(0xFF4CD7F6);
+//   final Color orangeColor = const Color(0xFFFF9500);
+//
+//   void _onPress(String text) {
+//     HapticFeedback.selectionClick();
+//     setState(() {
+//       if (text == 'AC') {
+//         equation = "";
+//         result = "0";
+//       } else if (text == 'BACK') {
+//         if (equation.isNotEmpty) {
+//           equation = equation.substring(0, equation.length - 1);
+//         }
+//       } else if (text == '=') {
+//         try {
+//           String sanitized = equation.replaceAll('×', '*').replaceAll('÷', '/');
+//           Parser p = Parser();
+//           Expression exp = p.parse(sanitized);
+//           double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+//           result = eval == eval.toInt() ? eval.toInt().toString() : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+//         } catch (e) {
+//           result = "Error";
+//         }
+//       } else {
+//         equation += text;
+//       }
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       color: Colors.transparent,
+//       elevation: 0,
+//       child: Container(
+//         width: double.infinity,  // Native window (550px) ke hisab se auto-fit hoga
+//         height: double.infinity,
+//         margin: const EdgeInsets.all(0),
+//         decoration: BoxDecoration(
+//           color: bgColor,
+//           borderRadius: BorderRadius.circular(20),
+//           border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
+//           // boxShadow: [
+//           //   BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, spreadRadius: 2)
+//           // ],
+//         ),
+//         child: Column(
+//           children: [
+//             // --- TOP BAR (Expand Button, Title & Close Button) ---
+//             Container(
+//               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+//               decoration: BoxDecoration(
+//                 color: surfaceColor,
+//                 borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+//               ),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   // 1. EXPAND BUTTON (Full App Open Karega)
+//                   // 1. EXPAND BUTTON (Full App Open Karega)
+//                   InkWell(
+//                     onTap: () async {
+//                       HapticFeedback.selectionClick();
+//
+//                       try {
+//                         // NAYA FIX: Android Native Intent se soye hue App ko force wake up karna
+//                         final AndroidIntent intent = AndroidIntent(
+//                           action: 'action_main',
+//                           package: 'com.sptechstudios.calculator_pro',
+//                           componentName: 'com.sptechstudios.calculator_pro.MainActivity',
+//                           flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK], // Background se kholne ki permission
+//                         );
+//                         await intent.launch();
+//                       } catch (e) {
+//                         debugPrint("Error waking up app: $e");
+//                       }
+//
+//                       // App screen par aate hi floating window band kardo
+//                       FlutterOverlayWindow.closeOverlay();
+//                     },
+//                     child: Container(
+//                       padding: const EdgeInsets.all(5),
+//                       decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+//                       child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+//                     ),
+//                   ),
+//
+//                   // 2. TITLE
+//                   const Text('Calc Pro', style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+//
+//                   // 3. CLOSE 'X' BUTTON (Sirf Window Band Karega)
+//                   InkWell(
+//                     onTap: () {
+//                       HapticFeedback.selectionClick();
+//                       FlutterOverlayWindow.closeOverlay();
+//                     },
+//                     child: Container(
+//                       padding: const EdgeInsets.all(5),
+//                       decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+//                       child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//
+//             // --- DISPLAY ---
+//             Container(
+//               width: double.infinity,
+//               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+//               color: bgColor.withOpacity(0.5),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.end,
+//                 children: [
+//                   Text(equation.isEmpty ? ' ' : equation, maxLines: 1, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+//                   const SizedBox(height: 2),
+//                   Text(result, maxLines: 1, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//             ),
+//
+//             // --- KEYPAD ---
+//             Expanded(
+//               child: Padding(
+//                 padding: const EdgeInsets.all(2.0),
+//                 child: Column(
+//                   children: [
+//                     _buildRow(['AC', 'BACK', '%', '÷']),
+//                     _buildRow(['7', '8', '9', '×']),
+//                     _buildRow(['4', '5', '6', '-']),
+//                     _buildRow(['1', '2', '3', '+']),
+//                     _buildRow(['00', '0', '.', '=']),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildRow(List<String> buttons) {
+//     return Expanded(
+//       child: Row(
+//         children: buttons.map((text) {
+//           Color txtColor = Colors.white;
+//           Color bgCol = surfaceColor;
+//
+//           if (text == 'AC') {
+//             txtColor = orangeColor;
+//           } else if (text == 'BACK' || text == '%') {
+//             txtColor = cyanColor;
+//           } else if (['÷', '×', '-', '+', '='].contains(text)) {
+//             bgCol = orangeColor.withOpacity(0.2);
+//             if (text == '=') {
+//               bgCol = orangeColor;
+//               txtColor = Colors.white;
+//             }
+//           }
+//
+//           return Expanded(
+//             child: Padding(
+//               padding: const EdgeInsets.all(2.0),
+//               child: InkWell(
+//                 onTap: () => _onPress(text),
+//                 borderRadius: BorderRadius.circular(10),
+//                 child: Container(
+//                   decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(10)),
+//                   child: Center(
+//                     child: text == 'BACK'
+//                         ? Icon(Icons.backspace_outlined, color: txtColor, size: 16)
+//                         : Text(text, style: TextStyle(color: txtColor, fontSize: 16, fontWeight: FontWeight.bold)),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           );
+//         }).toList(),
+//       ),
+//     );
+//   }
+// }
+
+// --- FLOATING WINDOW UI ---
 class MiniFloatingCalculator extends StatefulWidget {
   const MiniFloatingCalculator({super.key});
 
@@ -1575,6 +1784,10 @@ class MiniFloatingCalculator extends StatefulWidget {
 class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   String equation = "";
   String result = "0";
+
+  // NAYA: Window ko dynamic size dene ke liye variables
+  double _calcWidth = 210.0;
+  double _calcHeight = 330.0;
 
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
@@ -1612,114 +1825,179 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     return Material(
       color: Colors.transparent,
       elevation: 0,
-      child: Container(
-        width: double.infinity,  // Native window (550px) ke hisab se auto-fit hoga
-        height: double.infinity,
-        margin: const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
-          // boxShadow: [
-          //   BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, spreadRadius: 2)
-          // ],
-        ),
-        child: Column(
-          children: [
-            // --- TOP BAR (Expand Button, Title & Close Button) ---
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: surfaceColor,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Center(
+        child: Container(
+          width: _calcWidth,
+          height: _calcHeight,
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, spreadRadius: 2)
+            ],
+          ),
+          child: Stack(
+            children: [
+              // --- 1. MAIN UI CONTENT ---
+              Column(
                 children: [
-                  // 1. EXPAND BUTTON (Full App Open Karega)
-                  // 1. EXPAND BUTTON (Full App Open Karega)
-                  InkWell(
-                    onTap: () async {
-                      HapticFeedback.selectionClick();
+                  // --- TOP BAR (Yahan se Drag hoga) ---
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: surfaceColor,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // EXPAND BUTTON
+                        InkWell(
+                          onTap: () async {
+                            HapticFeedback.selectionClick();
+                            try {
+                              final AndroidIntent intent = AndroidIntent(
+                                action: 'action_main',
+                                package: 'com.sptechstudios.calculator_pro',
+                                componentName: 'com.sptechstudios.calculator_pro.MainActivity',
+                                flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+                              );
+                              await intent.launch();
+                            } catch (e) {
+                              debugPrint("Error waking up app: $e");
+                            }
+                            FlutterOverlayWindow.closeOverlay();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                            child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+                          ),
+                        ),
 
-                      try {
-                        // NAYA FIX: Android Native Intent se soye hue App ko force wake up karna
-                        final AndroidIntent intent = AndroidIntent(
-                          action: 'action_main',
-                          package: 'com.sptechstudios.calculator_pro',
-                          componentName: 'com.sptechstudios.calculator_pro.MainActivity',
-                          flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK], // Background se kholne ki permission
-                        );
-                        await intent.launch();
-                      } catch (e) {
-                        debugPrint("Error waking up app: $e");
-                      }
+                        // NAYA FIX: 'Calc Pro' hata kar Drag Handle Icon lagaya
+                        const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
 
-                      // App screen par aate hi floating window band kardo
-                      FlutterOverlayWindow.closeOverlay();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                      child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+                        // CLOSE BUTTON
+                        InkWell(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            FlutterOverlayWindow.closeOverlay();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                            child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
-                  // 2. TITLE
-                  const Text('Calc Pro', style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+                  // --- NAYA FIX: BAAKI UI KO GESTURE DETECTOR MEIN WRAP KIYA ---
+                  // Is area par finger move karne se window drag nahi hogi
+                  // --- DISPLAY & KEYPAD AREA ---
+                  // (Native Android rule ki wajah se pura window draggable rahega)
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // DISPLAY
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          color: bgColor.withOpacity(0.5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(equation.isEmpty ? ' ' : equation, maxLines: 1, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                              const SizedBox(height: 2),
+                              Text(result, maxLines: 1, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
 
-                  // 3. CLOSE 'X' BUTTON (Sirf Window Band Karega)
-                  InkWell(
-                    onTap: () {
-                      HapticFeedback.selectionClick();
-                      FlutterOverlayWindow.closeOverlay();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                      child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+                        // KEYPAD
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Column(
+                              children: [
+                                _buildRow(['AC', 'BACK', '%', '÷']),
+                                _buildRow(['7', '8', '9', '×']),
+                                _buildRow(['4', '5', '6', '-']),
+                                _buildRow(['1', '2', '3', '+']),
+                                _buildRow(['00', '0', '.', '=']),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-            ),
 
-            // --- DISPLAY ---
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              color: bgColor.withOpacity(0.5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(equation.isEmpty ? ' ' : equation, maxLines: 1, style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                  const SizedBox(height: 2),
-                  Text(result, maxLines: 1, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-
-            // --- KEYPAD ---
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Column(
-                  children: [
-                    _buildRow(['AC', 'BACK', '%', '÷']),
-                    _buildRow(['7', '8', '9', '×']),
-                    _buildRow(['4', '5', '6', '-']),
-                    _buildRow(['1', '2', '3', '+']),
-                    _buildRow(['00', '0', '.', '=']),
-                  ],
+              // --- 2. BOTTOM-RIGHT RESIZE HANDLE ---
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    setState(() {
+                      _calcWidth += details.delta.dx;
+                      _calcHeight += details.delta.dy;
+                      _calcWidth = _calcWidth.clamp(180.0, 350.0);
+                      _calcHeight = _calcHeight.clamp(280.0, 550.0);
+                    });
+                  },
+                  child: Container(
+                    width: 35, height: 35,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.4), size: 10),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+
+              // --- 3. BOTTOM-LEFT RESIZE HANDLE ---
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    setState(() {
+                      _calcWidth -= details.delta.dx;
+                      _calcHeight += details.delta.dy;
+                      _calcWidth = _calcWidth.clamp(180.0, 350.0);
+                      _calcHeight = _calcHeight.clamp(280.0, 550.0);
+                    });
+                  },
+                  child: Container(
+                    width: 35, height: 35,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.4), size: 10),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
   Widget _buildRow(List<String> buttons) {
     return Expanded(
       child: Row(
