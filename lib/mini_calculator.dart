@@ -165,15 +165,15 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 child: Listener(
                   // FIX: Display touch karte hi window drag OFF (Taaki text scroll ho sake)
                   onPointerDown: (_) {
-                    FlutterOverlayWindow.resizeOverlay(230, 380, false).catchError((e){});
+                    FlutterOverlayWindow.resizeOverlay(215, 335, false).catchError((e){});
                   },
                   // FIX: Ungli hatate hi window drag wapas ON
                   onPointerUp: (_) {
-                    FlutterOverlayWindow.resizeOverlay(230, 380, true).catchError((e){});
+                    FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
                   },
                   // FIX: Agar drag karte hue ungli display se bahar chali jaye toh bhi wapas ON
                   onPointerCancel: (_) {
-                    FlutterOverlayWindow.resizeOverlay(230, 380, true).catchError((e){});
+                    FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
                   },
                     child: Container(
                       width: double.infinity,
