@@ -16,16 +16,47 @@ import 'action_button.dart';
 import 'custom_dialog.dart';
 import 'menu_options.dart';
 
-import 'package:flutter_overlay_window/flutter_overlay_window.dart'; // NAYA IMPORT
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+
+import 'mini_calculator.dart'; // NAYA IMPORT
+
+// --- NAYA: FLOATING WINDOW KA ENTRY POINT (Background Isolate) ---
+// @pragma("vm:entry-point")
+// void overlayMain() {
+//   WidgetsFlutterBinding.ensureInitialized();
+//
+//   // FIX: MaterialApp ko hamesha ke liye hata diya hai taaki Full-Screen na ho.
+//   runApp(
+//     const MediaQuery(
+//       data: MediaQueryData(), // Dummy data taaki font/UI crash na ho
+//       child: Directionality(
+//         textDirection: TextDirection.ltr,
+//         child: MiniFloatingCalculator(),
+//       ),
+//     ),
+//   );
+// }
 
 // --- NAYA: FLOATING WINDOW KA ENTRY POINT (Background Isolate) ---
 @pragma("vm:entry-point")
 void overlayMain() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MiniFloatingCalculator(), // Iska code hum niche banayenge
+    MediaQuery(
+      data: const MediaQueryData(),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        // NAYA FIX: TextField ke liye Localizations manually add kar diya,
+        // taaki MaterialApp use na karna pade aur window ka size fix rahe!
+        child: Localizations(
+          locale: const Locale('en', 'US'),
+          delegates: const [
+            DefaultMaterialLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+          ],
+          child: const MiniFloatingCalculator(),
+        ),
+      ),
     ),
   );
 }
@@ -182,7 +213,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ad.dispose();
         },
       ),
-    )..load();
+    )
+      ..load();
   }
 
   String _calculateResult(String eq, {bool isFinalCall = false}) {
@@ -200,19 +232,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       // Rule A: Number ke theek baad Root, Function, Pi, e ya Bracket aaye (Jaise 5√9 -> 5*√9, 5sin -> 5*sin, 5( -> 5*()
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
-        (Match m) => '${m[1]}*${m[2]}',
+            (Match m) => '${m[1]}*${m[2]}',
       );
 
       // Rule B: Bracket close ya Factorial ke baad kuch aaye (Jaise )5 -> )*5, 5!2 -> 5!*2)
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-        (Match m) => '${m[1]}*${m[2]}',
+            (Match m) => '${m[1]}*${m[2]}',
       );
 
       // Rule C: Constants ke beech mein ya baad mein aaye (Jaise πe -> π*e, π5 -> π*5)
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-        (Match m) => '${m[1]}*${m[2]}',
+            (Match m) => '${m[1]}*${m[2]}',
       );
 
       // 3. UI SYMBOLS KO MATH FORMAT ME BADALNA
@@ -238,8 +270,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
       // 4. AUTO-CLOSE BRACKETS
       // Ab ye background mein hidden 'sqrt(' wale brackets ko bhi perfectly close karega
-      int openParens = sanitized.split('(').length - 1;
-      int closeParens = sanitized.split(')').length - 1;
+      int openParens = sanitized
+          .split('(')
+          .length - 1;
+      int closeParens = sanitized
+          .split(')')
+          .length - 1;
       for (int i = 0; i < (openParens - closeParens); i++) {
         sanitized += ')';
       }
@@ -490,7 +526,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               child: Builder(
                 builder: (context) {
                   // NAYA: Phone ki exact width calculate kar rahe hain
-                  double screenWidth = MediaQuery.of(context).size.width;
+                  double screenWidth = MediaQuery
+                      .of(context)
+                      .size
+                      .width;
 
                   return Stack(
                     clipBehavior: Clip.none,
@@ -621,10 +660,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                               Map<String, List<Map<String, dynamic>>> groupedHistory = {};
                                               DateTime now = DateTime.now();
                                               String todayStr =
-                                                  "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
+                                                  "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(
+                                                  2, '0')}-${now.year}";
                                               DateTime yesterday = now.subtract(const Duration(days: 1));
                                               String yesterdayStr =
-                                                  "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
+                                                  "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month
+                                                  .toString().padLeft(2, '0')}-${yesterday.year}";
 
                                               for (String entry in _historyList) {
                                                 Map<String, dynamic> item = jsonDecode(entry);
@@ -697,86 +738,86 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                       Expanded(
                                                         child: _historyList.isEmpty
                                                             ? Center(
-                                                                child: Text(
-                                                                  'No History yet',
-                                                                  style: TextStyle(color: textGrey, fontSize: 16),
-                                                                ),
-                                                              )
+                                                          child: Text(
+                                                            'No History yet',
+                                                            style: TextStyle(color: textGrey, fontSize: 16),
+                                                          ),
+                                                        )
                                                             : ListView(
-                                                                padding: const EdgeInsets.symmetric(
-                                                                  horizontal: 16,
-                                                                  vertical: 0,
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 16,
+                                                            vertical: 0,
+                                                          ),
+                                                          children: groupedHistory.entries.map((entry) {
+                                                            return Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(
+                                                                    bottom: 4.0,
+                                                                    top: 2.0,
+                                                                    left: 4.0,
+                                                                  ),
+                                                                  child: Text(
+                                                                    entry.key,
+                                                                    style: TextStyle(
+                                                                      color: cyanColor,
+                                                                      fontSize: 14,
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                                children: groupedHistory.entries.map((entry) {
-                                                                  return Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.only(
-                                                                          bottom: 4.0,
-                                                                          top: 2.0,
-                                                                          left: 4.0,
+                                                                ...entry.value.map((item) {
+                                                                  String fullDateTime = item['datetime'] ?? '';
+                                                                  String timePart = fullDateTime.contains(' ')
+                                                                      ? fullDateTime.split(' ')[1]
+                                                                      : '';
+                                                                  return Container(
+                                                                    width: double.infinity,
+                                                                    margin: const EdgeInsets.only(bottom: 12),
+                                                                    padding: const EdgeInsets.symmetric(
+                                                                      horizontal: 12,
+                                                                      vertical: 5,
+                                                                    ),
+                                                                    decoration: BoxDecoration(
+                                                                      color: bgColor.withOpacity(0.5),
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                    ),
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment: Alignment.centerLeft,
+                                                                          child: Text(
+                                                                            timePart,
+                                                                            style: TextStyle(
+                                                                              color: textGrey.withOpacity(0.8),
+                                                                              fontSize: 11,
+                                                                            ),
+                                                                          ),
                                                                         ),
-                                                                        child: Text(
-                                                                          entry.key,
+                                                                        Text(
+                                                                          item['equation'] ?? '',
                                                                           style: TextStyle(
-                                                                            color: cyanColor,
-                                                                            fontSize: 14,
+                                                                            color: textGrey,
+                                                                            fontSize: 16,
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      ...entry.value.map((item) {
-                                                                        String fullDateTime = item['datetime'] ?? '';
-                                                                        String timePart = fullDateTime.contains(' ')
-                                                                            ? fullDateTime.split(' ')[1]
-                                                                            : '';
-                                                                        return Container(
-                                                                          width: double.infinity,
-                                                                          margin: const EdgeInsets.only(bottom: 12),
-                                                                          padding: const EdgeInsets.symmetric(
-                                                                            horizontal: 12,
-                                                                            vertical: 5,
+                                                                        Text(
+                                                                          item['result'] ?? '',
+                                                                          style: const TextStyle(
+                                                                            color: Colors.white,
+                                                                            fontSize: 20,
+                                                                            fontWeight: FontWeight.bold,
                                                                           ),
-                                                                          decoration: BoxDecoration(
-                                                                            color: bgColor.withOpacity(0.5),
-                                                                            borderRadius: BorderRadius.circular(16),
-                                                                          ),
-                                                                          child: Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                                            children: [
-                                                                              Align(
-                                                                                alignment: Alignment.centerLeft,
-                                                                                child: Text(
-                                                                                  timePart,
-                                                                                  style: TextStyle(
-                                                                                    color: textGrey.withOpacity(0.8),
-                                                                                    fontSize: 11,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              Text(
-                                                                                item['equation'] ?? '',
-                                                                                style: TextStyle(
-                                                                                  color: textGrey,
-                                                                                  fontSize: 16,
-                                                                                ),
-                                                                              ),
-                                                                              Text(
-                                                                                item['result'] ?? '',
-                                                                                style: const TextStyle(
-                                                                                  color: Colors.white,
-                                                                                  fontSize: 20,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      }).toList(),
-                                                                    ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   );
                                                                 }).toList(),
-                                                              ),
+                                                              ],
+                                                            );
+                                                          }).toList(),
+                                                        ),
                                                       ),
                                                       Padding(
                                                         padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
@@ -890,9 +931,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                                               isDense: true,
                                                                               contentPadding: EdgeInsets.zero,
                                                                             ),
-                                                                            onTap: () => FocusScope.of(
-                                                                              context,
-                                                                            ).requestFocus(_focusNode),
+                                                                            onTap: () =>
+                                                                                FocusScope.of(
+                                                                                  context,
+                                                                                ).requestFocus(_focusNode),
                                                                           );
                                                                         },
                                                                       ),
@@ -1274,15 +1316,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
             _isLoaded && _bannerAd != null
                 ? Container(
-                    width: _bannerAd!.size.width.toDouble(),
-                    height: _bannerAd!.size.height.toDouble(),
-                    alignment: Alignment.center,
-                    child: AdWidget(ad: _bannerAd!),
-                  )
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              alignment: Alignment.center,
+              child: AdWidget(ad: _bannerAd!),
+            )
                 : const SizedBox(
-                    width: double.infinity,
-                    height: 50, // Jab tak ad load na ho, khali space
-                  ),
+              width: double.infinity,
+              height: 50, // Jab tak ad load na ho, khali space
+            ),
           ],
         ),
       ),
@@ -1308,11 +1350,58 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   setState(() {
                     isMenuOpen = !isMenuOpen;
                     // NAYA: Pura screen width lega
-                    _menuDragOffset = isMenuOpen ? MediaQuery.of(context).size.width : 0.0;
+                    _menuDragOffset = isMenuOpen ? MediaQuery
+                        .of(context)
+                        .size
+                        .width : 0.0;
                   });
                 },
               ),
               const SizedBox(width: 8),
+              // ActionButton(
+              //   icon: Icons.picture_in_picture_alt,
+              //   contentColor: textGrey,
+              //   bgColor: surfaceColor.withOpacity(0.5),
+              //   onTap: () async {
+              //     if (_isHapticsEnabled) HapticFeedback.lightImpact();
+              //
+              //     try {
+              //       bool isGranted = await FlutterOverlayWindow.isPermissionGranted();
+              //       if (!isGranted) {
+              //         await FlutterOverlayWindow.requestPermission();
+              //         return;
+              //       }
+              //
+              //       if (await FlutterOverlayWindow.isActive()) {
+              //         await FlutterOverlayWindow.closeOverlay();
+              //         await Future.delayed(const Duration(milliseconds: 300));
+              //       }
+              //
+              //       await FlutterOverlayWindow.showOverlay(
+              //         enableDrag: true,
+              //         overlayTitle: "Calculator Pro",
+              //         overlayContent: "Floating Calculator",
+              //         flag: OverlayFlag.defaultFlag,
+              //         visibility: NotificationVisibility.visibilityPublic,
+              //         positionGravity: PositionGravity.none,
+              //         width: -2,
+              //         // FIX: Isko -2 hi rakhna hai
+              //         height: -2, // FIX: Isko -2 hi rakhna hai
+              //       );
+              //
+              //       Future.delayed(const Duration(milliseconds: 50), () {
+              //         try {
+              //           const MethodChannel('com.sptechstudios/app').invokeMethod('minimizeApp');
+              //         } catch (e) {
+              //           debugPrint("Minimize error: $e");
+              //         }
+              //       });
+              //     } catch (e) {
+              //       debugPrint("Overlay open error: $e");
+              //     }
+              //   },
+              // ),
+
               ActionButton(
                 icon: Icons.picture_in_picture_alt,
                 contentColor: textGrey,
@@ -1321,17 +1410,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   if (_isHapticsEnabled) HapticFeedback.lightImpact();
 
                   try {
+                    // 1. Permission check karein
                     bool isGranted = await FlutterOverlayWindow.isPermissionGranted();
                     if (!isGranted) {
                       await FlutterOverlayWindow.requestPermission();
                       return;
                     }
 
+                    // 2. Agar pehle se open hai to band kar dein
                     if (await FlutterOverlayWindow.isActive()) {
                       await FlutterOverlayWindow.closeOverlay();
                       await Future.delayed(const Duration(milliseconds: 300));
                     }
 
+                    // 3. Nayi Window Open karein (Auto fit mode me)
                     await FlutterOverlayWindow.showOverlay(
                       enableDrag: true,
                       overlayTitle: "Calculator Pro",
@@ -1339,12 +1431,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       flag: OverlayFlag.defaultFlag,
                       visibility: NotificationVisibility.visibilityPublic,
                       positionGravity: PositionGravity.auto,
-                      width: -2,
-                      // FIX: Isko -2 hi rakhna hai
-                      height: -2, // FIX: Isko -2 hi rakhna hai
+                      width: 650,
+                      // FIX 1: Isko wapas -2 kar dein
+                      height: 1000, // FIX 1: Isko wapas -2 kar dein
                     );
 
-                    Future.delayed(const Duration(milliseconds: 100), () {
+                    // 4. Main App ko Background mein bhej dein
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       try {
                         const MethodChannel('com.sptechstudios/app').invokeMethod('minimizeApp');
                       } catch (e) {
@@ -1406,307 +1499,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-} // End CalculatorScreenState class
-
-// --- FLOATING WINDOW UI ---
-class MiniFloatingCalculator extends StatefulWidget {
-  const MiniFloatingCalculator({super.key});
-
-  @override
-  State<MiniFloatingCalculator> createState() => _MiniFloatingCalculatorState();
-}
-
-class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
-  String equation = "";
-  String result = "0";
-
-  // NAYA: Window ko dynamic size dene ke liye variables
-  double _calcWidth = 210.0;
-  double _calcHeight = 330.0;
-
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color orangeColor = const Color(0xFFFF9500);
-
-  void _onPress(String text) {
-    HapticFeedback.selectionClick();
-    setState(() {
-      if (text == 'AC') {
-        equation = "";
-        result = "0";
-      } else if (text == 'BACK') {
-        if (equation.isNotEmpty) {
-          equation = equation.substring(0, equation.length - 1);
-        }
-      } else if (text == '=') {
-        try {
-          String sanitized = equation.replaceAll('×', '*').replaceAll('÷', '/');
-          Parser p = Parser();
-          Expression exp = p.parse(sanitized);
-          double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-          result = eval == eval.toInt()
-              ? eval.toInt().toString()
-              : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-        } catch (e) {
-          result = "Error";
-        }
-      } else {
-        equation += text;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      elevation: 0,
-      //child: Center(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          width: _calcWidth,
-          height: _calcHeight,
-          margin: const EdgeInsets.all(0),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
-          ),
-          child: Column(
-            children: [
-              // --- 1. TOP BAR (Yahan se Drag hoga) ---
-              Listener(
-                onPointerDown: (_) {
-                  // FIX 2: Top Bar touch karte hi Native Drag ON
-                  FlutterOverlayWindow.resizeOverlay(
-                    _calcWidth.toInt(),
-                    _calcHeight.toInt(),
-                    true,
-                  ).catchError((e) {});
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: surfaceColor,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(14)), // Matching border radius
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // EXPAND BUTTON
-                      InkWell(
-                        onTap: () async {
-                          HapticFeedback.selectionClick();
-                          try {
-                            final AndroidIntent intent = AndroidIntent(
-                              action: 'action_main',
-                              package: 'com.sptechstudios.calculator_pro',
-                              componentName: 'com.sptechstudios.calculator_pro.MainActivity',
-                              flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
-                            );
-                            await intent.launch();
-                          } catch (e) {
-                            debugPrint("Error waking up app: $e");
-                          }
-                          FlutterOverlayWindow.closeOverlay();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                          child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
-                        ),
-                      ),
-
-                      // NAYA FIX: 'Calc Pro' hata kar Drag Handle Icon lagaya
-                      const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
-
-                      // CLOSE BUTTON
-                      InkWell(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          FlutterOverlayWindow.closeOverlay();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                          child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // --- 2. DISPLAY & KEYPAD AREA ---
-              // Is area par finger move karne se window drag nahi hogi
-              Expanded(
-                child: Listener(
-                  onPointerDown: (_) {
-                    // FIX 2: Body touch karte hi Native Drag OFF (Taki body se drag na ho)
-                    FlutterOverlayWindow.resizeOverlay(
-                      _calcWidth.toInt(),
-                      _calcHeight.toInt(),
-                      false,
-                    ).catchError((e) {});
-                  },
-                  child: Column(
-                    children: [
-                      // DISPLAY
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        color: bgColor.withOpacity(0.5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              equation.isEmpty ? ' ' : equation,
-                              maxLines: 1,
-                              style: const TextStyle(color: Colors.white54, fontSize: 12),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              result,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // KEYPAD
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Column(
-                            children: [
-                              _buildRow(['AC', 'BACK', '%', '÷']),
-                              _buildRow(['7', '8', '9', '×']),
-                              _buildRow(['4', '5', '6', '-']),
-                              _buildRow(['1', '2', '3', '+']),
-                              _buildRow(['00', '0', '.', '=']),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // --- 3. NAYA BOTTOM BAR (Resize Handles ke liye) ---
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), // Icons ko padding di
-                decoration: BoxDecoration(
-                  color: surfaceColor, // Top bar jaisa alag background color
-                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)), // Niche ka curve
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Bottom-Left Resize Icon
-                    GestureDetector(
-                      onPanUpdate: (details) {
-                        setState(() {
-                          _calcWidth -= details.delta.dx;
-                          _calcHeight += details.delta.dy;
-                          _calcWidth = _calcWidth.clamp(180.0, 350.0);
-                          _calcHeight = _calcHeight.clamp(280.0, 550.0);
-                        });
-                        FlutterOverlayWindow.resizeOverlay(
-                          _calcWidth.toInt(),
-                          _calcHeight.toInt(),
-                          false,
-                        ).catchError((e) {});
-                      },
-                      child: Container(
-                        color: Colors.transparent, // Touch properly catch karne ke liye
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.5), size: 14),
-                      ),
-                    ),
-
-                    // Bottom-Right Resize Icon
-                    GestureDetector(
-                      onPanUpdate: (details) {
-                        setState(() {
-                          _calcWidth += details.delta.dx;
-                          _calcHeight += details.delta.dy;
-                          _calcWidth = _calcWidth.clamp(180.0, 350.0);
-                          _calcHeight = _calcHeight.clamp(280.0, 550.0);
-                        });
-                        FlutterOverlayWindow.resizeOverlay(
-                          _calcWidth.toInt(),
-                          _calcHeight.toInt(),
-                          false,
-                        ).catchError((e) {});
-                      },
-                      child: Container(
-                        color: Colors.transparent, // Touch properly catch karne ke liye
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.open_in_full_rounded, color: cyanColor.withOpacity(0.5), size: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // --- YAHAN TAK REPLACE KAREIN ---
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRow(List<String> buttons) {
-    return Expanded(
-      child: Row(
-        children: buttons.map((text) {
-          Color txtColor = Colors.white;
-          Color bgCol = surfaceColor;
-
-          if (text == 'AC') {
-            txtColor = orangeColor;
-          } else if (text == 'BACK' || text == '%') {
-            txtColor = cyanColor;
-          } else if (['÷', '×', '-', '+', '='].contains(text)) {
-            bgCol = orangeColor.withOpacity(0.2);
-            if (text == '=') {
-              bgCol = orangeColor;
-              txtColor = Colors.white;
-            }
-          }
-
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: InkWell(
-                onTap: () => _onPress(text),
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: text == 'BACK'
-                        ? Icon(Icons.backspace_outlined, color: txtColor, size: 16)
-                        : Text(
-                            text,
-                            style: TextStyle(color: txtColor, fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
       ),
     );
   }
