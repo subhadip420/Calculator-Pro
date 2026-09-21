@@ -1,3 +1,4 @@
+import 'package:calculator_pro/unit_selector_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -87,19 +88,50 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   void _swapUnits() {
     if (_isHapticsEnabled) HapticFeedback.lightImpact();
     setState(() {
-      // Swap Units
+      // 1. Sirf Units aur Symbols ko interchange karein
       String tempUnit = fromUnit;
       String tempSymbol = fromSymbol;
+
       fromUnit = toUnit;
       fromSymbol = toSymbol;
+
       toUnit = tempUnit;
       toSymbol = tempSymbol;
 
-      // Swap Values
-      String tempVal = fromValue;
-      fromValue = toValue;
-      toValue = tempVal;
+      // 2. VALUES SWAP NAHI KARNI HAIN!
+      // Bas naye units ke hisaab se calculation dubara call kar deni hai.
+
+      // _calculateConversion(); // Ye function hum aage math add karte waqt banayenge
     });
+  }
+
+  void _showUnitPicker(bool isFrom) async {
+    if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+    final selectedUnit = await showModalBottomSheet<Map<String, String>>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return const UnitSelectorSheet(
+          category: 'Length', // Bas Category bhej rahe hain
+          // isFromUnit hata diya gaya hai
+        );
+      },
+    );
+
+    if (selectedUnit != null) {
+      setState(() {
+        if (isFrom) {
+          fromUnit = selectedUnit['name']!;
+          fromSymbol = selectedUnit['symbol']!;
+        } else {
+          toUnit = selectedUnit['name']!;
+          toSymbol = selectedUnit['symbol']!;
+        }
+        // _calculateConversion();
+      });
+    }
   }
 
   @override
@@ -154,6 +186,16 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // --- FROM CARD ---
+                    // _buildConversionCard(
+                    //   isActive: isFromSelected,
+                    //   unitName: fromUnit,
+                    //   unitSymbol: fromSymbol,
+                    //   value: fromValue,
+                    //   onTap: () {
+                    //     setState(() { isFromSelected = true; });
+                    //   },
+                    // ),
+
                     _buildConversionCard(
                       isActive: isFromSelected,
                       unitName: fromUnit,
@@ -162,9 +204,20 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                       onTap: () {
                         setState(() { isFromSelected = true; });
                       },
+                      onUnitTap: () => _showUnitPicker(true), // NAYA: From unit sheet open karega
                     ),
                     const SizedBox(height: 16),
                     // --- TO CARD ---
+                    // _buildConversionCard(
+                    //   isActive: !isFromSelected,
+                    //   unitName: toUnit,
+                    //   unitSymbol: toSymbol,
+                    //   value: toValue,
+                    //   onTap: () {
+                    //     setState(() { isFromSelected = false; });
+                    //   },
+                    // ),
+
                     _buildConversionCard(
                       isActive: !isFromSelected,
                       unitName: toUnit,
@@ -173,6 +226,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                       onTap: () {
                         setState(() { isFromSelected = false; });
                       },
+                      onUnitTap: () => _showUnitPicker(false), // NAYA: To unit sheet open karega
                     ),
                   ],
                 ),
@@ -212,12 +266,78 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   }
 
   // --- CARD WIDGET UI ---
+  // Widget _buildConversionCard({
+  //   required bool isActive,
+  //   required String unitName,
+  //   required String unitSymbol,
+  //   required String value,
+  //   required VoidCallback onTap,
+  // }) {
+  //   return GestureDetector(
+  //     onTap: onTap,
+  //     child: AnimatedContainer(
+  //       duration: const Duration(milliseconds: 250),
+  //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+  //       decoration: BoxDecoration(
+  //         color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
+  //         borderRadius: BorderRadius.circular(24),
+  //         border: Border.all(
+  //           color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
+  //           width: isActive ? 1.5 : 1.0,
+  //         ),
+  //       ),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           // Left Side: Unit Info & Dropdown
+  //           Row(
+  //             children: [
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     unitSymbol,
+  //                     style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+  //                   ),
+  //                   const SizedBox(height: 4),
+  //                   Text(
+  //                     unitName,
+  //                     style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(width: 8),
+  //               Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
+  //             ],
+  //           ),
+  //
+  //           // Right Side: Typed Value
+  //           Flexible(
+  //             child: Text(
+  //               value,
+  //               maxLines: 1,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: TextStyle(
+  //                 color: isActive ? cyanColor : Colors.white,
+  //                 fontSize: 32,
+  //                 fontWeight: FontWeight.w300,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+// --- CARD WIDGET UI UPDATE KAREIN ---
   Widget _buildConversionCard({
     required bool isActive,
     required String unitName,
     required String unitSymbol,
     required String value,
     required VoidCallback onTap,
+    required VoidCallback onUnitTap, // NAYA PARAMETER
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -235,26 +355,30 @@ class _LengthConverterViewState extends State<LengthConverterView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Left Side: Unit Info & Dropdown
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      unitSymbol,
-                      style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      unitName,
-                      style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
-              ],
+            // NAYA: Left Side Unit Info ko ek alag GestureDetector me wrap kiya
+            GestureDetector(
+              onTap: onUnitTap, // Unit ya arrow par click karne se bottom sheet open hoga
+              behavior: HitTestBehavior.opaque, // Area ko perfectly clickable banane ke liye
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        unitSymbol,
+                        style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        unitName,
+                        style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
+                ],
+              ),
             ),
 
             // Right Side: Typed Value
