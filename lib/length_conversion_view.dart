@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'action_button.dart'; // Apna custom ActionButton import kiya
+import 'action_button.dart';
+import 'converter_keyboard.dart'; // NAYA: Reusable keyboard import kiya
 
 class LengthConverterView extends StatefulWidget {
-  final VoidCallback onBack; // Wapas main menu jane ke liye callback
+  final VoidCallback onBack;
 
   const LengthConverterView({super.key, required this.onBack});
 
@@ -20,6 +21,17 @@ class _LengthConverterViewState extends State<LengthConverterView> {
 
   bool _isHapticsEnabled = true;
 
+  // State Variables for Conversions
+  bool isFromSelected = true; // Track karega ki kaunsa card active hai
+
+  String fromUnit = 'Meter';
+  String fromSymbol = 'm';
+  String fromValue = '1';
+
+  String toUnit = 'Foot';
+  String toSymbol = 'ft';
+  String toValue = '3.28084'; // Default 1 meter in feet
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +45,63 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     });
   }
 
+  // Basic typing logic (Real formula hum aage add karenge)
+  void _onKeyPress(String key) {
+    setState(() {
+      if (isFromSelected) {
+        if (fromValue == '0' || fromValue == '1' && fromValue.length == 1) {
+          fromValue = key;
+        } else {
+          fromValue += key;
+        }
+      } else {
+        if (toValue == '0' || toValue == '3.28084') {
+          toValue = key;
+        } else {
+          toValue += key;
+        }
+      }
+      // TODO: Yahan dono ke beech real-time conversion math call hoga
+    });
+  }
+
+  void _onBackspace() {
+    setState(() {
+      if (isFromSelected) {
+        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
+        if (fromValue.isEmpty) fromValue = '0';
+      } else {
+        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
+        if (toValue.isEmpty) toValue = '0';
+      }
+    });
+  }
+
+  void _onClear() {
+    setState(() {
+      fromValue = '0';
+      toValue = '0';
+    });
+  }
+
+  void _swapUnits() {
+    if (_isHapticsEnabled) HapticFeedback.lightImpact();
+    setState(() {
+      // Swap Units
+      String tempUnit = fromUnit;
+      String tempSymbol = fromSymbol;
+      fromUnit = toUnit;
+      fromSymbol = toSymbol;
+      toUnit = tempUnit;
+      toSymbol = tempSymbol;
+
+      // Swap Values
+      String tempVal = fromValue;
+      fromValue = toValue;
+      toValue = tempVal;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,45 +110,169 @@ class _LengthConverterViewState extends State<LengthConverterView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Back Button (Wapas Main Menu jane ke liye)
               ActionButton(
                 icon: Icons.arrow_back_ios_new_rounded,
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
                 onTap: () {
                   if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack(); // Callback call kiya
+                  widget.onBack();
                 },
               ),
-              const SizedBox(width: 16),
-
-              // Title
               const Expanded(
-                child: Text(
-                  'Length Converter',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Length Conversion',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
+              ),
+              ActionButton(
+                icon: Icons.star_border_rounded, // Right side star icon
+                contentColor: textGrey,
+                bgColor: surfaceColor.withOpacity(0.5),
+                onTap: () {
+                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                  // TODO: Add to favorites logic
+                },
               ),
             ],
           ),
         ),
 
-        // --- 2. MAIN BODY (Baad mein design karenge) ---
+        // --- 2. MAIN CONVERSION CARDS ---
         Expanded(
-          child: Center(
-            child: Text(
-              'Length Layout\n(Baki UI baad mein aayega)',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // --- FROM CARD ---
+                    _buildConversionCard(
+                      isActive: isFromSelected,
+                      unitName: fromUnit,
+                      unitSymbol: fromSymbol,
+                      value: fromValue,
+                      onTap: () {
+                        setState(() { isFromSelected = true; });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // --- TO CARD ---
+                    _buildConversionCard(
+                      isActive: !isFromSelected,
+                      unitName: toUnit,
+                      unitSymbol: toSymbol,
+                      value: toValue,
+                      onTap: () {
+                        setState(() { isFromSelected = false; });
+                      },
+                    ),
+                  ],
+                ),
+
+                // --- SWAP BUTTON (Dono cards ke beech mein over-lapping) ---
+                GestureDetector(
+                  onTap: _swapUnits,
+                  child: Container(
+                    height: 46,
+                    width: 46,
+                    decoration: BoxDecoration(
+                      color: cyanColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: bgColor, width: 4),
+                      boxShadow: [
+                        BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                      ],
+                    ),
+                    child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+
+        // --- 3. REUSABLE KEYBOARD ---
+        ConverterKeyboard(
+          isHapticsEnabled: _isHapticsEnabled,
+          onKeyPress: _onKeyPress,
+          onBackspace: _onBackspace,
+          onClear: _onClear,
+        ),
+        const SizedBox(height: 10), // Bottom Safe Area space
       ],
+    );
+  }
+
+  // --- CARD WIDGET UI ---
+  Widget _buildConversionCard({
+    required bool isActive,
+    required String unitName,
+    required String unitSymbol,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        decoration: BoxDecoration(
+          color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
+            width: isActive ? 1.5 : 1.0,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Left Side: Unit Info & Dropdown
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      unitSymbol,
+                      style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      unitName,
+                      style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
+              ],
+            ),
+
+            // Right Side: Typed Value
+            Flexible(
+              child: Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: isActive ? cyanColor : Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
