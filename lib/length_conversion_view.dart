@@ -134,6 +134,16 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     }
   }
 
+  // NAYA: Realtime Equivalence Text Generate karne ke liye
+  String _getEquivalenceText() {
+    // Agar future me math logic aayega to yahan exact rate aayega.
+    if (isFromSelected) {
+      return '1 $fromUnit = 3.28084 $toUnit'; // Example for Meter to Foot
+    } else {
+      return '1 $toUnit = 0.3048 $fromUnit';  // Example for Foot to Meter
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -230,6 +240,33 @@ class _LengthConverterViewState extends State<LengthConverterView> {
             ),
           ),
         ),
+
+        // --- NAYA: 2.5 REAL-TIME EQUIVALENCE CARD ---
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Container(
+              key: ValueKey<String>(_getEquivalenceText()), // Text change hone par smooth animation aayegi
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: surfaceColor.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withOpacity(0.05)),
+              ),
+              child: Text(
+                _getEquivalenceText(),
+                style: TextStyle(
+                  color: cyanColor.withOpacity(0.9), // Cyan color se premium look aayega
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
 
         // --- 3. REUSABLE KEYBOARD ---
         ConverterKeyboard(
