@@ -185,17 +185,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // --- FROM CARD ---
-                    // _buildConversionCard(
-                    //   isActive: isFromSelected,
-                    //   unitName: fromUnit,
-                    //   unitSymbol: fromSymbol,
-                    //   value: fromValue,
-                    //   onTap: () {
-                    //     setState(() { isFromSelected = true; });
-                    //   },
-                    // ),
-
                     _buildConversionCard(
                       isActive: isFromSelected,
                       unitName: fromUnit,
@@ -207,17 +196,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                       onUnitTap: () => _showUnitPicker(true), // NAYA: From unit sheet open karega
                     ),
                     const SizedBox(height: 16),
-                    // --- TO CARD ---
-                    // _buildConversionCard(
-                    //   isActive: !isFromSelected,
-                    //   unitName: toUnit,
-                    //   unitSymbol: toSymbol,
-                    //   value: toValue,
-                    //   onTap: () {
-                    //     setState(() { isFromSelected = false; });
-                    //   },
-                    // ),
-
                     _buildConversionCard(
                       isActive: !isFromSelected,
                       unitName: toUnit,
@@ -265,72 +243,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     );
   }
 
-  // --- CARD WIDGET UI ---
-  // Widget _buildConversionCard({
-  //   required bool isActive,
-  //   required String unitName,
-  //   required String unitSymbol,
-  //   required String value,
-  //   required VoidCallback onTap,
-  // }) {
-  //   return GestureDetector(
-  //     onTap: onTap,
-  //     child: AnimatedContainer(
-  //       duration: const Duration(milliseconds: 250),
-  //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-  //       decoration: BoxDecoration(
-  //         color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
-  //         borderRadius: BorderRadius.circular(24),
-  //         border: Border.all(
-  //           color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
-  //           width: isActive ? 1.5 : 1.0,
-  //         ),
-  //       ),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           // Left Side: Unit Info & Dropdown
-  //           Row(
-  //             children: [
-  //               Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(
-  //                     unitSymbol,
-  //                     style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-  //                   ),
-  //                   const SizedBox(height: 4),
-  //                   Text(
-  //                     unitName,
-  //                     style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
-  //                   ),
-  //                 ],
-  //               ),
-  //               const SizedBox(width: 8),
-  //               Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
-  //             ],
-  //           ),
-  //
-  //           // Right Side: Typed Value
-  //           Flexible(
-  //             child: Text(
-  //               value,
-  //               maxLines: 1,
-  //               overflow: TextOverflow.ellipsis,
-  //               style: TextStyle(
-  //                 color: isActive ? cyanColor : Colors.white,
-  //                 fontSize: 32,
-  //                 fontWeight: FontWeight.w300,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-// --- CARD WIDGET UI UPDATE KAREIN ---
   Widget _buildConversionCard({
     required bool isActive,
     required String unitName,
