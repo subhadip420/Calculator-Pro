@@ -33,6 +33,54 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   String toSymbol = 'ft';
   String toValue = '3.28084'; // Default 1 meter in feet
 
+  // --- REAL MATH LOGIC: Har unit ki value in 1 Meter ---
+  final Map<String, double> lengthConversionRates = {
+    // Metric
+    'Kilometer': 1000.0, 'Hectometer': 100.0, 'Decameter': 10.0, 'Meter': 1.0,
+    'Decimeter': 0.1, 'Centimeter': 0.01, 'Millimeter': 0.001,
+    'Micrometer': 1e-6, 'Nanometer': 1e-9, 'Picometer': 1e-12,
+
+    // Imperial
+    'Mil': 0.0000254, 'Inch': 0.0254, 'Link': 0.201168, 'Foot': 0.3048,
+    'Yard': 0.9144, 'Rod': 5.0292, 'Chain': 20.1168, 'Furlong': 201.168,
+    'Mile': 1609.344, 'League': 4828.032,
+
+    // Scientific
+    'Bohr radius': 5.29177e-11, 'Angstrom': 1e-10,
+
+    // Astronomical
+    'Parsec': 3.085677581e16, 'Light year': 9.46073047258e15, 'Astronomical unit': 149597870700.0,
+
+    // Regional (Standard Approximations in meters)
+    'Arabic assba': 0.0318, 'Arabic qabda': 0.127, 'Arabic shibr': 0.254, "Arabic ba'a": 2.032,
+    'Arabic qasab': 3.99, 'Arabic farsakh': 5985.0, 'Arabic marhala': 47880.0,
+    'Chinese cum': 0.0333333, 'Chinese chi': 0.333333, 'Chinese zhang': 3.33333, 'Chinese li': 500.0,
+    'German linie': 0.002179, 'German zoll': 0.02615, 'German elle': 0.523, 'German klafter': 1.88,
+    'German rute': 3.766, 'German meile': 7532.5,
+    'Indian angula': 0.019, 'Indian hasta': 0.457, 'Indian dhira': 0.457, 'Indian gaz': 0.9144,
+    'Indian kos': 3000.0, 'Indian yojana': 12000.0, 'Italian palmo': 0.25,
+    'Japanese sun': 0.030303, 'Japanese shaku': 0.30303, 'Japanese ken': 1.81818, 'Japanese ri': 3927.27,
+    'Korean pun': 0.00303, 'Korean chon': 0.0303, 'Korean ja': 0.303, 'Korean gan': 1.818,
+    'Korean jeong': 109.09, 'Korean ri': 392.72,
+    'Persian zar': 1.04, 'Persian farsang': 6240.0, 'Portuguese braça': 2.2,
+    'Russian vershok': 0.04445, 'Russian arshin': 0.7112, 'Russian sazhen': 2.1336, 'Russian verst': 1066.8,
+    'Scandinavian mile': 10000.0, 'Spanish vara': 0.8359, 'Spanish legua': 4179.5,
+    'Thai wah': 2.0, 'Thai sen': 40.0, 'Thai yote': 16000.0,
+    'Turkish parmak': 0.0315, 'Turkish endaze': 0.65, 'Turkish arşın': 0.68, 'Turkish kulaç': 1.89,
+
+    // Historical
+    'Biblical etzba (finger)': 0.0185, 'Biblical zereth (span)': 0.222, 'Biblical ammah (cubit)': 0.444,
+    'Biblical qaneh (reed)': 2.664, 'Egyptian cubit': 0.523, 'English ell': 1.143,
+    'Greek daktylos (finger)': 0.0193, 'Greek palaiste (palm)': 0.0771, 'Greek pous (foot)': 0.308,
+    'Greek pechys (cubit)': 0.462, 'Greek orgyia (fathom)': 1.85, 'Greek plethron': 30.8, 'Greek stadion': 184.8,
+    'Roman digitus (finger)': 0.0185, 'Roman palmus (palm)': 0.074, 'Roman pes (foot)': 0.296,
+    'Roman cubitus (cubit)': 0.444, 'Roman pace': 1.48, 'Roman actus': 35.5, 'Roman mile': 1480.0,
+
+    // Others
+    'Cable Length': 185.2, 'Nautical Mile': 1852.0,
+  };
+
+
   @override
   void initState() {
     super.initState();
@@ -46,35 +94,128 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     });
   }
 
+  // --- HELPER: Decimal Formatting (Clean Results ke liye) ---
+  String _formatResult(double value) {
+    if (value == 0) return '0';
+    // Max 8 decimal places tak dikhayega aur trailing zero hata dega
+    String res = value.toStringAsPrecision(8);
+    if (res.contains('.')) {
+      res = res.replaceAll(RegExp(r'0*$'), ''); // Piche ke extra 0 hatao
+      res = res.replaceAll(RegExp(r'\.$'), ''); // Agar aakhir me sirf dot bacha h to hatao
+    }
+    return res;
+  }
+
+  // --- CORE: Calculation Logic (Bi-directional) ---
+  void _calculateConversion() {
+    double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+    double rateTo = lengthConversionRates[toUnit] ?? 1.0;
+
+    if (isFromSelected) {
+      double inputValue = double.tryParse(fromValue) ?? 0.0;
+      double result = (inputValue * rateFrom) / rateTo;
+      toValue = _formatResult(result);
+    } else {
+      double inputValue = double.tryParse(toValue) ?? 0.0;
+      double result = (inputValue * rateTo) / rateFrom;
+      fromValue = _formatResult(result);
+    }
+  }
+
   // Basic typing logic (Real formula hum aage add karenge)
+  // void _onKeyPress(String key) {
+  //   setState(() {
+  //     if (isFromSelected) {
+  //       if (fromValue == '0' || fromValue == '1' && fromValue.length == 1) {
+  //         fromValue = key;
+  //       } else {
+  //         fromValue += key;
+  //       }
+  //     } else {
+  //       if (toValue == '0' || toValue == '3.28084') {
+  //         toValue = key;
+  //       } else {
+  //         toValue += key;
+  //       }
+  //     }
+  //     // TODO: Yahan dono ke beech real-time conversion math call hoga
+  //   });
+  // }
+
+  // --- KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue == '0' || fromValue == '1' && fromValue.length == 1) {
-          fromValue = key;
-        } else {
-          fromValue += key;
-        }
+      String currentValue = isFromSelected ? fromValue : toValue;
+
+      // Decimal sirf ek baar allowed hai
+      if (key == '.' && currentValue.contains('.')) return;
+
+      if (currentValue == '0' && key != '.') {
+        currentValue = key; // Replace default 0
       } else {
-        if (toValue == '0' || toValue == '3.28084') {
-          toValue = key;
-        } else {
-          toValue += key;
-        }
+        currentValue += key; // Append digit
       }
-      // TODO: Yahan dono ke beech real-time conversion math call hoga
+
+      if (isFromSelected) {
+        fromValue = currentValue;
+      } else {
+        toValue = currentValue;
+      }
+
+      _calculateConversion(); // Type hote hi convert karega
     });
   }
+
+  // void _onBackspace() {
+  //   setState(() {
+  //     if (isFromSelected) {
+  //       if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
+  //       if (fromValue.isEmpty) fromValue = '0';
+  //     } else {
+  //       if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
+  //       if (toValue.isEmpty) toValue = '0';
+  //     }
+  //   });
+  // }
+  //
+  // void _onClear() {
+  //   setState(() {
+  //     fromValue = '0';
+  //     toValue = '0';
+  //   });
+  // }
+  //
+  // void _swapUnits() {
+  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
+  //   setState(() {
+  //     // 1. Sirf Units aur Symbols ko interchange karein
+  //     String tempUnit = fromUnit;
+  //     String tempSymbol = fromSymbol;
+  //
+  //     fromUnit = toUnit;
+  //     fromSymbol = toSymbol;
+  //
+  //     toUnit = tempUnit;
+  //     toSymbol = tempSymbol;
+  //
+  //     // 2. VALUES SWAP NAHI KARNI HAIN!
+  //     // Bas naye units ke hisaab se calculation dubara call kar deni hai.
+  //
+  //     // _calculateConversion(); // Ye function hum aage math add karte waqt banayenge
+  //   });
+  // }
 
   void _onBackspace() {
     setState(() {
       if (isFromSelected) {
         if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty) fromValue = '0';
+        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
       } else {
         if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty) toValue = '0';
+        if (toValue.isEmpty || toValue == '-') toValue = '0';
       }
+
+      _calculateConversion(); // Delete hone pe wapas update karega
     });
   }
 
@@ -88,7 +229,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   void _swapUnits() {
     if (_isHapticsEnabled) HapticFeedback.lightImpact();
     setState(() {
-      // 1. Sirf Units aur Symbols ko interchange karein
       String tempUnit = fromUnit;
       String tempSymbol = fromSymbol;
 
@@ -98,12 +238,39 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       toUnit = tempUnit;
       toSymbol = tempSymbol;
 
-      // 2. VALUES SWAP NAHI KARNI HAIN!
-      // Bas naye units ke hisaab se calculation dubara call kar deni hai.
-
-      // _calculateConversion(); // Ye function hum aage math add karte waqt banayenge
+      // Swap hone par calculation bhi update hogi (Value wahi rahegi par answer badlega)
+      _calculateConversion();
     });
   }
+
+  // void _showUnitPicker(bool isFrom) async {
+  //   if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //
+  //   final selectedUnit = await showModalBottomSheet<Map<String, String>>(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (context) {
+  //       return const UnitSelectorSheet(
+  //         category: 'Length', // Bas Category bhej rahe hain
+  //         // isFromUnit hata diya gaya hai
+  //       );
+  //     },
+  //   );
+  //
+  //   if (selectedUnit != null) {
+  //     setState(() {
+  //       if (isFrom) {
+  //         fromUnit = selectedUnit['name']!;
+  //         fromSymbol = selectedUnit['symbol']!;
+  //       } else {
+  //         toUnit = selectedUnit['name']!;
+  //         toSymbol = selectedUnit['symbol']!;
+  //       }
+  //       // _calculateConversion();
+  //     });
+  //   }
+  // }
 
   void _showUnitPicker(bool isFrom) async {
     if (_isHapticsEnabled) HapticFeedback.selectionClick();
@@ -113,10 +280,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(
-          category: 'Length', // Bas Category bhej rahe hain
-          // isFromUnit hata diya gaya hai
-        );
+        return const UnitSelectorSheet(category: 'Length');
       },
     );
 
@@ -129,18 +293,33 @@ class _LengthConverterViewState extends State<LengthConverterView> {
           toUnit = selectedUnit['name']!;
           toSymbol = selectedUnit['symbol']!;
         }
-        // _calculateConversion();
+
+        _calculateConversion(); // NAYA: Naya unit choose hote hi calculation update hoga
       });
     }
   }
 
   // NAYA: Realtime Equivalence Text Generate karne ke liye
+  // String _getEquivalenceText() {
+  //   // Agar future me math logic aayega to yahan exact rate aayega.
+  //   if (isFromSelected) {
+  //     return '1 $fromUnit = 3.28084 $toUnit'; // Example for Meter to Foot
+  //   } else {
+  //     return '1 $toUnit = 0.3048 $fromUnit';  // Example for Foot to Meter
+  //   }
+  // }
+
+  // --- NAYA: Exact Realtime Equivalence Generator ---
   String _getEquivalenceText() {
-    // Agar future me math logic aayega to yahan exact rate aayega.
+    double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+    double rateTo = lengthConversionRates[toUnit] ?? 1.0;
+
     if (isFromSelected) {
-      return '1 $fromUnit = 3.28084 $toUnit'; // Example for Meter to Foot
+      double eqValue = rateFrom / rateTo; // 1 FromUnit = X ToUnit
+      return '1 $fromSymbol = ${_formatResult(eqValue)} $toSymbol';
     } else {
-      return '1 $toUnit = 0.3048 $fromUnit';  // Example for Foot to Meter
+      double eqValue = rateTo / rateFrom; // 1 ToUnit = X FromUnit
+      return '1 $toSymbol = ${_formatResult(eqValue)} $fromSymbol';
     }
   }
 
@@ -186,69 +365,128 @@ class _LengthConverterViewState extends State<LengthConverterView> {
         ),
 
         // --- 2. MAIN CONVERSION CARDS ---
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildConversionCard(
-                      isActive: isFromSelected,
-                      unitName: fromUnit,
-                      unitSymbol: fromSymbol,
-                      value: fromValue,
-                      onTap: () {
-                        setState(() { isFromSelected = true; });
-                      },
-                      onUnitTap: () => _showUnitPicker(true), // NAYA: From unit sheet open karega
-                    ),
-                    const SizedBox(height: 16),
-                    _buildConversionCard(
-                      isActive: !isFromSelected,
-                      unitName: toUnit,
-                      unitSymbol: toSymbol,
-                      value: toValue,
-                      onTap: () {
-                        setState(() { isFromSelected = false; });
-                      },
-                      onUnitTap: () => _showUnitPicker(false), // NAYA: To unit sheet open karega
-                    ),
-                  ],
-                ),
+        // Expanded(
+        //   child: Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        //     child: Stack(
+        //       alignment: Alignment.center,
+        //       children: [
+        //         Column(
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             _buildConversionCard(
+        //               isActive: isFromSelected,
+        //               unitName: fromUnit,
+        //               unitSymbol: fromSymbol,
+        //               value: fromValue,
+        //               onTap: () {
+        //                 setState(() { isFromSelected = true; });
+        //               },
+        //               onUnitTap: () => _showUnitPicker(true), // NAYA: From unit sheet open karega
+        //             ),
+        //             const SizedBox(height: 16),
+        //             _buildConversionCard(
+        //               isActive: !isFromSelected,
+        //               unitName: toUnit,
+        //               unitSymbol: toSymbol,
+        //               value: toValue,
+        //               onTap: () {
+        //                 setState(() { isFromSelected = false; });
+        //               },
+        //               onUnitTap: () => _showUnitPicker(false), // NAYA: To unit sheet open karega
+        //             ),
+        //           ],
+        //         ),
+        //
+        //         // --- SWAP BUTTON (Dono cards ke beech mein over-lapping) ---
+        //         GestureDetector(
+        //           onTap: _swapUnits,
+        //           child: Container(
+        //             height: 46,
+        //             width: 46,
+        //             decoration: BoxDecoration(
+        //               color: cyanColor,
+        //               shape: BoxShape.circle,
+        //               border: Border.all(color: bgColor, width: 4),
+        //               boxShadow: [
+        //                 BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+        //               ],
+        //             ),
+        //             child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
 
-                // --- SWAP BUTTON (Dono cards ke beech mein over-lapping) ---
-                GestureDetector(
-                  onTap: _swapUnits,
-                  child: Container(
-                    height: 46,
-                    width: 46,
-                    decoration: BoxDecoration(
-                      color: cyanColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: bgColor, width: 4),
-                      boxShadow: [
-                        BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-                      ],
-                    ),
-                    child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+        // --- 2. MAIN CONVERSION CARDS ---
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min, // NAYA: Isse Swap button theek center me lock ho jayega
+                    children: [
+                      _buildConversionCard(
+                        isActive: isFromSelected,
+                        unitName: fromUnit,
+                        unitSymbol: fromSymbol,
+                        value: fromValue,
+                        onTap: () {
+                          setState(() { isFromSelected = true; });
+                        },
+                        onUnitTap: () => _showUnitPicker(true),
+                      ),
+                      const SizedBox(height: 16), // Swap button exactly is gap ke upar aayega
+                      _buildConversionCard(
+                        isActive: !isFromSelected,
+                        unitName: toUnit,
+                        unitSymbol: toSymbol,
+                        value: toValue,
+                        onTap: () {
+                          setState(() { isFromSelected = false; });
+                        },
+                        onUnitTap: () => _showUnitPicker(false),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+
+                  // --- SWAP BUTTON ---
+                  GestureDetector(
+                    onTap: _swapUnits,
+                    child: Container(
+                      height: 46,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        color: cyanColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: bgColor, width: 4),
+                        boxShadow: [
+                          BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                        ],
+                      ),
+                      child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
 
         // --- NAYA: 2.5 REAL-TIME EQUIVALENCE CARD ---
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Container(
               key: ValueKey<String>(_getEquivalenceText()), // Text change hone par smooth animation aayegi
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
               decoration: BoxDecoration(
                 color: surfaceColor.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
@@ -280,19 +518,92 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     );
   }
 
+  // Widget _buildConversionCard({
+  //   required bool isActive,
+  //   required String unitName,
+  //   required String unitSymbol,
+  //   required String value,
+  //   required VoidCallback onTap,
+  //   required VoidCallback onUnitTap, // NAYA PARAMETER
+  // }) {
+  //   return GestureDetector(
+  //     onTap: onTap,
+  //     child: AnimatedContainer(
+  //       duration: const Duration(milliseconds: 250),
+  //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+  //       decoration: BoxDecoration(
+  //         color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
+  //         borderRadius: BorderRadius.circular(24),
+  //         border: Border.all(
+  //           color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
+  //           width: isActive ? 1.5 : 1.0,
+  //         ),
+  //       ),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           // NAYA: Left Side Unit Info ko ek alag GestureDetector me wrap kiya
+  //           GestureDetector(
+  //             onTap: onUnitTap, // Unit ya arrow par click karne se bottom sheet open hoga
+  //             behavior: HitTestBehavior.opaque, // Area ko perfectly clickable banane ke liye
+  //             child: Row(
+  //               children: [
+  //                 Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       unitSymbol,
+  //                       style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+  //                     ),
+  //                     const SizedBox(height: 4),
+  //                     Text(
+  //                       unitName,
+  //                       style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
+  //                     ),
+  //                   ],
+  //                 ),
+  //                 const SizedBox(width: 8),
+  //                 Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
+  //               ],
+  //             ),
+  //           ),
+  //
+  //           // Right Side: Typed Value
+  //           Flexible(
+  //             child: Text(
+  //               value,
+  //               maxLines: 1,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: TextStyle(
+  //                 color: isActive ? cyanColor : Colors.white,
+  //                 fontSize: 32,
+  //                 fontWeight: FontWeight.w300,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+// --- UPDATED CARD WIDGET UI ---
   Widget _buildConversionCard({
     required bool isActive,
     required String unitName,
     required String unitSymbol,
     required String value,
     required VoidCallback onTap,
-    required VoidCallback onUnitTap, // NAYA PARAMETER
+    required VoidCallback onUnitTap,
   }) {
+    // Dynamic text size logic (Agar value 12 character se lambi hui to font chota ho jayega)
+    double dynamicFontSize = value.length > 11 ? 26.0 : 34.0;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
           color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
           borderRadius: BorderRadius.circular(24),
@@ -301,49 +612,107 @@ class _LengthConverterViewState extends State<LengthConverterView> {
             width: isActive ? 1.5 : 1.0,
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // NAYA: Left Side Unit Info ko ek alag GestureDetector me wrap kiya
+            // --- 1st ROW: Unit Name (Symbol) > ---
             GestureDetector(
-              onTap: onUnitTap, // Unit ya arrow par click karne se bottom sheet open hoga
-              behavior: HitTestBehavior.opaque, // Area ko perfectly clickable banane ke liye
+              onTap: onUnitTap,
+              behavior: HitTestBehavior.opaque,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        unitSymbol,
-                        style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        unitName,
-                        style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 14),
-                      ),
-                    ],
+                  Text(
+                    '$unitName ($unitSymbol)',
+                    style: TextStyle(
+                      color: isActive ? textGrey : textGrey.withOpacity(0.6),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.5)),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: isActive ? cyanColor : textGrey.withOpacity(0.5),
+                    size: 20,
+                  ),
                 ],
               ),
             ),
 
-            // Right Side: Typed Value
-            Flexible(
-              child: Text(
-                value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: isActive ? cyanColor : Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w300,
+            const SizedBox(height: 12),
+
+            // --- 2nd ROW: Dynamic Typed Value + Blinking Cursor ---
+            Container(
+              height: 42, // Fixed height taaki text scroll hone par card ka size up-down na ho
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                reverse: true, // NAYA: Type karte time end ki taraf auto-scroll karega cursor ko dekhte hue
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      value,
+                      style: TextStyle(
+                        color: isActive ? cyanColor : Colors.white,
+                        fontSize: dynamicFontSize, // NAYA: Lamba hone par auto-shrink karega
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    if (isActive) ...[
+                      const SizedBox(width: 4),
+                      BlinkingCursor(cursorColor: cyanColor),
+                    ]
+                  ],
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- NAYA: Blinking Cursor Widget ---
+class BlinkingCursor extends StatefulWidget {
+  final Color cursorColor;
+
+  const BlinkingCursor({super.key, required this.cursorColor});
+
+  @override
+  State<BlinkingCursor> createState() => _BlinkingCursorState();
+}
+
+class _BlinkingCursorState extends State<BlinkingCursor> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // 500ms mein cursor blink karega
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+      ..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        width: 2.5,
+        height: 32,
+        decoration: BoxDecoration(
+          color: widget.cursorColor,
+          borderRadius: BorderRadius.circular(2),
         ),
       ),
     );
