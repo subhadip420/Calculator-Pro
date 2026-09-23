@@ -28,47 +28,58 @@ class ConverterKeyboard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
-          _buildRow(['7', '8', '9']),
-          const SizedBox(height: 10),
-          _buildRow(['4', '5', '6']),
-          const SizedBox(height: 10),
-          _buildRow(['1', '2', '3']),
-          const SizedBox(height: 10),
+          // Row 1: 7, 8, 9, C
           Row(
             children: [
-              // '.' Button
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: _buildButton('.', onTap: () { _triggerHaptic(); onKeyPress('.'); }),
-                ),
-              ),
+              _buildKey('7', onTap: () => onKeyPress('7')),
+              const SizedBox(width: 10),
+              _buildKey('8', onTap: () => onKeyPress('8')),
+              const SizedBox(width: 10),
+              _buildKey('9', onTap: () => onKeyPress('9')),
+              const SizedBox(width: 10),
+              _buildKey('C', textColor: cyanColor, onTap: onClear),
+            ],
+          ),
+          const SizedBox(height: 10),
 
-              // '0' Button
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: _buildButton('0', onTap: () { _triggerHaptic(); onKeyPress('0'); }),
-                ),
-              ),
+          // Row 2: 4, 5, 6, Backspace
+          Row(
+            children: [
+              _buildKey('4', onTap: () => onKeyPress('4')),
+              const SizedBox(width: 10),
+              _buildKey('5', onTap: () => onKeyPress('5')),
+              const SizedBox(width: 10),
+              _buildKey('6', onTap: () => onKeyPress('6')),
+              const SizedBox(width: 10),
+              _buildIconKey(Icons.backspace_outlined, onTap: onBackspace),
+            ],
+          ),
+          const SizedBox(height: 10),
 
-              // Backspace Button
-              Expanded(
-                child: GestureDetector(
-                  onTap: () { _triggerHaptic(); onBackspace(); },
-                  onLongPress: () { _triggerHaptic(); onClear(); }, // Long press se pura clear (AC)
-                  child: Container(
-                    height: 65,
-                    decoration: BoxDecoration(
-                      color: surfaceColor.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Center(
-                      child: Icon(Icons.backspace_outlined, color: cyanColor, size: 28),
-                    ),
-                  ),
-                ),
-              ),
+          // Row 3: 1, 2, 3, Empty Space
+          Row(
+            children: [
+              _buildKey('1', onTap: () => onKeyPress('1')),
+              const SizedBox(width: 10),
+              _buildKey('2', onTap: () => onKeyPress('2')),
+              const SizedBox(width: 10),
+              _buildKey('3', onTap: () => onKeyPress('3')),
+              const SizedBox(width: 10),
+              const Expanded(child: SizedBox()), // Empty space matching 4th column
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Row 4: 00, 0, ., Empty Space
+          Row(
+            children: [
+              _buildKey('00', onTap: () => onKeyPress('00')),
+              const SizedBox(width: 10),
+              _buildKey('0', onTap: () => onKeyPress('0')),
+              const SizedBox(width: 10),
+              _buildKey('.', onTap: () => onKeyPress('.')),
+              const SizedBox(width: 10),
+              const Expanded(child: SizedBox()), // Empty space matching 4th column
             ],
           ),
         ],
@@ -76,35 +87,56 @@ class ConverterKeyboard extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(List<String> keys) {
-    return Row(
-      children: keys.map((key) {
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: key == keys.last ? 0 : 10.0),
-            child: _buildButton(key, onTap: () {
-              _triggerHaptic();
-              onKeyPress(key);
-            }),
+  // --- Helper Methods to Build Keys ---
+
+  Widget _buildKey(String text, {required VoidCallback onTap, Color? textColor}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          _triggerHaptic();
+          onTap();
+        },
+        child: Container(
+          height: 65,
+          decoration: BoxDecoration(
+            color: surfaceColor.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(16),
           ),
-        );
-      }).toList(),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: textColor ?? Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildButton(String text, {required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 65,
-        decoration: BoxDecoration(
-          color: surfaceColor.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w500),
+  Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          _triggerHaptic();
+          onTap();
+        },
+        // Optional: Long press to clear if you still want it, but 'C' is there now
+        onLongPress: () {
+          _triggerHaptic();
+          onClear();
+        },
+        child: Container(
+          height: 65,
+          decoration: BoxDecoration(
+            color: surfaceColor.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Center(
+            child: Icon(icon, color: cyanColor, size: 28),
           ),
         ),
       ),
