@@ -1,50 +1,8 @@
 import 'package:flutter/material.dart';
 
-// --- REUSABLE BLINKING CURSOR WIDGET ---
-class BlinkingCursor extends StatefulWidget {
-  final Color cursorColor;
-
-  const BlinkingCursor({super.key, required this.cursorColor});
-
-  @override
-  State<BlinkingCursor> createState() => _BlinkingCursorState();
-}
-
-class _BlinkingCursorState extends State<BlinkingCursor> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    // 500ms mein cursor blink karega
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
-      ..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _controller,
-      child: Container(
-        width: 2.5,
-        height: 32,
-        decoration: BoxDecoration(
-          color: widget.cursorColor,
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
-    );
-  }
-}
-
 // --- REUSABLE CONVERSION CARD WIDGET ---
-class ConversionCard extends StatelessWidget {
+// NAYA FIX: Isko StatefulWidget banaya gaya hai taaki TextEditingController aur Focus handle ho sake
+class ConversionCard extends StatefulWidget {
   final bool isActive;
   final String unitName;
   final String unitSymbol;
@@ -63,6 +21,52 @@ class ConversionCard extends StatelessWidget {
   });
 
   @override
+  State<ConversionCard> createState() => _ConversionCardState();
+}
+
+class _ConversionCardState extends State<ConversionCard> {
+  late TextEditingController _textController;
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController(text: widget.value);
+    _focusNode = FocusNode();
+
+    // Agar shuru mein active hai, toh focus de do
+    if (widget.isActive) {
+      _focusNode.requestFocus();
+    }
+  }
+
+  @override
+  void didUpdateWidget(ConversionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Active/Inactive state change hone par Focus change karo
+    if (widget.isActive && !oldWidget.isActive) {
+      _focusNode.requestFocus();
+    } else if (!widget.isActive && oldWidget.isActive) {
+      _focusNode.unfocus();
+    }
+
+    // Agar bahar se value change hui hai (Type karne par), toh Controller update karo
+    if (oldWidget.value != widget.value) {
+      _textController.text = widget.value;
+      // Value update hone ke baad cursor ko end mein set karo
+      _textController.selection = TextSelection.collapsed(offset: widget.value.length);
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Theme Colors
     final Color surfaceColor = const Color(0xFF1E2638);
@@ -70,20 +74,23 @@ class ConversionCard extends StatelessWidget {
     final Color textGrey = const Color(0xFFDBC2AD);
 
     // Dynamic text size logic
-    double dynamicFontSize = value.length > 11 ? 26.0 : 34.0;
+    double dynamicFontSize = widget.value.length > 11 ? 26.0 : 34.0;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        widget.onTap();
+        _focusNode.requestFocus();
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
-          color: isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
+          color: widget.isActive ? surfaceColor.withOpacity(0.6) : surfaceColor.withOpacity(0.2),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
-            width: isActive ? 1.5 : 1.0,
+            color: widget.isActive ? cyanColor : Colors.white.withOpacity(0.05),
+            width: widget.isActive ? 1.5 : 1.0,
           ),
         ),
         child: Column(
@@ -91,15 +98,15 @@ class ConversionCard extends StatelessWidget {
           children: [
             // --- 1st ROW: Unit Name (Symbol) > ---
             GestureDetector(
-              onTap: onUnitTap,
+              onTap: widget.onUnitTap,
               behavior: HitTestBehavior.opaque,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '$unitName ($unitSymbol)',
+                    '${widget.unitName} (${widget.unitSymbol})',
                     style: TextStyle(
-                      color: isActive ? textGrey : textGrey.withOpacity(0.6),
+                      color: widget.isActive ? textGrey : textGrey.withOpacity(0.6),
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -107,7 +114,7 @@ class ConversionCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color: isActive ? cyanColor : textGrey.withOpacity(0.5),
+                    color: widget.isActive ? cyanColor : textGrey.withOpacity(0.5),
                     size: 20,
                   ),
                 ],
@@ -116,31 +123,32 @@ class ConversionCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // --- 2nd ROW: Dynamic Typed Value + Blinking Cursor ---
+            // --- 2nd ROW: Native TextField (Auto handles Cursor & Copy/Paste) ---
             Container(
               height: 42,
               alignment: Alignment.centerLeft,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(
-                        color: isActive ? cyanColor : Colors.white,
-                        fontSize: dynamicFontSize,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    if (isActive) ...[
-                      const SizedBox(width: 4),
-                      BlinkingCursor(cursorColor: cyanColor),
-                    ]
-                  ],
+              child: TextField(
+                controller: _textController,
+                focusNode: _focusNode,
+                readOnly: true, // Native keyboard block, custom keyboard on
+                showCursor: widget.isActive, // Sirf active card me cursor dikhega
+                cursorColor: cyanColor,
+                cursorWidth: 2.5,
+                maxLines: 1,
+                scrollPhysics: const BouncingScrollPhysics(),
+                style: TextStyle(
+                  color: widget.isActive ? cyanColor : Colors.white,
+                  fontSize: dynamicFontSize,
+                  fontWeight: FontWeight.w300,
                 ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+                onTap: () {
+                  widget.onTap(); // Tap karne par parent file ko bata do ki card active ho gaya
+                },
               ),
             ),
           ],
