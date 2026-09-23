@@ -8,7 +8,7 @@ import 'package:calculator_pro/weight_mass_conversion_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'action_button.dart';
+import 'custom_action_button.dart';
 import 'area_conversion_view.dart';
 import 'data_storage_conversion_view.dart';
 import 'energy_conversion_view.dart';
@@ -41,6 +41,8 @@ class _MenuOptionsState extends State<MenuOptions> {
   late ScrollController _scrollController;
   bool _showTopSearch = false;
   bool _isHapticsEnabled = true;
+
+  double _savedScrollOffset = 0.0;
 
   @override
   void initState() {
@@ -76,6 +78,34 @@ class _MenuOptionsState extends State<MenuOptions> {
     });
   }
 
+  // --- NAYA FIX 2: View Open karne ka smart logic ---
+  void _openView(String viewName) {
+    if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+    // Naye page par jane se pehle current scroll position save karlo
+    if (_scrollController.hasClients) {
+      _savedScrollOffset = _scrollController.offset;
+    }
+
+    setState(() {
+      _currentActiveView = viewName;
+    });
+  }
+
+  // --- NAYA FIX 3: View Close karke Menu par wapas aane ka logic ---
+  void _closeView() {
+    setState(() {
+      _currentActiveView = null; // Menu par aao
+    });
+
+    // Animation hone ke thik baad saved scroll position ko restore karo
+    Future.delayed(const Duration(milliseconds: 20), () {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_savedScrollOffset);
+      }
+    });
+  }
+
   // NAYA: Switch statement for clean routing
   Widget _getActiveViewWidget() {
     switch (_currentActiveView) {
@@ -95,7 +125,21 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return PopScope(
+      canPop: false, // false ka matlab hai app default tarike se close (pop) nahi hoga
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        // didPop true hone ka matlab hai system ne forcefully pop kar diya hai
+        if (didPop) return;
+
+        if (_currentActiveView != null) {
+          // 1. Agar koi converter page khula hai, toh usko band karke Menu dikhao
+          _closeView();
+        } else {
+          // 2. Agar pehle se Main Menu par hain, toh Menu ko band karke Calculator par jao
+          widget.onClose();
+        }
+      },
+    child: Container(
       width: double.infinity,
       color: bgColor,
       child: SafeArea(
@@ -131,8 +175,10 @@ class _MenuOptionsState extends State<MenuOptions> {
           child: _getActiveViewWidget(),
         ),
       ),
+    ),
     );
   }
+
 
   // NAYA FUNCTION: Main Menu ka pura UI yahan shift kar diya
   Widget _buildMainMenu() {
