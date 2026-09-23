@@ -33,10 +33,25 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   String toSymbol = '°F';
   String toValue = '32';
 
+  // NAYA FIX: Controllers add kiye
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
+
   @override
   void initState() {
     super.initState();
     _loadHaptics();
+
+    // NAYA FIX: Controllers initialize kiye
+    _fromController = TextEditingController(text: fromValue);
+    _toController = TextEditingController(text: toValue);
+  }
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHaptics() async {
@@ -74,45 +89,70 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
       double inKelvin = _convertToKelvin(inputValue, fromUnit);
       double result = _convertFromKelvin(inKelvin, toUnit);
       toValue = _formatResult(result);
+      _toController.text = toValue; // NAYA: Dusra controller update karna
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double inKelvin = _convertToKelvin(inputValue, toUnit);
       double result = _convertFromKelvin(inKelvin, fromUnit);
       fromValue = _formatResult(result);
+      _fromController.text = fromValue; // NAYA: Dusra controller update karna
     }
   }
 
+  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      String currentValue = isFromSelected ? fromValue : toValue;
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
-      if (key == '.' && currentValue.contains('.')) return;
+      int cursorPos = activeController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = activeController.text.length;
 
-      // Handle negative sign for temperature (Naya feature future ke liye)
-      if (key == '-' && currentValue != '0' && currentValue.isNotEmpty) return;
+      String currentText = activeController.text;
 
-      if (currentValue == '0' && key != '.') {
-        currentValue = key;
+      if (key == '.' && currentText.contains('.')) return;
+
+      // Handle negative sign for temperature
+      if (key == '-' && currentText != '0' && currentText.isNotEmpty) return;
+
+      String newText;
+      if (currentText == '0' && key != '.') {
+        newText = key;
+        cursorPos = 0;
       } else {
-        currentValue += key;
+        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
-      if (isFromSelected) fromValue = currentValue;
-      else toValue = currentValue;
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
   }
 
+  // --- NAYA FIX: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-      } else {
-        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty || toValue == '-') toValue = '0';
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
+      int cursorPos = activeController.selection.baseOffset;
+
+      if (cursorPos <= 0) return;
+
+      String currentText = activeController.text;
+      String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+
+      if (newText.isEmpty || newText == '-') {
+        newText = '0';
       }
+
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
+
       _calculateConversion();
     });
   }
@@ -121,6 +161,11 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
     setState(() {
       fromValue = '0';
       toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
+
+      _fromController.selection = const TextSelection.collapsed(offset: 1);
+      _toController.selection = const TextSelection.collapsed(offset: 1);
       _calculateConversion();
     });
   }
@@ -234,7 +279,7 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        value: fromValue,
+                        controller: _fromController, // NAYA FIX
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -245,7 +290,7 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        value: toValue,
+                        controller: _toController, // NAYA FIX
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },

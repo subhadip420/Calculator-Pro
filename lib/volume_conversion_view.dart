@@ -34,6 +34,10 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
   String toSymbol = 'mL';
   String toValue = '1000';
 
+  // NAYA FIX: Controllers add kiye
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
+
   // --- REAL MATH LOGIC: Har unit ki value in 1 Liter (Base Unit: L) ---
   final Map<String, double> volumeConversionRates = {
     'Cubic Meter': 1000.0,
@@ -56,6 +60,17 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
   void initState() {
     super.initState();
     _loadHaptics();
+
+    // NAYA FIX: Controllers initialize kiye
+    _fromController = TextEditingController(text: fromValue);
+    _toController = TextEditingController(text: toValue);
+  }
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHaptics() async {
@@ -85,45 +100,66 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
+      _toController.text = toValue; // NAYA: Dusra controller update karna
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
+      _fromController.text = fromValue; // NAYA: Dusra controller update karna
     }
   }
 
-  // --- KEYBOARD LOGIC ---
+  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      String currentValue = isFromSelected ? fromValue : toValue;
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
-      if (key == '.' && currentValue.contains('.')) return;
+      int cursorPos = activeController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = activeController.text.length;
 
-      if (currentValue == '0' && key != '.') {
-        currentValue = key;
+      String currentText = activeController.text;
+
+      if (key == '.' && currentText.contains('.')) return;
+
+      String newText;
+      if (currentText == '0' && key != '.') {
+        newText = key;
+        cursorPos = 0;
       } else {
-        currentValue += key;
+        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
-      if (isFromSelected) {
-        fromValue = currentValue;
-      } else {
-        toValue = currentValue;
-      }
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
   }
 
+  // --- NAYA FIX: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-      } else {
-        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty || toValue == '-') toValue = '0';
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
+      int cursorPos = activeController.selection.baseOffset;
+
+      if (cursorPos <= 0) return;
+
+      String currentText = activeController.text;
+
+      String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+
+      if (newText.isEmpty || newText == '-') {
+        newText = '0';
       }
+
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
@@ -133,6 +169,11 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     setState(() {
       fromValue = '0';
       toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
+
+      _fromController.selection = const TextSelection.collapsed(offset: 1);
+      _toController.selection = const TextSelection.collapsed(offset: 1);
     });
   }
 
@@ -160,7 +201,6 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        // Dhyan de: Category 'Volume' pass ki gayi hai
         return const UnitSelectorSheet(category: 'Volume');
       },
     );
@@ -249,7 +289,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        value: fromValue,
+                        controller: _fromController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -260,7 +300,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        value: toValue,
+                        controller: _toController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },

@@ -23,7 +23,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
 
   bool _isHapticsEnabled = true;
 
-  // State Variables for Conversions
   bool isFromSelected = true;
 
   String fromUnit = 'Square Meter';
@@ -34,7 +33,10 @@ class _AreaConverterViewState extends State<AreaConverterView> {
   String toSymbol = 'ft²';
   String toValue = '10.76391';
 
-  // --- REAL MATH LOGIC: Har unit ki value in 1 Square Meter (Base Unit: m²) ---
+  // NAYA FIX: Controllers add kiye
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
+
   final Map<String, double> areaConversionRates = {
     'Square Kilometer': 1000000.0,
     'Hectare': 10000.0,
@@ -48,13 +50,23 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     'Square Yard': 0.83612736,
     'Square Foot': 0.09290304,
     'Square Inch': 0.00064516,
-    // Future me aap yahan aur units add kar sakte hain
   };
 
   @override
   void initState() {
     super.initState();
     _loadHaptics();
+
+    // NAYA FIX: Controllers initialize kiye
+    _fromController = TextEditingController(text: fromValue);
+    _toController = TextEditingController(text: toValue);
+  }
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHaptics() async {
@@ -64,7 +76,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     });
   }
 
-  // --- HELPER: Decimal Formatting ---
   String _formatResult(double value) {
     if (value == 0) return '0';
     String res = value.toStringAsPrecision(8);
@@ -75,7 +86,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     return res;
   }
 
-  // --- CORE: Calculation Logic ---
   void _calculateConversion() {
     double rateFrom = areaConversionRates[fromUnit] ?? 1.0;
     double rateTo = areaConversionRates[toUnit] ?? 1.0;
@@ -84,45 +94,66 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
+      _toController.text = toValue; // NAYA: Dusra controller update karna
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
+      _fromController.text = fromValue; // NAYA
     }
   }
 
-  // --- KEYBOARD LOGIC ---
+  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      String currentValue = isFromSelected ? fromValue : toValue;
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
-      if (key == '.' && currentValue.contains('.')) return;
+      int cursorPos = activeController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = activeController.text.length;
 
-      if (currentValue == '0' && key != '.') {
-        currentValue = key;
+      String currentText = activeController.text;
+
+      if (key == '.' && currentText.contains('.')) return;
+
+      String newText;
+      if (currentText == '0' && key != '.') {
+        newText = key;
+        cursorPos = 0;
       } else {
-        currentValue += key;
+        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
-      if (isFromSelected) {
-        fromValue = currentValue;
-      } else {
-        toValue = currentValue;
-      }
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
   }
 
+  // --- NAYA FIX: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-      } else {
-        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty || toValue == '-') toValue = '0';
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
+      int cursorPos = activeController.selection.baseOffset;
+
+      if (cursorPos <= 0) return;
+
+      String currentText = activeController.text;
+
+      String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+
+      if (newText.isEmpty || newText == '-') {
+        newText = '0';
       }
+
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
@@ -132,6 +163,11 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     setState(() {
       fromValue = '0';
       toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
+
+      _fromController.selection = const TextSelection.collapsed(offset: 1);
+      _toController.selection = const TextSelection.collapsed(offset: 1);
     });
   }
 
@@ -159,7 +195,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        // Dhyan de: Category 'Area' pass karni hogi UnitSelectorSheet mein
         return const UnitSelectorSheet(category: 'Area');
       },
     );
@@ -248,7 +283,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        value: fromValue,
+                        controller: _fromController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -259,7 +294,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        value: toValue,
+                        controller: _toController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },

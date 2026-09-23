@@ -33,6 +33,10 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   String toSymbol = 'mph';
   String toValue = '0.621371';
 
+  // NAYA: Controllers add kiye
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
+
   // Base unit for speed: Meters per second (m/s)
   final Map<String, double> speedConversionRates = {
     'Meters per second': 1.0,
@@ -47,6 +51,17 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   void initState() {
     super.initState();
     _loadHaptics();
+
+    // NAYA: Controllers initialize kiye
+    _fromController = TextEditingController(text: fromValue);
+    _toController = TextEditingController(text: toValue);
+  }
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHaptics() async {
@@ -74,41 +89,67 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
+      _toController.text = toValue; // NAYA: Dusra controller update karna
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
+      _fromController.text = fromValue; // NAYA
     }
   }
 
+  // --- NAYA: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      String currentValue = isFromSelected ? fromValue : toValue;
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
-      if (key == '.' && currentValue.contains('.')) return;
+      int cursorPos = activeController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = activeController.text.length;
 
-      if (currentValue == '0' && key != '.') {
-        currentValue = key;
+      String currentText = activeController.text;
+
+      if (key == '.' && currentText.contains('.')) return;
+
+      String newText;
+      if (currentText == '0' && key != '.') {
+        newText = key;
+        cursorPos = 0;
       } else {
-        currentValue += key;
+        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
-      if (isFromSelected) fromValue = currentValue;
-      else toValue = currentValue;
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
   }
 
+  // --- NAYA: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-      } else {
-        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty || toValue == '-') toValue = '0';
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
+      int cursorPos = activeController.selection.baseOffset;
+
+      if (cursorPos <= 0) return;
+
+      String currentText = activeController.text;
+
+      String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+
+      if (newText.isEmpty || newText == '-') {
+        newText = '0';
       }
+
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
+
       _calculateConversion();
     });
   }
@@ -117,6 +158,11 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
     setState(() {
       fromValue = '0';
       toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
+
+      _fromController.selection = const TextSelection.collapsed(offset: 1);
+      _toController.selection = const TextSelection.collapsed(offset: 1);
     });
   }
 
@@ -157,6 +203,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
           toUnit = selectedUnit['name']!;
           toSymbol = selectedUnit['symbol']!;
         }
+
         _calculateConversion();
       });
     }
@@ -231,7 +278,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        value: fromValue,
+                        controller: _fromController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -242,7 +289,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        value: toValue,
+                        controller: _toController, // NAYA
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },

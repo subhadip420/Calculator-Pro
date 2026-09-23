@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 // --- REUSABLE CONVERSION CARD WIDGET ---
-// NAYA FIX: Isko StatefulWidget banaya gaya hai taaki TextEditingController aur Focus handle ho sake
 class ConversionCard extends StatefulWidget {
   final bool isActive;
   final String unitName;
   final String unitSymbol;
-  final String value;
+  final TextEditingController controller; // NAYA FIX: String value ki jagah Controller aayega
   final VoidCallback onTap;
   final VoidCallback onUnitTap;
 
@@ -15,7 +14,7 @@ class ConversionCard extends StatefulWidget {
     required this.isActive,
     required this.unitName,
     required this.unitSymbol,
-    required this.value,
+    required this.controller,
     required this.onTap,
     required this.onUnitTap,
   });
@@ -25,13 +24,11 @@ class ConversionCard extends StatefulWidget {
 }
 
 class _ConversionCardState extends State<ConversionCard> {
-  late TextEditingController _textController;
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.value);
     _focusNode = FocusNode();
 
     // Agar shuru mein active hai, toh focus de do
@@ -50,18 +47,12 @@ class _ConversionCardState extends State<ConversionCard> {
     } else if (!widget.isActive && oldWidget.isActive) {
       _focusNode.unfocus();
     }
-
-    // Agar bahar se value change hui hai (Type karne par), toh Controller update karo
-    if (oldWidget.value != widget.value) {
-      _textController.text = widget.value;
-      // Value update hone ke baad cursor ko end mein set karo
-      _textController.selection = TextSelection.collapsed(offset: widget.value.length);
-    }
+    // NAYA FIX: Yahan se cursor ko force-last karne wala code hata diya gaya hai.
+    // Ab cursor exactly wahi rahega jahan aap tap karenge!
   }
 
   @override
   void dispose() {
-    _textController.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -74,7 +65,7 @@ class _ConversionCardState extends State<ConversionCard> {
     final Color textGrey = const Color(0xFFDBC2AD);
 
     // Dynamic text size logic
-    double dynamicFontSize = widget.value.length > 11 ? 26.0 : 34.0;
+    double dynamicFontSize = widget.controller.text.length > 11 ? 26.0 : 34.0;
 
     return GestureDetector(
       onTap: () {
@@ -123,15 +114,15 @@ class _ConversionCardState extends State<ConversionCard> {
 
             const SizedBox(height: 12),
 
-            // --- 2nd ROW: Native TextField (Auto handles Cursor & Copy/Paste) ---
+            // --- 2nd ROW: Native TextField ---
             Container(
               height: 42,
               alignment: Alignment.centerLeft,
               child: TextField(
-                controller: _textController,
+                controller: widget.controller, // NAYA FIX: Direct parent wala controller use ho raha hai
                 focusNode: _focusNode,
-                readOnly: true, // Native keyboard block, custom keyboard on
-                showCursor: widget.isActive, // Sirf active card me cursor dikhega
+                readOnly: true,
+                showCursor: widget.isActive,
                 cursorColor: cyanColor,
                 cursorWidth: 2.5,
                 maxLines: 1,
@@ -147,7 +138,7 @@ class _ConversionCardState extends State<ConversionCard> {
                   isDense: true,
                 ),
                 onTap: () {
-                  widget.onTap(); // Tap karne par parent file ko bata do ki card active ho gaya
+                  widget.onTap();
                 },
               ),
             ),

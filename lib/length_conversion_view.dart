@@ -34,6 +34,10 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   String toSymbol = 'ft';
   String toValue = '3.28084'; // Default 1 meter in feet
 
+  // NAYA FIX: Controllers add kiye gaye hain
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
+
   // --- REAL MATH LOGIC: Har unit ki value in 1 Meter ---
   final Map<String, double> lengthConversionRates = {
     // Metric
@@ -86,6 +90,9 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   void initState() {
     super.initState();
     _loadHaptics();
+    // NAYA FIX: Controllers ko initial values ke sath setup karna
+    _fromController = TextEditingController(text: fromValue);
+    _toController = TextEditingController(text: toValue);
   }
 
   Future<void> _loadHaptics() async {
@@ -108,6 +115,21 @@ class _LengthConverterViewState extends State<LengthConverterView> {
   }
 
   // --- CORE: Calculation Logic (Bi-directional) ---
+  // void _calculateConversion() {
+  //   double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+  //   double rateTo = lengthConversionRates[toUnit] ?? 1.0;
+  //
+  //   if (isFromSelected) {
+  //     double inputValue = double.tryParse(fromValue) ?? 0.0;
+  //     double result = (inputValue * rateFrom) / rateTo;
+  //     toValue = _formatResult(result);
+  //   } else {
+  //     double inputValue = double.tryParse(toValue) ?? 0.0;
+  //     double result = (inputValue * rateTo) / rateFrom;
+  //     fromValue = _formatResult(result);
+  //   }
+  // }
+
   void _calculateConversion() {
     double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
     double rateTo = lengthConversionRates[toUnit] ?? 1.0;
@@ -116,55 +138,130 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
+      _toController.text = toValue;
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
+      _fromController.text = fromValue;
     }
   }
 
   // --- KEYBOARD LOGIC ---
+  // void _onKeyPress(String key) {
+  //   setState(() {
+  //     String currentValue = isFromSelected ? fromValue : toValue;
+  //
+  //     // Decimal sirf ek baar allowed hai
+  //     if (key == '.' && currentValue.contains('.')) return;
+  //
+  //     if (currentValue == '0' && key != '.') {
+  //       currentValue = key; // Replace default 0
+  //     } else {
+  //       currentValue += key; // Append digit
+  //     }
+  //
+  //     if (isFromSelected) {
+  //       fromValue = currentValue;
+  //     } else {
+  //       toValue = currentValue;
+  //     }
+  //
+  //     _calculateConversion(); // Type hote hi convert karega
+  //   });
+  // }
+
+  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
-      String currentValue = isFromSelected ? fromValue : toValue;
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
-      // Decimal sirf ek baar allowed hai
-      if (key == '.' && currentValue.contains('.')) return;
+      // Cursor position check karna
+      int cursorPos = activeController.selection.baseOffset;
+      if (cursorPos < 0) cursorPos = activeController.text.length;
 
-      if (currentValue == '0' && key != '.') {
-        currentValue = key; // Replace default 0
+      String currentText = activeController.text;
+
+      if (key == '.' && currentText.contains('.')) return;
+
+      String newText;
+      if (currentText == '0' && key != '.') {
+        newText = key;
+        cursorPos = 0; // Replace ho gaya toh insert position 0
       } else {
-        currentValue += key; // Append digit
+        // Cursor jahan hai, text wahi insert hoga
+        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
-      if (isFromSelected) {
-        fromValue = currentValue;
-      } else {
-        toValue = currentValue;
-      }
+      // Controller aur Cursor dono update karo
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      _calculateConversion(); // Type hote hi convert karega
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
+
+      _calculateConversion();
     });
   }
+
+  // void _onBackspace() {
+  //   setState(() {
+  //     if (isFromSelected) {
+  //       if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
+  //       if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
+  //     } else {
+  //       if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
+  //       if (toValue.isEmpty || toValue == '-') toValue = '0';
+  //     }
+  //
+  //     _calculateConversion(); // Delete hone pe wapas update karega
+  //   });
+  // }
 
   void _onBackspace() {
     setState(() {
-      if (isFromSelected) {
-        if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-        if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-      } else {
-        if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-        if (toValue.isEmpty || toValue == '-') toValue = '0';
+      TextEditingController activeController = isFromSelected ? _fromController : _toController;
+      int cursorPos = activeController.selection.baseOffset;
+
+      // Agar cursor ekdum shuru mein hai, toh kuch delete nahi hoga
+      if (cursorPos <= 0) return;
+
+      String currentText = activeController.text;
+
+      // Cursor ke theek pehle wala character delete karo
+      String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+
+      if (newText.isEmpty || newText == '-') {
+        newText = '0';
       }
 
-      _calculateConversion(); // Delete hone pe wapas update karega
+      activeController.text = newText;
+      activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
+
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
+
+      _calculateConversion();
     });
   }
+
+  // void _onClear() {
+  //   setState(() {
+  //     fromValue = '0';
+  //     toValue = '0';
+  //   });
+  // }
 
   void _onClear() {
     setState(() {
       fromValue = '0';
       toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
+
+      // Cursor last mein reset kardo
+      _fromController.selection = const TextSelection.collapsed(offset: 1);
+      _toController.selection = const TextSelection.collapsed(offset: 1);
     });
   }
 
@@ -283,7 +380,8 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        value: fromValue,
+                        //value: fromValue,
+                        controller: _fromController,
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -294,7 +392,8 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        value: toValue,
+                        //value: toValue,
+                        controller: _toController,
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },
