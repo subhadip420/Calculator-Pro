@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'action_button.dart';
-import 'converter_keyboard.dart';
-import 'conversion_card.dart';
+import 'custom_action_button.dart';
+import 'custom_converter_keyboard.dart';
+import 'custom_conversion_card.dart';
 import 'package:calculator_pro/unit_selector_sheet.dart';
 
 class SpeedConverterView extends StatefulWidget {
