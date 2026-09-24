@@ -622,6 +622,45 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Calorie / Second', 'symbol': 'cal/s'}, //[cite: 13]
       ],
     },
+    'Data': {
+      'Base Units': [
+        {'name': 'Bit', 'symbol': 'b'}, //[cite: 12]
+        {'name': 'Nibble', 'symbol': 'n'}, //[cite: 12]
+        {'name': 'Byte', 'symbol': 'B'}, //[cite: 11, 12]
+      ],
+      'Decimal Bytes (Multiples of 1000)': [
+        {'name': 'Kilobyte', 'symbol': 'KB'}, //[cite: 11]
+        {'name': 'Megabyte', 'symbol': 'MB'},
+        {'name': 'Gigabyte', 'symbol': 'GB'},
+        {'name': 'Terabyte', 'symbol': 'TB'},
+        {'name': 'Petabyte', 'symbol': 'PB'}, //[cite: 11]
+        {'name': 'Exabyte', 'symbol': 'EB'}, //[cite: 11]
+      ],
+      'Decimal Bits (Multiples of 1000)': [
+        {'name': 'Kilobit', 'symbol': 'Kb'}, //[cite: 12]
+        {'name': 'Megabit', 'symbol': 'Mb'}, //[cite: 12]
+        {'name': 'Gigabit', 'symbol': 'Gb'}, //[cite: 12]
+        {'name': 'Terabit', 'symbol': 'Tb'}, //[cite: 12]
+        {'name': 'Petabit', 'symbol': 'Pb'}, //[cite: 12]
+        {'name': 'Exabit', 'symbol': 'Eb'}, //[cite: 12]
+      ],
+      'Binary Bytes (Multiples of 1024)': [
+        {'name': 'Kibibyte', 'symbol': 'KiB'}, //[cite: 10]
+        {'name': 'Mebibyte', 'symbol': 'MiB'}, //[cite: 10]
+        {'name': 'Gibibyte', 'symbol': 'GiB'}, //[cite: 10]
+        {'name': 'Tebibyte', 'symbol': 'TiB'}, //[cite: 10]
+        {'name': 'Pebibyte', 'symbol': 'PiB'}, //[cite: 10]
+        {'name': 'Exbibyte', 'symbol': 'EiB'}, //[cite: 10]
+      ],
+      'Binary Bits (Multiples of 1024)': [
+        {'name': 'Kibibit', 'symbol': 'Kib'}, //[cite: 11]
+        {'name': 'Mebibit', 'symbol': 'Mib'}, //[cite: 11]
+        {'name': 'Gibibit', 'symbol': 'Gib'}, //[cite: 11]
+        {'name': 'Tebibit', 'symbol': 'Tib'}, //[cite: 10, 11]
+        {'name': 'Pebibit', 'symbol': 'Pib'}, //[cite: 10, 11]
+        {'name': 'Exbibit', 'symbol': 'Eib'}, //[cite: 10]
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
