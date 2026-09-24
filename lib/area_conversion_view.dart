@@ -25,31 +25,52 @@ class _AreaConverterViewState extends State<AreaConverterView> {
 
   bool isFromSelected = true;
 
-  String fromUnit = 'Square Meter';
+  // NAYA FIX: Default units ko exact name diya gaya hai jo list me hai
+  String fromUnit = 'Meter²';
   String fromSymbol = 'm²';
   String fromValue = '1';
 
-  String toUnit = 'Square Foot';
+  String toUnit = 'Foot²';
   String toSymbol = 'ft²';
   String toValue = '10.76391';
 
-  // NAYA FIX: Controllers add kiye
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
+  // --- NAYA FIX: Har unit ki value in 1 Meter² (Base Unit: m²) ---
   final Map<String, double> areaConversionRates = {
-    'Square Kilometer': 1000000.0,
-    'Hectare': 10000.0,
-    'Are': 100.0,
-    'Square Meter': 1.0,
-    'Square Decimeter': 0.01,
-    'Square Centimeter': 0.0001,
-    'Square Millimeter': 0.000001,
-    'Square Mile': 2589988.110336,
-    'Acre': 4046.8564224,
-    'Square Yard': 0.83612736,
-    'Square Foot': 0.09290304,
-    'Square Inch': 0.00064516,
+    // Metric Units
+    'Picometer²': 1e-24, 'Nanometer²': 1e-18, 'Micrometer²': 1e-12,
+    'Millimeter²': 1e-6, 'Centimeter²': 0.0001, 'Decimeter²': 0.01,
+    'Meter²': 1.0, 'Decameter²': 100.0, 'Are': 100.0,
+    'Hectometer²': 10000.0, 'Kilometer²': 1000000.0,
+
+    // Imperial Units
+    'Mil²': 6.4516e-10, 'Inch²': 0.00064516, 'Foot²': 0.09290304,
+    'Yard²': 0.83612736, 'Link²': 0.04046856, 'Rod²': 25.29285,
+    'Chain²': 404.6856, 'Furlong²': 40468.56, 'Mile²': 2589988.11,
+    'Rood': 1011.71, 'Acre': 4046.8564224, 'Homestead': 647497.03,
+    'Section': 2589988.11, 'Township': 93239571.97,
+
+    // Scientific Units
+    'Planck area': 2.612e-70, 'Barn': 1e-28, 'Angstrom²': 1e-20,
+
+    // Regional Units
+    'Afghan jerib': 2000.0, 'Central American manzana': 6988.96,
+    'Chinese mǔ': 666.67, 'Egyptian feddan': 4200.83, 'Greek stremma': 1000.0,
+    'Indian cent': 40.47, 'Indian kottah': 66.89, 'Indian guntha': 101.17,
+    'Indian ground': 222.97, 'Indian bigha': 1337.8,
+    'Japanese tatami': 1.65, 'Japanese tsubo': 3.31, 'Japanese se': 99.17,
+    'Japanese tan': 991.74, 'Japanese chō': 9917.36,
+    'Korean pyeong': 3.31, 'Middle Eastern dunam': 1000.0,
+    'Pakistani marla': 25.29, 'Pakistani kanal': 505.86,
+    'Puerto Rican cuerda': 3930.4, 'Russian desyatina': 10925.4,
+    'South African morgen': 8565.3, 'Spanish fanegada': 6400.0, 'Thai rai': 1600.0,
+
+    // Historical Units
+    'Egyptian aroura': 2735.0, 'French arpent': 3418.89,
+    'Greek plethron': 948.64, 'Roman actus quadratus': 1261.67,
+    'Roman jugerum': 2523.34, 'Roman heredium': 5046.68,
   };
 
   @override
@@ -57,7 +78,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     super.initState();
     _loadHaptics();
 
-    // NAYA FIX: Controllers initialize kiye
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -94,16 +114,15 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
-      _toController.text = toValue; // NAYA: Dusra controller update karna
+      _toController.text = toValue;
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
-      _fromController.text = fromValue; // NAYA
+      _fromController.text = fromValue;
     }
   }
 
-  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -133,7 +152,6 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     });
   }
 
-  // --- NAYA FIX: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -283,7 +301,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        controller: _fromController, // NAYA
+                        controller: _fromController,
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -294,7 +312,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        controller: _toController, // NAYA
+                        controller: _toController,
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },
