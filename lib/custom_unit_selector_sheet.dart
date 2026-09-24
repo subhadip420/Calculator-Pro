@@ -586,6 +586,42 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Ton of oil equivalent', 'symbol': 'toe'}, //[cite: 10]
       ],
     },
+    'Power': {
+      'Standard Units': [
+        {'name': 'Watt', 'symbol': 'W'},
+        {'name': 'Kilowatt', 'symbol': 'kW'},
+        {'name': 'Horsepower', 'symbol': 'hp'},
+      ],
+      'Metric Units': [
+        {'name': 'Picowatt', 'symbol': 'pW'}, //[cite: 15]
+        {'name': 'Nanowatt', 'symbol': 'nW'}, //[cite: 15]
+        {'name': 'Microwatt', 'symbol': 'μW'}, //[cite: 15]
+        {'name': 'Milliwatt', 'symbol': 'mW'}, //[cite: 15]
+        {'name': 'Megawatt', 'symbol': 'MW'}, //[cite: 15]
+        {'name': 'Gigawatt', 'symbol': 'GW'}, //[cite: 15]
+      ],
+      'Imperial Units': [
+        {'name': 'Foot-pound / Minute', 'symbol': 'flb/m'}, //[cite: 15]
+        {'name': 'Foot-pound / Second', 'symbol': 'flb/s'}, //[cite: 15]
+        {'name': 'Btu / Hour', 'symbol': 'Btu/h'}, //[cite: 14]
+        {'name': 'Btu / Minute', 'symbol': 'Btu/m'}, //[cite: 14]
+        {'name': 'Btu / Second', 'symbol': 'Btu/s'}, //[cite: 14]
+      ],
+      'Scientific': [
+        {'name': 'Erg / Second', 'symbol': 'erg/s'}, //[cite: 13, 14]
+        {'name': 'Solar luminosity', 'symbol': 'L☉'}, //[cite: 13, 14]
+      ],
+      'Engineering': [
+        {'name': 'Metric horsepower', 'symbol': 'PS'}, //[cite: 13, 14]
+        {'name': 'Electrical horsepower', 'symbol': 'ehp'}, //[cite: 13, 14]
+        {'name': 'Boiler horsepower', 'symbol': 'bhp'}, //[cite: 13, 14]
+      ],
+      'Historical & Other': [
+        {'name': 'Poncelet', 'symbol': 'p'}, //[cite: 13]
+        {'name': 'Kilocalorie / Hour', 'symbol': 'kcl/h'}, //[cite: 13]
+        {'name': 'Calorie / Second', 'symbol': 'cal/s'}, //[cite: 13]
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
