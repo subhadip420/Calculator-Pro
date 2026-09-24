@@ -66,6 +66,16 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/percentage-discount-symbol.png
+    - assets/images/area.png
+    - assets/images/length.png
+    - assets/images/data_storage.png
+    - assets/images/energy.png
+    - assets/images/power.png
+    - assets/images/pressure.png
+    - assets/images/speed.png
+    - assets/images/temperature.png
+    - assets/images/volume.png
+    - assets/images/weight.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
