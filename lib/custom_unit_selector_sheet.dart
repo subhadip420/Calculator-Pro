@@ -466,6 +466,47 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Rømer', 'symbol': '°Rø'},
       ],
     },
+    'Speed': {
+      'Standard Units': [
+        {'name': 'Kilometer / Hour', 'symbol': 'km/h'},
+        {'name': 'Mile / Hour', 'symbol': 'mph'},
+        {'name': 'Knot', 'symbol': 'kn'},
+      ],
+      'Metric Units': [
+        {'name': 'Millimeter / Hour', 'symbol': 'mm/h'},
+        {'name': 'Millimeter / Minute', 'symbol': 'mm/min'},
+        {'name': 'Millimeter / Second', 'symbol': 'mm/s'},
+        {'name': 'Centimeter / Hour', 'symbol': 'cm/h'},
+        {'name': 'Centimeter / Minute', 'symbol': 'cm/min'},
+        {'name': 'Centimeter / Second', 'symbol': 'cm/s'},
+        {'name': 'Meter / Hour', 'symbol': 'm/h'},
+        {'name': 'Meter / Minute', 'symbol': 'm/min'},
+        {'name': 'Meter / Second', 'symbol': 'm/s'},
+        {'name': 'Kilometer / Minute', 'symbol': 'km/min'},
+        {'name': 'Kilometer / Second', 'symbol': 'km/s'},
+      ],
+      'Imperial Units': [
+        {'name': 'Inch / Hour', 'symbol': 'in/h'},
+        {'name': 'Inch / Minute', 'symbol': 'in/min'},
+        {'name': 'Inch / Second', 'symbol': 'in/s'},
+        {'name': 'Foot / Hour', 'symbol': 'ft/h'},
+        {'name': 'Foot / Minute', 'symbol': 'ft/min'},
+        {'name': 'Foot / Second', 'symbol': 'ft/s'},
+        {'name': 'Yard / Hour', 'symbol': 'yd/h'},
+        {'name': 'Yard / Minute', 'symbol': 'yd/min'},
+        {'name': 'Yard / Second', 'symbol': 'yd/s'},
+        {'name': 'Mile / Minute', 'symbol': 'mi/min'},
+        {'name': 'Mile / Second', 'symbol': 'mi/s'},
+      ],
+      'Scientific': [
+        {'name': 'Speed of sound', 'symbol': 'mach'},
+        {'name': 'Speed of light', 'symbol': 'c'},
+      ],
+      'Historical': [
+        {'name': 'Greek stadion / Hour', 'symbol': 'std/h'},
+        {'name': 'Roman mile / Hour', 'symbol': 'rmi/h'},
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
