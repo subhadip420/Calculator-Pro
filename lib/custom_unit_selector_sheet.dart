@@ -445,7 +445,27 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Metric cup', 'symbol': 'c'},
       ],
     },
-
+    'Temperature': {
+      'Standard Units': [
+        {'name': 'Celsius', 'symbol': '°C'},
+        {'name': 'Fahrenheit', 'symbol': '°F'},
+        {'name': 'Kelvin', 'symbol': 'K'},
+      ],
+      'Imperial Units': [
+        {'name': 'Rankine', 'symbol': '°R'},
+      ],
+      'Scientific & Engineering': [
+        {'name': 'Electron volt', 'symbol': 'eV'},
+        {'name': 'Planck temperature', 'symbol': 'TP'},
+        {'name': 'Gas mark', 'symbol': 'GM'},
+      ],
+      'Historical Units': [
+        {'name': 'Delisle', 'symbol': '°De'},
+        {'name': 'Newton', 'symbol': '°N'},
+        {'name': 'Réaumur', 'symbol': '°Re'},
+        {'name': 'Rømer', 'symbol': '°Rø'},
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
