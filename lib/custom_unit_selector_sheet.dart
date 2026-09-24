@@ -507,6 +507,44 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Roman mile / Hour', 'symbol': 'rmi/h'},
       ],
     },
+    'Pressure': {
+      'Standard Units': [
+        {'name': 'Bar', 'symbol': 'bar'},
+        {'name': 'Millibar', 'symbol': 'mbar'},
+      ],
+      'Metric Units': [
+        {'name': 'Pascal', 'symbol': 'Pa'},
+        {'name': 'Hectopascal', 'symbol': 'hPa'},
+        {'name': 'Kilopascal', 'symbol': 'kPa'},
+        {'name': 'Megapascal', 'symbol': 'MPa'},
+        {'name': 'Gigapascal', 'symbol': 'GPa'},
+        {'name': 'Millimeter of water', 'symbol': 'mmH₂O'},
+        {'name': 'Millimeter of mercury', 'symbol': 'mmHg'},
+        {'name': 'Kilogram / Centimeter²', 'symbol': 'kg/cm²'},
+      ],
+      'Imperial Units': [
+        {'name': 'Pound / Inch² (PSI)', 'symbol': 'psi'},
+        {'name': 'Pound / Foot²', 'symbol': 'psf'},
+        {'name': 'Inch of water', 'symbol': 'inH₂O'},
+        {'name': 'Inch of mercury', 'symbol': 'inHg'},
+        {'name': 'Kilopound / Inch²', 'symbol': 'ksi'},
+      ],
+      'Scientific & Engineering': [
+        {'name': 'Torr', 'symbol': 'Torr'},
+        {'name': 'Technical atmosphere', 'symbol': 'at'},
+        {'name': 'Short ton / Inch²', 'symbol': 'tsi'},
+        {'name': 'Short ton / Foot²', 'symbol': 'tsf'},
+        {'name': 'Long ton / Inch²', 'symbol': 'lt/in²'},
+        {'name': 'Long ton / Foot²', 'symbol': 'lt/ft²'},
+      ],
+      'Other & Historical': [
+        {'name': 'Atmosphere', 'symbol': 'atm'},
+        {'name': 'Foot of sea water', 'symbol': 'fsw'},
+        {'name': 'Meter of sea water', 'symbol': 'msw'},
+        {'name': 'Barye', 'symbol': 'Ba'},
+        {'name': 'Pieze', 'symbol': 'pz'},
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
