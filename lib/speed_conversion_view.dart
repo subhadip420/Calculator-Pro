@@ -25,26 +25,58 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
 
   bool isFromSelected = true;
 
-  String fromUnit = 'Kilometers per hour';
+  // NAYA FIX: Exact match with the names in the new Map
+  String fromUnit = 'Kilometer / Hour';
   String fromSymbol = 'km/h';
   String fromValue = '1';
 
-  String toUnit = 'Miles per hour';
+  String toUnit = 'Mile / Hour';
   String toSymbol = 'mph';
   String toValue = '0.621371';
 
-  // NAYA: Controllers add kiye
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // Base unit for speed: Meters per second (m/s)
+  // --- REAL MATH LOGIC: Base unit is Meter / Second (m/s) = 1.0 ---
   final Map<String, double> speedConversionRates = {
-    'Meters per second': 1.0,
-    'Kilometers per hour': 0.277777777778, // 1 km/h = 1/3.6 m/s
-    'Miles per hour': 0.44704,
-    'Feet per second': 0.3048,
-    'Knots': 0.514444444444,
-    'Mach': 343.0, // Approximate speed of sound at 20°C
+    // Standard Units
+    'Kilometer / Hour': 0.277777777778, // 1 km/h = 1/3.6 m/s
+    'Mile / Hour': 0.44704,
+    'Knot': 0.514444444444,
+
+    // Metric Units
+    'Millimeter / Hour': 2.77777778e-7,
+    'Millimeter / Minute': 1.66666667e-5,
+    'Millimeter / Second': 0.001,
+    'Centimeter / Hour': 2.77777778e-6,
+    'Centimeter / Minute': 1.66666667e-4,
+    'Centimeter / Second': 0.01,
+    'Meter / Hour': 0.000277777778,
+    'Meter / Minute': 0.0166666667,
+    'Meter / Second': 1.0,
+    'Kilometer / Minute': 16.6666667,
+    'Kilometer / Second': 1000.0,
+
+    // Imperial Units
+    'Inch / Hour': 7.05555556e-6,
+    'Inch / Minute': 0.000423333333,
+    'Inch / Second': 0.0254,
+    'Foot / Hour': 8.46666667e-5,
+    'Foot / Minute': 0.00508,
+    'Foot / Second': 0.3048,
+    'Yard / Hour': 0.000254,
+    'Yard / Minute': 0.01524,
+    'Yard / Second': 0.9144,
+    'Mile / Minute': 26.8224,
+    'Mile / Second': 1609.344,
+
+    // Scientific
+    'Speed of sound': 343.0,
+    'Speed of light': 299792458.0,
+
+    // Historical
+    'Greek stadion / Hour': 0.0527778, // Approx 0.19 km/h
+    'Roman mile / Hour': 0.4111111,    // Approx 1.48 km/h
   };
 
   @override
@@ -52,7 +84,6 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
     super.initState();
     _loadHaptics();
 
-    // NAYA: Controllers initialize kiye
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -89,16 +120,15 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
       double result = (inputValue * rateFrom) / rateTo;
       toValue = _formatResult(result);
-      _toController.text = toValue; // NAYA: Dusra controller update karna
+      _toController.text = toValue;
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
       double result = (inputValue * rateTo) / rateFrom;
       fromValue = _formatResult(result);
-      _fromController.text = fromValue; // NAYA
+      _fromController.text = fromValue;
     }
   }
 
-  // --- NAYA: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -128,7 +158,6 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
     });
   }
 
-  // --- NAYA: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -278,7 +307,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        controller: _fromController, // NAYA
+                        controller: _fromController,
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -289,7 +318,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        controller: _toController, // NAYA
+                        controller: _toController,
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },
