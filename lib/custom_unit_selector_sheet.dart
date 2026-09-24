@@ -545,6 +545,47 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Pieze', 'symbol': 'pz'},
       ],
     },
+    'Energy': {
+      'Standard Units': [
+        {'name': 'Joule', 'symbol': 'J'},
+        {'name': 'Kilojoule', 'symbol': 'kJ'}, //[cite: 12]
+        {'name': 'Calorie', 'symbol': 'cal'}, //[cite: 12]
+        {'name': 'Kilocalorie', 'symbol': 'kcal'}, //[cite: 12]
+      ],
+      'Metric Units': [
+        {'name': 'Megajoule', 'symbol': 'MJ'}, //[cite: 12]
+        {'name': 'Gigajoule', 'symbol': 'GJ'}, //[cite: 12]
+        {'name': 'Watt hour', 'symbol': 'Wh'}, //[cite: 12]
+        {'name': 'Kilowatt hour', 'symbol': 'kWh'},
+        {'name': 'Megawatt hour', 'symbol': 'MWh'}, //[cite: 12]
+        {'name': 'Gigawatt hour', 'symbol': 'GWh'}, //[cite: 12]
+      ],
+      'Imperial Units': [
+        {'name': 'Inch pound', 'symbol': 'in·lb'}, //[cite: 11]
+        {'name': 'Foot pound', 'symbol': 'ft·lb'}, //[cite: 11]
+        {'name': 'Therm', 'symbol': 'thm'}, //[cite: 11]
+      ],
+      'Scientific': [
+        {'name': 'Erg', 'symbol': 'erg'}, //[cite: 11]
+        {'name': 'Rydberg', 'symbol': 'Ry'}, //[cite: 11]
+        {'name': 'Hartree', 'symbol': 'Ha'}, //[cite: 11]
+        {'name': 'Electronvolt', 'symbol': 'eV'}, //[cite: 11]
+      ],
+      'Engineering': [
+        {'name': 'Metric horsepower hour', 'symbol': 'PS·h'}, //[cite: 10, 11]
+        {'name': 'Mechanical horsepower hour', 'symbol': 'hp·h'}, //[cite: 10]
+      ],
+      'Military': [
+        {'name': 'Ton of TNT', 'symbol': 'tTNT'}, //[cite: 10]
+        {'name': 'Kiloton of TNT', 'symbol': 'kTNT'}, //[cite: 10]
+        {'name': 'Megaton of TNT', 'symbol': 'MTNT'}, //[cite: 10]
+      ],
+      'Other': [
+        {'name': 'Barrel of oil equivalent', 'symbol': 'boe'}, //[cite: 10]
+        {'name': 'Ton of coal equivalent', 'symbol': 'tce'}, //[cite: 10]
+        {'name': 'Ton of oil equivalent', 'symbol': 'toe'}, //[cite: 10]
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
