@@ -33,7 +33,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   String toSymbol = '°F';
   String toValue = '32';
 
-  // NAYA FIX: Controllers add kiye
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
@@ -42,7 +41,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
     super.initState();
     _loadHaptics();
 
-    // NAYA FIX: Controllers initialize kiye
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -62,44 +60,73 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   }
 
   String _formatResult(double value) {
+    if (value.isNaN || value.isInfinite) return '0';
     String res = value.toStringAsPrecision(8);
-    if (res.contains('.')) {
+    // Remove trailing zeros if it's a decimal (but avoid corrupting scientific 'e' notation)
+    if (res.contains('.') && !res.contains('e')) {
       res = res.replaceAll(RegExp(r'0*$'), '');
       res = res.replaceAll(RegExp(r'\.$'), '');
     }
-    return res == '-0' ? '0' : res;
+    return (res == '-0' || res == '-0.0') ? '0' : res;
   }
 
-  // --- NAYA: Temperature specific formulas ---
+  // --- NAYA FIX: EXACT TEMPERATURE FORMULAS (Base Unit: Kelvin) ---
   double _convertToKelvin(double val, String unit) {
-    if (unit == 'Celsius') return val + 273.15;
-    if (unit == 'Fahrenheit') return (val - 32) * 5 / 9 + 273.15;
-    return val; // Kelvin
+    switch (unit) {
+      case 'Celsius': return val + 273.15;
+      case 'Fahrenheit': return (val - 32) * 5 / 9 + 273.15;
+      case 'Kelvin': return val;
+      case 'Rankine': return val * 5 / 9;
+      case 'Electron volt': return val * 11604.525; // 1 eV ≈ 11604.5 K
+      case 'Planck temperature': return val * 1.416784e32;
+      case 'Gas mark': return (val * 14) + 121 + 273.15; // Celsius to Kelvin
+      case 'Delisle': return 373.15 - (val * 2 / 3);
+      case 'Newton': return val * 100 / 33 + 273.15;
+      case 'Réaumur': return val * 5 / 4 + 273.15;
+      case 'Rømer': return (val - 7.5) * 40 / 21 + 273.15;
+      default: return val;
+    }
   }
 
   double _convertFromKelvin(double kelvin, String unit) {
-    if (unit == 'Celsius') return kelvin - 273.15;
-    if (unit == 'Fahrenheit') return (kelvin - 273.15) * 9 / 5 + 32;
-    return kelvin; // Kelvin
+    switch (unit) {
+      case 'Celsius': return kelvin - 273.15;
+      case 'Fahrenheit': return (kelvin - 273.15) * 9 / 5 + 32;
+      case 'Kelvin': return kelvin;
+      case 'Rankine': return kelvin * 9 / 5;
+      case 'Electron volt': return kelvin / 11604.525;
+      case 'Planck temperature': return kelvin / 1.416784e32;
+      case 'Gas mark': return (kelvin - 273.15 - 121) / 14;
+      case 'Delisle': return (373.15 - kelvin) * 3 / 2;
+      case 'Newton': return (kelvin - 273.15) * 33 / 100;
+      case 'Réaumur': return (kelvin - 273.15) * 4 / 5;
+      case 'Rømer': return (kelvin - 273.15) * 21 / 40 + 7.5;
+      default: return kelvin;
+    }
   }
 
   void _calculateConversion() {
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
+      if (fromValue == '-' || fromValue.isEmpty) inputValue = 0.0; // Handle minus sign only
+
       double inKelvin = _convertToKelvin(inputValue, fromUnit);
       double result = _convertFromKelvin(inKelvin, toUnit);
+
       toValue = _formatResult(result);
-      _toController.text = toValue; // NAYA: Dusra controller update karna
+      _toController.text = toValue;
     } else {
       double inputValue = double.tryParse(toValue) ?? 0.0;
+      if (toValue == '-' || toValue.isEmpty) inputValue = 0.0;
+
       double inKelvin = _convertToKelvin(inputValue, toUnit);
       double result = _convertFromKelvin(inKelvin, fromUnit);
+
       fromValue = _formatResult(result);
-      _fromController.text = fromValue; // NAYA: Dusra controller update karna
+      _fromController.text = fromValue;
     }
   }
 
-  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -109,21 +136,42 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
 
       String currentText = activeController.text;
 
+      // Handle Decimal
       if (key == '.' && currentText.contains('.')) return;
 
-      // Handle negative sign for temperature
-      if (key == '-' && currentText != '0' && currentText.isNotEmpty) return;
-
       String newText;
-      if (currentText == '0' && key != '.') {
-        newText = key;
-        cursorPos = 0;
-      } else {
-        newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
+
+      // NAYA FIX: Minus/Negative Toggle Logic (Temperature can be negative)
+      if (key == '-' || key == '+/-') {
+        if (currentText.startsWith('-')) {
+          newText = currentText.substring(1);
+          if (cursorPos > 0) cursorPos -= 1;
+        } else {
+          if (currentText == '0') {
+            newText = '-';
+            cursorPos = 1;
+          } else {
+            newText = '-$currentText';
+            cursorPos += 1;
+          }
+        }
+      }
+      // Normal Number Typing
+      else {
+        if (currentText == '0' && key != '.') {
+          newText = key;
+          cursorPos = 1;
+        } else if (currentText == '-0' && key != '.') {
+          newText = '-$key';
+          cursorPos = 2;
+        } else {
+          newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
+          cursorPos += key.length;
+        }
       }
 
       activeController.text = newText;
-      activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
+      activeController.selection = TextSelection.collapsed(offset: cursorPos);
 
       if (isFromSelected) fromValue = newText;
       else toValue = newText;
@@ -132,7 +180,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
     });
   }
 
-  // --- NAYA FIX: CURSOR BASED BACKSPACE LOGIC ---
   void _onBackspace() {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -213,6 +260,7 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   }
 
   String _getEquivalenceText() {
+    // Check if 1 degree equivalence looks good, else show formula or basic rate
     double inKelvin = _convertToKelvin(1.0, isFromSelected ? fromUnit : toUnit);
     double eqValue = _convertFromKelvin(inKelvin, isFromSelected ? toUnit : fromUnit);
 
@@ -279,7 +327,7 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
-                        controller: _fromController, // NAYA FIX
+                        controller: _fromController,
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
@@ -290,7 +338,7 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
-                        controller: _toController, // NAYA FIX
+                        controller: _toController,
                         onTap: () {
                           setState(() { isFromSelected = false; });
                         },
