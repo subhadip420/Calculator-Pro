@@ -119,67 +119,105 @@ class _MenuOptionsState extends State<MenuOptions> {
   // NAYA: Switch statement for clean routing
   Widget _getActiveViewWidget() {
     switch (_currentActiveView) {
-      case 'length': return LengthConverterView(key: const ValueKey('Length'), onBack: () => setState(() => _currentActiveView = null));
-      case 'weight': return WeightMassConverterView(key: const ValueKey('Weight'), onBack: () => setState(() => _currentActiveView = null));
-      case 'area': return AreaConverterView(key: const ValueKey('Area'), onBack: () => setState(() => _currentActiveView = null));
-      case 'volume': return VolumeConverterView(key: const ValueKey('Volume'), onBack: () => setState(() => _currentActiveView = null));
-      case 'temperature': return TemperatureConverterView(key: const ValueKey('Temp'), onBack: () => setState(() => _currentActiveView = null));
-      case 'speed': return SpeedConverterView(key: const ValueKey('Speed'), onBack: () => setState(() => _currentActiveView = null));
-      case 'pressure': return PressureConverterView(key: const ValueKey('Pressure'), onBack: () => setState(() => _currentActiveView = null));
-      case 'energy': return EnergyConverterView(key: const ValueKey('Energy'), onBack: () => setState(() => _currentActiveView = null));
-      case 'power': return PowerConverterView(key: const ValueKey('Power'), onBack: () => setState(() => _currentActiveView = null));
-      case 'data storage': return DataStorageConverterView(key: const ValueKey('Data'), onBack: () => setState(() => _currentActiveView = null));
+      case 'length':
+        return LengthConverterView(
+          key: const ValueKey('Length'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'weight':
+        return WeightMassConverterView(
+          key: const ValueKey('Weight'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'area':
+        return AreaConverterView(
+            key: const ValueKey('Area'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'volume':
+        return VolumeConverterView(
+          key: const ValueKey('Volume'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'temperature':
+        return TemperatureConverterView(
+          key: const ValueKey('Temp'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'speed':
+        return SpeedConverterView(
+          key: const ValueKey('Speed'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'pressure':
+        return PressureConverterView(
+          key: const ValueKey('Pressure'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'energy':
+        return EnergyConverterView(
+          key: const ValueKey('Energy'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'power':
+        return PowerConverterView(
+          key: const ValueKey('Power'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
+      case 'data storage':
+        return DataStorageConverterView(
+          key: const ValueKey('Data'),
+          onBack: () => setState(() => _currentActiveView = null),
+        );
       case 'acceleration':
         return AccelerationConverterView(
-            key: const ValueKey('Acceleration'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Acceleration'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'angle':
         return AngleConverterView(
-            key: const ValueKey('Angle'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Angle'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'data_transfer':
         return DataTransferConverterView(
-            key: const ValueKey('Data Transfer'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Data Transfer'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'force':
         return ForceConverterView(
-            key: const ValueKey('Force'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Force'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'roman_numerals':
         return RomanNumeralsConverterView(
-            key: const ValueKey('Roman Numerals'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Roman Numerals'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'torque':
         return TorqueConverterView(
-            key: const ValueKey('Torque'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Torque'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'volumetric_flow':
         return VolumetricFlowConverterView(
-            key: const ValueKey('Volumetric Flow'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Volumetric Flow'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'time':
-        return TimeConverterView(
-            key: const ValueKey('Time'),
-            onBack: () => setState(() => _currentActiveView = null)
-        );
+        return TimeConverterView(key: const ValueKey('Time'), onBack: () => setState(() => _currentActiveView = null));
       case 'numeric_base':
         return NumericBaseConverterView(
-            key: const ValueKey('Numeric Base'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Numeric Base'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
       case 'shoe_size':
         return ShoeSizeConverterView(
-            key: const ValueKey('Shoe Size'),
-            onBack: () => setState(() => _currentActiveView = null)
+          key: const ValueKey('Shoe Size'),
+          onBack: () => setState(() => _currentActiveView = null),
         );
-      default: return _buildMainMenu();
+      default:
+        return _buildMainMenu();
     }
   }
 
@@ -199,46 +237,39 @@ class _MenuOptionsState extends State<MenuOptions> {
           widget.onClose();
         }
       },
-    child: Container(
-      width: double.infinity,
-      color: bgColor,
-      child: SafeArea(
-        // NAYA: Smooth transition animation ke liye AnimatedSwitcher
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          switchInCurve: Curves.easeInOutCubic,
-          switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: (child, animation) {
-            // Halka sa slide aur fade animation
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          // Agar 'length' view active hai, toh naya page dikhao
-          // child: _currentActiveView == 'length'
-          //     ? LengthConverterView(
-          //   key: const ValueKey('LengthView'),
-          //   onBack: () {
-          //     setState(() {
-          //       _currentActiveView = null; // Wapas Main menu par aao
-          //     });
-          //   },
-          // )
-          //     : _buildMainMenu(), // Warna apna purana menu dikhao
-          child: _getActiveViewWidget(),
+      child: Container(
+        width: double.infinity,
+        color: bgColor,
+        child: SafeArea(
+          // NAYA: Smooth transition animation ke liye AnimatedSwitcher
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeInOutCubic,
+            switchOutCurve: Curves.easeInOutCubic,
+            transitionBuilder: (child, animation) {
+              // Halka sa slide aur fade animation
+              return SlideTransition(
+                position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(animation),
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            // Agar 'length' view active hai, toh naya page dikhao
+            // child: _currentActiveView == 'length'
+            //     ? LengthConverterView(
+            //   key: const ValueKey('LengthView'),
+            //   onBack: () {
+            //     setState(() {
+            //       _currentActiveView = null; // Wapas Main menu par aao
+            //     });
+            //   },
+            // )
+            //     : _buildMainMenu(), // Warna apna purana menu dikhao
+            child: _getActiveViewWidget(),
+          ),
         ),
       ),
-    ),
     );
   }
-
 
   // NAYA FUNCTION: Main Menu ka pura UI yahan shift kar diya
   Widget _buildMainMenu() {
@@ -270,11 +301,7 @@ class _MenuOptionsState extends State<MenuOptions> {
               const Expanded(
                 child: Text(
                   'Tools & Converters',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
 
@@ -286,11 +313,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                   bgColor: surfaceColor.withOpacity(0.5),
                   onTap: () {
                     // Jab tap hoga toh smoothly wapas top par scroll kar dega
-                    _scrollController.animateTo(
-                      0,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOut,
-                    );
+                    _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
                   },
                 ),
                 const SizedBox(width: 8),
@@ -298,15 +321,15 @@ class _MenuOptionsState extends State<MenuOptions> {
 
               // Right: Back Button
               ActionButton(
-                  icon: Icons.arrow_forward_ios_rounded,
-                  contentColor: textGrey,
-                  bgColor: surfaceColor.withOpacity(0.5),
-                  onTap: () {
-                    if (_isHapticsEnabled) {
-                      HapticFeedback.lightImpact();
-                    }
-                    widget.onClose();
+                icon: Icons.arrow_forward_ios_rounded,
+                contentColor: textGrey,
+                bgColor: surfaceColor.withOpacity(0.5),
+                onTap: () {
+                  if (_isHapticsEnabled) {
+                    HapticFeedback.lightImpact();
                   }
+                  widget.onClose();
+                },
               ),
             ],
           ),
@@ -368,123 +391,213 @@ class _MenuOptionsState extends State<MenuOptions> {
                   curve: Curves.easeInOutCubic,
                   child: _isUnitExpanded
                       ? Container(
-                    padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-                    decoration: BoxDecoration(
-                      color: surfaceColor.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // NAYA: Length par tap lagane ke liye (Agar aapne _buildMenuItem update kar liya hai)
-                        _buildMenuItem(
-                            'assets/images/length.png',
-                            'Length',
-                            'Meters, inches, feet & more',
-                            onTap: () {
-                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                              setState(() {
-                                _currentActiveView = 'length'; // View change command
-                              });
-                            }
-                        ),
-                        //_buildMenuItem('assets/images/percentage-discount-symbol.png', 'Weight & Mass', 'Kilograms, pounds, ounces...'),
-                        _buildMenuItem(
-                            'assets/images/weight.png',
-                            'Weight & Mass',
-                            'Kilograms, pounds, ounces...',
-                            onTap: () {
-                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                              setState(() {
-                                _currentActiveView = 'weight'; // View change command
-                              });
-                            }
-                        ),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Area', 'Square meters, acres, hectares...'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Volume', 'Liters, gallons, cubic meters...'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Temperature', 'Celsius, Fahrenheit, Kelvin'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Speed', 'km/h, mph, knots & more'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Pressure', 'Pascal, bar, psi, atm...'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Energy', 'Joules, calories, kWh...'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Power', 'Watts, kilowatts, horsepower...'),
-                        // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Data Storage', 'Bytes, MB, GB, TB, PB...'),
+                          padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                          decoration: BoxDecoration(
+                            color: surfaceColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // NAYA: Length par tap lagane ke liye (Agar aapne _buildMenuItem update kar liya hai)
+                              _buildMenuItem(
+                                'assets/images/length.png',
+                                'Length',
+                                'Meters, inches, feet & more',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() {
+                                    _currentActiveView = 'length'; // View change command
+                                  });
+                                },
+                              ),
+                              //_buildMenuItem('assets/images/percentage-discount-symbol.png', 'Weight & Mass', 'Kilograms, pounds, ounces...'),
+                              _buildMenuItem(
+                                'assets/images/weight.png',
+                                'Weight & Mass',
+                                'Kilograms, pounds, ounces...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() {
+                                    _currentActiveView = 'weight'; // View change command
+                                  });
+                                },
+                              ),
 
-                        _buildMenuItem('assets/images/area.png', 'Area', 'Square meters, acres, hectares...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'area');
-                        }),
-                        _buildMenuItem('assets/images/volume.png', 'Volume', 'Liters, gallons, cubic meters...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'volume');
-                        }),
-                        _buildMenuItem('assets/images/temperature.png', 'Temperature', 'Celsius, Fahrenheit, Kelvin', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'temperature');
-                        }),
-                        _buildMenuItem('assets/images/speed.png', 'Speed', 'km/h, mph, knots & more', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'speed');
-                        }),
-                        _buildMenuItem('assets/images/pressure.png', 'Pressure', 'Pascal, bar, psi, atm...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'pressure');
-                        }),
-                        _buildMenuItem('assets/images/energy.png', 'Energy', 'Joules, calories, kWh...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'energy');
-                        }),
-                        _buildMenuItem('assets/images/power.png', 'Power', 'Watts, kilowatts, horsepower...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'power');
-                        }),
-                        _buildMenuItem('assets/images/data_storage.png', 'Data Storage', 'Bytes, MB, GB, TB, PB...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'data storage');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Acceleration', 'm/s², g, ft/s²...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'acceleration');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Angle', 'Degree, Radian, Gradian...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'angle');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Data Transfer', 'Mbps, MB/s, GB/s...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'data_transfer');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Force', 'Newton, Dyne, Pound-force...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'force');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Roman Numerals', 'I, V, X, L, C, M...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'roman_numerals');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Torque', 'N·m, lb·ft, kgf·m...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'torque');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Volumetric Flow', 'm³/s, L/min, gal/h...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'volumetric_flow');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Time', 'Second, Minute, Hour, Day...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'time');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Numeric Base', 'Binary, Octal, Decimal, Hex...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'numeric_base');
-                        }),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Shoe Size', 'US, UK, EU, CM...', onTap: () {
-                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'shoe_size');
-                        }),
-                      ],
-                    ),
-                  )
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Area', 'Square meters, acres, hectares...'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Volume', 'Liters, gallons, cubic meters...'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Temperature', 'Celsius, Fahrenheit, Kelvin'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Speed', 'km/h, mph, knots & more'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Pressure', 'Pascal, bar, psi, atm...'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Energy', 'Joules, calories, kWh...'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Power', 'Watts, kilowatts, horsepower...'),
+                              // _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Data Storage', 'Bytes, MB, GB, TB, PB...'),
+                              _buildMenuItem(
+                                'assets/images/area.png',
+                                'Area',
+                                'Square meters, acres, hectares...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'area');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/volume.png',
+                                'Volume',
+                                'Liters, gallons, cubic meters...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'volume');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/temperature.png',
+                                'Temperature',
+                                'Celsius, Fahrenheit, Kelvin',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'temperature');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/speed.png',
+                                'Speed',
+                                'km/h, mph, knots & more',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'speed');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/pressure.png',
+                                'Pressure',
+                                'Pascal, bar, psi, atm...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'pressure');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/energy.png',
+                                'Energy',
+                                'Joules, calories, kWh...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'energy');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/power.png',
+                                'Power',
+                                'Watts, kilowatts, horsepower...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'power');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/data_storage.png',
+                                'Data Storage',
+                                'Bytes, MB, GB, TB, PB...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'data storage');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Acceleration',
+                                'm/s², g, ft/s²...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'acceleration');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Angle',
+                                'Degree, Radian, Gradian...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'angle');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Data Transfer',
+                                'Mbps, MB/s, GB/s...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'data_transfer');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Force',
+                                'Newton, Dyne, Pound-force...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'force');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Roman Numerals',
+                                'I, V, X, L, C, M...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'roman_numerals');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Torque',
+                                'N·m, lb·ft, kgf·m...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'torque');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Volumetric Flow',
+                                'm³/s, L/min, gal/h...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'volumetric_flow');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Time',
+                                'Second, Minute, Hour, Day...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'time');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Numeric Base',
+                                'Binary, Octal, Decimal, Hex...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'numeric_base');
+                                },
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Shoe Size',
+                                'US, UK, EU, CM...',
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                  setState(() => _currentActiveView = 'shoe_size');
+                                },
+                              ),
+                            ],
+                          ),
+                        )
                       : const SizedBox.shrink(),
                 ),
 
@@ -528,20 +641,28 @@ class _MenuOptionsState extends State<MenuOptions> {
                   curve: Curves.easeInOutCubic,
                   child: _isOtherExpanded
                       ? Container(
-                    padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-                    decoration: BoxDecoration(
-                      color: surfaceColor.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Discount', 'Calculate discounts'),
-                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'EMI Calculator', 'Loan & Mortgage'),
-                      ],
-                    ),
-                  )
+                          padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                          decoration: BoxDecoration(
+                            color: surfaceColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'Discount',
+                                'Calculate discounts',
+                              ),
+                              _buildMenuItem(
+                                'assets/images/percentage-discount-symbol.png',
+                                'EMI Calculator',
+                                'Loan & Mortgage',
+                              ),
+                            ],
+                          ),
+                        )
                       : const SizedBox.shrink(),
                 ),
               ],
@@ -598,7 +719,7 @@ class _MenuOptionsState extends State<MenuOptions> {
     );
   }
 
-// NAYA: onTap parameter add kiya
+  // NAYA: onTap parameter add kiya
   Widget _buildMenuItem(String imagePath, String title, String subtitle, {VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
@@ -628,7 +749,10 @@ class _MenuOptionsState extends State<MenuOptions> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text(
+                      title,
+                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
                     const SizedBox(height: 4),
                     Text(subtitle, style: TextStyle(color: textGrey.withOpacity(0.6), fontSize: 13)),
                   ],
