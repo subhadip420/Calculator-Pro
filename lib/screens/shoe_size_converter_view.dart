@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class DataTransferConverterView extends StatefulWidget {
+class ShoeSizeConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const DataTransferConverterView({super.key, required this.onBack});
+  const ShoeSizeConverterView({super.key, required this.onBack});
 
   @override
-  State<DataTransferConverterView> createState() => _DataTransferConverterViewState();
+  State<ShoeSizeConverterView> createState() => _ShoeSizeConverterViewState();
 }
 
-class _DataTransferConverterViewState extends State<DataTransferConverterView> {
+class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _DataTransferConverterViewState extends State<DataTransferConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Data Transfer',
+                    'Shoe Size',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _DataTransferConverterViewState extends State<DataTransferConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Data Transfer UI Coming Soon...',
+              'Shoe Size UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

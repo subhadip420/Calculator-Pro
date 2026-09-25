@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class ShoeSizeConverterView extends StatefulWidget {
+class TorqueConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const ShoeSizeConverterView({super.key, required this.onBack});
+  const TorqueConverterView({super.key, required this.onBack});
 
   @override
-  State<ShoeSizeConverterView> createState() => _ShoeSizeConverterViewState();
+  State<TorqueConverterView> createState() => _TorqueConverterViewState();
 }
 
-class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
+class _TorqueConverterViewState extends State<TorqueConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Shoe Size',
+                    'Torque',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Shoe Size UI Coming Soon...',
+              'Torque UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

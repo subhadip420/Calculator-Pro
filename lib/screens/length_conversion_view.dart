@@ -1,21 +1,21 @@
+import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_converter_keyboard.dart';
-import 'custom_conversion_card.dart';
-import 'package:calculator_pro/custom_unit_selector_sheet.dart';
+import '../custom_action_button.dart';
+import '../custom_conversion_card.dart';
+import '../custom_converter_keyboard.dart'; // NAYA: Reusable keyboard import kiya
 
-class VolumeConverterView extends StatefulWidget {
+class LengthConverterView extends StatefulWidget {
   final VoidCallback onBack;
 
-  const VolumeConverterView({super.key, required this.onBack});
+  const LengthConverterView({super.key, required this.onBack});
 
   @override
-  State<VolumeConverterView> createState() => _VolumeConverterViewState();
+  State<LengthConverterView> createState() => _LengthConverterViewState();
 }
 
-class _VolumeConverterViewState extends State<VolumeConverterView> {
+class _LengthConverterViewState extends State<LengthConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
@@ -23,102 +23,76 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
 
   bool _isHapticsEnabled = true;
 
-  bool isFromSelected = true;
+  // State Variables for Conversions
+  bool isFromSelected = true; // Track karega ki kaunsa card active hai
 
-  String fromUnit = 'Liter';
-  String fromSymbol = 'l';
+  String fromUnit = 'Meter';
+  String fromSymbol = 'm';
   String fromValue = '1';
 
-  String toUnit = 'Milliliter';
-  String toSymbol = 'ml';
-  String toValue = '1000';
+  String toUnit = 'Foot';
+  String toSymbol = 'ft';
+  String toValue = '3.28084'; // Default 1 meter in feet
 
+  // NAYA FIX: Controllers add kiye gaye hain
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Har unit ki value in 1 Liter (Base Unit: l) ---
-  final Map<String, double> volumeConversionRates = {
-    // Standard Units (Liters)
-    'Picoliter': 1e-12, 'Nanoliter': 1e-9, 'Microliter': 1e-6,
-    'Milliliter': 0.001, 'Centiliter': 0.01, 'Deciliter': 0.1,
-    'Liter': 1.0, 'Decaliter': 10.0, 'Hectoliter': 100.0, 'Kiloliter': 1000.0,
+  // --- REAL MATH LOGIC: Har unit ki value in 1 Meter ---
+  final Map<String, double> lengthConversionRates = {
+    // Metric
+    'Kilometer': 1000.0, 'Hectometer': 100.0, 'Decameter': 10.0, 'Meter': 1.0,
+    'Decimeter': 0.1, 'Centimeter': 0.01, 'Millimeter': 0.001,
+    'Micrometer': 1e-6, 'Nanometer': 1e-9, 'Picometer': 1e-12,
 
-    // Metric Units (Cubic)
-    'Picometer³': 1e-33, 'Nanometer³': 1e-24, 'Micrometer³': 1e-15,
-    'Millimeter³': 1e-6, 'Centimeter³': 0.001, 'Decimeter³': 1.0,
-    'Meter³': 1000.0, 'Decameter³': 1000000.0, 'Hectometer³': 1000000000.0,
-    'Kilometer³': 1e12,
+    // Imperial
+    'Mil': 0.0000254, 'Inch': 0.0254, 'Link': 0.201168, 'Foot': 0.3048,
+    'Yard': 0.9144, 'Rod': 5.0292, 'Chain': 20.1168, 'Furlong': 201.168,
+    'Mile': 1609.344, 'League': 4828.032,
 
-    // US Units
-    'Minim (US)': 0.0000616115, 'Fluid dram (US)': 0.00369669,
-    'Teaspoon (US)': 0.00492892, 'Tablespoon (US)': 0.0147868,
-    'Ounce (US)': 0.0295735, 'Gill (US)': 0.118294, 'Cup (US)': 0.236588,
-    'Pint (US)': 0.473176, 'Quart (US)': 0.946353, 'Gallon (US)': 3.78541,
-    'Dry pint (US)': 0.55061, 'Dry quart (US)': 1.10122,
-    'Dry gallon (US)': 4.40488, 'Peck (US)': 8.80977,
-    'Bushel (US)': 35.2391, 'Beer barrel (US)': 117.348,
+    // Scientific
+    'Bohr radius': 5.29177e-11, 'Angstrom': 1e-10,
 
-    // UK Units
-    'Minim (UK)': 0.0000591939, 'Fluid dram (UK)': 0.00355163,
-    'Teaspoon (UK)': 0.00591939, 'Tablespoon (UK)': 0.0177582,
-    'Ounce (UK)': 0.0284131, 'Gill (UK)': 0.142065, 'Cup (UK)': 0.284131,
-    'Pint (UK)': 0.568261, 'Quart (UK)': 1.13652, 'Gallon (UK)': 4.54609,
-    'Peck (UK)': 9.09218, 'Bushel (UK)': 36.3687,
+    // Astronomical
+    'Parsec': 3.085677581e16, 'Light year': 9.46073047258e15, 'Astronomical unit': 149597870700.0,
 
-    // Imperial Units (Cubic)
-    'Mil³': 1.6387e-11, 'Inch³': 0.0163871, 'Link³': 8.136,
-    'Foot³': 28.3168, 'Yard³': 764.555, 'Rod³': 127202.8,
-    'Chain³': 8140980.13, 'Furlong³': 8140980127.81,
-    'Mile³': 4.16818182544e12,
+    // Regional (Standard Approximations in meters)
+    'Arabic assba': 0.0318, 'Arabic qabda': 0.127, 'Arabic shibr': 0.254, "Arabic ba'a": 2.032,
+    'Arabic qasab': 3.99, 'Arabic farsakh': 5985.0, 'Arabic marhala': 47880.0,
+    'Chinese cum': 0.0333333, 'Chinese chi': 0.333333, 'Chinese zhang': 3.33333, 'Chinese li': 500.0,
+    'German linie': 0.002179, 'German zoll': 0.02615, 'German elle': 0.523, 'German klafter': 1.88,
+    'German rute': 3.766, 'German meile': 7532.5,
+    'Indian angula': 0.019, 'Indian hasta': 0.457, 'Indian dhira': 0.457, 'Indian gaz': 0.9144,
+    'Indian kos': 3000.0, 'Indian yojana': 12000.0, 'Italian palmo': 0.25,
+    'Japanese sun': 0.030303, 'Japanese shaku': 0.30303, 'Japanese ken': 1.81818, 'Japanese ri': 3927.27,
+    'Korean pun': 0.00303, 'Korean chon': 0.0303, 'Korean ja': 0.303, 'Korean gan': 1.818,
+    'Korean jeong': 109.09, 'Korean ri': 392.72,
+    'Persian zar': 1.04, 'Persian farsang': 6240.0, 'Portuguese braça': 2.2,
+    'Russian vershok': 0.04445, 'Russian arshin': 0.7112, 'Russian sazhen': 2.1336, 'Russian verst': 1066.8,
+    'Scandinavian mile': 10000.0, 'Spanish vara': 0.8359, 'Spanish legua': 4179.5,
+    'Thai wah': 2.0, 'Thai sen': 40.0, 'Thai yote': 16000.0,
+    'Turkish parmak': 0.0315, 'Turkish endaze': 0.65, 'Turkish arşın': 0.68, 'Turkish kulaç': 1.89,
 
-    // Scientific & Engineering
-    'Planck volume': 4.2217e-105, 'Lambda': 1e-6,
-    'Oil barrel': 158.987, 'Register ton': 2831.68, 'Acre foot': 1233481.84,
+    // Historical
+    'Biblical etzba (finger)': 0.0185, 'Biblical zereth (span)': 0.222, 'Biblical ammah (cubit)': 0.444,
+    'Biblical qaneh (reed)': 2.664, 'Egyptian cubit': 0.523, 'English ell': 1.143,
+    'Greek daktylos (finger)': 0.0193, 'Greek palaiste (palm)': 0.0771, 'Greek pous (foot)': 0.308,
+    'Greek pechys (cubit)': 0.462, 'Greek orgyia (fathom)': 1.85, 'Greek plethron': 30.8, 'Greek stadion': 184.8,
+    'Roman digitus (finger)': 0.0185, 'Roman palmus (palm)': 0.074, 'Roman pes (foot)': 0.296,
+    'Roman cubitus (cubit)': 0.444, 'Roman pace': 1.48, 'Roman actus': 35.5, 'Roman mile': 1480.0,
 
-    // Other Units
-    'Metric cup': 0.25,
-
-    // Regional Units
-    'Arabic mudd': 0.543, 'Arabic qist': 1.01, 'Arabic sa\'': 2.17,
-    'Arabic wasq': 130.32, 'Australian tablespoon': 0.02,
-    'Chinese shao': 0.01, 'Chinese ge': 0.1, 'Chinese sheng': 1.0,
-    'Chinese dou': 10.0, 'Chinese dan': 100.0, 'German maß': 1.069,
-    'Indian pav': 0.23, 'Indian seer': 0.933, 'Indian maund': 37.324,
-    'Japanese gō': 0.18039, 'Japanese cup': 0.2, 'Japanese shō': 1.8039,
-    'Japanese to': 18.039, 'Japanese koku': 180.39,
-    'Korean hop': 0.18039, 'Korean doe': 1.8039, 'Korean mal': 18.039,
-    'Russian charka': 0.12299, 'Russian shtof': 1.2299,
-    'Russian chetvert': 3.0748, 'Russian vedro': 12.299,
-    'Russian bochka': 491.98, 'Spanish arroba': 16.133,
-    'Thai tanan': 1.0, 'Thai thang': 20.0,
-
-    // Historical Units
-    'Biblical log': 0.31, 'Biblical cab': 1.22, 'Biblical omer': 2.2,
-    'Biblical hin': 3.67, 'Biblical seah': 7.33, 'Biblical bath': 22.0,
-    'Biblical ephah': 22.0, 'Biblical kor': 220.0,
-    'Egyptian hin': 0.48, 'Egyptian hekat': 4.8,
-    'Greek kyathos': 0.0456, 'Greek kotyle': 0.2736,
-    'Greek chous': 3.283, 'Greek metretes': 39.39,
-    'Roman cyathus': 0.0456, 'Roman acetabulum': 0.0684,
-    'Roman hemina': 0.2736, 'Roman sextarius': 0.547,
-    'Roman congius': 3.283, 'Roman modius': 8.754,
-    'Roman urna': 13.13, 'Roman amphora': 26.26, 'Roman culeus': 525.2,
+    // Others
+    'Cable Length': 185.2, 'Nautical Mile': 1852.0,
   };
+
 
   @override
   void initState() {
     super.initState();
     _loadHaptics();
-
+    // NAYA FIX: Controllers ko initial values ke sath setup karna
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
-  }
-
-  @override
-  void dispose() {
-    _fromController.dispose();
-    _toController.dispose();
-    super.dispose();
   }
 
   Future<void> _loadHaptics() async {
@@ -128,19 +102,37 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     });
   }
 
+  // --- HELPER: Decimal Formatting (Clean Results ke liye) ---
   String _formatResult(double value) {
     if (value == 0) return '0';
+    // Max 8 decimal places tak dikhayega aur trailing zero hata dega
     String res = value.toStringAsPrecision(8);
     if (res.contains('.')) {
-      res = res.replaceAll(RegExp(r'0*$'), '');
-      res = res.replaceAll(RegExp(r'\.$'), '');
+      res = res.replaceAll(RegExp(r'0*$'), ''); // Piche ke extra 0 hatao
+      res = res.replaceAll(RegExp(r'\.$'), ''); // Agar aakhir me sirf dot bacha h to hatao
     }
     return res;
   }
 
+  // --- CORE: Calculation Logic (Bi-directional) ---
+  // void _calculateConversion() {
+  //   double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+  //   double rateTo = lengthConversionRates[toUnit] ?? 1.0;
+  //
+  //   if (isFromSelected) {
+  //     double inputValue = double.tryParse(fromValue) ?? 0.0;
+  //     double result = (inputValue * rateFrom) / rateTo;
+  //     toValue = _formatResult(result);
+  //   } else {
+  //     double inputValue = double.tryParse(toValue) ?? 0.0;
+  //     double result = (inputValue * rateTo) / rateFrom;
+  //     fromValue = _formatResult(result);
+  //   }
+  // }
+
   void _calculateConversion() {
-    double rateFrom = volumeConversionRates[fromUnit] ?? 1.0;
-    double rateTo = volumeConversionRates[toUnit] ?? 1.0;
+    double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+    double rateTo = lengthConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -155,10 +147,36 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     }
   }
 
+  // --- KEYBOARD LOGIC ---
+  // void _onKeyPress(String key) {
+  //   setState(() {
+  //     String currentValue = isFromSelected ? fromValue : toValue;
+  //
+  //     // Decimal sirf ek baar allowed hai
+  //     if (key == '.' && currentValue.contains('.')) return;
+  //
+  //     if (currentValue == '0' && key != '.') {
+  //       currentValue = key; // Replace default 0
+  //     } else {
+  //       currentValue += key; // Append digit
+  //     }
+  //
+  //     if (isFromSelected) {
+  //       fromValue = currentValue;
+  //     } else {
+  //       toValue = currentValue;
+  //     }
+  //
+  //     _calculateConversion(); // Type hote hi convert karega
+  //   });
+  // }
+
+  // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
 
+      // Cursor position check karna
       int cursorPos = activeController.selection.baseOffset;
       if (cursorPos < 0) cursorPos = activeController.text.length;
 
@@ -169,11 +187,13 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       String newText;
       if (currentText == '0' && key != '.') {
         newText = key;
-        cursorPos = 0;
+        cursorPos = 0; // Replace ho gaya toh insert position 0
       } else {
+        // Cursor jahan hai, text wahi insert hoga
         newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
+      // Controller aur Cursor dono update karo
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
@@ -184,15 +204,31 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     });
   }
 
+  // void _onBackspace() {
+  //   setState(() {
+  //     if (isFromSelected) {
+  //       if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
+  //       if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
+  //     } else {
+  //       if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
+  //       if (toValue.isEmpty || toValue == '-') toValue = '0';
+  //     }
+  //
+  //     _calculateConversion(); // Delete hone pe wapas update karega
+  //   });
+  // }
+
   void _onBackspace() {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
       int cursorPos = activeController.selection.baseOffset;
 
+      // Agar cursor ekdum shuru mein hai, toh kuch delete nahi hoga
       if (cursorPos <= 0) return;
 
       String currentText = activeController.text;
 
+      // Cursor ke theek pehle wala character delete karo
       String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
 
       if (newText.isEmpty || newText == '-') {
@@ -209,6 +245,13 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     });
   }
 
+  // void _onClear() {
+  //   setState(() {
+  //     fromValue = '0';
+  //     toValue = '0';
+  //   });
+  // }
+
   void _onClear() {
     setState(() {
       fromValue = '0';
@@ -216,6 +259,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       _fromController.text = '0';
       _toController.text = '0';
 
+      // Cursor last mein reset kardo
       _fromController.selection = const TextSelection.collapsed(offset: 1);
       _toController.selection = const TextSelection.collapsed(offset: 1);
     });
@@ -233,6 +277,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       toUnit = tempUnit;
       toSymbol = tempSymbol;
 
+      // Swap hone par calculation bhi update hogi (Value wahi rahegi par answer badlega)
       _calculateConversion();
     });
   }
@@ -245,7 +290,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(category: 'Volume');
+        return const UnitSelectorSheet(category: 'Length');
       },
     );
 
@@ -259,20 +304,21 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
           toSymbol = selectedUnit['symbol']!;
         }
 
-        _calculateConversion();
+        _calculateConversion(); // NAYA: Naya unit choose hote hi calculation update hoga
       });
     }
   }
 
+  // --- NAYA: Exact Realtime Equivalence Generator ---
   String _getEquivalenceText() {
-    double rateFrom = volumeConversionRates[fromUnit] ?? 1.0;
-    double rateTo = volumeConversionRates[toUnit] ?? 1.0;
+    double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
+    double rateTo = lengthConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
-      double eqValue = rateFrom / rateTo;
+      double eqValue = rateFrom / rateTo; // 1 FromUnit = X ToUnit
       return '1 $fromSymbol = ${_formatResult(eqValue)} $toSymbol';
     } else {
-      double eqValue = rateTo / rateFrom;
+      double eqValue = rateTo / rateFrom; // 1 ToUnit = X FromUnit
       return '1 $toSymbol = ${_formatResult(eqValue)} $fromSymbol';
     }
   }
@@ -300,17 +346,18 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Volume Conversion',
+                    'Length Conversion',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               ActionButton(
-                icon: Icons.star_border_rounded,
+                icon: Icons.star_border_rounded, // Right side star icon
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
                 onTap: () {
                   if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                  // TODO: Add to favorites logic
                 },
               ),
             ],
@@ -327,23 +374,25 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
                 alignment: Alignment.center,
                 children: [
                   Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.min, // NAYA: Isse Swap button theek center me lock ho jayega
                     children: [
                       ConversionCard(
                         isActive: isFromSelected,
                         unitName: fromUnit,
                         unitSymbol: fromSymbol,
+                        //value: fromValue,
                         controller: _fromController,
                         onTap: () {
                           setState(() { isFromSelected = true; });
                         },
                         onUnitTap: () => _showUnitPicker(true),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 16), // Swap button exactly is gap ke upar aayega
                       ConversionCard(
                         isActive: !isFromSelected,
                         unitName: toUnit,
                         unitSymbol: toSymbol,
+                        //value: toValue,
                         controller: _toController,
                         onTap: () {
                           setState(() { isFromSelected = false; });
@@ -376,14 +425,14 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
           ),
         ),
 
-        // --- 3. REAL-TIME EQUIVALENCE TEXT ---
+        // --- NAYA: 2.5 REAL-TIME EQUIVALENCE CARD ---
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Container(
-              key: ValueKey<String>(_getEquivalenceText()),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              key: ValueKey<String>(_getEquivalenceText()), // Text change hone par smooth animation aayegi
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
               decoration: BoxDecoration(
                 color: surfaceColor.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
@@ -392,7 +441,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
               child: Text(
                 _getEquivalenceText(),
                 style: TextStyle(
-                  color: cyanColor.withOpacity(0.9),
+                  color: cyanColor.withOpacity(0.9), // Cyan color se premium look aayega
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
@@ -403,14 +452,14 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
         ),
         const SizedBox(height: 8),
 
-        // --- 4. REUSABLE KEYBOARD ---
+        // --- 3. REUSABLE KEYBOARD ---
         ConverterKeyboard(
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,
           onClear: _onClear,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 10), // Bottom Safe Area space
       ],
     );
   }

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class TimeConverterView extends StatefulWidget {
+class NumericBaseConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const TimeConverterView({super.key, required this.onBack});
+  const NumericBaseConverterView({super.key, required this.onBack});
 
   @override
-  State<TimeConverterView> createState() => _TimeConverterViewState();
+  State<NumericBaseConverterView> createState() => _NumericBaseConverterViewState();
 }
 
-class _TimeConverterViewState extends State<TimeConverterView> {
+class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Time',
+                    'Numeric Base',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Time UI Coming Soon...',
+              'Numeric Base UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

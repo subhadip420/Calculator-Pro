@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class NumericBaseConverterView extends StatefulWidget {
+class AccelerationConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const NumericBaseConverterView({super.key, required this.onBack});
+  const AccelerationConverterView({super.key, required this.onBack});
 
   @override
-  State<NumericBaseConverterView> createState() => _NumericBaseConverterViewState();
+  State<AccelerationConverterView> createState() => _AccelerationConverterViewState();
 }
 
-class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
+class _AccelerationConverterViewState extends State<AccelerationConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Numeric Base',
+                    'Acceleration',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Numeric Base UI Coming Soon...',
+              'Acceleration UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

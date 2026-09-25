@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class TorqueConverterView extends StatefulWidget {
+class TimeConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const TorqueConverterView({super.key, required this.onBack});
+  const TimeConverterView({super.key, required this.onBack});
 
   @override
-  State<TorqueConverterView> createState() => _TorqueConverterViewState();
+  State<TimeConverterView> createState() => _TimeConverterViewState();
 }
 
-class _TorqueConverterViewState extends State<TorqueConverterView> {
+class _TimeConverterViewState extends State<TimeConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _TorqueConverterViewState extends State<TorqueConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Torque',
+                    'Time',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _TorqueConverterViewState extends State<TorqueConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Torque UI Coming Soon...',
+              'Time UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

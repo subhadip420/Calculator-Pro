@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class AngleConverterView extends StatefulWidget {
+class DataTransferConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const AngleConverterView({super.key, required this.onBack});
+  const DataTransferConverterView({super.key, required this.onBack});
 
   @override
-  State<AngleConverterView> createState() => _AngleConverterViewState();
+  State<DataTransferConverterView> createState() => _DataTransferConverterViewState();
 }
 
-class _AngleConverterViewState extends State<AngleConverterView> {
+class _DataTransferConverterViewState extends State<DataTransferConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _AngleConverterViewState extends State<AngleConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Angle',
+                    'Data Transfer',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _AngleConverterViewState extends State<AngleConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Angle UI Coming Soon...',
+              'Data Transfer UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),

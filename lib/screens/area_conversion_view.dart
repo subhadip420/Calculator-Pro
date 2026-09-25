@@ -1,79 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_converter_keyboard.dart';
-import 'custom_conversion_card.dart';
+import '../custom_action_button.dart';
+import '../custom_converter_keyboard.dart';
+import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-class EnergyConverterView extends StatefulWidget {
+class AreaConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const EnergyConverterView({super.key, required this.onBack});
+
+  const AreaConverterView({super.key, required this.onBack});
 
   @override
-  State<EnergyConverterView> createState() => _EnergyConverterViewState();
+  State<AreaConverterView> createState() => _AreaConverterViewState();
 }
 
-class _EnergyConverterViewState extends State<EnergyConverterView> {
+class _AreaConverterViewState extends State<AreaConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
+
   bool isFromSelected = true;
 
-  String fromUnit = 'Joule';
-  String fromSymbol = 'J';
+  // NAYA FIX: Default units ko exact name diya gaya hai jo list me hai
+  String fromUnit = 'Meter²';
+  String fromSymbol = 'm²';
   String fromValue = '1';
 
-  String toUnit = 'Kilocalorie';
-  String toSymbol = 'kcal';
-  String toValue = '0.000239006';
+  String toUnit = 'Foot²';
+  String toSymbol = 'ft²';
+  String toValue = '10.76391';
 
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Base unit is Joule (J) = 1.0 ---
-  final Map<String, double> energyConversionRates = {
-    // Standard Units
-    'Joule': 1.0,
-    'Kilojoule': 1000.0,
-    'Calorie': 4.184,
-    'Kilocalorie': 4184.0,
-
+  // --- NAYA FIX: Har unit ki value in 1 Meter² (Base Unit: m²) ---
+  final Map<String, double> areaConversionRates = {
     // Metric Units
-    'Megajoule': 1000000.0,
-    'Gigajoule': 1000000000.0,
-    'Watt hour': 3600.0,
-    'Kilowatt hour': 3600000.0,
-    'Megawatt hour': 3600000000.0,
-    'Gigawatt hour': 3600000000000.0,
+    'Picometer²': 1e-24, 'Nanometer²': 1e-18, 'Micrometer²': 1e-12,
+    'Millimeter²': 1e-6, 'Centimeter²': 0.0001, 'Decimeter²': 0.01,
+    'Meter²': 1.0, 'Decameter²': 100.0, 'Are': 100.0,
+    'Hectometer²': 10000.0, 'Kilometer²': 1000000.0,
 
     // Imperial Units
-    'Inch pound': 0.112984829,
-    'Foot pound': 1.35581795,
-    'Therm': 105505585.26,
+    'Mil²': 6.4516e-10, 'Inch²': 0.00064516, 'Foot²': 0.09290304,
+    'Yard²': 0.83612736, 'Link²': 0.04046856, 'Rod²': 25.29285,
+    'Chain²': 404.6856, 'Furlong²': 40468.56, 'Mile²': 2589988.11,
+    'Rood': 1011.71, 'Acre': 4046.8564224, 'Homestead': 647497.03,
+    'Section': 2589988.11, 'Township': 93239571.97,
 
-    // Scientific
-    'Erg': 1e-7,
-    'Rydberg': 2.179872e-18,
-    'Hartree': 4.359744e-18,
-    'Electronvolt': 1.602176634e-19,
+    // Scientific Units
+    'Planck area': 2.612e-70, 'Barn': 1e-28, 'Angstrom²': 1e-20,
 
-    // Engineering
-    'Metric horsepower hour': 2647795.5,
-    'Mechanical horsepower hour': 2684519.5,
+    // Regional Units
+    'Afghan jerib': 2000.0, 'Central American manzana': 6988.96,
+    'Chinese mǔ': 666.67, 'Egyptian feddan': 4200.83, 'Greek stremma': 1000.0,
+    'Indian cent': 40.47, 'Indian kottah': 66.89, 'Indian guntha': 101.17,
+    'Indian ground': 222.97, 'Indian bigha': 1337.8,
+    'Japanese tatami': 1.65, 'Japanese tsubo': 3.31, 'Japanese se': 99.17,
+    'Japanese tan': 991.74, 'Japanese chō': 9917.36,
+    'Korean pyeong': 3.31, 'Middle Eastern dunam': 1000.0,
+    'Pakistani marla': 25.29, 'Pakistani kanal': 505.86,
+    'Puerto Rican cuerda': 3930.4, 'Russian desyatina': 10925.4,
+    'South African morgen': 8565.3, 'Spanish fanegada': 6400.0, 'Thai rai': 1600.0,
 
-    // Military
-    'Ton of TNT': 4.184e9,
-    'Kiloton of TNT': 4.184e12,
-    'Megaton of TNT': 4.184e15,
-
-    // Other
-    'Barrel of oil equivalent': 6.1178632e9,
-    'Ton of coal equivalent': 29.3076e9,
-    'Ton of oil equivalent': 41.868e9,
+    // Historical Units
+    'Egyptian aroura': 2735.0, 'French arpent': 3418.89,
+    'Greek plethron': 948.64, 'Roman actus quadratus': 1261.67,
+    'Roman jugerum': 2523.34, 'Roman heredium': 5046.68,
   };
 
   @override
@@ -102,7 +99,7 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
   String _formatResult(double value) {
     if (value == 0) return '0';
     String res = value.toStringAsPrecision(8);
-    if (res.contains('.') && !res.contains('e')) {
+    if (res.contains('.')) {
       res = res.replaceAll(RegExp(r'0*$'), '');
       res = res.replaceAll(RegExp(r'\.$'), '');
     }
@@ -110,8 +107,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
   }
 
   void _calculateConversion() {
-    double rateFrom = energyConversionRates[fromUnit] ?? 1.0;
-    double rateTo = energyConversionRates[toUnit] ?? 1.0;
+    double rateFrom = areaConversionRates[fromUnit] ?? 1.0;
+    double rateTo = areaConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -148,11 +145,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) {
-        fromValue = newText;
-      } else {
-        toValue = newText;
-      }
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
@@ -176,11 +170,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) {
-        fromValue = newText;
-      } else {
-        toValue = newText;
-      }
+      if (isFromSelected) fromValue = newText;
+      else toValue = newText;
 
       _calculateConversion();
     });
@@ -222,7 +213,7 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(category: 'Energy');
+        return const UnitSelectorSheet(category: 'Area');
       },
     );
 
@@ -242,8 +233,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
   }
 
   String _getEquivalenceText() {
-    double rateFrom = energyConversionRates[fromUnit] ?? 1.0;
-    double rateTo = energyConversionRates[toUnit] ?? 1.0;
+    double rateFrom = areaConversionRates[fromUnit] ?? 1.0;
+    double rateTo = areaConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double eqValue = rateFrom / rateTo;
@@ -277,7 +268,7 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Energy Conversion',
+                    'Area Conversion',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_converter_keyboard.dart';
-import 'custom_conversion_card.dart';
+import '../custom_action_button.dart';
+import '../custom_converter_keyboard.dart';
+import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-class PressureConverterView extends StatefulWidget {
+class SpeedConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const PressureConverterView({super.key, required this.onBack});
+
+  const SpeedConverterView({super.key, required this.onBack});
 
   @override
-  State<PressureConverterView> createState() => _PressureConverterViewState();
+  State<SpeedConverterView> createState() => _SpeedConverterViewState();
 }
 
-class _PressureConverterViewState extends State<PressureConverterView> {
+class _SpeedConverterViewState extends State<SpeedConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
@@ -24,54 +25,58 @@ class _PressureConverterViewState extends State<PressureConverterView> {
 
   bool isFromSelected = true;
 
-  String fromUnit = 'Bar';
-  String fromSymbol = 'bar';
+  // NAYA FIX: Exact match with the names in the new Map
+  String fromUnit = 'Kilometer / Hour';
+  String fromSymbol = 'km/h';
   String fromValue = '1';
 
-  String toUnit = 'Pascal';
-  String toSymbol = 'Pa';
-  String toValue = '100000';
+  String toUnit = 'Mile / Hour';
+  String toSymbol = 'mph';
+  String toValue = '0.621371';
 
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Base unit is Bar (bar) = 1.0 ---
-  final Map<String, double> pressureConversionRates = {
+  // --- REAL MATH LOGIC: Base unit is Meter / Second (m/s) = 1.0 ---
+  final Map<String, double> speedConversionRates = {
     // Standard Units
-    'Bar': 1.0,
-    'Millibar': 0.001,
+    'Kilometer / Hour': 0.277777777778, // 1 km/h = 1/3.6 m/s
+    'Mile / Hour': 0.44704,
+    'Knot': 0.514444444444,
 
     // Metric Units
-    'Pascal': 0.00001, // 1 Bar = 100,000 Pa
-    'Hectopascal': 0.001,
-    'Kilopascal': 0.01,
-    'Megapascal': 10.0,
-    'Gigapascal': 10000.0,
-    'Millimeter of water': 0.0000980665,
-    'Millimeter of mercury': 0.00133322,
-    'Kilogram / Centimeter²': 0.980665,
+    'Millimeter / Hour': 2.77777778e-7,
+    'Millimeter / Minute': 1.66666667e-5,
+    'Millimeter / Second': 0.001,
+    'Centimeter / Hour': 2.77777778e-6,
+    'Centimeter / Minute': 1.66666667e-4,
+    'Centimeter / Second': 0.01,
+    'Meter / Hour': 0.000277777778,
+    'Meter / Minute': 0.0166666667,
+    'Meter / Second': 1.0,
+    'Kilometer / Minute': 16.6666667,
+    'Kilometer / Second': 1000.0,
 
     // Imperial Units
-    'Pound / Inch² (PSI)': 0.0689476,
-    'Pound / Foot²': 0.000478803,
-    'Inch of water': 0.00249089,
-    'Inch of mercury': 0.0338639,
-    'Kilopound / Inch²': 68.9476,
+    'Inch / Hour': 7.05555556e-6,
+    'Inch / Minute': 0.000423333333,
+    'Inch / Second': 0.0254,
+    'Foot / Hour': 8.46666667e-5,
+    'Foot / Minute': 0.00508,
+    'Foot / Second': 0.3048,
+    'Yard / Hour': 0.000254,
+    'Yard / Minute': 0.01524,
+    'Yard / Second': 0.9144,
+    'Mile / Minute': 26.8224,
+    'Mile / Second': 1609.344,
 
-    // Scientific & Engineering
-    'Torr': 0.00133322,
-    'Technical atmosphere': 0.980665,
-    'Short ton / Inch²': 137.895,
-    'Short ton / Foot²': 0.957605,
-    'Long ton / Inch²': 154.443,
-    'Long ton / Foot²': 1.07252,
+    // Scientific
+    'Speed of sound': 343.0,
+    'Speed of light': 299792458.0,
 
-    // Other & Historical
-    'Atmosphere': 1.01325,
-    'Foot of sea water': 0.030643,
-    'Meter of sea water': 0.1,
-    'Barye': 0.000001,
-    'Pieze': 0.01,
+    // Historical
+    'Greek stadion / Hour': 0.0527778, // Approx 0.19 km/h
+    'Roman mile / Hour': 0.4111111,    // Approx 1.48 km/h
   };
 
   @override
@@ -108,8 +113,8 @@ class _PressureConverterViewState extends State<PressureConverterView> {
   }
 
   void _calculateConversion() {
-    double rateFrom = pressureConversionRates[fromUnit] ?? 1.0;
-    double rateTo = pressureConversionRates[toUnit] ?? 1.0;
+    double rateFrom = speedConversionRates[fromUnit] ?? 1.0;
+    double rateTo = speedConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -214,7 +219,7 @@ class _PressureConverterViewState extends State<PressureConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(category: 'Pressure');
+        return const UnitSelectorSheet(category: 'Speed');
       },
     );
 
@@ -234,8 +239,8 @@ class _PressureConverterViewState extends State<PressureConverterView> {
   }
 
   String _getEquivalenceText() {
-    double rateFrom = pressureConversionRates[fromUnit] ?? 1.0;
-    double rateTo = pressureConversionRates[toUnit] ?? 1.0;
+    double rateFrom = speedConversionRates[fromUnit] ?? 1.0;
+    double rateTo = speedConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double eqValue = rateFrom / rateTo;
@@ -269,7 +274,7 @@ class _PressureConverterViewState extends State<PressureConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Pressure Conversion',
+                    'Speed Conversion',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),

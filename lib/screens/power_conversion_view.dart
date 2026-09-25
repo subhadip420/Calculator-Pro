@@ -1,94 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_conversion_card.dart';
-import 'custom_converter_keyboard.dart';
+import '../custom_action_button.dart';
+import '../custom_converter_keyboard.dart';
+import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-import 'custom_unit_selector_sheet.dart';
-
-class WeightMassConverterView extends StatefulWidget {
+class PowerConverterView extends StatefulWidget {
   final VoidCallback onBack;
-
-  const WeightMassConverterView({super.key, required this.onBack});
+  const PowerConverterView({super.key, required this.onBack});
 
   @override
-  State<WeightMassConverterView> createState() => _WeightMassConverterViewState();
+  State<PowerConverterView> createState() => _PowerConverterViewState();
 }
 
-class _WeightMassConverterViewState extends State<WeightMassConverterView> {
+class _PowerConverterViewState extends State<PowerConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
-  // State Variables for Conversions
   bool isFromSelected = true;
 
-  String fromUnit = 'Kilogram';
-  String fromSymbol = 'kg';
+  String fromUnit = 'Watt';
+  String fromSymbol = 'W';
   String fromValue = '1';
 
-  String toUnit = 'Gram';
-  String toSymbol = 'g';
-  String toValue = '1000';
+  String toUnit = 'Kilowatt';
+  String toSymbol = 'kW';
+  String toValue = '0.001';
 
-  // Controllers for Cursor Support
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Har unit ki value in 1 Kilogram (Base Unit: kg) ---
-  final Map<String, double> weightConversionRates = {
+  // --- REAL MATH LOGIC: Base unit is Watt (W) = 1.0 ---
+  final Map<String, double> powerConversionRates = {
+    // Standard Units
+    'Watt': 1.0,
+    'Kilowatt': 1000.0,
+    'Horsepower': 745.699872,
+
     // Metric Units
-    'Picogram': 1e-15, 'Nanogram': 1e-12, 'Microgram': 1e-9, 'Milligram': 1e-6,
-    'Centigram': 1e-5, 'Decigram': 1e-4, 'Gram': 0.001, 'Decagram': 0.01,
-    'Hectogram': 0.1, 'Kilogram': 1.0, 'Quintal': 100.0, 'Metric ton': 1000.0, 'Tonne': 1000.0,
+    'Picowatt': 1e-12,
+    'Nanowatt': 1e-9,
+    'Microwatt': 1e-6,
+    'Milliwatt': 0.001,
+    'Megawatt': 1000000.0,
+    'Gigawatt': 1000000000.0,
 
     // Imperial Units
-    'Grain': 0.00006479891, 'Dram': 0.001771845, 'Ounce': 0.02834952, 'Pound': 0.45359237,
-    'Stone': 6.35029318, 'Quarter': 12.70058636, 'Short ton': 907.18474, 'Long ton': 1016.0469,
+    'Foot-pound / Minute': 0.0225969658,
+    'Foot-pound / Second': 1.355817948,
+    'Btu / Hour': 0.29307107,
+    'Btu / Minute': 17.584264,
+    'Btu / Second': 1055.05585,
 
-    // Scientific Units
-    'Electron mass': 9.10938356e-31, 'Atomic mass unit': 1.66053904e-27, 'Dalton': 1.66053904e-27,
-    'Proton mass': 1.6726219e-27, 'Planck mass': 2.176470e-8,
+    // Scientific
+    'Erg / Second': 1e-7,
+    'Solar luminosity': 3.828e26,
 
-    // Astronomical Units
-    'Earth mass': 5.9722e24, 'Solar mass': 1.98847e30,
+    // Engineering
+    'Metric horsepower': 735.49875,
+    'Electrical horsepower': 746.0,
+    'Boiler horsepower': 9809.5,
 
-    // Regional & Historical Units
-    'Arabic dirham': 0.003125, 'Arabic mithqal': 0.00425, 'Arabic ratl': 0.45,
-    'Babylonian shekel': 0.01, 'Babylonian mina': 0.5, 'Babylonian talent': 30.24,
-    'Biblical gerah': 0.00057, 'Biblical bekah': 0.01, 'Biblical pim': 0.01, 'Biblical shekel': 0.01,
-    'Biblical mina': 0.57, 'Biblical talent': 34.2,
-    'Byzantine nomisma': 0.00455, 'Byzantine litra': 0.32,
-    'Carat': 0.0002, 'Pennyweight': 0.001555, 'Troy ounce': 0.031103,
-    'Chinese fen': 0.0005, 'Chinese qian': 0.005, 'Chinese liang': 0.05, 'Chinese jin': 0.5, 'Chinese dan': 50.0,
-    'Egyptian qedet': 0.01, 'Egyptian deben': 0.09,
-    'German pfund': 0.5, 'German zentner': 50.0,
-    'Greek obol': 0.00072, 'Greek drachma': 0.0043, 'Greek stater': 0.01, 'Greek mina': 0.43, 'Greek talent': 25.86,
-    'Indian ratti': 0.00012, 'Indian masha': 0.00097, 'Indian tola': 0.01, 'Indian pala': 0.04,
-    'Indian chatak': 0.06, 'Indian seer': 0.93, 'Indian maund': 37.32,
-    'Japanese fun': 0.000375, 'Japanese momme': 0.00375, 'Japanese ryō': 0.0375, 'Japanese kin': 0.6, 'Japanese kan': 3.75,
-    'Korean don': 0.00375, 'Korean nyang': 0.04, 'Korean geun': 0.6, 'Korean gwan': 3.75,
-    'Medieval mark': 0.23,
-    'Myanmar kyattha': 0.02, 'Myanmar peittha': 0.16, 'Myanmar viss': 1.63,
-    'Persian misqal': 0.00469, 'Persian sir': 0.07, 'Persian man': 2.94,
-    'Portuguese arratel': 0.46, 'Portuguese arroba': 14.69,
-    'Roman siliqua': 0.00019, 'Roman scripulum': 0.00114, 'Roman semiuncia': 0.01, 'Roman uncia': 0.03, 'Roman libra': 0.33,
-    'Russian dolya': 0.00004, 'Russian zolotnik': 0.00427, 'Russian lot': 0.01, 'Russian funt': 0.41, 'Russian pood': 16.38, 'Russian berkovets': 163.8,
-    'Southeast Asian tahil': 0.04, 'Southeast Asian catty': 0.6, 'Southeast Asian picul': 60.48,
-    'Thai salung': 0.00381, 'Thai baht': 0.02, 'Thai chang': 1.22,
-    'Turkish oka': 1.28,
+    // Historical & Other
+    'Poncelet': 980.665,
+    'Kilocalorie / Hour': 1.16222222,
+    'Calorie / Second': 4.184,
   };
-
 
   @override
   void initState() {
     super.initState();
     _loadHaptics();
+
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -107,21 +94,19 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
     });
   }
 
-  // --- HELPER: Decimal Formatting ---
   String _formatResult(double value) {
     if (value == 0) return '0';
     String res = value.toStringAsPrecision(8);
-    if (res.contains('.')) {
+    if (res.contains('.') && !res.contains('e')) {
       res = res.replaceAll(RegExp(r'0*$'), '');
       res = res.replaceAll(RegExp(r'\.$'), '');
     }
     return res;
   }
 
-  // --- CORE: Calculation Logic ---
   void _calculateConversion() {
-    double rateFrom = weightConversionRates[fromUnit] ?? 1.0;
-    double rateTo = weightConversionRates[toUnit] ?? 1.0;
+    double rateFrom = powerConversionRates[fromUnit] ?? 1.0;
+    double rateTo = powerConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -136,7 +121,6 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
     }
   }
 
-  // --- CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -159,8 +143,11 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -174,6 +161,7 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
       if (cursorPos <= 0) return;
 
       String currentText = activeController.text;
+
       String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
 
       if (newText.isEmpty || newText == '-') {
@@ -183,8 +171,11 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -226,8 +217,7 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        // Updated Category to fetch Weight units
-        return const UnitSelectorSheet(category: 'Weight & Mass');
+        return const UnitSelectorSheet(category: 'Power');
       },
     );
 
@@ -246,10 +236,9 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
     }
   }
 
-  // --- Exact Realtime Equivalence Generator ---
   String _getEquivalenceText() {
-    double rateFrom = weightConversionRates[fromUnit] ?? 1.0;
-    double rateTo = weightConversionRates[toUnit] ?? 1.0;
+    double rateFrom = powerConversionRates[fromUnit] ?? 1.0;
+    double rateTo = powerConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double eqValue = rateFrom / rateTo;
@@ -283,7 +272,7 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Weight & Mass',
+                    'Power Conversion',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -359,14 +348,14 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
           ),
         ),
 
-        // --- 2.5 REAL-TIME EQUIVALENCE CARD ---
+        // --- 3. REAL-TIME EQUIVALENCE TEXT ---
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Container(
               key: ValueKey<String>(_getEquivalenceText()),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: surfaceColor.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
@@ -386,7 +375,7 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
         ),
         const SizedBox(height: 8),
 
-        // --- 3. REUSABLE KEYBOARD ---
+        // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,

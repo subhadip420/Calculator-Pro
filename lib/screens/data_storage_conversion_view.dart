@@ -1,76 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_converter_keyboard.dart';
-import 'custom_conversion_card.dart';
+import '../custom_action_button.dart';
+import '../custom_converter_keyboard.dart';
+import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-class AreaConverterView extends StatefulWidget {
+class DataStorageConverterView extends StatefulWidget {
   final VoidCallback onBack;
-
-  const AreaConverterView({super.key, required this.onBack});
+  const DataStorageConverterView({super.key, required this.onBack});
 
   @override
-  State<AreaConverterView> createState() => _AreaConverterViewState();
+  State<DataStorageConverterView> createState() => _DataStorageConverterViewState();
 }
 
-class _AreaConverterViewState extends State<AreaConverterView> {
+class _DataStorageConverterViewState extends State<DataStorageConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
   bool isFromSelected = true;
 
-  // NAYA FIX: Default units ko exact name diya gaya hai jo list me hai
-  String fromUnit = 'Meter²';
-  String fromSymbol = 'm²';
+  String fromUnit = 'Megabyte';
+  String fromSymbol = 'MB';
   String fromValue = '1';
 
-  String toUnit = 'Foot²';
-  String toSymbol = 'ft²';
-  String toValue = '10.76391';
+  String toUnit = 'Gigabyte';
+  String toSymbol = 'GB';
+  String toValue = '0.001';
 
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- NAYA FIX: Har unit ki value in 1 Meter² (Base Unit: m²) ---
-  final Map<String, double> areaConversionRates = {
-    // Metric Units
-    'Picometer²': 1e-24, 'Nanometer²': 1e-18, 'Micrometer²': 1e-12,
-    'Millimeter²': 1e-6, 'Centimeter²': 0.0001, 'Decimeter²': 0.01,
-    'Meter²': 1.0, 'Decameter²': 100.0, 'Are': 100.0,
-    'Hectometer²': 10000.0, 'Kilometer²': 1000000.0,
+  // --- REAL MATH LOGIC: Base unit is Byte (B) = 1.0 ---
+  final Map<String, double> dataConversionRates = {
+    // Base Units
+    'Bit': 0.125,           // 1 Byte = 8 Bits -> 1 Bit = 0.125 Bytes
+    'Nibble': 0.5,          // 1 Byte = 2 Nibbles -> 1 Nibble = 0.5 Bytes
+    'Byte': 1.0,
 
-    // Imperial Units
-    'Mil²': 6.4516e-10, 'Inch²': 0.00064516, 'Foot²': 0.09290304,
-    'Yard²': 0.83612736, 'Link²': 0.04046856, 'Rod²': 25.29285,
-    'Chain²': 404.6856, 'Furlong²': 40468.56, 'Mile²': 2589988.11,
-    'Rood': 1011.71, 'Acre': 4046.8564224, 'Homestead': 647497.03,
-    'Section': 2589988.11, 'Township': 93239571.97,
+    // Decimal Bytes (Multiples of 1000)
+    'Kilobyte': 1e3,
+    'Megabyte': 1e6,
+    'Gigabyte': 1e9,
+    'Terabyte': 1e12,
+    'Petabyte': 1e15,
+    'Exabyte': 1e18,
 
-    // Scientific Units
-    'Planck area': 2.612e-70, 'Barn': 1e-28, 'Angstrom²': 1e-20,
+    // Decimal Bits (Multiples of 1000)
+    'Kilobit': 125.0,               // 1000 / 8
+    'Megabit': 125000.0,            // 10^6 / 8
+    'Gigabit': 125000000.0,         // 10^9 / 8
+    'Terabit': 125000000000.0,      // 10^12 / 8
+    'Petabit': 125000000000000.0,   // 10^15 / 8
+    'Exabit': 125000000000000000.0, // 10^18 / 8
 
-    // Regional Units
-    'Afghan jerib': 2000.0, 'Central American manzana': 6988.96,
-    'Chinese mǔ': 666.67, 'Egyptian feddan': 4200.83, 'Greek stremma': 1000.0,
-    'Indian cent': 40.47, 'Indian kottah': 66.89, 'Indian guntha': 101.17,
-    'Indian ground': 222.97, 'Indian bigha': 1337.8,
-    'Japanese tatami': 1.65, 'Japanese tsubo': 3.31, 'Japanese se': 99.17,
-    'Japanese tan': 991.74, 'Japanese chō': 9917.36,
-    'Korean pyeong': 3.31, 'Middle Eastern dunam': 1000.0,
-    'Pakistani marla': 25.29, 'Pakistani kanal': 505.86,
-    'Puerto Rican cuerda': 3930.4, 'Russian desyatina': 10925.4,
-    'South African morgen': 8565.3, 'Spanish fanegada': 6400.0, 'Thai rai': 1600.0,
+    // Binary Bytes (Multiples of 1024)
+    'Kibibyte': 1024.0,
+    'Mebibyte': 1048576.0,
+    'Gibibyte': 1073741824.0,
+    'Tebibyte': 1099511627776.0,
+    'Pebibyte': 1125899906842624.0,
+    'Exbibyte': 1152921504606846976.0,
 
-    // Historical Units
-    'Egyptian aroura': 2735.0, 'French arpent': 3418.89,
-    'Greek plethron': 948.64, 'Roman actus quadratus': 1261.67,
-    'Roman jugerum': 2523.34, 'Roman heredium': 5046.68,
+    // Binary Bits (Multiples of 1024)
+    'Kibibit': 128.0,                 // 1024 / 8
+    'Mebibit': 131072.0,              // 1024^2 / 8
+    'Gibibit': 134217728.0,           // 1024^3 / 8
+    'Tebibit': 137438953472.0,        // 1024^4 / 8
+    'Pebibit': 140737488355328.0,     // 1024^5 / 8
+    'Exbibit': 144115188075855872.0,  // 1024^6 / 8
   };
 
   @override
@@ -98,8 +99,8 @@ class _AreaConverterViewState extends State<AreaConverterView> {
 
   String _formatResult(double value) {
     if (value == 0) return '0';
-    String res = value.toStringAsPrecision(8);
-    if (res.contains('.')) {
+    String res = value.toStringAsPrecision(10); // Thodi zyada precision bytes ke liye
+    if (res.contains('.') && !res.contains('e')) {
       res = res.replaceAll(RegExp(r'0*$'), '');
       res = res.replaceAll(RegExp(r'\.$'), '');
     }
@@ -107,8 +108,8 @@ class _AreaConverterViewState extends State<AreaConverterView> {
   }
 
   void _calculateConversion() {
-    double rateFrom = areaConversionRates[fromUnit] ?? 1.0;
-    double rateTo = areaConversionRates[toUnit] ?? 1.0;
+    double rateFrom = dataConversionRates[fromUnit] ?? 1.0;
+    double rateTo = dataConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -145,8 +146,11 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -170,8 +174,11 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -213,7 +220,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(category: 'Area');
+        return const UnitSelectorSheet(category: 'Data');
       },
     );
 
@@ -233,8 +240,8 @@ class _AreaConverterViewState extends State<AreaConverterView> {
   }
 
   String _getEquivalenceText() {
-    double rateFrom = areaConversionRates[fromUnit] ?? 1.0;
-    double rateTo = areaConversionRates[toUnit] ?? 1.0;
+    double rateFrom = dataConversionRates[fromUnit] ?? 1.0;
+    double rateTo = dataConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double eqValue = rateFrom / rateTo;
@@ -268,7 +275,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Area Conversion',
+                    'Data Storage',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -1,82 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart';
-import 'custom_converter_keyboard.dart';
-import 'custom_conversion_card.dart';
+import '../custom_action_button.dart';
+import '../custom_converter_keyboard.dart';
+import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-class SpeedConverterView extends StatefulWidget {
+class EnergyConverterView extends StatefulWidget {
   final VoidCallback onBack;
-
-  const SpeedConverterView({super.key, required this.onBack});
+  const EnergyConverterView({super.key, required this.onBack});
 
   @override
-  State<SpeedConverterView> createState() => _SpeedConverterViewState();
+  State<EnergyConverterView> createState() => _EnergyConverterViewState();
 }
 
-class _SpeedConverterViewState extends State<SpeedConverterView> {
+class _EnergyConverterViewState extends State<EnergyConverterView> {
   final Color bgColor = const Color(0xFF0E131D);
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
   bool isFromSelected = true;
 
-  // NAYA FIX: Exact match with the names in the new Map
-  String fromUnit = 'Kilometer / Hour';
-  String fromSymbol = 'km/h';
+  String fromUnit = 'Joule';
+  String fromSymbol = 'J';
   String fromValue = '1';
 
-  String toUnit = 'Mile / Hour';
-  String toSymbol = 'mph';
-  String toValue = '0.621371';
+  String toUnit = 'Kilocalorie';
+  String toSymbol = 'kcal';
+  String toValue = '0.000239006';
 
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Base unit is Meter / Second (m/s) = 1.0 ---
-  final Map<String, double> speedConversionRates = {
+  // --- REAL MATH LOGIC: Base unit is Joule (J) = 1.0 ---
+  final Map<String, double> energyConversionRates = {
     // Standard Units
-    'Kilometer / Hour': 0.277777777778, // 1 km/h = 1/3.6 m/s
-    'Mile / Hour': 0.44704,
-    'Knot': 0.514444444444,
+    'Joule': 1.0,
+    'Kilojoule': 1000.0,
+    'Calorie': 4.184,
+    'Kilocalorie': 4184.0,
 
     // Metric Units
-    'Millimeter / Hour': 2.77777778e-7,
-    'Millimeter / Minute': 1.66666667e-5,
-    'Millimeter / Second': 0.001,
-    'Centimeter / Hour': 2.77777778e-6,
-    'Centimeter / Minute': 1.66666667e-4,
-    'Centimeter / Second': 0.01,
-    'Meter / Hour': 0.000277777778,
-    'Meter / Minute': 0.0166666667,
-    'Meter / Second': 1.0,
-    'Kilometer / Minute': 16.6666667,
-    'Kilometer / Second': 1000.0,
+    'Megajoule': 1000000.0,
+    'Gigajoule': 1000000000.0,
+    'Watt hour': 3600.0,
+    'Kilowatt hour': 3600000.0,
+    'Megawatt hour': 3600000000.0,
+    'Gigawatt hour': 3600000000000.0,
 
     // Imperial Units
-    'Inch / Hour': 7.05555556e-6,
-    'Inch / Minute': 0.000423333333,
-    'Inch / Second': 0.0254,
-    'Foot / Hour': 8.46666667e-5,
-    'Foot / Minute': 0.00508,
-    'Foot / Second': 0.3048,
-    'Yard / Hour': 0.000254,
-    'Yard / Minute': 0.01524,
-    'Yard / Second': 0.9144,
-    'Mile / Minute': 26.8224,
-    'Mile / Second': 1609.344,
+    'Inch pound': 0.112984829,
+    'Foot pound': 1.35581795,
+    'Therm': 105505585.26,
 
     // Scientific
-    'Speed of sound': 343.0,
-    'Speed of light': 299792458.0,
+    'Erg': 1e-7,
+    'Rydberg': 2.179872e-18,
+    'Hartree': 4.359744e-18,
+    'Electronvolt': 1.602176634e-19,
 
-    // Historical
-    'Greek stadion / Hour': 0.0527778, // Approx 0.19 km/h
-    'Roman mile / Hour': 0.4111111,    // Approx 1.48 km/h
+    // Engineering
+    'Metric horsepower hour': 2647795.5,
+    'Mechanical horsepower hour': 2684519.5,
+
+    // Military
+    'Ton of TNT': 4.184e9,
+    'Kiloton of TNT': 4.184e12,
+    'Megaton of TNT': 4.184e15,
+
+    // Other
+    'Barrel of oil equivalent': 6.1178632e9,
+    'Ton of coal equivalent': 29.3076e9,
+    'Ton of oil equivalent': 41.868e9,
   };
 
   @override
@@ -105,7 +102,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   String _formatResult(double value) {
     if (value == 0) return '0';
     String res = value.toStringAsPrecision(8);
-    if (res.contains('.')) {
+    if (res.contains('.') && !res.contains('e')) {
       res = res.replaceAll(RegExp(r'0*$'), '');
       res = res.replaceAll(RegExp(r'\.$'), '');
     }
@@ -113,8 +110,8 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   }
 
   void _calculateConversion() {
-    double rateFrom = speedConversionRates[fromUnit] ?? 1.0;
-    double rateTo = speedConversionRates[toUnit] ?? 1.0;
+    double rateFrom = energyConversionRates[fromUnit] ?? 1.0;
+    double rateTo = energyConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double inputValue = double.tryParse(fromValue) ?? 0.0;
@@ -151,8 +148,11 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -176,8 +176,11 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected) {
+        fromValue = newText;
+      } else {
+        toValue = newText;
+      }
 
       _calculateConversion();
     });
@@ -219,7 +222,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return const UnitSelectorSheet(category: 'Speed');
+        return const UnitSelectorSheet(category: 'Energy');
       },
     );
 
@@ -239,8 +242,8 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   }
 
   String _getEquivalenceText() {
-    double rateFrom = speedConversionRates[fromUnit] ?? 1.0;
-    double rateTo = speedConversionRates[toUnit] ?? 1.0;
+    double rateFrom = energyConversionRates[fromUnit] ?? 1.0;
+    double rateTo = energyConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
       double eqValue = rateFrom / rateTo;
@@ -274,7 +277,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Speed Conversion',
+                    'Energy Conversion',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),

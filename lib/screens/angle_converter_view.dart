@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart'; // Apna correct path check kar lena
 
-class AccelerationConverterView extends StatefulWidget {
+class AngleConverterView extends StatefulWidget {
   final VoidCallback onBack;
-  const AccelerationConverterView({super.key, required this.onBack});
+  const AngleConverterView({super.key, required this.onBack});
 
   @override
-  State<AccelerationConverterView> createState() => _AccelerationConverterViewState();
+  State<AngleConverterView> createState() => _AngleConverterViewState();
 }
 
-class _AccelerationConverterViewState extends State<AccelerationConverterView> {
+class _AngleConverterViewState extends State<AngleConverterView> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color textGrey = const Color(0xFFDBC2AD);
 
@@ -53,7 +53,7 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Acceleration',
+                    'Angle',
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
         const Expanded(
           child: Center(
             child: Text(
-              'Acceleration UI Coming Soon...',
+              'Angle UI Coming Soon...',
               style: TextStyle(color: Colors.white54, fontSize: 16),
             ),
           ),
