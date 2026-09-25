@@ -1,18 +1,28 @@
 import 'package:calculator_pro/power_conversion_view.dart';
 import 'package:calculator_pro/pressure_conversion_view.dart';
+import 'package:calculator_pro/roman_numerals_converter_view.dart';
 import 'package:calculator_pro/settings_page.dart';
+import 'package:calculator_pro/shoe_size_converter_view.dart';
 import 'package:calculator_pro/speed_conversion_view.dart';
 import 'package:calculator_pro/temperature_conversion_view.dart';
+import 'package:calculator_pro/time_converter_view.dart';
+import 'package:calculator_pro/torque_converter_view.dart';
 import 'package:calculator_pro/volume_conversion_view.dart';
+import 'package:calculator_pro/volumetric_flow_converter_view.dart';
 import 'package:calculator_pro/weight_mass_conversion_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'acceleration_converter_view.dart';
+import 'angle_converter_view.dart';
 import 'custom_action_button.dart';
 import 'area_conversion_view.dart';
 import 'data_storage_conversion_view.dart';
+import 'data_transfer_converter_view.dart';
 import 'energy_conversion_view.dart';
-import 'length_conversion_view.dart'; // NAYA: Aapke custom ActionButton ko import kiya
+import 'force_converter_view.dart';
+import 'length_conversion_view.dart';
+import 'numeric_base_converter_view.dart'; // NAYA: Aapke custom ActionButton ko import kiya
 
 // 1. NAYA: StatelessWidget se StatefulWidget me convert kiya taaki scroll track kar sakein
 class MenuOptions extends StatefulWidget {
@@ -118,7 +128,57 @@ class _MenuOptionsState extends State<MenuOptions> {
       case 'pressure': return PressureConverterView(key: const ValueKey('Pressure'), onBack: () => setState(() => _currentActiveView = null));
       case 'energy': return EnergyConverterView(key: const ValueKey('Energy'), onBack: () => setState(() => _currentActiveView = null));
       case 'power': return PowerConverterView(key: const ValueKey('Power'), onBack: () => setState(() => _currentActiveView = null));
-      case 'data': return DataStorageConverterView(key: const ValueKey('Data'), onBack: () => setState(() => _currentActiveView = null));
+      case 'data storage': return DataStorageConverterView(key: const ValueKey('Data'), onBack: () => setState(() => _currentActiveView = null));
+      case 'acceleration':
+        return AccelerationConverterView(
+            key: const ValueKey('Acceleration'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'angle':
+        return AngleConverterView(
+            key: const ValueKey('Angle'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'data_transfer':
+        return DataTransferConverterView(
+            key: const ValueKey('Data Transfer'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'force':
+        return ForceConverterView(
+            key: const ValueKey('Force'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'roman_numerals':
+        return RomanNumeralsConverterView(
+            key: const ValueKey('Roman Numerals'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'torque':
+        return TorqueConverterView(
+            key: const ValueKey('Torque'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'volumetric_flow':
+        return VolumetricFlowConverterView(
+            key: const ValueKey('Volumetric Flow'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'time':
+        return TimeConverterView(
+            key: const ValueKey('Time'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'numeric_base':
+        return NumericBaseConverterView(
+            key: const ValueKey('Numeric Base'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
+      case 'shoe_size':
+        return ShoeSizeConverterView(
+            key: const ValueKey('Shoe Size'),
+            onBack: () => setState(() => _currentActiveView = null)
+        );
       default: return _buildMainMenu();
     }
   }
@@ -380,7 +440,47 @@ class _MenuOptionsState extends State<MenuOptions> {
                         }),
                         _buildMenuItem('assets/images/data_storage.png', 'Data Storage', 'Bytes, MB, GB, TB, PB...', onTap: () {
                           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                          setState(() => _currentActiveView = 'data');
+                          setState(() => _currentActiveView = 'data storage');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Acceleration', 'm/s², g, ft/s²...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'acceleration');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Angle', 'Degree, Radian, Gradian...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'angle');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Data Transfer', 'Mbps, MB/s, GB/s...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'data_transfer');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Force', 'Newton, Dyne, Pound-force...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'force');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Roman Numerals', 'I, V, X, L, C, M...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'roman_numerals');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Torque', 'N·m, lb·ft, kgf·m...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'torque');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Volumetric Flow', 'm³/s, L/min, gal/h...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'volumetric_flow');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Time', 'Second, Minute, Hour, Day...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'time');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Numeric Base', 'Binary, Octal, Decimal, Hex...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'numeric_base');
+                        }),
+                        _buildMenuItem('assets/images/percentage-discount-symbol.png', 'Shoe Size', 'US, UK, EU, CM...', onTap: () {
+                          if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                          setState(() => _currentActiveView = 'shoe_size');
                         }),
                       ],
                     ),
