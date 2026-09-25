@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'custom_action_button.dart'; // Apna correct path check kar lena
+
+class AccelerationConverterView extends StatefulWidget {
+  final VoidCallback onBack;
+  const AccelerationConverterView({super.key, required this.onBack});
+
+  @override
+  State<AccelerationConverterView> createState() => _AccelerationConverterViewState();
+}
+
+class _AccelerationConverterViewState extends State<AccelerationConverterView> {
+  final Color surfaceColor = const Color(0xFF1E2638);
+  final Color textGrey = const Color(0xFFDBC2AD);
+
+  bool _isHapticsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHaptics();
+  }
+
+  Future<void> _loadHaptics() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // --- APP BAR ---
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ActionButton(
+                icon: Icons.arrow_back_ios_new_rounded,
+                contentColor: textGrey,
+                bgColor: surfaceColor.withOpacity(0.5),
+                onTap: () {
+                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
+                  widget.onBack();
+                },
+              ),
+              const Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Acceleration',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              ActionButton(
+                icon: Icons.star_border_rounded,
+                contentColor: textGrey,
+                bgColor: surfaceColor.withOpacity(0.5),
+                onTap: () {
+                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // --- SAMPLE TEXT (COMING SOON) ---
+        const Expanded(
+          child: Center(
+            child: Text(
+              'Acceleration UI Coming Soon...',
+              style: TextStyle(color: Colors.white54, fontSize: 16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
