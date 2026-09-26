@@ -683,7 +683,47 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
       'Other': [
         {'name': 'Knot / Second', 'symbol': 'kn/s'}, //[cite: 9]
       ]
-    }
+    },
+    'Angle': {
+      'Standard': [
+        {'name': 'Degree', 'symbol': '°'}, // Main base unit (implied)
+        {'name': 'Radian', 'symbol': 'rad'}, // Added for completeness
+        {'name': 'Gradian', 'symbol': 'gon'}, // Added for completeness
+        {'name': 'Minute', 'symbol': '\''}, //[cite: 18]
+        {'name': 'Second', 'symbol': '"'}, //[cite: 18]
+      ],
+      'Scientific': [
+        {'name': 'Microarcsecond', 'symbol': 'μas'}, //[cite: 18]
+        {'name': 'Milliarcsecond', 'symbol': 'mas'}, //[cite: 18]
+        {'name': 'Centesimal minute', 'symbol': 'c\''}, //[cite: 18]
+        {'name': 'Centesimal second', 'symbol': 'c"'}, //[cite: 18]
+        {'name': 'Nanoradian', 'symbol': 'nrad'}, //[cite: 18]
+        {'name': 'Microradian', 'symbol': 'μrad'}, //[cite: 17, 18]
+        {'name': 'Milliradian', 'symbol': 'mrad'}, //[cite: 17]
+      ],
+      'Geometric': [
+        {'name': 'Sign', 'symbol': 'sig'}, //[cite: 17]
+        {'name': 'Octant', 'symbol': 'oct'}, //[cite: 17]
+        {'name': 'Sextant', 'symbol': '60°'}, //[cite: 17]
+        {'name': 'Quadrant', 'symbol': '90°'}, //[cite: 17]
+        {'name': 'Semicircle', 'symbol': '180°'}, //[cite: 17]
+        {'name': 'Circle', 'symbol': '360°'}, //[cite: 17]
+      ],
+      'Engineering': [
+        {'name': 'Percent grade', 'symbol': '%'}, //[cite: 16]
+        {'name': 'Per mille grade', 'symbol': '‰'}, //[cite: 16]
+      ],
+      'Military': [
+        {'name': 'Streck', 'symbol': 'strk'}, //[cite: 16]
+        {'name': 'Mil (NATO)', 'symbol': 'mil'}, //[cite: 16]
+        {'name': 'Mil (Warsaw pact)', 'symbol': 'wpm'}, //[cite: 16]
+      ],
+      'Other': [
+        {'name': 'Binary degree', 'symbol': 'brad'}, //[cite: 16]
+        {'name': 'Compass point', 'symbol': 'pt'}, //[cite: 16]
+        {'name': 'Hour angle', 'symbol': 'ha'}, //[cite: 16]
+      ]
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
