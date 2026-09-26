@@ -1194,8 +1194,8 @@ class _MenuOptionsState extends State<MenuOptions> {
             children: [
               Image.asset(
                 imagePath,
-                width: 50,
-                height: 50,
+                width: 45,
+                height: 45,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(Icons.image_not_supported, color: Colors.white54, size: 30);
