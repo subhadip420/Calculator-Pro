@@ -757,6 +757,27 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Exbibyte / Second', 'symbol': 'EiB/s'}, //[cite: 13]
       ],
     },
+    'Force': {
+      'Metric': [
+        {'name': 'Newton', 'symbol': 'N'}, // Base SI Unit (added for completeness)
+        {'name': 'Kilonewton', 'symbol': 'kN'}, //
+        {'name': 'Meganewton', 'symbol': 'MN'}, //[cite: 18]
+        {'name': 'Giganewton', 'symbol': 'GN'}, //[cite: 18]
+        {'name': 'Kilogram force', 'symbol': 'kgf'}, // Implied base unit in screenshots
+        {'name': 'Gram force', 'symbol': 'gf'}, //[cite: 17, 18]
+        {'name': 'Tonne force', 'symbol': 'tf'}, //[cite: 17, 18]
+      ],
+      'Imperial': [
+        {'name': 'Pound force', 'symbol': 'lbf'}, // Added for standard completeness
+        {'name': 'Poundal', 'symbol': 'pdl'}, //[cite: 17, 18]
+        {'name': 'Ounce force', 'symbol': 'ozf'}, //[cite: 17, 18]
+        {'name': 'Short ton force', 'symbol': 'stf'}, //[cite: 17, 18]
+        {'name': 'Long ton force', 'symbol': 'ltf'}, //[cite: 17]
+      ],
+      'Scientific': [
+        {'name': 'Dyne', 'symbol': 'dyn'}, //[cite: 17]
+      ]
+    }
 
     // Future me Area, Volume etc. add kar sakte hain
   };
