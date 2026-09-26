@@ -777,7 +777,37 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
       'Scientific': [
         {'name': 'Dyne', 'symbol': 'dyn'}, //[cite: 17]
       ]
-    }
+    },
+    'Torque': {
+      'Metric': [
+        {'name': 'Newton meter', 'symbol': 'N·m'}, // Base unit (implied)
+        {'name': 'Newton millimeter', 'symbol': 'N·mm'}, //
+        {'name': 'Newton centimeter', 'symbol': 'N·cm'}, //
+        {'name': 'Kilonewton meter', 'symbol': 'kN·m'}, //[cite: 19]
+        {'name': 'Gram-force millimeter', 'symbol': 'gf·mm'}, //[cite: 19]
+        {'name': 'Gram-force centimeter', 'symbol': 'gf·cm'}, //[cite: 19]
+        {'name': 'Gram-force meter', 'symbol': 'gf·m'}, //[cite: 19]
+        {'name': 'Kilogram-force millimeter', 'symbol': 'kgf·mm'}, //[cite: 19]
+        {'name': 'Kilogram-force centimeter', 'symbol': 'kgf·cm'}, //[cite: 19]
+        {'name': 'Kilogram-force meter', 'symbol': 'kgf·m'}, //[cite: 18, 19]
+      ],
+      'Imperial': [
+        {'name': 'Pound-force inch', 'symbol': 'lbf·in'}, // Added for completeness
+        {'name': 'Pound-force foot', 'symbol': 'lbf·ft'}, // Added for completeness
+        {'name': 'Poundal inch', 'symbol': 'pdl·in'}, //[cite: 17, 18]
+        {'name': 'Poundal foot', 'symbol': 'pdl·ft'}, //[cite: 17, 18]
+        {'name': 'Ounce-force inch', 'symbol': 'ozf·in'}, //[cite: 17, 18]
+        {'name': 'Ounce-force foot', 'symbol': 'ozf·ft'}, //[cite: 17, 18]
+      ],
+      'Scientific': [
+        {'name': 'Dyne millimeter', 'symbol': 'dyn·mm'}, //[cite: 17, 18]
+        {'name': 'Dyne centimeter', 'symbol': 'dyn·cm'}, //[cite: 17, 18]
+        {'name': 'Dyne meter', 'symbol': 'dyn·m'}, //[cite: 17, 18]
+      ],
+      'Other': [
+        {'name': 'Ton-force meter', 'symbol': 'tf·m'}, //[cite: 17]
+      ]
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
