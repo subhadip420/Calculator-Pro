@@ -77,6 +77,16 @@ flutter:
     - assets/images/temperature.png
     - assets/images/volume.png
     - assets/images/weight.png
+    - assets/images/acceleration.png
+    - assets/images/angle.png
+    - assets/images/data_transfer.png
+    - assets/images/force.png
+    - assets/images/roman_numerals.png
+    - assets/images/torque.png
+    - assets/images/volumetric_flow.png
+    - assets/images/time.png
+    - assets/images/numeric_base.png
+    - assets/images/shoe_size.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -506,7 +506,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/acceleration.png',
                                 'Acceleration',
                                 'm/s², g, ft/s²...',
                                 onTap: () {
@@ -515,7 +515,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/angle.png',
                                 'Angle',
                                 'Degree, Radian, Gradian...',
                                 onTap: () {
@@ -524,7 +524,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/data_transfer.png',
                                 'Data Transfer',
                                 'Mbps, MB/s, GB/s...',
                                 onTap: () {
@@ -533,7 +533,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/force.png',
                                 'Force',
                                 'Newton, Dyne, Pound-force...',
                                 onTap: () {
@@ -542,7 +542,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/roman_numerals.png',
                                 'Roman Numerals',
                                 'I, V, X, L, C, M...',
                                 onTap: () {
@@ -551,7 +551,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/torque.png',
                                 'Torque',
                                 'N·m, lb·ft, kgf·m...',
                                 onTap: () {
@@ -560,7 +560,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/volumetric_flow.png',
                                 'Volumetric Flow',
                                 'm³/s, L/min, gal/h...',
                                 onTap: () {
@@ -569,7 +569,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/time.png',
                                 'Time',
                                 'Second, Minute, Hour, Day...',
                                 onTap: () {
@@ -578,7 +578,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/numeric_base.png',
                                 'Numeric Base',
                                 'Binary, Octal, Decimal, Hex...',
                                 onTap: () {
@@ -587,7 +587,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                                 },
                               ),
                               _buildMenuItem(
-                                'assets/images/percentage-discount-symbol.png',
+                                'assets/images/shoe_size.png',
                                 'Shoe Size',
                                 'US, UK, EU, CM...',
                                 onTap: () {
