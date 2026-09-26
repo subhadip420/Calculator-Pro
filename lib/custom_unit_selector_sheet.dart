@@ -661,6 +661,29 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Exbibit', 'symbol': 'Eib'}, //[cite: 10]
       ],
     },
+    'Acceleration': {
+      'Metric': [
+        {'name': 'Millimeter / Second²', 'symbol': 'mm/s²'}, //[cite: 10]
+        {'name': 'Centimeter / Second²', 'symbol': 'cm/s²'}, //[cite: 10]
+        {'name': 'Kilometer / Second²', 'symbol': 'km/s²'}, //[cite: 10]
+      ],
+      'Imperial': [
+        {'name': 'Inch / Second²', 'symbol': 'in/s²'}, //[cite: 10]
+        {'name': 'Yard / Second²', 'symbol': 'yd/s²'}, //[cite: 10]
+        {'name': 'Mile / Second²', 'symbol': 'mi/s²'}, //[cite: 10]
+      ],
+      'Scientific': [
+        {'name': 'Milligal', 'symbol': 'mGal'}, //[cite: 10]
+        {'name': 'Gal', 'symbol': 'Gal'}, //[cite: 10]
+      ],
+      'Engineering': [
+        {'name': 'Kilometer / Hour / Second', 'symbol': 'kmh/s'}, //[cite: 9]
+        {'name': 'Mile / Hour / Second', 'symbol': 'mph/s'}, //[cite: 9]
+      ],
+      'Other': [
+        {'name': 'Knot / Second', 'symbol': 'kn/s'}, //[cite: 9]
+      ]
+    }
 
     // Future me Area, Volume etc. add kar sakte hain
   };
