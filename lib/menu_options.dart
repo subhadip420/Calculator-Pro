@@ -118,6 +118,22 @@ class _MenuOptionsState extends State<MenuOptions> {
   }
 
   // --- NAYA FIX 2: View Open karne ka smart logic ---
+  // void _openView(String viewName) {
+  //   if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //
+  //   // Naye page par jane se pehle current scroll position save karlo
+  //   if (_scrollController.hasClients) {
+  //     _savedScrollOffset = _scrollController.offset;
+  //   }
+  //
+  //   setState(() {
+  //     _currentActiveView = viewName;
+  //     _searchController.clear();
+  //     _searchQuery = "";
+  //   });
+  // }
+
+  // --- NAYA FIX 2: View Open karne ka smart logic ---
   void _openView(String viewName) {
     if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
@@ -126,10 +142,21 @@ class _MenuOptionsState extends State<MenuOptions> {
       _savedScrollOffset = _scrollController.offset;
     }
 
-    setState(() {
-      _currentActiveView = viewName;
-      _searchController.clear();
-      _searchQuery = "";
+    // NAYA FIX: Pehle system keyboard ko force-hide karo
+    FocusScope.of(context).unfocus();
+
+    // NAYA FIX: 150 milliseconds ka chota delay taaki keyboard smooth niche chala jaye
+    // Aur RenderFlex overflow error (yellow tape) na aaye
+    Future.delayed(const Duration(milliseconds: 150), () {
+      if (!mounted) return; // Safety check
+
+      setState(() {
+        _currentActiveView = viewName;
+
+        // Naya page khulte hi automatically search reset kar do
+        _searchController.clear();
+        _searchQuery = "";
+      });
     });
   }
 
