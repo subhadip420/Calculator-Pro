@@ -724,6 +724,39 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Hour angle', 'symbol': 'ha'}, //[cite: 16]
       ]
     },
+    'Data Transfer': {
+      'Multiples of 1000': [
+        {'name': 'Bit / Second', 'symbol': 'b/s'}, //
+        {'name': 'Nibble / Second', 'symbol': 'n/s'}, //[cite: 15]
+        {'name': 'Kilobit / Second', 'symbol': 'kb/s'}, // Added for completeness
+        {'name': 'Megabit / Second', 'symbol': 'Mb/s'}, // Added for completeness
+        {'name': 'Gigabit / Second', 'symbol': 'Gb/s'}, // Added for completeness
+        {'name': 'Terabit / Second', 'symbol': 'Tb/s'}, //[cite: 15]
+        {'name': 'Petabit / Second', 'symbol': 'Pb/s'}, //[cite: 15]
+        {'name': 'Exabit / Second', 'symbol': 'Eb/s'}, //[cite: 15]
+        {'name': 'Byte / Second', 'symbol': 'B/s'}, //[cite: 15]
+        {'name': 'Kilobyte / Second', 'symbol': 'KB/s'}, //[cite: 15]
+        {'name': 'Megabyte / Second', 'symbol': 'MB/s'}, //[cite: 15]
+        {'name': 'Gigabyte / Second', 'symbol': 'GB/s'}, //[cite: 14, 15]
+        {'name': 'Terabyte / Second', 'symbol': 'TB/s'}, //[cite: 14]
+        {'name': 'Petabyte / Second', 'symbol': 'PB/s'}, //[cite: 14]
+        {'name': 'Exabyte / Second', 'symbol': 'EB/s'}, //[cite: 14]
+      ],
+      'Multiples of 1024': [
+        {'name': 'Kibibit / Second', 'symbol': 'Kib/s'}, //[cite: 14]
+        {'name': 'Mebibit / Second', 'symbol': 'Mib/s'}, //[cite: 14]
+        {'name': 'Gibibit / Second', 'symbol': 'Gib/s'}, //[cite: 14]
+        {'name': 'Tebibit / Second', 'symbol': 'Tib/s'}, //[cite: 13, 14]
+        {'name': 'Pebibit / Second', 'symbol': 'Pib/s'}, //[cite: 13, 14]
+        {'name': 'Exbibit / Second', 'symbol': 'Eib/s'}, //[cite: 13]
+        {'name': 'Kibibyte / Second', 'symbol': 'KiB/s'}, //[cite: 13]
+        {'name': 'Mebibyte / Second', 'symbol': 'MiB/s'}, //[cite: 13]
+        {'name': 'Gibibyte / Second', 'symbol': 'GiB/s'}, //[cite: 13]
+        {'name': 'Tebibyte / Second', 'symbol': 'TiB/s'}, //[cite: 13]
+        {'name': 'Pebibyte / Second', 'symbol': 'PiB/s'}, //[cite: 13]
+        {'name': 'Exbibyte / Second', 'symbol': 'EiB/s'}, //[cite: 13]
+      ],
+    },
 
     // Future me Area, Volume etc. add kar sakte hain
   };
