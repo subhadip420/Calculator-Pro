@@ -808,6 +808,68 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Ton-force meter', 'symbol': 'tf·m'}, //[cite: 17]
       ]
     },
+    'Volumetric Flow': {
+      'Standard': [
+        {'name': 'Liter / Minute', 'symbol': 'l/min'}, // Base unit (added for completeness)
+        {'name': 'Liter / Second', 'symbol': 'l/s'}, //[cite: 28]
+        {'name': 'Liter / Hour', 'symbol': 'l/h'}, //[cite: 28]
+        {'name': 'Liter / Day', 'symbol': 'l/d'}, //[cite: 28]
+        {'name': 'Milliliter / Second', 'symbol': 'ml/s'}, //[cite: 28]
+        {'name': 'Milliliter / Minute', 'symbol': 'ml/min'}, //[cite: 28]
+        {'name': 'Milliliter / Hour', 'symbol': 'ml/h'}, //[cite: 28]
+        {'name': 'Milliliter / Day', 'symbol': 'ml/d'}, //[cite: 28]
+      ],
+      'Metric': [
+        {'name': 'Centimeter³ / Second', 'symbol': 'cm³/s'}, //[cite: 27]
+        {'name': 'Centimeter³ / Minute', 'symbol': 'cm³/min'}, //[cite: 27]
+        {'name': 'Centimeter³ / Hour', 'symbol': 'cm³/h'}, //[cite: 27]
+        {'name': 'Centimeter³ / Day', 'symbol': 'cm³/d'}, //
+        {'name': 'Meter³ / Second', 'symbol': 'm³/s'}, //[cite: 27]
+        {'name': 'Meter³ / Minute', 'symbol': 'm³/min'}, //[cite: 27]
+        {'name': 'Meter³ / Hour', 'symbol': 'm³/h'}, //[cite: 27]
+        {'name': 'Meter³ / Day', 'symbol': 'm³/d'}, //[cite: 27]
+      ],
+      'United States': [
+        {'name': 'Gallon (US) / Second', 'symbol': 'gal/s'}, //[cite: 26]
+        {'name': 'Gallon (US) / Minute', 'symbol': 'gal/min'}, // Added for completeness
+        {'name': 'Gallon (US) / Hour', 'symbol': 'gal/h'}, //[cite: 26]
+        {'name': 'Gallon (US) / Day', 'symbol': 'gal/d'}, //[cite: 26]
+      ],
+      'United Kingdom': [
+        {'name': 'Gallon (UK) / Second', 'symbol': 'gal/s'}, //[cite: 26]
+        {'name': 'Gallon (UK) / Minute', 'symbol': 'gal/min'}, // Added for completeness
+        {'name': 'Gallon (UK) / Hour', 'symbol': 'gal/h'}, //[cite: 26]
+        {'name': 'Gallon (UK) / Day', 'symbol': 'gal/d'}, //[cite: 26]
+      ],
+      'Imperial': [
+        {'name': 'Inch³ / Second', 'symbol': 'in³/s'}, //[cite: 25]
+        {'name': 'Inch³ / Minute', 'symbol': 'in³/min'}, //[cite: 25]
+        {'name': 'Inch³ / Hour', 'symbol': 'in³/h'}, //[cite: 25, 26]
+        {'name': 'Inch³ / Day', 'symbol': 'in³/d'}, //[cite: 25, 26]
+        {'name': 'Foot³ / Second', 'symbol': 'ft³/s'}, //[cite: 25]
+        {'name': 'Foot³ / Minute', 'symbol': 'ft³/min'}, //[cite: 25]
+        {'name': 'Foot³ / Hour', 'symbol': 'ft³/h'}, //[cite: 25]
+        {'name': 'Foot³ / Day', 'symbol': 'ft³/d'}, //[cite: 25]
+        {'name': 'Yard³ / Second', 'symbol': 'yd³/s'}, //[cite: 24]
+        {'name': 'Yard³ / Minute', 'symbol': 'yd³/min'}, //[cite: 24]
+        {'name': 'Yard³ / Hour', 'symbol': 'yd³/h'}, //[cite: 24]
+        {'name': 'Yard³ / Day', 'symbol': 'yd³/d'}, //[cite: 24, 25]
+      ],
+      'Scientific': [
+        {'name': 'Sverdrup', 'symbol': 'Sv'}, //[cite: 23, 24]
+      ],
+      'Engineering': [
+        {'name': 'Oil barrel / Second', 'symbol': 'bbl/s'}, //[cite: 23]
+        {'name': 'Oil barrel / Minute', 'symbol': 'bbl/min'}, //[cite: 23, 24]
+        {'name': 'Oil barrel / Hour', 'symbol': 'bbl/h'}, //[cite: 23, 24]
+        {'name': 'Oil barrel / Day', 'symbol': 'bbl/d'}, //[cite: 23, 24]
+        {'name': 'Acre-foot / Day', 'symbol': 'af/d'}, //[cite: 23]
+        {'name': 'Acre-foot / Year', 'symbol': 'af/y'}, //[cite: 23]
+      ],
+      'Historical': [
+        {'name': 'Miner\'s inch', 'symbol': 'min'}, //[cite: 23]
+      ]
+    }
 
     // Future me Area, Volume etc. add kar sakte hain
   };
