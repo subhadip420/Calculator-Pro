@@ -937,8 +937,32 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 10),
 
+          // 2. Search Bar
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       color: bgColor.withOpacity(0.5),
+          //       borderRadius: BorderRadius.circular(16),
+          //       border: Border.all(color: Colors.white.withOpacity(0.05)),
+          //     ),
+          //     child: TextField(
+          //       controller: searchController,
+          //       onChanged: _filterUnits,
+          //       style: const TextStyle(color: Colors.white, fontSize: 16),
+          //       cursorColor: cyanColor,
+          //       decoration: InputDecoration(
+          //         hintText: 'Search in ${widget.category}',
+          //         hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
+          //         prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
+          //         border: InputBorder.none,
+          //         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           // 2. Search Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -957,13 +981,29 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
                   hintText: 'Search in ${widget.category}',
                   hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
                   prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
+
+                  // --- NAYA: Clear (X) Button Logic ---
+                  suffixIcon: searchController.text.isNotEmpty
+                      ? IconButton(
+                    icon: Icon(Icons.close_rounded, color: textGrey.withOpacity(0.7)),
+                    tooltip: 'Clear search',
+                    onPressed: () {
+                      setState(() {
+                        searchController.clear(); // TextField ko khali karega
+                        _filterUnits(''); // List ko wapas default state me layega
+                        FocusScope.of(context).unfocus(); // Keyboard ko niche bhej dega
+                      });
+                    },
+                  )
+                      : null,
+
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 5),
 
           // 3. Group-wise Dynamic List View
           Expanded(
@@ -994,7 +1034,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
   // --- CARD UI METHOD ---
   Widget _buildGroupCard(String groupName, List<Map<String, String>> units) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
         color: bgColor.withOpacity(0.4), // Card ka background color
         borderRadius: BorderRadius.circular(20),
