@@ -58,29 +58,29 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   final List<Map<String, dynamic>> _allTools = [
     // --- UNIT CONVERTERS CATEGORY ---
-    {'id': 'acceleration', 'title': 'Acceleration', 'sub': 'm/s², g, ft/s²...', 'img': 'assets/images/acceleration.png', 'isUnitConverter': true},
-    {'id': 'angle', 'title': 'Angle', 'sub': 'Degree, Radian, Gradian...', 'img': 'assets/images/angle.png', 'isUnitConverter': true},
-    {'id': 'area', 'title': 'Area', 'sub': 'Square meters, acres, hectares...', 'img': 'assets/images/area.png', 'isUnitConverter': true},
-    {'id': 'data storage', 'title': 'Data Storage', 'sub': 'Bytes, MB, GB, TB, PB...', 'img': 'assets/images/data_storage.png', 'isUnitConverter': true},
-    {'id': 'data_transfer', 'title': 'Data Transfer', 'sub': 'Mbps, MB/s, GB/s...', 'img': 'assets/images/data_transfer.png', 'isUnitConverter': true},
-    {'id': 'energy', 'title': 'Energy', 'sub': 'Joules, calories, kWh...', 'img': 'assets/images/energy.png', 'isUnitConverter': true},
-    {'id': 'force', 'title': 'Force', 'sub': 'Newton, Dyne, Pound-force...', 'img': 'assets/images/force.png', 'isUnitConverter': true},
-    {'id': 'length', 'title': 'Length', 'sub': 'Meters, inches, feet & more', 'img': 'assets/images/length.png', 'isUnitConverter': true},
-    {'id': 'numeric_base', 'title': 'Numeric Base', 'sub': 'Binary, Octal, Decimal, Hex...', 'img': 'assets/images/numeric_base.png', 'isUnitConverter': true},
-    {'id': 'power', 'title': 'Power', 'sub': 'Watts, kilowatts, horsepower...', 'img': 'assets/images/power.png', 'isUnitConverter': true},
-    {'id': 'pressure', 'title': 'Pressure', 'sub': 'Pascal, bar, psi, atm...', 'img': 'assets/images/pressure.png', 'isUnitConverter': true},
-    {'id': 'roman_numerals', 'title': 'Roman Numerals', 'sub': 'I, V, X, L, C, M...', 'img': 'assets/images/roman_numerals.png', 'isUnitConverter': true},
-    {'id': 'shoe_size', 'title': 'Shoe Size', 'sub': 'US, UK, EU, CM...', 'img': 'assets/images/shoe_size.png', 'isUnitConverter': true},
-    {'id': 'speed', 'title': 'Speed', 'sub': 'km/h, mph, knots & more', 'img': 'assets/images/speed.png', 'isUnitConverter': true},
-    {'id': 'temperature', 'title': 'Temperature', 'sub': 'Celsius, Fahrenheit, Kelvin', 'img': 'assets/images/temperature.png', 'isUnitConverter': false},
-    {'id': 'time', 'title': 'Time', 'sub': 'Second, Minute, Hour, Day...', 'img': 'assets/images/time.png', 'isUnitConverter': true},
-    {'id': 'torque', 'title': 'Torque', 'sub': 'N·m, lb·ft, kgf·m...', 'img': 'assets/images/torque.png', 'isUnitConverter': true},
-    {'id': 'volume', 'title': 'Volume', 'sub': 'Liters, gallons, cubic meters...', 'img': 'assets/images/volume.png', 'isUnitConverter': true},
-    {'id': 'volumetric_flow', 'title': 'Volumetric Flow', 'sub': 'm³/s, L/min, gal/h...', 'img': 'assets/images/volumetric_flow.png', 'isUnitConverter': true},
-    {'id': 'weight', 'title': 'Weight & Mass', 'sub': 'Kilograms, pounds, ounces...', 'img': 'assets/images/weight.png', 'isUnitConverter': true},
+    {'id': 'acceleration', 'title': 'Acceleration', 'sub': 'm/s², g, ft/s²...', 'img': 'assets/images/acceleration.png', 'category': 'unit_converter'},
+    {'id': 'angle', 'title': 'Angle', 'sub': 'Degree, Radian, Gradian...', 'img': 'assets/images/angle.png', 'category': 'unit_converter'},
+    {'id': 'area', 'title': 'Area', 'sub': 'Square meters, acres, hectares...', 'img': 'assets/images/area.png', 'category': 'unit_converter'},
+    {'id': 'data storage', 'title': 'Data Storage', 'sub': 'Bytes, MB, GB, TB, PB...', 'img': 'assets/images/data_storage.png', 'category': 'unit_converter'},
+    {'id': 'data_transfer', 'title': 'Data Transfer', 'sub': 'Mbps, MB/s, GB/s...', 'img': 'assets/images/data_transfer.png', 'category': 'unit_converter'},
+    {'id': 'energy', 'title': 'Energy', 'sub': 'Joules, calories, kWh...', 'img': 'assets/images/energy.png', 'category': 'unit_converter'},
+    {'id': 'force', 'title': 'Force', 'sub': 'Newton, Dyne, Pound-force...', 'img': 'assets/images/force.png', 'category': 'unit_converter'},
+    {'id': 'length', 'title': 'Length', 'sub': 'Meters, inches, feet & more', 'img': 'assets/images/length.png', 'category': 'unit_converter'},
+    {'id': 'numeric_base', 'title': 'Numeric Base', 'sub': 'Binary, Octal, Decimal, Hex...', 'img': 'assets/images/numeric_base.png', 'category': 'unit_converter'},
+    {'id': 'power', 'title': 'Power', 'sub': 'Watts, kilowatts, horsepower...', 'img': 'assets/images/power.png', 'category': 'unit_converter'},
+    {'id': 'pressure', 'title': 'Pressure', 'sub': 'Pascal, bar, psi, atm...', 'img': 'assets/images/pressure.png', 'category': 'unit_converter'},
+    {'id': 'roman_numerals', 'title': 'Roman Numerals', 'sub': 'I, V, X, L, C, M...', 'img': 'assets/images/roman_numerals.png', 'category': 'unit_converter'},
+    {'id': 'shoe_size', 'title': 'Shoe Size', 'sub': 'US, UK, EU, CM...', 'img': 'assets/images/shoe_size.png', 'category': 'unit_converter'},
+    {'id': 'speed', 'title': 'Speed', 'sub': 'km/h, mph, knots & more', 'img': 'assets/images/speed.png', 'category': 'unit_converter'},
+    {'id': 'temperature', 'title': 'Temperature', 'sub': 'Celsius, Fahrenheit, Kelvin', 'img': 'assets/images/temperature.png', 'category': 'unit_converter'},
+    {'id': 'time', 'title': 'Time', 'sub': 'Second, Minute, Hour, Day...', 'img': 'assets/images/time.png', 'category': 'unit_converter'},
+    {'id': 'torque', 'title': 'Torque', 'sub': 'N·m, lb·ft, kgf·m...', 'img': 'assets/images/torque.png', 'category': 'unit_converter'},
+    {'id': 'volume', 'title': 'Volume', 'sub': 'Liters, gallons, cubic meters...', 'img': 'assets/images/volume.png', 'category': 'unit_converter'},
+    {'id': 'volumetric_flow', 'title': 'Volumetric Flow', 'sub': 'm³/s, L/min, gal/h...', 'img': 'assets/images/volumetric_flow.png', 'category': 'unit_converter'},
+    {'id': 'weight', 'title': 'Weight & Mass', 'sub': 'Kilograms, pounds, ounces...', 'img': 'assets/images/weight.png', 'category': 'unit_converter'},
     // --- OTHER TOOLS CATEGORY ---
-    {'id': 'discount', 'title': 'Discount', 'sub': 'Calculate discounts', 'img': 'assets/images/percentage-discount-symbol.png', 'isOther': true},
-    {'id': 'emi', 'title': 'EMI Calculator', 'sub': 'Loan & Mortgage', 'img': 'assets/images/percentage-discount-symbol.png', 'isOther': true},
+    {'id': 'discount', 'title': 'Discount', 'sub': 'Calculate discounts', 'img': 'assets/images/percentage-discount-symbol.png', 'category': 'other_tools'},
+    {'id': 'emi', 'title': 'EMI Calculator', 'sub': 'Loan & Mortgage', 'img': 'assets/images/percentage-discount-symbol.png', 'category': 'other_tools'},
   ];
 
   @override
@@ -395,7 +395,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                       ),
                       // NAYA: Ye line automatically aapki _allTools list se buttons banayegi
                       child: Column(
-                        children: _allTools.where((tool) => tool['isUnitConverter'] == true).map((tool) {
+                        children: _allTools.where((tool) => tool['category'] == 'unit_converter').map((tool) {
                           return _buildMenuItem(
                             tool['img'], tool['title'], tool['sub'],
                             onTap: () => _openView(tool['id']),
@@ -437,7 +437,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                       ),
                       // NAYA: Ye line "Other Tools" category se automatically banayegi
                       child: Column(
-                        children: _allTools.where((tool) => tool['isOther'] == true).map((tool) {
+                        children: _allTools.where((tool) => tool['category'] == 'other_tools').map((tool) {
                           return _buildMenuItem(
                             tool['img'], tool['title'], tool['sub'],
                             onTap: () => _openView(tool['id']),
