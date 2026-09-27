@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'custom_action_button.dart'; // Apna custom button import karein
+import 'custom_action_button.dart';
+import 'custom_toast.dart'; // Apna custom button import karein
 
 class CustomTopBar extends StatefulWidget {
   final String toolId;      // Tool ka unique ID (e.g., 'length')
@@ -63,7 +64,8 @@ class _CustomTopBarState extends State<CustomTopBar> {
     if (currentlyFav) {
       // 1. Agar pehle se hai, toh REMOVE karo
       favList.removeWhere((item) => jsonDecode(item)['id'] == widget.toolId);
-      _showToast("Removed from Favorites");
+      //_showToast("Removed from Favorites");
+      showCustomToast(context, 'Removed from Favorites');
     } else {
       // 2. Agar nahi hai, toh JSON banakar ADD karo
       final newItem = jsonEncode({
@@ -72,7 +74,8 @@ class _CustomTopBarState extends State<CustomTopBar> {
         'img': widget.iconPath,
       });
       favList.add(newItem);
-      _showToast("Added to Favorites");
+      //_showToast("Added to Favorites");
+      showCustomToast(context, 'Added to Favorites');
     }
 
     // SharedPreferences me nayi list save kardo
@@ -85,26 +88,26 @@ class _CustomTopBarState extends State<CustomTopBar> {
   }
 
   // Premium Floating Toast (SnackBar)
-  void _showToast(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars(); // Purana toast hatao
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: cyanColor, fontSize: 14),
-        ),
-        backgroundColor: surfaceColor.withOpacity(0.9), // Premium look ke liye transparent cyan
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: surfaceColor.withOpacity(0.5), width: 1),
-        ),
-        margin: const EdgeInsets.only(bottom: 100, left: 60, right: 60), // Center me chota box
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
+  // void _showToast(String message) {
+  //   ScaffoldMessenger.of(context).clearSnackBars(); // Purana toast hatao
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(
+  //         message,
+  //         textAlign: TextAlign.center,
+  //         style: TextStyle(color: cyanColor, fontSize: 14),
+  //       ),
+  //       backgroundColor: surfaceColor.withOpacity(0.9), // Premium look ke liye transparent cyan
+  //       behavior: SnackBarBehavior.floating,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         side: BorderSide(color: surfaceColor.withOpacity(0.5), width: 1),
+  //       ),
+  //       margin: const EdgeInsets.only(bottom: 100, left: 60, right: 60), // Center me chota box
+  //       duration: const Duration(seconds: 2),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
