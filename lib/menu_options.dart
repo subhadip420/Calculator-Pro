@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
@@ -56,6 +58,20 @@ class _MenuOptionsState extends State<MenuOptions> {
   String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
 
+  List<Map<String, dynamic>> _favoriteTools = [];
+
+  // NAYA: SharedPreferences se real-time data load karne ka function
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favList = prefs.getStringList('favorite_tools') ?? [];
+
+    if (mounted) {
+      setState(() {
+        _favoriteTools = favList.map((item) => jsonDecode(item) as Map<String, dynamic>).toList();
+      });
+    }
+  }
+
   final List<Map<String, dynamic>> _allTools = [
     // --- UNIT CONVERTERS CATEGORY ---
     {'id': 'acceleration', 'title': 'Acceleration', 'sub': 'm/s², g, ft/s²...', 'img': 'assets/images/acceleration.png', 'category': 'unit_converter'},
@@ -89,6 +105,7 @@ class _MenuOptionsState extends State<MenuOptions> {
     _scrollController = ScrollController();
     _loadHapticsSetting();
     _initScrollController();
+    _loadFavorites();
     // NAYA: Scroll Listener - Check karta hai ki kitna scroll hua hai
     // _scrollController.addListener(() {
     //   if (_scrollController.offset > 80 && !_showTopSearch) {
@@ -171,6 +188,7 @@ class _MenuOptionsState extends State<MenuOptions> {
 
     // 2. Naya controller banalo ekdum usi SAVED OFFSET ke sath
     _initScrollController(initialOffset: _savedScrollOffset);
+    _loadFavorites();
     setState(() {
       _currentActiveView = null; // Menu par aao
     });
@@ -189,18 +207,21 @@ class _MenuOptionsState extends State<MenuOptions> {
       case 'length':
         return LengthConverterView(
           key: const ValueKey('Length'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+          //onBack: () => setState(() => _currentActiveView = null),
+        onBack: _closeView);
+
       case 'weight':
         return WeightMassConverterView(
           key: const ValueKey('Weight'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'area':
         return AreaConverterView(
             key: const ValueKey('Area'),
-            onBack: () => setState(() => _currentActiveView = null)
-        );
+        //     onBack: () => setState(() => _currentActiveView = null)
+        // );
+            onBack: _closeView);
       case 'volume':
         return VolumeConverterView(
           key: const ValueKey('Volume'),
@@ -209,80 +230,95 @@ class _MenuOptionsState extends State<MenuOptions> {
       case 'temperature':
         return TemperatureConverterView(
           key: const ValueKey('Temp'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'speed':
         return SpeedConverterView(
           key: const ValueKey('Speed'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'pressure':
         return PressureConverterView(
           key: const ValueKey('Pressure'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'energy':
         return EnergyConverterView(
           key: const ValueKey('Energy'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'power':
         return PowerConverterView(
           key: const ValueKey('Power'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'data storage':
         return DataStorageConverterView(
           key: const ValueKey('Data'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'acceleration':
         return AccelerationConverterView(
           key: const ValueKey('Acceleration'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'angle':
         return AngleConverterView(
           key: const ValueKey('Angle'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'data_transfer':
         return DataTransferConverterView(
           key: const ValueKey('Data Transfer'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'force':
         return ForceConverterView(
           key: const ValueKey('Force'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'roman_numerals':
         return RomanNumeralsConverterView(
           key: const ValueKey('Roman Numerals'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'torque':
         return TorqueConverterView(
           key: const ValueKey('Torque'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'volumetric_flow':
         return VolumetricFlowConverterView(
           key: const ValueKey('Volumetric Flow'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'time':
         return TimeConverterView(key: const ValueKey('Time'), onBack: () => setState(() => _currentActiveView = null));
       case 'numeric_base':
         return NumericBaseConverterView(
           key: const ValueKey('Numeric Base'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       case 'shoe_size':
         return ShoeSizeConverterView(
           key: const ValueKey('Shoe Size'),
-          onBack: () => setState(() => _currentActiveView = null),
-        );
+        //   onBack: () => setState(() => _currentActiveView = null),
+        // );
+            onBack: _closeView);
       default:
         return _buildMainMenu();
     }
@@ -550,24 +586,117 @@ class _MenuOptionsState extends State<MenuOptions> {
     );
   }
 
+  // Widget _buildFavouriteCard() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+  //     decoration: BoxDecoration(
+  //       color: surfaceColor.withOpacity(0.4),
+  //       borderRadius: BorderRadius.circular(16),
+  //       border: Border.all(color: Colors.white.withOpacity(0.05)),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         const Icon(Icons.star_rounded, color: Colors.orangeAccent, size: 24),
+  //         const SizedBox(width: 16),
+  //         const Text(
+  //           'Favourite',
+  //           style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+  //         ),
+  //         const Spacer(),
+  //         Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget _buildFavouriteCard() {
+    // Agar koi favorite nahi hai, toh card ko hide rakho
+    if (_favoriteTools.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: surfaceColor.withOpacity(0.4),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.star_rounded, color: Colors.orangeAccent, size: 24),
-          const SizedBox(width: 16),
-          const Text(
-            'Favourite',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          // Header Section
+          Row(
+            children: [
+              const Icon(Icons.star_rounded, color: Colors.amberAccent, size: 20),
+              const SizedBox(width: 8),
+              const Text(
+                'Favorites',
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
+              ),
+            ],
           ),
-          const Spacer(),
-          Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
+          const SizedBox(height: 16),
+
+          // Grid Section (4 items per row)
+          GridView.builder(
+            shrinkWrap: true, // Scrollable column ke andar error se bachane ke liye
+            physics: const NeverScrollableScrollPhysics(), // Scroll parent handle karega
+            itemCount: _favoriteTools.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, // 1 Row mein 4 items
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.75, // Icon aur text ke height-width ratio ko set karne ke liye
+            ),
+            itemBuilder: (context, index) {
+              final tool = _favoriteTools[index];
+              return GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus(); // Keyboard hide karein
+                  _openView(tool['id']); // Direct tool open karein
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Icon Container
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: bgColor.withOpacity(0.6),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Image.asset(
+                        tool['img'],
+                        width: 35,
+                        height: 35,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.image_not_supported, color: Colors.white54, size: 24);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Title Text
+                    Text(
+                      tool['title'],
+                      textAlign: TextAlign.center,
+                      maxLines: 1, // Text ko ek line me rakhega
+                      overflow: TextOverflow.ellipsis, // Agar lamba hua toh '...' dikhayega
+                      style: TextStyle(
+                        color: textGrey.withOpacity(0.9),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
