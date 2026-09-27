@@ -247,46 +247,128 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     }
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Column(
+  //     children: [
+  //       CustomTopBar(
+  //         toolId: 'area',
+  //         title: 'Area',
+  //         iconPath: 'assets/images/area.png',
+  //         onBack: widget.onBack,
+  //         isHapticsEnabled: _isHapticsEnabled,
+  //       ),
+  //       Expanded(
+  //         child: Padding(
+  //           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: cardVerticalPadding),
+  //           child: Stack(
+  //             alignment: Alignment.center,
+  //             children: [
+  //               Column(
+  //                 mainAxisSize: MainAxisSize.min, // Swap button theek center me lock hoga
+  //                 children: [
+  //                   ConversionCard(
+  //                     isActive: isFromSelected,
+  //                     unitName: fromUnit,
+  //                     unitSymbol: fromSymbol,
+  //                     controller: _fromController,
+  //                     onTap: () {
+  //                       setState(() { isFromSelected = true; });
+  //                     },
+  //                     onUnitTap: () => _showUnitPicker(true),
+  //                   ),
+  //
+  //                   SizedBox(height: cardGap), // Dynamic gap based on screen size
+  //
+  //                   ConversionCard(
+  //                     isActive: !isFromSelected,
+  //                     unitName: toUnit,
+  //                     unitSymbol: toSymbol,
+  //                     controller: _toController,
+  //                     onTap: () {
+  //                       setState(() { isFromSelected = false; });
+  //                     },
+  //                     onUnitTap: () => _showUnitPicker(false),
+  //                   ),
+  //                 ],
+  //               ),
+  //
+  //               // --- SWAP BUTTON ---
+  //               GestureDetector(
+  //                 onTap: _swapUnits,
+  //                 child: AnimatedContainer( // NAYA: Smooth resize animation
+  //                   duration: const Duration(milliseconds: 250),
+  //                   height: swapBtnSize,
+  //                   width: swapBtnSize,
+  //                   decoration: BoxDecoration(
+  //                     color: cyanColor,
+  //                     shape: BoxShape.circle,
+  //                     border: Border.all(color: bgColor, width: isShortScreen ? 3 : 4),
+  //                     boxShadow: [
+  //                       BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+  //                     ],
+  //                   ),
+  //                   child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //
+  //       // --- 3. REAL-TIME EQUIVALENCE TEXT ---
+  //       Padding(
+  //         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+  //         child: AnimatedSwitcher(
+  //           duration: const Duration(milliseconds: 300),
+  //           child: Container(
+  //             key: ValueKey<String>(_getEquivalenceText()),
+  //             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+  //             decoration: BoxDecoration(
+  //               color: surfaceColor.withOpacity(0.4),
+  //               borderRadius: BorderRadius.circular(16),
+  //               border: Border.all(color: Colors.white.withOpacity(0.05)),
+  //             ),
+  //             child: Text(
+  //               _getEquivalenceText(),
+  //               style: TextStyle(
+  //                 color: cyanColor.withOpacity(0.9),
+  //                 fontSize: 15,
+  //                 fontWeight: FontWeight.w500,
+  //                 letterSpacing: 0.5,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(height: 8),
+  //
+  //       // --- 4. REUSABLE KEYBOARD ---
+  //       ConverterKeyboard(
+  //         isHapticsEnabled: _isHapticsEnabled,
+  //         onKeyPress: _onKeyPress,
+  //         onBackspace: _onBackspace,
+  //         onClear: _onClear,
+  //       ),
+  //       const SizedBox(height: 10),
+  //     ],
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // --- NAYA FIX: Screen size detection for parent view ---
+    final screenHeight = MediaQuery.of(context).size.height;
+    final bool isShortScreen = screenHeight < 720; // Chhoti screen detect karna
+
+    // Dynamic sizes for perfect fit
+    final double cardVerticalPadding = isShortScreen ? 4.0 : 10.0;
+    final double cardGap = isShortScreen ? 12.0 : 16.0; // Cards ke beech ka gap
+    final double swapBtnSize = isShortScreen ? 40.0 : 46.0; // Swap button size shrink
+    final double swapIconSize = isShortScreen ? 22.0 : 26.0;
+
     return Column(
       children: [
-        // --- 1. TOP BAR ---
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       ActionButton(
-        //         icon: Icons.arrow_back_ios_new_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //           widget.onBack();
-        //         },
-        //       ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Area Conversion',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         CustomTopBar(
           toolId: 'area',
           title: 'Area',
@@ -297,71 +379,71 @@ class _AreaConverterViewState extends State<AreaConverterView> {
 
         // --- 2. MAIN CONVERSION CARDS ---
         Expanded(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ConversionCard(
-                        isActive: isFromSelected,
-                        unitName: fromUnit,
-                        unitSymbol: fromSymbol,
-                        controller: _fromController,
-                        onTap: () {
-                          setState(() { isFromSelected = true; });
-                        },
-                        onUnitTap: () => _showUnitPicker(true),
-                      ),
-                      const SizedBox(height: 16),
-                      ConversionCard(
-                        isActive: !isFromSelected,
-                        unitName: toUnit,
-                        unitSymbol: toSymbol,
-                        controller: _toController,
-                        onTap: () {
-                          setState(() { isFromSelected = false; });
-                        },
-                        onUnitTap: () => _showUnitPicker(false),
-                      ),
-                    ],
-                  ),
-
-                  // --- SWAP BUTTON ---
-                  GestureDetector(
-                    onTap: _swapUnits,
-                    child: Container(
-                      height: 46,
-                      width: 46,
-                      decoration: BoxDecoration(
-                        color: cyanColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: bgColor, width: 4),
-                        boxShadow: [
-                          BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-                        ],
-                      ),
-                      child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: cardVerticalPadding),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min, // Swap button theek center me lock hoga
+                  children: [
+                    ConversionCard(
+                      isActive: isFromSelected,
+                      unitName: fromUnit,
+                      unitSymbol: fromSymbol,
+                      controller: _fromController,
+                      onTap: () {
+                        setState(() { isFromSelected = true; });
+                      },
+                      onUnitTap: () => _showUnitPicker(true),
                     ),
+
+                    SizedBox(height: cardGap), // Dynamic gap based on screen size
+
+                    ConversionCard(
+                      isActive: !isFromSelected,
+                      unitName: toUnit,
+                      unitSymbol: toSymbol,
+                      controller: _toController,
+                      onTap: () {
+                        setState(() { isFromSelected = false; });
+                      },
+                      onUnitTap: () => _showUnitPicker(false),
+                    ),
+                  ],
+                ),
+
+                // --- SWAP BUTTON ---
+                GestureDetector(
+                  onTap: _swapUnits,
+                  child: AnimatedContainer( // NAYA: Smooth resize animation
+                    duration: const Duration(milliseconds: 250),
+                    height: swapBtnSize,
+                    width: swapBtnSize,
+                    decoration: BoxDecoration(
+                      color: cyanColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: bgColor, width: isShortScreen ? 3 : 4),
+                      boxShadow: [
+                        BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                      ],
+                    ),
+                    child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
 
         // --- 3. REAL-TIME EQUIVALENCE TEXT ---
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: isShortScreen ? 2.0 : 5.0),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Container(
               key: ValueKey<String>(_getEquivalenceText()),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: isShortScreen ? 4.0 : 6.0),
               decoration: BoxDecoration(
                 color: surfaceColor.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
@@ -371,7 +453,7 @@ class _AreaConverterViewState extends State<AreaConverterView> {
                 _getEquivalenceText(),
                 style: TextStyle(
                   color: cyanColor.withOpacity(0.9),
-                  fontSize: 15,
+                  fontSize: isShortScreen ? 13 : 15,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
                 ),
@@ -379,7 +461,8 @@ class _AreaConverterViewState extends State<AreaConverterView> {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+
+        SizedBox(height: isShortScreen ? 4 : 8),
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
@@ -388,7 +471,8 @@ class _AreaConverterViewState extends State<AreaConverterView> {
           onBackspace: _onBackspace,
           onClear: _onClear,
         ),
-        const SizedBox(height: 10),
+
+        SizedBox(height: isShortScreen ? 4 : 10),
       ],
     );
   }
