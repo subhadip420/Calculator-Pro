@@ -88,20 +88,21 @@ class _MenuOptionsState extends State<MenuOptions> {
     super.initState();
     _scrollController = ScrollController();
     _loadHapticsSetting();
+    _initScrollController();
     // NAYA: Scroll Listener - Check karta hai ki kitna scroll hua hai
-    _scrollController.addListener(() {
-      if (_scrollController.offset > 80 && !_showTopSearch) {
-        // Agar 80px se zyada scroll ho gaya toh top search button dikhao
-        setState(() {
-          _showTopSearch = true;
-        });
-      } else if (_scrollController.offset <= 80 && _showTopSearch) {
-        // Upar aane par wapas hide kar do
-        setState(() {
-          _showTopSearch = false;
-        });
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (_scrollController.offset > 80 && !_showTopSearch) {
+    //     // Agar 80px se zyada scroll ho gaya toh top search button dikhao
+    //     setState(() {
+    //       _showTopSearch = true;
+    //     });
+    //   } else if (_scrollController.offset <= 80 && _showTopSearch) {
+    //     // Upar aane par wapas hide kar do
+    //     setState(() {
+    //       _showTopSearch = false;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -115,6 +116,25 @@ class _MenuOptionsState extends State<MenuOptions> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
+    });
+  }
+
+  // NAYA: Scroll Controller ko initialize karne ka alag function
+  void _initScrollController({double initialOffset = 0.0}) {
+    _scrollController = ScrollController(initialScrollOffset: initialOffset); // Wahi position se start hoga
+
+    _scrollController.addListener(() {
+      if (!_scrollController.hasClients) return; // NAYA: Animation ke time crash na ho isliye safety check
+
+      if (_scrollController.offset > 80 && !_showTopSearch) {
+        setState(() {
+          _showTopSearch = true;
+        });
+      } else if (_scrollController.offset <= 80 && _showTopSearch) {
+        setState(() {
+          _showTopSearch = false;
+        });
+      }
     });
   }
 
@@ -147,6 +167,10 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   // --- NAYA FIX 3: View Close karke Menu par wapas aane ka logic ---
   void _closeView() {
+    _scrollController.dispose();
+
+    // 2. Naya controller banalo ekdum usi SAVED OFFSET ke sath
+    _initScrollController(initialOffset: _savedScrollOffset);
     setState(() {
       _currentActiveView = null; // Menu par aao
     });
