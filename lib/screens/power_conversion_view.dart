@@ -292,9 +292,9 @@ class _PowerConverterViewState extends State<PowerConverterView> {
         // ),
 
         CustomTopBar(
-          toolId: 'force',
-          title: 'Force',
-          iconPath: 'assets/images/force.png',
+          toolId: 'power',
+          title: 'Power',
+          iconPath: 'assets/images/power.png',
           onBack: widget.onBack,
           isHapticsEnabled: _isHapticsEnabled,
         ),

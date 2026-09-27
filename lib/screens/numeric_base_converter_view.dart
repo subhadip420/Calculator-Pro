@@ -72,9 +72,9 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
         // ),
 
         CustomTopBar(
-          toolId: 'power',
-          title: 'Power',
-          iconPath: 'assets/images/power.png',
+          toolId: 'numeric_base',
+          title: 'Numeric Base',
+          iconPath: 'assets/images/numeric_base.png',
           onBack: widget.onBack,
           isHapticsEnabled: _isHapticsEnabled,
         ),
