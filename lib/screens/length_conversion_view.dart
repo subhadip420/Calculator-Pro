@@ -115,22 +115,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     return res;
   }
 
-  // --- CORE: Calculation Logic (Bi-directional) ---
-  // void _calculateConversion() {
-  //   double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
-  //   double rateTo = lengthConversionRates[toUnit] ?? 1.0;
-  //
-  //   if (isFromSelected) {
-  //     double inputValue = double.tryParse(fromValue) ?? 0.0;
-  //     double result = (inputValue * rateFrom) / rateTo;
-  //     toValue = _formatResult(result);
-  //   } else {
-  //     double inputValue = double.tryParse(toValue) ?? 0.0;
-  //     double result = (inputValue * rateTo) / rateFrom;
-  //     fromValue = _formatResult(result);
-  //   }
-  // }
-
   void _calculateConversion() {
     double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
     double rateTo = lengthConversionRates[toUnit] ?? 1.0;
@@ -147,30 +131,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       _fromController.text = fromValue;
     }
   }
-
-  // --- KEYBOARD LOGIC ---
-  // void _onKeyPress(String key) {
-  //   setState(() {
-  //     String currentValue = isFromSelected ? fromValue : toValue;
-  //
-  //     // Decimal sirf ek baar allowed hai
-  //     if (key == '.' && currentValue.contains('.')) return;
-  //
-  //     if (currentValue == '0' && key != '.') {
-  //       currentValue = key; // Replace default 0
-  //     } else {
-  //       currentValue += key; // Append digit
-  //     }
-  //
-  //     if (isFromSelected) {
-  //       fromValue = currentValue;
-  //     } else {
-  //       toValue = currentValue;
-  //     }
-  //
-  //     _calculateConversion(); // Type hote hi convert karega
-  //   });
-  // }
 
   // --- NAYA FIX: CURSOR BASED KEYBOARD LOGIC ---
   void _onKeyPress(String key) {
@@ -205,20 +165,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     });
   }
 
-  // void _onBackspace() {
-  //   setState(() {
-  //     if (isFromSelected) {
-  //       if (fromValue.isNotEmpty) fromValue = fromValue.substring(0, fromValue.length - 1);
-  //       if (fromValue.isEmpty || fromValue == '-') fromValue = '0';
-  //     } else {
-  //       if (toValue.isNotEmpty) toValue = toValue.substring(0, toValue.length - 1);
-  //       if (toValue.isEmpty || toValue == '-') toValue = '0';
-  //     }
-  //
-  //     _calculateConversion(); // Delete hone pe wapas update karega
-  //   });
-  // }
-
   void _onBackspace() {
     setState(() {
       TextEditingController activeController = isFromSelected ? _fromController : _toController;
@@ -245,13 +191,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       _calculateConversion();
     });
   }
-
-  // void _onClear() {
-  //   setState(() {
-  //     fromValue = '0';
-  //     toValue = '0';
-  //   });
-  // }
 
   void _onClear() {
     setState(() {
@@ -324,146 +263,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       // --- 1. TOP BAR ---
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             ActionButton(
-  //               icon: Icons.arrow_back_ios_new_rounded,
-  //               contentColor: textGrey,
-  //               bgColor: surfaceColor.withOpacity(0.5),
-  //               onTap: () {
-  //                 if (_isHapticsEnabled) HapticFeedback.lightImpact();
-  //                 widget.onBack();
-  //               },
-  //             ),
-  //             const Expanded(
-  //               child: Padding(
-  //                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //                 child: Text(
-  //                   'Length Conversion',
-  //                   style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-  //                 ),
-  //               ),
-  //             ),
-  //             ActionButton(
-  //               icon: Icons.star_border_rounded, // Right side star icon
-  //               contentColor: textGrey,
-  //               bgColor: surfaceColor.withOpacity(0.5),
-  //               onTap: () {
-  //                 if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //                 // TODO: Add to favorites logic
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //
-  //       // --- 2. MAIN CONVERSION CARDS ---
-  //       Expanded(
-  //         child: SingleChildScrollView(
-  //           physics: const BouncingScrollPhysics(),
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-  //             child: Stack(
-  //               alignment: Alignment.center,
-  //               children: [
-  //                 Column(
-  //                   mainAxisSize: MainAxisSize.min, // NAYA: Isse Swap button theek center me lock ho jayega
-  //                   children: [
-  //                     ConversionCard(
-  //                       isActive: isFromSelected,
-  //                       unitName: fromUnit,
-  //                       unitSymbol: fromSymbol,
-  //                       //value: fromValue,
-  //                       controller: _fromController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = true; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(true),
-  //                     ),
-  //                     const SizedBox(height: 16), // Swap button exactly is gap ke upar aayega
-  //                     ConversionCard(
-  //                       isActive: !isFromSelected,
-  //                       unitName: toUnit,
-  //                       unitSymbol: toSymbol,
-  //                       //value: toValue,
-  //                       controller: _toController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = false; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(false),
-  //                     ),
-  //                   ],
-  //                 ),
-  //
-  //                 // --- SWAP BUTTON ---
-  //                 GestureDetector(
-  //                   onTap: _swapUnits,
-  //                   child: Container(
-  //                     height: 46,
-  //                     width: 46,
-  //                     decoration: BoxDecoration(
-  //                       color: cyanColor,
-  //                       shape: BoxShape.circle,
-  //                       border: Border.all(color: bgColor, width: 4),
-  //                       boxShadow: [
-  //                         BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-  //                       ],
-  //                     ),
-  //                     child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //
-  //       // --- NAYA: 2.5 REAL-TIME EQUIVALENCE CARD ---
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-  //         child: AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 300),
-  //           child: Container(
-  //             key: ValueKey<String>(_getEquivalenceText()), // Text change hone par smooth animation aayegi
-  //             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-  //             decoration: BoxDecoration(
-  //               color: surfaceColor.withOpacity(0.4),
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(color: Colors.white.withOpacity(0.05)),
-  //             ),
-  //             child: Text(
-  //               _getEquivalenceText(),
-  //               style: TextStyle(
-  //                 color: cyanColor.withOpacity(0.9), // Cyan color se premium look aayega
-  //                 fontSize: 15,
-  //                 fontWeight: FontWeight.w500,
-  //                 letterSpacing: 0.5,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 8),
-  //
-  //       // --- 3. REUSABLE KEYBOARD ---
-  //       ConverterKeyboard(
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //         onKeyPress: _onKeyPress,
-  //         onBackspace: _onBackspace,
-  //         onClear: _onClear,
-  //       ),
-  //       const SizedBox(height: 10), // Bottom Safe Area space
-  //     ],
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     // --- NAYA FIX: Screen size detection for parent view ---
@@ -479,43 +278,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
 
     return Column(
       children: [
-        // --- 1. TOP BAR ---
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       ActionButton(
-        //         icon: Icons.arrow_back_ios_new_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //           widget.onBack();
-        //         },
-        //       ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Length Conversion',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded, // Right side star icon
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //           // TODO: Add to favorites logic
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         CustomTopBar(
           toolId: 'length',
           title: 'Length',
