@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_action_button.dart';
 import '../custom_conversion_card.dart';
 import '../custom_converter_keyboard.dart';
-import 'package:calculator_pro/custom_unit_selector_sheet.dart'; // Apna correct path check kar lena
+import 'package:calculator_pro/custom_unit_selector_sheet.dart';
+
+import '../custom_top_bar.dart'; // Apna correct path check kar lena
 
 class DataTransferConverterView extends StatefulWidget {
   final VoidCallback onBack;
@@ -241,40 +243,48 @@ class _DataTransferConverterViewState extends State<DataTransferConverterView> {
     return Column(
       children: [
         // --- 1. TOP BAR ---
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ActionButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack();
-                },
-              ),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Data Transfer',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              ActionButton(
-                icon: Icons.star_border_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                  // TODO: Add to favorites logic
-                },
-              ),
-            ],
-          ),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       ActionButton(
+        //         icon: Icons.arrow_back_ios_new_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
+        //           widget.onBack();
+        //         },
+        //       ),
+        //       const Expanded(
+        //         child: Padding(
+        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //           child: Text(
+        //             'Data Transfer',
+        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+        //           ),
+        //         ),
+        //       ),
+        //       ActionButton(
+        //         icon: Icons.star_border_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
+        //           // TODO: Add to favorites logic
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        CustomTopBar(
+          toolId: 'data_transfer',
+          title: 'Data Transfer',
+          iconPath: 'assets/images/data_transfer.png',
+          onBack: widget.onBack,
+          isHapticsEnabled: _isHapticsEnabled,
         ),
 
         // --- 2. MAIN CONVERSION CARDS ---

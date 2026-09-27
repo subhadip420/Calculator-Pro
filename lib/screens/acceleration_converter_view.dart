@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_action_button.dart';
 import '../custom_conversion_card.dart';
 import '../custom_converter_keyboard.dart';
-import 'package:calculator_pro/custom_unit_selector_sheet.dart'; // Agar path alag ho to adjust kar lena
+import 'package:calculator_pro/custom_unit_selector_sheet.dart';
+
+import '../custom_top_bar.dart'; // Agar path alag ho to adjust kar lena
 
 class AccelerationConverterView extends StatefulWidget {
   final VoidCallback onBack;
@@ -223,40 +225,49 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
     return Column(
       children: [
         // --- 1. TOP BAR ---
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ActionButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack();
-                },
-              ),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Acceleration',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              ActionButton(
-                icon: Icons.star_border_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                  // TODO: Add to favorites logic
-                },
-              ),
-            ],
-          ),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       ActionButton(
+        //         icon: Icons.arrow_back_ios_new_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
+        //           widget.onBack();
+        //         },
+        //       ),
+        //       const Expanded(
+        //         child: Padding(
+        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //           child: Text(
+        //             'Acceleration',
+        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+        //           ),
+        //         ),
+        //       ),
+        //       ActionButton(
+        //         icon: Icons.star_border_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
+        //           // TODO: Add to favorites logic
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        // --- 1. DYNAMIC TOP BAR WITH FAVORITES ---
+        CustomTopBar(
+          toolId: 'acceleration', // Apne _allTools me jo ID di hai, wahi use karni hai
+          title: 'Acceleration',
+          iconPath: 'assets/images/acceleration.png',
+          onBack: widget.onBack,
+          isHapticsEnabled: _isHapticsEnabled,
         ),
 
         // --- 2. MAIN CONVERSION CARDS ---

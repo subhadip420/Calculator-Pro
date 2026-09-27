@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart';
+import '../custom_top_bar.dart'; // Apna correct path check kar lena
 
 class ShoeSizeConverterView extends StatefulWidget {
   final VoidCallback onBack;
@@ -40,15 +41,24 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ActionButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack();
-                },
+              // ActionButton(
+              //   icon: Icons.arrow_back_ios_new_rounded,
+              //   contentColor: textGrey,
+              //   bgColor: surfaceColor.withOpacity(0.5),
+              //   onTap: () {
+              //     if (_isHapticsEnabled) HapticFeedback.lightImpact();
+              //     widget.onBack();
+              //   },
+              // ),
+
+              CustomTopBar(
+                toolId: 'shoe_size',
+                title: 'Shoe Size',
+                iconPath: 'assets/images/shoe_size.png',
+                onBack: widget.onBack,
+                isHapticsEnabled: _isHapticsEnabled,
               ),
+
               const Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),

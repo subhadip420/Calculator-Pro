@@ -6,6 +6,8 @@ import '../custom_converter_keyboard.dart';
 import '../custom_conversion_card.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
+import '../custom_top_bar.dart';
+
 class AreaConverterView extends StatefulWidget {
   final VoidCallback onBack;
 
@@ -250,39 +252,47 @@ class _AreaConverterViewState extends State<AreaConverterView> {
     return Column(
       children: [
         // --- 1. TOP BAR ---
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ActionButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack();
-                },
-              ),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Area Conversion',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              ActionButton(
-                icon: Icons.star_border_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                },
-              ),
-            ],
-          ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       ActionButton(
+        //         icon: Icons.arrow_back_ios_new_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
+        //           widget.onBack();
+        //         },
+        //       ),
+        //       const Expanded(
+        //         child: Padding(
+        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //           child: Text(
+        //             'Area Conversion',
+        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+        //           ),
+        //         ),
+        //       ),
+        //       ActionButton(
+        //         icon: Icons.star_border_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        CustomTopBar(
+          toolId: 'area',
+          title: 'Area',
+          iconPath: 'assets/images/area.png',
+          onBack: widget.onBack,
+          isHapticsEnabled: _isHapticsEnabled,
         ),
 
         // --- 2. MAIN CONVERSION CARDS ---

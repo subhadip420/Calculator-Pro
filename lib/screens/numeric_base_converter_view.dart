@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../custom_action_button.dart'; // Apna correct path check kar lena
+import '../custom_action_button.dart';
+import '../custom_top_bar.dart'; // Apna correct path check kar lena
 
 class NumericBaseConverterView extends StatefulWidget {
   final VoidCallback onBack;
@@ -35,39 +36,47 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     return Column(
       children: [
         // --- APP BAR ---
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ActionButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                  widget.onBack();
-                },
-              ),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Numeric Base',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              ActionButton(
-                icon: Icons.star_border_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
-                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                },
-              ),
-            ],
-          ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       ActionButton(
+        //         icon: Icons.arrow_back_ios_new_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
+        //           widget.onBack();
+        //         },
+        //       ),
+        //       const Expanded(
+        //         child: Padding(
+        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //           child: Text(
+        //             'Numeric Base',
+        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+        //           ),
+        //         ),
+        //       ),
+        //       ActionButton(
+        //         icon: Icons.star_border_rounded,
+        //         contentColor: textGrey,
+        //         bgColor: surfaceColor.withOpacity(0.5),
+        //         onTap: () {
+        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        CustomTopBar(
+          toolId: 'power',
+          title: 'Power',
+          iconPath: 'assets/images/power.png',
+          onBack: widget.onBack,
+          isHapticsEnabled: _isHapticsEnabled,
         ),
 
         // --- SAMPLE TEXT (COMING SOON) ---
