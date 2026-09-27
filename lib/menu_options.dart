@@ -306,7 +306,9 @@ class _MenuOptionsState extends State<MenuOptions> {
         // );
             onBack: _closeView);
       case 'time':
-        return TimeConverterView(key: const ValueKey('Time'), onBack: () => setState(() => _currentActiveView = null));
+        return TimeConverterView(key: const ValueKey('Time'),
+            //onBack: () => setState(() => _currentActiveView = null));
+            onBack: _closeView);
       case 'numeric_base':
         return NumericBaseConverterView(
           key: const ValueKey('Numeric Base'),

@@ -356,7 +356,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
       children: [
         CustomTopBar(
           toolId: 'time',
-          title: 'Time Converter',
+          title: 'Time',
           iconPath: 'assets/images/time.png',
           onBack: widget.onBack,
           isHapticsEnabled: _isHapticsEnabled,
