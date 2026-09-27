@@ -869,6 +869,57 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
       'Historical': [
         {'name': 'Miner\'s inch', 'symbol': 'min'}, //[cite: 23]
       ]
+    },
+    'Time': {
+      'Standard': [
+        {'name': 'Minute', 'symbol': 'min'},
+        {'name': 'Hour', 'symbol': 'h'}, //[cite: 8]
+        {'name': 'Day', 'symbol': 'd'}, //[cite: 8]
+        {'name': 'Week', 'symbol': 'W'}, //[cite: 8]
+        {'name': 'Month', 'symbol': 'M'}, //[cite: 8]
+        {'name': 'Year', 'symbol': 'Y'}, //[cite: 8]
+        {'name': 'Decade', 'symbol': 'D'}, //[cite: 8]
+        {'name': 'Century', 'symbol': 'C'}, //[cite: 8]
+        {'name': 'Millennium', 'symbol': 'Mil'}, //[cite: 8]
+      ],
+      'Metric': [
+        {'name': 'Picosecond', 'symbol': 'ps'}, //[cite: 7]
+        {'name': 'Nanosecond', 'symbol': 'ns'}, //[cite: 7]
+        {'name': 'Microsecond', 'symbol': 'μs'}, //[cite: 7]
+        {'name': 'Millisecond', 'symbol': 'ms'}, //[cite: 7]
+        {'name': 'Second', 'symbol': 's'}, //[cite: 7]
+      ],
+      'Scientific': [
+        {'name': 'Planck time', 'symbol': 'tp'}, //[cite: 7]
+        {'name': 'Atomic unit of time', 'symbol': 'au'}, //[cite: 7]
+        {'name': 'Svedberg', 'symbol': 'Sv'}, //[cite: 6, 7]
+        {'name': 'Jiffy', 'symbol': 'jif'}, //[cite: 6]
+        {'name': 'Shake', 'symbol': 'shk'}, //[cite: 6]
+      ],
+      'Astronomical': [
+        {'name': 'Sidereal day', 'symbol': 'sd'}, //[cite: 6]
+        {'name': 'Synodic month', 'symbol': 'syn'}, //[cite: 6]
+        {'name': 'Julian year', 'symbol': 'jyr'}, //[cite: 6]
+        {'name': 'Tropical year', 'symbol': 'tyr'}, //[cite: 6]
+        {'name': 'Sidereal year', 'symbol': 'syr'}, //[cite: 6]
+        {'name': 'Galactic year', 'symbol': 'gyr'}, //[cite: 6]
+      ],
+      'Regional': [
+        {'name': 'Chinese ke', 'symbol': 'ke'}, //[cite: 5]
+        {'name': 'Chinese shichen', 'symbol': 'sch'}, //[cite: 5]
+        {'name': 'Hebrew helek', 'symbol': 'hlk'}, //[cite: 5]
+        {'name': 'Indian ghati', 'symbol': 'gha'}, //[cite: 5]
+        {'name': 'Indian muhurta', 'symbol': 'muh'}, //[cite: 5]
+        {'name': 'Indian prahara', 'symbol': 'prh'}, //[cite: 5]
+      ],
+      'Historical': [
+        {'name': 'Biblical jubilee', 'symbol': 'jub'}, //[cite: 4, 5]
+        {'name': 'Byzantine indiction', 'symbol': 'ind'}, //[cite: 4, 5]
+        {'name': 'English score', 'symbol': 'sco'}, //[cite: 4]
+        {'name': 'Greek olympiad', 'symbol': 'oly'}, //[cite: 4]
+        {'name': 'Medieval moment', 'symbol': 'mom'}, //[cite: 4]
+        {'name': 'Roman lustrum', 'symbol': 'lst'}, //[cite: 4]
+      ]
     }
 
     // Future me Area, Volume etc. add kar sakte hain
