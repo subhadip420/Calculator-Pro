@@ -35,42 +35,6 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // --- APP BAR ---
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       // ActionButton(
-        //       //   icon: Icons.arrow_back_ios_new_rounded,
-        //       //   contentColor: textGrey,
-        //       //   bgColor: surfaceColor.withOpacity(0.5),
-        //       //   onTap: () {
-        //       //     if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //       //     widget.onBack();
-        //       //   },
-        //       // ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Shoe Size',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         CustomTopBar(
           toolId: 'shoe_size',
           title: 'Shoe Size',
