@@ -115,7 +115,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
+  String _buttonShape = 'rounded';
   // Active field: 'dec', 'rom'
   String activeField = 'dec';
 
@@ -128,7 +128,8 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
+    //_loadHaptics();
+    _loadSettings();
     // Page open hote hi Decimal field par focus
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _decFocus.requestFocus();
@@ -144,10 +145,18 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -343,6 +352,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     return false;
   }
 
+  BorderRadius _getShapeRadius() {
+    return _buttonShape == 'circle'
+        ? BorderRadius.circular(100)
+        : BorderRadius.circular(14);
+  }
+
   Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
     bool enabled = isAction || _isKeyEnabled(text);
 
@@ -354,7 +369,8 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     return Expanded(
       child: Material(
         color: bgCol,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: _getShapeRadius(),
+        //borderRadius: BorderRadius.circular(14),
         clipBehavior: Clip.antiAlias, // Ripple rounded corners ke bahar na jaye
         child: InkWell(
           onTap: enabled ? () {
@@ -362,7 +378,8 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
             if (onTap != null) onTap();
             else _onKeyPress(text);
           } : null,
-          borderRadius: BorderRadius.circular(14),
+          //borderRadius: BorderRadius.circular(14),
+          borderRadius: _getShapeRadius(),
           // NAYA: Ripple/Splash Animation Colors
           splashColor: (textColor ?? cyanColor).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
@@ -387,14 +404,16 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     return Expanded(
       child: Material(
         color: surfaceColor.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        //borderRadius: BorderRadius.circular(14),
+        borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
             if (_isHapticsEnabled) HapticFeedback.selectionClick();
             onTap();
           },
-          borderRadius: BorderRadius.circular(14),
+          //borderRadius: BorderRadius.circular(14),
+          borderRadius: _getShapeRadius(),
           // NAYA: Icon key ke liye splash color
           splashColor: cyanColor.withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
