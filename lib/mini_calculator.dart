@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MiniFloatingCalculator extends StatefulWidget {
   const MiniFloatingCalculator({super.key});
@@ -18,6 +21,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   String result = "0";
+  bool isEvaluated = false;
 
   @override
   void dispose() {
@@ -35,27 +39,111 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color orangeColor = const Color(0xFFFF9500);
 
+  // void _onPress(String text) {
+  //   HapticFeedback.lightImpact(); // FIX 4: Button dabne par mast vibration
+  //
+  //   setState(() {
+  //     if (text == 'AC') {
+  //       _equationController.clear();
+  //       result = "0";
+  //     } else if (text == 'BACK') {
+  //       if (_equationController.text.isNotEmpty) {
+  //         _equationController.text = _equationController.text.substring(0, _equationController.text.length - 1);
+  //       }
+  //     } else if (text == '=') {
+  //       // Realtime me calculate ho raha hai, equal dabane pe kuch extra nai karna
+  //     } else {
+  //       _equationController.text += text;
+  //     }
+  //
+  //     // FIX 3: Real-time Answer Update
+  //     if (_equationController.text.isEmpty) {
+  //       result = "0";
+  //     } else {
+  //       try {
+  //         String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
+  //         Parser p = Parser();
+  //         Expression exp = p.parse(sanitized);
+  //         double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+  //         result = eval == eval.toInt()
+  //             ? eval.toInt().toString()
+  //             : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //       } catch (e) {
+  //         // Type karte waqt format galat ho (jaise "5+") toh error hide rakho, purana result dikhao
+  //       }
+  //     }
+  //   });
+  //
+  //   // FIX 2: Input aate hi hamesha last mein Auto-Scroll karega
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients) {
+  //       _scrollController.animateTo(
+  //         _scrollController.position.maxScrollExtent,
+  //         duration: const Duration(milliseconds: 100),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  // NAYA: History Save Karne Ke Liye Function
+  Future<void> _saveToHistory(String eq, String res) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> history = prefs.getStringList('calculator_history') ?? [];
+
+    final now = DateTime.now();
+    String formattedDate =
+        "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year} "
+        "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+
+    Map<String, String> newEntry = {'equation': eq, 'result': res, 'datetime': formattedDate};
+    history.insert(0, jsonEncode(newEntry));
+
+    if (history.length > 50) history = history.sublist(0, 50);
+    await prefs.setStringList('calculator_history', history);
+  }
+
   void _onPress(String text) {
-    HapticFeedback.lightImpact(); // FIX 4: Button dabne par mast vibration
+    HapticFeedback.lightImpact();
 
     setState(() {
+      bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
+
       if (text == 'AC') {
         _equationController.clear();
         result = "0";
+        isEvaluated = false; // Reset state
       } else if (text == 'BACK') {
-        if (_equationController.text.isNotEmpty) {
+        if (_equationController.text.isNotEmpty && !isEvaluated) { // Agar evaluate ho chuka hai toh back kaam nai karega
           _equationController.text = _equationController.text.substring(0, _equationController.text.length - 1);
         }
       } else if (text == '=') {
-        // Realtime me calculate ho raha hai, equal dabane pe kuch extra nai karna
+        if (_equationController.text.isNotEmpty && !isEvaluated) {
+          isEvaluated = true; // State change
+
+          // Agar final result nikal aaya hai toh usko History me save kar lo
+          if (result != "0" && result != "Expression error") {
+            _saveToHistory(_equationController.text, result);
+          }
+        }
       } else {
-        _equationController.text += text;
+        // NAYA LOGIC: Agar pehle se Evaluated tha (Answer bada dikh raha tha)
+        if (isEvaluated) {
+          if (isOperator) {
+            // Operator dabaya to answer ke aage lagega
+            _equationController.text = result + text;
+          } else {
+            // Naya number dabaya to purana clear ho jayega
+            _equationController.text = text;
+          }
+          isEvaluated = false; // Wapas normal typing mode me aao
+        } else {
+          _equationController.text += text;
+        }
       }
 
-      // FIX 3: Real-time Answer Update
-      if (_equationController.text.isEmpty) {
-        result = "0";
-      } else {
+      // Real-time calculation sirf typing ke time (Equal dabane ke time nai)
+      if (text != '=' && text != 'AC' && _equationController.text.isNotEmpty) {
         try {
           String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
           Parser p = Parser();
@@ -65,12 +153,13 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
               ? eval.toInt().toString()
               : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
         } catch (e) {
-          // Type karte waqt format galat ho (jaise "5+") toh error hide rakho, purana result dikhao
+          // Ignore
         }
+      } else if (_equationController.text.isEmpty) {
+        result = "0";
       }
     });
 
-    // FIX 2: Input aate hi hamesha last mein Auto-Scroll karega
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -81,6 +170,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -183,6 +273,28 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
+                          // Expanded(
+                          //   child: Align(
+                          //     alignment: Alignment.bottomRight,
+                          //     child: TextField(
+                          //       controller: _equationController,
+                          //       focusNode: _focusNode,
+                          //       scrollController: _scrollController,
+                          //       readOnly: true, // Keyboard popup na ho
+                          //       showCursor: true, // Cursor dikhega
+                          //       cursorColor: cyanColor,
+                          //       cursorWidth: 2,
+                          //       textAlign: TextAlign.right,
+                          //       style: const TextStyle(color: Colors.white54, fontSize: 16),
+                          //       decoration: const InputDecoration(
+                          //         border: InputBorder.none,
+                          //         isDense: true,
+                          //         contentPadding: EdgeInsets.zero,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomRight,
@@ -190,12 +302,17 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                                 controller: _equationController,
                                 focusNode: _focusNode,
                                 scrollController: _scrollController,
-                                readOnly: true, // Keyboard popup na ho
-                                showCursor: true, // Cursor dikhega
+                                readOnly: true,
+                                showCursor: !isEvaluated, // NAYA: Evaluated hone pe cursor hide ho jayega
                                 cursorColor: cyanColor,
                                 cursorWidth: 2,
                                 textAlign: TextAlign.right,
-                                style: const TextStyle(color: Colors.white54, fontSize: 16),
+                                // NAYA: Jab evaluate ho jaye to chota aur halka ho jaye
+                                style: TextStyle(
+                                    color: isEvaluated ? Colors.white38 : Colors.white54,
+                                    fontSize: isEvaluated ? 14 : 18,
+                                    fontWeight: isEvaluated ? FontWeight.normal : FontWeight.w500
+                                ),
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
                                   isDense: true,
@@ -208,8 +325,19 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                           Text(
                             result,
                             maxLines: 1,
-                            style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                            // NAYA: Jab evaluate ho jaye to bada aur bright ho jaye
+                            style: TextStyle(
+                                color: isEvaluated ? cyanColor : Colors.white,
+                                fontSize: isEvaluated ? 28 : 20,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
+                          // const SizedBox(height: 2),
+                          // Text(
+                          //   result,
+                          //   maxLines: 1,
+                          //   style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                          // ),
                         ],
                       ),
                     ),
