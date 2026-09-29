@@ -37,7 +37,7 @@ class ConverterKeyboard extends StatelessWidget {
               const SizedBox(width: 10),
               _buildKey('9', onTap: () => onKeyPress('9')),
               const SizedBox(width: 10),
-              _buildKey('C', textColor: cyanColor, onTap: onClear),
+              _buildKey('AC', textColor: Colors.orangeAccent, onTap: onClear),
             ],
           ),
           const SizedBox(height: 10),
@@ -89,20 +89,78 @@ class ConverterKeyboard extends StatelessWidget {
 
   // --- Helper Methods to Build Keys ---
 
+  // Widget _buildKey(String text, {required VoidCallback onTap, Color? textColor}) {
+  //   return Expanded(
+  //     child: GestureDetector(
+  //       onTap: () {
+  //         _triggerHaptic();
+  //         onTap();
+  //       },
+  //       child: Container(
+  //         height: 65,
+  //         decoration: BoxDecoration(
+  //           color: surfaceColor.withOpacity(0.5),
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         child: Center(
+  //           child: Text(
+  //             text,
+  //             style: TextStyle(
+  //               color: textColor ?? Colors.white,
+  //               fontSize: 26,
+  //               fontWeight: FontWeight.w500,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
+  //   return Expanded(
+  //     child: GestureDetector(
+  //       onTap: () {
+  //         _triggerHaptic();
+  //         onTap();
+  //       },
+  //       // Optional: Long press to clear if you still want it, but 'C' is there now
+  //       onLongPress: () {
+  //         _triggerHaptic();
+  //         onClear();
+  //       },
+  //       child: Container(
+  //         height: 65,
+  //         decoration: BoxDecoration(
+  //           color: surfaceColor.withOpacity(0.5),
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         child: Center(
+  //           child: Icon(icon, color: cyanColor, size: 28),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildKey(String text, {required VoidCallback onTap, Color? textColor}) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          _triggerHaptic();
-          onTap();
-        },
-        child: Container(
-          height: 65,
-          decoration: BoxDecoration(
-            color: surfaceColor.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
+      child: Material(
+        color: surfaceColor.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias, // Ripple border ke bahar na nikle
+        child: InkWell(
+          onTap: () {
+            _triggerHaptic();
+            onTap();
+          },
+          borderRadius: BorderRadius.circular(16),
+          // NAYA: Ripple aur highlight animation colors
+          splashColor: (textColor ?? cyanColor).withOpacity(0.2),
+          highlightColor: Colors.white.withOpacity(0.1),
+          child: Container(
+            height: 65,
+            alignment: Alignment.center, // Center mein laane ke liye
             child: Text(
               text,
               style: TextStyle(
@@ -119,23 +177,27 @@ class ConverterKeyboard extends StatelessWidget {
 
   Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          _triggerHaptic();
-          onTap();
-        },
-        // Optional: Long press to clear if you still want it, but 'C' is there now
-        onLongPress: () {
-          _triggerHaptic();
-          onClear();
-        },
-        child: Container(
-          height: 65,
-          decoration: BoxDecoration(
-            color: surfaceColor.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
+      child: Material(
+        color: surfaceColor.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            _triggerHaptic();
+            onTap();
+          },
+          // Optional: Long press to clear
+          onLongPress: () {
+            _triggerHaptic();
+            onClear();
+          },
+          borderRadius: BorderRadius.circular(16),
+          // NAYA: Icon key ke liye splash animation
+          splashColor: cyanColor.withOpacity(0.2),
+          highlightColor: Colors.white.withOpacity(0.1),
+          child: Container(
+            height: 65,
+            alignment: Alignment.center, // Center mein laane ke liye
             child: Icon(icon, color: cyanColor, size: 28),
           ),
         ),
