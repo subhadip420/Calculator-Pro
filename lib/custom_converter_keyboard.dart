@@ -65,7 +65,7 @@ class ConverterKeyboard extends StatelessWidget {
               const SizedBox(width: 10),
               _buildKey('3', onTap: () => onKeyPress('3')),
               const SizedBox(width: 10),
-              const Expanded(child: SizedBox()), // Empty space matching 4th column
+              const Expanded(child: SizedBox()),
             ],
           ),
           const SizedBox(height: 10),
@@ -79,69 +79,13 @@ class ConverterKeyboard extends StatelessWidget {
               const SizedBox(width: 10),
               _buildKey('.', onTap: () => onKeyPress('.')),
               const SizedBox(width: 10),
-              const Expanded(child: SizedBox()), // Empty space matching 4th column
+              const Expanded(child: SizedBox()),
             ],
           ),
         ],
       ),
     );
   }
-
-  // --- Helper Methods to Build Keys ---
-
-  // Widget _buildKey(String text, {required VoidCallback onTap, Color? textColor}) {
-  //   return Expanded(
-  //     child: GestureDetector(
-  //       onTap: () {
-  //         _triggerHaptic();
-  //         onTap();
-  //       },
-  //       child: Container(
-  //         height: 65,
-  //         decoration: BoxDecoration(
-  //           color: surfaceColor.withOpacity(0.5),
-  //           borderRadius: BorderRadius.circular(16),
-  //         ),
-  //         child: Center(
-  //           child: Text(
-  //             text,
-  //             style: TextStyle(
-  //               color: textColor ?? Colors.white,
-  //               fontSize: 26,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
-  //   return Expanded(
-  //     child: GestureDetector(
-  //       onTap: () {
-  //         _triggerHaptic();
-  //         onTap();
-  //       },
-  //       // Optional: Long press to clear if you still want it, but 'C' is there now
-  //       onLongPress: () {
-  //         _triggerHaptic();
-  //         onClear();
-  //       },
-  //       child: Container(
-  //         height: 65,
-  //         decoration: BoxDecoration(
-  //           color: surfaceColor.withOpacity(0.5),
-  //           borderRadius: BorderRadius.circular(16),
-  //         ),
-  //         child: Center(
-  //           child: Icon(icon, color: cyanColor, size: 28),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildKey(String text, {required VoidCallback onTap, Color? textColor}) {
     return Expanded(
