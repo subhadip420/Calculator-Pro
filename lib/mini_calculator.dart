@@ -90,7 +90,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
 
   void _onPress(String text) {
     //HapticFeedback.lightImpact();
-
+    //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
     setState(() {
       bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
 
@@ -180,7 +180,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   GestureDetector(
                     onTap: () async {
                       //HapticFeedback.selectionClick();
-
+                      //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
                         'type': 'sync_to_main',
@@ -220,7 +220,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   GestureDetector(
                     onTap: () async {
                       //HapticFeedback.selectionClick();
-
+                      //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
                         'type': 'sync_to_main',

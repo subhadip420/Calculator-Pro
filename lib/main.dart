@@ -123,6 +123,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     _loadHapticsSetting();
 
     FlutterOverlayWindow.overlayListener.listen((event) {
+      // if (event == 'haptic') {
+      //   if (_isHapticsEnabled) {
+      //     HapticFeedback.lightImpact();
+      //   }
+      //   return;
+      // }
       if (event == 'openApp') {
         const MethodChannel('com.sptechstudios/app').invokeMethod('openApp');
         FlutterOverlayWindow.closeOverlay();
