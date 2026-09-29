@@ -89,7 +89,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   }
 
   void _onPress(String text) {
-    HapticFeedback.lightImpact();
+    //HapticFeedback.lightImpact();
 
     setState(() {
       bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
@@ -179,7 +179,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      HapticFeedback.selectionClick();
+                      //HapticFeedback.selectionClick();
 
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
@@ -219,7 +219,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   // CLOSE BUTTON
                   GestureDetector(
                     onTap: () async {
-                      HapticFeedback.selectionClick();
+                      //HapticFeedback.selectionClick();
 
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
