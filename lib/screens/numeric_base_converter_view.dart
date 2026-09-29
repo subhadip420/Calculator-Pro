@@ -19,7 +19,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
+  String _buttonShape = 'rounded';
   // Active field: 'dec', 'bin', 'oct', 'hex'
   String activeField = 'dec';
 
@@ -37,7 +37,8 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
+    //_loadHaptics();
+    _loadSettings();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _decFocus.requestFocus();
     });
@@ -56,10 +57,18 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -251,6 +260,12 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     return true; // hex allows everything
   }
 
+  BorderRadius _getShapeRadius() {
+    return _buttonShape == 'circle'
+        ? BorderRadius.circular(100)
+        : BorderRadius.circular(14);
+  }
+
   Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
     bool enabled = isAction || _isKeyEnabled(text);
 
@@ -262,7 +277,8 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     return Expanded(
       child: Material(
         color: bgCol,
-        borderRadius: BorderRadius.circular(14),
+        //borderRadius: BorderRadius.circular(14),
+        borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias, // Ripple border ke bahar na nikle
         child: InkWell(
           onTap: enabled ? () {
@@ -270,7 +286,8 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
             if (onTap != null) onTap();
             else _onKeyPress(text);
           } : null, // Agar disabled hai toh tap register nahi hoga
-          borderRadius: BorderRadius.circular(14),
+          //borderRadius: BorderRadius.circular(14),
+          borderRadius: _getShapeRadius(),
           // NAYA: Premium splash colors
           splashColor: (textColor ?? cyanColor).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
@@ -295,14 +312,16 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     return Expanded(
       child: Material(
         color: surfaceColor.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        //borderRadius: BorderRadius.circular(14),
+        borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
             if (_isHapticsEnabled) HapticFeedback.selectionClick();
             onTap();
           },
-          borderRadius: BorderRadius.circular(14),
+          //borderRadius: BorderRadius.circular(14),
+          borderRadius: _getShapeRadius(),
           // NAYA: Icon key (Backspace) ke liye splash color
           splashColor: cyanColor.withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
