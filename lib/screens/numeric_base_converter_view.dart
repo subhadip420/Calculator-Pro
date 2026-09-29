@@ -87,33 +87,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     }
   }
 
-  // --- KEYBOARD ACTIONS ---
-  // void _onKeyPress(String key) {
-  //   setState(() {
-  //     TextEditingController activeCtrl;
-  //     int base;
-  //
-  //     switch (activeField) {
-  //       case 'bin': activeCtrl = _binController; base = 2; break;
-  //       case 'oct': activeCtrl = _octController; base = 8; break;
-  //       case 'hex': activeCtrl = _hexController; base = 16; break;
-  //       default: activeCtrl = _decController; base = 10; break;
-  //     }
-  //
-  //     String currentText = activeCtrl.text;
-  //
-  //     // Remove leading zero unless it's just '0'
-  //     if (currentText == '0') {
-  //       currentText = key;
-  //     } else {
-  //       currentText += key;
-  //     }
-  //
-  //     activeCtrl.text = currentText;
-  //     _updateValues(currentText, base);
-  //   });
-  // }
-
   void _onKeyPress(String key) {
     setState(() {
       TextEditingController activeCtrl;
@@ -186,72 +159,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
       _hexController.text = '0';
     });
   }
-
-  // --- UI WIDGETS ---
-  // Widget _buildInputCard(String title, String baseText, TextEditingController controller, String fieldKey) {
-  //   bool isActive = activeField == fieldKey;
-  //
-  //   return GestureDetector(
-  //     onTap: () {
-  //       if (_isHapticsEnabled && !isActive) HapticFeedback.selectionClick();
-  //       setState(() => activeField = fieldKey);
-  //     },
-  //     child: AnimatedContainer(
-  //       duration: const Duration(milliseconds: 250),
-  //       margin: const EdgeInsets.only(bottom: 12),
-  //       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-  //       decoration: BoxDecoration(
-  //         color: isActive ? surfaceColor.withOpacity(0.8) : surfaceColor.withOpacity(0.3),
-  //         borderRadius: BorderRadius.circular(20),
-  //         border: Border.all(
-  //           color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
-  //           width: isActive ? 1.5 : 1.0,
-  //         ),
-  //       ),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //             children: [
-  //               Text(
-  //                 title,
-  //                 style: TextStyle(
-  //                   color: isActive ? cyanColor : textGrey.withOpacity(0.7),
-  //                   fontSize: 14,
-  //                   fontWeight: FontWeight.w500,
-  //                 ),
-  //               ),
-  //               Text(
-  //                 baseText,
-  //                 style: TextStyle(
-  //                   color: textGrey.withOpacity(0.4),
-  //                   fontSize: 12,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           const SizedBox(height: 8),
-  //           SingleChildScrollView(
-  //             scrollDirection: Axis.horizontal,
-  //             reverse: true, // Type from right to left like a calculator
-  //             physics: const BouncingScrollPhysics(),
-  //             child: Text(
-  //               controller.text,
-  //               style: TextStyle(
-  //                 color: isActive ? Colors.white : Colors.white70,
-  //                 fontSize: 22,
-  //                 fontWeight: FontWeight.w400,
-  //                 letterSpacing: fieldKey == 'bin' ? 2.0 : 1.0, // Thoda extra space binary ke liye
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   // --- UI WIDGETS ---
   Widget _buildInputCard(String title, String baseText, TextEditingController controller,FocusNode focusNode, String fieldKey) {
@@ -419,10 +326,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             child: Column(
               children: [
-                // _buildInputCard('Decimal', 'Base 10', _decController, 'dec'),
-                // _buildInputCard('Binary', 'Base 2', _binController, 'bin'),
-                // _buildInputCard('Octal', 'Base 8', _octController, 'oct'),
-                // _buildInputCard('Hexadecimal', 'Base 16', _hexController, 'hex'),
                 _buildInputCard('Decimal', 'Base 10', _decController, _decFocus, 'dec'),
                 _buildInputCard('Binary', 'Base 2', _binController, _binFocus, 'bin'),
                 _buildInputCard('Octal', 'Base 8', _octController, _octFocus, 'oct'),
