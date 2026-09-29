@@ -315,7 +315,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                       padding: const EdgeInsets.all(0.0),
                       child: Column(
                         children: [
-                          _buildRow(['AC', 'BACK', '%', '÷']),
+                          _buildRow(['AC', '%','BACK', '÷']),
                           _buildRow(['7', '8', '9', '×']),
                           _buildRow(['4', '5', '6', '-']),
                           _buildRow(['1', '2', '3', '+']),
