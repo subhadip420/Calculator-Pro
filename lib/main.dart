@@ -771,46 +771,108 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                                   String timePart = fullDateTime.contains(' ')
                                                                       ? fullDateTime.split(' ')[1]
                                                                       : '';
-                                                                  return Container(
-                                                                    width: double.infinity,
-                                                                    margin: const EdgeInsets.only(bottom: 12),
-                                                                    padding: const EdgeInsets.symmetric(
-                                                                      horizontal: 12,
-                                                                      vertical: 5,
-                                                                    ),
-                                                                    decoration: BoxDecoration(
-                                                                      color: bgColor.withOpacity(0.5),
-                                                                      borderRadius: BorderRadius.circular(16),
-                                                                    ),
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                                                      children: [
-                                                                        Align(
-                                                                          alignment: Alignment.centerLeft,
-                                                                          child: Text(
-                                                                            timePart,
-                                                                            style: TextStyle(
-                                                                              color: textGrey.withOpacity(0.8),
-                                                                              fontSize: 11,
+                                                                  // return Container(
+                                                                  //   width: double.infinity,
+                                                                  //   margin: const EdgeInsets.only(bottom: 12),
+                                                                  //   padding: const EdgeInsets.symmetric(
+                                                                  //     horizontal: 12,
+                                                                  //     vertical: 5,
+                                                                  //   ),
+                                                                  //   decoration: BoxDecoration(
+                                                                  //     color: bgColor.withOpacity(0.5),
+                                                                  //     borderRadius: BorderRadius.circular(16),
+                                                                  //   ),
+                                                                  //   child: Column(
+                                                                  //     crossAxisAlignment: CrossAxisAlignment.end,
+                                                                  //     children: [
+                                                                  //       Align(
+                                                                  //         alignment: Alignment.centerLeft,
+                                                                  //         child: Text(
+                                                                  //           timePart,
+                                                                  //           style: TextStyle(
+                                                                  //             color: textGrey.withOpacity(0.8),
+                                                                  //             fontSize: 11,
+                                                                  //           ),
+                                                                  //         ),
+                                                                  //       ),
+                                                                  //       Text(
+                                                                  //         item['equation'] ?? '',
+                                                                  //         style: TextStyle(
+                                                                  //           color: textGrey,
+                                                                  //           fontSize: 16,
+                                                                  //         ),
+                                                                  //       ),
+                                                                  //       Text(
+                                                                  //         item['result'] ?? '',
+                                                                  //         style: const TextStyle(
+                                                                  //           color: Colors.white,
+                                                                  //           fontSize: 20,
+                                                                  //           fontWeight: FontWeight.bold,
+                                                                  //         ),
+                                                                  //       ),
+                                                                  //     ],
+                                                                  //   ),
+                                                                  // );
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                                                      setState(() {
+                                                                        // 1. History se equation text controller mein daalo
+                                                                        _equationController.text = item['equation'] ?? '';
+
+                                                                        // 2. Cursor ko ekdum end par set karo
+                                                                        _equationController.selection = TextSelection.collapsed(
+                                                                            offset: _equationController.text.length);
+
+                                                                        // 3. Result update karo
+                                                                        result = item['result'] ?? '';
+
+                                                                        // 4. Status flags update karo
+                                                                        isEvaluated = true;
+                                                                        //isHistoryOpen = false;
+                                                                      });
+                                                                    },
+                                                                    child: Container(
+                                                                      width: double.infinity,
+                                                                      margin: const EdgeInsets.only(bottom: 12),
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        horizontal: 12,
+                                                                        vertical: 5,
+                                                                      ),
+                                                                      decoration: BoxDecoration(
+                                                                        color: bgColor.withOpacity(0.5),
+                                                                        borderRadius: BorderRadius.circular(16),
+                                                                      ),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                        children: [
+                                                                          Align(
+                                                                            alignment: Alignment.centerLeft,
+                                                                            child: Text(
+                                                                              timePart,
+                                                                              style: TextStyle(
+                                                                                color: textGrey.withOpacity(0.8),
+                                                                                fontSize: 11,
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        Text(
-                                                                          item['equation'] ?? '',
-                                                                          style: TextStyle(
-                                                                            color: textGrey,
-                                                                            fontSize: 16,
+                                                                          Text(
+                                                                            item['equation'] ?? '',
+                                                                            style: TextStyle(
+                                                                              color: textGrey,
+                                                                              fontSize: 16,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                        Text(
-                                                                          item['result'] ?? '',
-                                                                          style: const TextStyle(
-                                                                            color: Colors.white,
-                                                                            fontSize: 20,
-                                                                            fontWeight: FontWeight.bold,
+                                                                          Text(
+                                                                            item['result'] ?? '',
+                                                                            style: const TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 20,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 }).toList(),
