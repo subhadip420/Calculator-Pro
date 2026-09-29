@@ -21,24 +21,6 @@ import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import 'mini_calculator.dart'; // NAYA IMPORT
 
-// --- NAYA: FLOATING WINDOW KA ENTRY POINT (Background Isolate) ---
-// @pragma("vm:entry-point")
-// void overlayMain() {
-//   WidgetsFlutterBinding.ensureInitialized();
-//
-//   // FIX: MaterialApp ko hamesha ke liye hata diya hai taaki Full-Screen na ho.
-//   runApp(
-//     const MediaQuery(
-//       data: MediaQueryData(), // Dummy data taaki font/UI crash na ho
-//       child: Directionality(
-//         textDirection: TextDirection.ltr,
-//         child: MiniFloatingCalculator(),
-//       ),
-//     ),
-//   );
-// }
-
-// --- NAYA: FLOATING WINDOW KA ENTRY POINT (Background Isolate) ---
 @pragma("vm:entry-point")
 void overlayMain() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,8 +29,6 @@ void overlayMain() {
       data: const MediaQueryData(),
       child: Directionality(
         textDirection: TextDirection.ltr,
-        // NAYA FIX: TextField ke liye Localizations manually add kar diya,
-        // taaki MaterialApp use na karna pade aur window ka size fix rahe!
         child: Localizations(
           locale: const Locale('en', 'US'),
           delegates: const [
@@ -98,10 +78,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   bool isScientific = false;
   bool isEvaluated = false;
   bool isDegreeMode = true;
-  bool _isHapticsEnabled = true; // NAYA: Haptic check karne ke liye
+  bool _isHapticsEnabled = true;
 
-  bool isHistoryOpen = false; // NAYA: History panel state
-  List<String> _historyList = []; // NAYA: History data store karne ke liye
+  bool isHistoryOpen = false;
+  List<String> _historyList = [];
 
   bool _isDragging = false;
   double _dragOffset = 0.0;
@@ -113,16 +93,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
 
-  // --- NAYE VARIABLES: Menu aur uske Dragging ke liye ---
   bool isMenuOpen = false;
   bool _isMenuDragging = false;
   double _menuDragOffset = 0.0;
   final double maxMenuWidth = 250.0;
-
-  // --- NAYA: Mini Mode ke variables ---
-  // bool isMiniMode = false;
-  // double miniOffsetDx = 50.0;
-  // double miniOffsetDy = 100.0;
 
   BannerAd? _bannerAd;
   bool _isLoaded = false;
@@ -142,19 +116,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this); // NAYA: Lifecycle observe karne ke liye
+    WidgetsBinding.instance.addObserver(this);
     _loadSyncState();
     _loadHistory();
     _loadAd();
     _loadHapticsSetting();
 
-    // NAYA FIX: Direct Isolate Communication (No SharedPreferences needed for sync)
     FlutterOverlayWindow.overlayListener.listen((event) {
       if (event == 'openApp') {
         const MethodChannel('com.sptechstudios/app').invokeMethod('openApp');
         FlutterOverlayWindow.closeOverlay();
       } else if (event == 'request_data') {
-        // Jaise hi mini window khulegi, wo data mangegi, hum turant bhej denge
         Map<String, dynamic> data = {
           'type': 'sync_to_mini',
           'eq': _equationController.text,
@@ -163,7 +135,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         };
         FlutterOverlayWindow.shareData(jsonEncode(data));
       } else if (event is String) {
-        // Jab mini window close hogi, wo apna data yahan bhejegi
         try {
           final data = jsonDecode(event);
           if (data['type'] == 'sync_to_main') {
@@ -178,7 +149,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         }
       }
     });
-    // Screen open hote hi cursor show karne ke liye
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
@@ -194,17 +164,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     super.dispose();
   }
 
-  //--- NAYA: MAIN APP <=> MINI APP SYNC LOGIC ---
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _loadSyncState(); // Jab app background se wapas aaye toh data refresh kare
+      _loadSyncState();
     }
   }
 
   Future<void> _loadSyncState() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.reload(); // Force sync from background
+    await prefs.reload();
 
     bool hasSyncData = prefs.getBool('has_sync_data') ?? false;
     if (hasSyncData) {
@@ -213,17 +182,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         result = prefs.getString('sync_res') ?? '';
         isEvaluated = prefs.getBool('sync_eval') ?? false;
       });
-      await prefs.setBool('has_sync_data', false); // Data padhne ke baad clear kar do
+      await prefs.setBool('has_sync_data', false);
     }
   }
-
-  // Future<void> _saveSyncState() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('sync_eq', _equationController.text);
-  //   await prefs.setString('sync_res', result);
-  //   await prefs.setBool('sync_eval', isEvaluated);
-  //   await prefs.setBool('has_sync_data', true);
-  // }
 
   // --- Basic Calculation Functions ---
   double _add(double a, double b) => a + b;
@@ -236,13 +197,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
   double _modulo(double a, double b) => a % b;
 
-  // NAYA: Local storage se history nikalna
-  // Future<void> _loadHistory() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _historyList = prefs.getStringList('calculator_history') ?? [];
-  //   });
-  // }
 
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
@@ -286,7 +240,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   String _calculateResult(String eq, {bool isFinalCall = false}) {
     if (eq.isEmpty) return '';
 
-    // 1. PRE-VALIDATION: Agar equation galat symbols se shuru hoti hai
     if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
       return isFinalCall ? 'Expression error' : '';
     }
@@ -294,7 +247,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     try {
       String sanitized = eq;
 
-      // 2. IMPLICIT MULTIPLICATION (Smart Auto-Multiply)
       // Rule A: Number ke theek baad Root, Function, Pi, e ya Bracket aaye (Jaise 5√9 -> 5*√9, 5sin -> 5*sin, 5( -> 5*()
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
@@ -319,7 +271,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           .replaceAll('÷', '/')
           .replaceAll('π', '3.141592653589793')
           .replaceAll('e', '2.718281828459045')
-          .replaceAll('√', 'sqrt(') // FIX: UI mein '√' dikhega, par math engine 'sqrt(' read karega
+          .replaceAll('√', 'sqrt(')
           .replaceAll('²', '^2');
 
       sanitized = sanitized
@@ -335,7 +287,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       }
 
       // 4. AUTO-CLOSE BRACKETS
-      // Ab ye background mein hidden 'sqrt(' wale brackets ko bhi perfectly close karega
       int openParens = sanitized
           .split('(')
           .length - 1;
@@ -436,7 +387,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       } else {
         if (isEvaluated) {
           if (isOperator) {
-            // NAYA LOGIC: Agar "Expression error" aaya hai aur uske baad + dabaya toh error clear ho jayega
             if (result == 'Expression error') {
               _equationController.text = inputKey;
               _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
@@ -838,48 +788,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                   String timePart = fullDateTime.contains(' ')
                                                                       ? fullDateTime.split(' ')[1]
                                                                       : '';
-                                                                  // return Container(
-                                                                  //   width: double.infinity,
-                                                                  //   margin: const EdgeInsets.only(bottom: 12),
-                                                                  //   padding: const EdgeInsets.symmetric(
-                                                                  //     horizontal: 12,
-                                                                  //     vertical: 5,
-                                                                  //   ),
-                                                                  //   decoration: BoxDecoration(
-                                                                  //     color: bgColor.withOpacity(0.5),
-                                                                  //     borderRadius: BorderRadius.circular(16),
-                                                                  //   ),
-                                                                  //   child: Column(
-                                                                  //     crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  //     children: [
-                                                                  //       Align(
-                                                                  //         alignment: Alignment.centerLeft,
-                                                                  //         child: Text(
-                                                                  //           timePart,
-                                                                  //           style: TextStyle(
-                                                                  //             color: textGrey.withOpacity(0.8),
-                                                                  //             fontSize: 11,
-                                                                  //           ),
-                                                                  //         ),
-                                                                  //       ),
-                                                                  //       Text(
-                                                                  //         item['equation'] ?? '',
-                                                                  //         style: TextStyle(
-                                                                  //           color: textGrey,
-                                                                  //           fontSize: 16,
-                                                                  //         ),
-                                                                  //       ),
-                                                                  //       Text(
-                                                                  //         item['result'] ?? '',
-                                                                  //         style: const TextStyle(
-                                                                  //           color: Colors.white,
-                                                                  //           fontSize: 20,
-                                                                  //           fontWeight: FontWeight.bold,
-                                                                  //         ),
-                                                                  //       ),
-                                                                  //     ],
-                                                                  //   ),
-                                                                  // );
                                                                   return GestureDetector(
                                                                     onTap: () {
                                                                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
@@ -1518,50 +1426,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 },
               ),
               const SizedBox(width: 8),
-              // ActionButton(
-              //   icon: Icons.picture_in_picture_alt,
-              //   contentColor: textGrey,
-              //   bgColor: surfaceColor.withOpacity(0.5),
-              //   onTap: () async {
-              //     if (_isHapticsEnabled) HapticFeedback.lightImpact();
-              //
-              //     try {
-              //       bool isGranted = await FlutterOverlayWindow.isPermissionGranted();
-              //       if (!isGranted) {
-              //         await FlutterOverlayWindow.requestPermission();
-              //         return;
-              //       }
-              //
-              //       if (await FlutterOverlayWindow.isActive()) {
-              //         await FlutterOverlayWindow.closeOverlay();
-              //         await Future.delayed(const Duration(milliseconds: 300));
-              //       }
-              //
-              //       await FlutterOverlayWindow.showOverlay(
-              //         enableDrag: true,
-              //         overlayTitle: "Calculator Pro",
-              //         overlayContent: "Floating Calculator",
-              //         flag: OverlayFlag.defaultFlag,
-              //         visibility: NotificationVisibility.visibilityPublic,
-              //         positionGravity: PositionGravity.none,
-              //         width: -2,
-              //         // FIX: Isko -2 hi rakhna hai
-              //         height: -2, // FIX: Isko -2 hi rakhna hai
-              //       );
-              //
-              //       Future.delayed(const Duration(milliseconds: 50), () {
-              //         try {
-              //           const MethodChannel('com.sptechstudios/app').invokeMethod('minimizeApp');
-              //         } catch (e) {
-              //           debugPrint("Minimize error: $e");
-              //         }
-              //       });
-              //     } catch (e) {
-              //       debugPrint("Overlay open error: $e");
-              //     }
-              //   },
-              // ),
-
               ActionButton(
                 icon: Icons.picture_in_picture_alt,
                 contentColor: textGrey,
