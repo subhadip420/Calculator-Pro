@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'calculator_button.dart';
 import 'custom_action_button.dart';
 import 'custom_dialog.dart';
+import 'custom_toast.dart';
 import 'menu_options.dart';
 
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
@@ -958,6 +959,37 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                           crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
+                                                            // --- NAYA: TOP LEFT CORNER MEIN COPY BUTTON ---
+                                                            Align(
+                                                              alignment: Alignment.topLeft,
+                                                              child: GestureDetector(
+                                                                onTap: () {
+                                                                  if (_equationController.text.isNotEmpty) {
+                                                                    if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                                                                    // Equation aur Result ko copy karne ke liye combine karo
+                                                                    String copyText = _equationController.text;
+                                                                    if (result.isNotEmpty && result != 'Expression error') {
+                                                                      copyText += " = $result";
+                                                                    }
+
+                                                                    // Clipboard mein save karo
+                                                                    Clipboard.setData(ClipboardData(text: copyText));
+
+                                                                    // Custom Toast dikhao
+                                                                    showCustomToast(context, 'Calculation copied');
+                                                                  }
+                                                                },
+                                                                child: Container(
+                                                                  padding: const EdgeInsets.only(bottom: 8.0, right: 16.0),
+                                                                  child: Icon(
+                                                                    Icons.copy_all_rounded,
+                                                                    color: textGrey.withOpacity(0.5),
+                                                                    size: 22,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
                                                             Expanded(
                                                               child: Align(
                                                                 alignment: Alignment.bottomRight,
