@@ -16,14 +16,11 @@ class MiniFloatingCalculator extends StatefulWidget {
 }
 
 class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
-  // FIX 2: Text control, Scroll aur Cursor ke liye controllers add kiye
   final TextEditingController _equationController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   String result = "0";
   bool isEvaluated = false;
-
-  // Colors (Main app se match karne ke liye)
 
   // Colors (Main app se match karne ke liye)
   final Color bgColor = const Color(0xFF0E131D);
@@ -34,8 +31,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   @override
   void initState() {
     super.initState();
-    //_loadSyncState(); // Mini window khulte hi Main app ka data le lo
-    // NAYA: Listener lagaya jo Main App se aane wale data ka wait karega
     FlutterOverlayWindow.overlayListener.listen((event) {
       if (event is String) {
         try {
@@ -58,7 +53,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
       }
     });
 
-    // NAYA: Khulte hi Main app ko signal bhejo ki "Mujhe data do!"
     FlutterOverlayWindow.shareData('request_data');
   }
 
@@ -69,25 +63,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     _focusNode.dispose();
     super.dispose();
   }
-  // Future<void> _loadSyncState() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.reload(); // Force sync
-  //
-  //   bool hasSyncData = prefs.getBool('has_sync_data') ?? false;
-  //   if (hasSyncData) {
-  //     setState(() {
-  //       String newEq = prefs.getString('sync_eq') ?? '';
-  //       _equationController.value = TextEditingValue(
-  //         text: newEq,
-  //         selection: TextSelection.collapsed(offset: newEq.length),
-  //       );
-  //       result = prefs.getString('sync_res') ?? '0';
-  //       if (result.isEmpty) result = '0';
-  //       isEvaluated = prefs.getBool('sync_eval') ?? false;
-  //     });
-  //     await prefs.setBool('has_sync_data', false);
-  //   }
-  // }
 
   Future<void> _saveSyncState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -124,35 +99,30 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
         result = "0";
         isEvaluated = false; // Reset state
       } else if (text == 'BACK') {
-        if (_equationController.text.isNotEmpty && !isEvaluated) { // Agar evaluate ho chuka hai toh back kaam nai karega
+        if (_equationController.text.isNotEmpty && !isEvaluated) {
           _equationController.text = _equationController.text.substring(0, _equationController.text.length - 1);
         }
       } else if (text == '=') {
         if (_equationController.text.isNotEmpty && !isEvaluated) {
           isEvaluated = true; // State change
 
-          // Agar final result nikal aaya hai toh usko History me save kar lo
           if (result != "0" && result != "Expression error") {
             _saveToHistory(_equationController.text, result);
           }
         }
       } else {
-        // NAYA LOGIC: Agar pehle se Evaluated tha (Answer bada dikh raha tha)
         if (isEvaluated) {
           if (isOperator) {
-            // Operator dabaya to answer ke aage lagega
             _equationController.text = result + text;
           } else {
-            // Naya number dabaya to purana clear ho jayega
+
             _equationController.text = text;
           }
-          isEvaluated = false; // Wapas normal typing mode me aao
+          isEvaluated = false;
         } else {
           _equationController.text += text;
         }
       }
-
-      // Real-time calculation sirf typing ke time (Equal dabane ke time nai)
       if (text != '=' && text != 'AC' && _equationController.text.isNotEmpty) {
         try {
           String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
@@ -186,20 +156,14 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     return Material(
       color: Colors.transparent,
       elevation: 0,
-      // FIX 2: Yahan se Align() hata diya gaya hai!
-      // Ab ye seedha Container se shuru hoga, jisse bahar 1% bhi extra space nahi gherega.
       child: Container(
-        width: 230,  // Exact UI Width
-        height: 380, // Exact UI Height
+        width: 230,
+        height: 380,
         margin: const EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: cyanColor.withOpacity(0.5), width: 1.5),
-          // boxShadow: [
-          //   // NAYA: Shadow add ki hai taaki window background se alag dikhe
-          //   BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 15, spreadRadius: 2)
-          // ],
         ),
         child: Column(
           children: [
@@ -213,71 +177,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // EXPAND BUTTON
-                  // InkWell(
-                  //   onTap: () async {
-                  //     HapticFeedback.selectionClick();
-                  //     //await _saveSyncState();
-                  //     // NAYA: Main app ko direct data bhejo
-                  //     Map<String, dynamic> data = {
-                  //       'type': 'sync_to_main',
-                  //       'eq': _equationController.text,
-                  //       'res': result,
-                  //       'eval': isEvaluated
-                  //     };
-                  //     FlutterOverlayWindow.shareData(jsonEncode(data));
-                  //     try {
-                  //       final AndroidIntent intent = AndroidIntent(
-                  //         action: 'action_main',
-                  //         package: 'com.sptechstudios.calculator_pro',
-                  //         componentName: 'com.sptechstudios.calculator_pro.MainActivity',
-                  //         flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
-                  //       );
-                  //       await intent.launch();
-                  //     } catch (e) {
-                  //       debugPrint("Error waking up app: $e");
-                  //     }
-                  //     // FlutterOverlayWindow.closeOverlay();
-                  //     Future.delayed(const Duration(milliseconds: 100), () {
-                  //       FlutterOverlayWindow.closeOverlay();
-                  //     });
-                  //   },
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(5),
-                  //     decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                  //     child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
-                  //   ),
-                  // ),
-                  //
-                  // const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
-                  //
-                  // // CLOSE BUTTON
-                  // InkWell(
-                  //   onTap: () async {
-                  //     HapticFeedback.selectionClick();
-                  //     //await _saveSyncState();
-                  //     Map<String, dynamic> data = {
-                  //       'type': 'sync_to_main',
-                  //       'eq': _equationController.text,
-                  //       'res': result,
-                  //       'eval': isEvaluated
-                  //     };
-                  //     // await FlutterOverlayWindow.shareData(jsonEncode(data));
-                  //     // FlutterOverlayWindow.closeOverlay();
-                  //     FlutterOverlayWindow.shareData(jsonEncode(data)); // Await hata diya
-                  //
-                  //     // Halka sa delay dekar close karein taaki data pass ho sake
-                  //     Future.delayed(const Duration(milliseconds: 50), () {
-                  //       FlutterOverlayWindow.closeOverlay();
-                  //     });
-                  //   },
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(5),
-                  //     decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-                  //     child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
-                  //   ),
-                  // ),
-                  // EXPAND BUTTON
                   GestureDetector(
                     onTap: () async {
                       HapticFeedback.selectionClick();
@@ -290,8 +189,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                         'eval': isEvaluated
                       };
                       FlutterOverlayWindow.shareData(jsonEncode(data));
-
-                      // 2. NAYA: Backup ke liye SharedPreferences mein bhi save karo
                       await _saveSyncState();
 
                       try {
@@ -332,8 +229,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                         'eval': isEvaluated
                       };
                       FlutterOverlayWindow.shareData(jsonEncode(data));
-
-                      // 2. NAYA: Backup ke liye SharedPreferences mein bhi save karo
                       await _saveSyncState();
 
                       Future.delayed(const Duration(milliseconds: 100), () {
@@ -354,19 +249,15 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
             Expanded(
               child: Column(
                 children: [
-                  // FIX 1 & 2: DISPLAY AREA (Height badhai flex: 3 aur Scrollable+Cursor banaya)
                   Expanded(
                     flex: 2,
                 child: Listener(
-                  // FIX: Display touch karte hi window drag OFF (Taaki text scroll ho sake)
                   onPointerDown: (_) {
                     FlutterOverlayWindow.resizeOverlay(215, 335, false).catchError((e){});
                   },
-                  // FIX: Ungli hatate hi window drag wapas ON
                   onPointerUp: (_) {
                     FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
                   },
-                  // FIX: Agar drag karte hue ungli display se bahar chali jaye toh bhi wapas ON
                   onPointerCancel: (_) {
                     FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
                   },
@@ -386,11 +277,10 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                                 focusNode: _focusNode,
                                 scrollController: _scrollController,
                                 readOnly: true,
-                                showCursor: !isEvaluated, // NAYA: Evaluated hone pe cursor hide ho jayega
+                                showCursor: !isEvaluated,
                                 cursorColor: cyanColor,
                                 cursorWidth: 2,
                                 textAlign: TextAlign.right,
-                                // NAYA: Jab evaluate ho jaye to chota aur halka ho jaye
                                 style: TextStyle(
                                     color: isEvaluated ? Colors.white60 : Colors.white,
                                     fontSize: isEvaluated ? 14 : 18,
@@ -408,30 +298,21 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                           Text(
                             result,
                             maxLines: 1,
-                            // NAYA: Jab evaluate ho jaye to bada aur bright ho jaye
                             style: TextStyle(
                                 color: isEvaluated ? Colors.white : Colors.white60,
                                 fontSize: isEvaluated ? 28 : 20,
                                 fontWeight: FontWeight.bold
                             ),
                           ),
-                          // const SizedBox(height: 2),
-                          // Text(
-                          //   result,
-                          //   maxLines: 1,
-                          //   style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                          // ),
                         ],
                       ),
                     ),
                 ),
                   ),
-
-                  // FIX 1: KEYPAD AREA (Height adjust ki flex: 5 aur padding kam ki)
                   Expanded(
                     flex: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(0.0), // Padding bilkul kam kardi
+                      padding: const EdgeInsets.all(0.0),
                       child: Column(
                         children: [
                           _buildRow(['AC', 'BACK', '%', '÷']),
