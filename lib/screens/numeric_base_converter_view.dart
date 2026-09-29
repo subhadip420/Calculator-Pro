@@ -244,13 +244,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     );
   }
 
-  // Helper to check if a key should be enabled based on active field
-  // bool _isKeyEnabled(String key) {
-  //   if (activeField == 'bin') return ['0', '1'].contains(key);
-  //   if (activeField == 'oct') return ['0', '1', '2', '3', '4', '5', '6', '7'].contains(key);
-  //   if (activeField == 'dec') return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].contains(key);
-  //   return true; // hex allows everything
-  // }
   bool _isKeyEnabled(String key) {
     if (activeField == 'bin') return ['0', '1'].contains(key);
     if (activeField == 'oct') return ['0', '1', '2', '3', '4', '5', '6', '7'].contains(key);
@@ -258,39 +251,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     return true; // hex allows everything
   }
 
-  // Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
-  //   bool enabled = isAction || _isKeyEnabled(text);
-  //
-  //   return Expanded(
-  //     child: GestureDetector(
-  //       onTap: enabled ? () {
-  //         if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //         if (onTap != null) onTap();
-  //         else _onKeyPress(text);
-  //       } : null,
-  //       child: AnimatedContainer(
-  //         duration: const Duration(milliseconds: 200),
-  //         height: 55,
-  //         decoration: BoxDecoration(
-  //           color: isAction
-  //               ? surfaceColor.withOpacity(0.5)
-  //               : (enabled ? surfaceColor.withOpacity(0.3) : surfaceColor.withOpacity(0.1)),
-  //           borderRadius: BorderRadius.circular(14),
-  //         ),
-  //         child: Center(
-  //           child: Text(
-  //             text,
-  //             style: TextStyle(
-  //               color: textColor ?? (enabled ? Colors.white : textGrey.withOpacity(0.2)),
-  //               fontSize: 22,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
     bool enabled = isAction || _isKeyEnabled(text);
 
@@ -330,27 +290,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
       ),
     );
   }
-
-  // Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
-  //   return Expanded(
-  //     child: GestureDetector(
-  //       onTap: () {
-  //         if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //         onTap();
-  //       },
-  //       child: Container(
-  //         height: 55,
-  //         decoration: BoxDecoration(
-  //           color: surfaceColor.withOpacity(0.5),
-  //           borderRadius: BorderRadius.circular(14),
-  //         ),
-  //         child: Center(
-  //           child: Icon(icon, color: cyanColor, size: 26),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
     return Expanded(
