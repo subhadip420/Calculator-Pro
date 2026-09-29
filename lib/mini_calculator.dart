@@ -333,6 +333,47 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     );
   }
 
+  // Widget _buildRow(List<String> buttons) {
+  //   return Expanded(
+  //     child: Row(
+  //       children: buttons.map((text) {
+  //         Color txtColor = Colors.white;
+  //         Color bgCol = surfaceColor;
+  //
+  //         if (text == 'AC') {
+  //           txtColor = orangeColor;
+  //         } else if (text == 'BACK' || text == '%') {
+  //           txtColor = cyanColor;
+  //         } else if (['÷', '×', '-', '+', '='].contains(text)) {
+  //           bgCol = orangeColor.withOpacity(0.2);
+  //           if (text == '=') {
+  //             bgCol = orangeColor;
+  //             txtColor = Colors.white;
+  //           }
+  //         }
+  //
+  //         return Expanded(
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(4.0),
+  //             child: InkWell(
+  //               onTap: () => _onPress(text),
+  //               borderRadius: BorderRadius.circular(18),
+  //               child: Container(
+  //                 decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(18)),
+  //                 child: Center(
+  //                   child: text == 'BACK'
+  //                       ? Icon(Icons.backspace_outlined, color: txtColor, size: 18)
+  //                       : Text(text, style: TextStyle(color: txtColor, fontSize: 18, fontWeight: FontWeight.bold)),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       }).toList(),
+  //     ),
+  //   );
+  // }
+
   Widget _buildRow(List<String> buttons) {
     return Expanded(
       child: Row(
@@ -355,12 +396,20 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
           return Expanded(
             child: Padding(
               padding: const EdgeInsets.all(4.0),
-              child: InkWell(
-                onTap: () => _onPress(text),
+              // FIX: Yahan Material ko bahar kiya taaki animation proper dikhe,
+              // theek waise hi jaise main calculator mein kiya tha.
+              child: Material(
+                color: bgCol,
                 borderRadius: BorderRadius.circular(18),
-                child: Container(
-                  decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(18)),
-                  child: Center(
+                clipBehavior: Clip.antiAlias, // Ripple border ke bahar leak hone se rokne ke liye
+                child: InkWell(
+                  onTap: () => _onPress(text),
+                  borderRadius: BorderRadius.circular(18),
+                  splashColor: txtColor.withOpacity(0.2), // Dark mode ke liye premium splash
+                  highlightColor: Colors.white.withOpacity(0.1),
+                  child: Container(
+                    alignment: Alignment.center, // Center mein laane ke liye
+                    // Yahan se decoration hata diya taaki ripple hide na ho
                     child: text == 'BACK'
                         ? Icon(Icons.backspace_outlined, color: txtColor, size: 18)
                         : Text(text, style: TextStyle(color: txtColor, fontSize: 18, fontWeight: FontWeight.bold)),
