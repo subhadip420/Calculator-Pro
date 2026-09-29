@@ -23,14 +23,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   String result = "0";
   bool isEvaluated = false;
 
-  @override
-  void dispose() {
-    _equationController.dispose();
-    _scrollController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
   // Colors (Main app se match karne ke liye)
 
   // Colors (Main app se match karne ke liye)
@@ -38,6 +30,72 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   final Color surfaceColor = const Color(0xFF1E2638);
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color orangeColor = const Color(0xFFFF9500);
+
+  @override
+  void initState() {
+    super.initState();
+    //_loadSyncState(); // Mini window khulte hi Main app ka data le lo
+    // NAYA: Listener lagaya jo Main App se aane wale data ka wait karega
+    FlutterOverlayWindow.overlayListener.listen((event) {
+      if (event is String) {
+        try {
+          final data = jsonDecode(event);
+          if (data['type'] == 'sync_to_mini') {
+            setState(() {
+              String newEq = data['eq'] ?? '';
+              _equationController.value = TextEditingValue(
+                text: newEq,
+                selection: TextSelection.collapsed(offset: newEq.length),
+              );
+              result = data['res'] ?? '0';
+              if (result.isEmpty) result = '0';
+              isEvaluated = data['eval'] ?? false;
+            });
+          }
+        } catch (e) {
+          debugPrint("Mini sync error: $e");
+        }
+      }
+    });
+
+    // NAYA: Khulte hi Main app ko signal bhejo ki "Mujhe data do!"
+    FlutterOverlayWindow.shareData('request_data');
+  }
+
+  @override
+  void dispose() {
+    _equationController.dispose();
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+  // Future<void> _loadSyncState() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.reload(); // Force sync
+  //
+  //   bool hasSyncData = prefs.getBool('has_sync_data') ?? false;
+  //   if (hasSyncData) {
+  //     setState(() {
+  //       String newEq = prefs.getString('sync_eq') ?? '';
+  //       _equationController.value = TextEditingValue(
+  //         text: newEq,
+  //         selection: TextSelection.collapsed(offset: newEq.length),
+  //       );
+  //       result = prefs.getString('sync_res') ?? '0';
+  //       if (result.isEmpty) result = '0';
+  //       isEvaluated = prefs.getBool('sync_eval') ?? false;
+  //     });
+  //     await prefs.setBool('has_sync_data', false);
+  //   }
+  // }
+
+  Future<void> _saveSyncState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('sync_eq', _equationController.text);
+    await prefs.setString('sync_res', result);
+    await prefs.setBool('sync_eval', isEvaluated);
+    await prefs.setBool('has_sync_data', true);
+  }
 
   Future<void> _saveToHistory(String eq, String res) async {
     final prefs = await SharedPreferences.getInstance();
@@ -156,9 +214,86 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // EXPAND BUTTON
-                  InkWell(
+                  // InkWell(
+                  //   onTap: () async {
+                  //     HapticFeedback.selectionClick();
+                  //     //await _saveSyncState();
+                  //     // NAYA: Main app ko direct data bhejo
+                  //     Map<String, dynamic> data = {
+                  //       'type': 'sync_to_main',
+                  //       'eq': _equationController.text,
+                  //       'res': result,
+                  //       'eval': isEvaluated
+                  //     };
+                  //     FlutterOverlayWindow.shareData(jsonEncode(data));
+                  //     try {
+                  //       final AndroidIntent intent = AndroidIntent(
+                  //         action: 'action_main',
+                  //         package: 'com.sptechstudios.calculator_pro',
+                  //         componentName: 'com.sptechstudios.calculator_pro.MainActivity',
+                  //         flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+                  //       );
+                  //       await intent.launch();
+                  //     } catch (e) {
+                  //       debugPrint("Error waking up app: $e");
+                  //     }
+                  //     // FlutterOverlayWindow.closeOverlay();
+                  //     Future.delayed(const Duration(milliseconds: 100), () {
+                  //       FlutterOverlayWindow.closeOverlay();
+                  //     });
+                  //   },
+                  //   child: Container(
+                  //     padding: const EdgeInsets.all(5),
+                  //     decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                  //     child: Icon(Icons.open_in_full_rounded, color: cyanColor, size: 12),
+                  //   ),
+                  // ),
+                  //
+                  // const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
+                  //
+                  // // CLOSE BUTTON
+                  // InkWell(
+                  //   onTap: () async {
+                  //     HapticFeedback.selectionClick();
+                  //     //await _saveSyncState();
+                  //     Map<String, dynamic> data = {
+                  //       'type': 'sync_to_main',
+                  //       'eq': _equationController.text,
+                  //       'res': result,
+                  //       'eval': isEvaluated
+                  //     };
+                  //     // await FlutterOverlayWindow.shareData(jsonEncode(data));
+                  //     // FlutterOverlayWindow.closeOverlay();
+                  //     FlutterOverlayWindow.shareData(jsonEncode(data)); // Await hata diya
+                  //
+                  //     // Halka sa delay dekar close karein taaki data pass ho sake
+                  //     Future.delayed(const Duration(milliseconds: 50), () {
+                  //       FlutterOverlayWindow.closeOverlay();
+                  //     });
+                  //   },
+                  //   child: Container(
+                  //     padding: const EdgeInsets.all(5),
+                  //     decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                  //     child: const Icon(Icons.close_rounded, color: Colors.redAccent, size: 12),
+                  //   ),
+                  // ),
+                  // EXPAND BUTTON
+                  GestureDetector(
                     onTap: () async {
                       HapticFeedback.selectionClick();
+
+                      // 1. Live Data Bhejo
+                      Map<String, dynamic> data = {
+                        'type': 'sync_to_main',
+                        'eq': _equationController.text,
+                        'res': result,
+                        'eval': isEvaluated
+                      };
+                      FlutterOverlayWindow.shareData(jsonEncode(data));
+
+                      // 2. NAYA: Backup ke liye SharedPreferences mein bhi save karo
+                      await _saveSyncState();
+
                       try {
                         final AndroidIntent intent = AndroidIntent(
                           action: 'action_main',
@@ -166,11 +301,14 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                           componentName: 'com.sptechstudios.calculator_pro.MainActivity',
                           flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
                         );
-                        await intent.launch();
+                        intent.launch();
                       } catch (e) {
                         debugPrint("Error waking up app: $e");
                       }
-                      FlutterOverlayWindow.closeOverlay();
+
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        FlutterOverlayWindow.closeOverlay();
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.all(5),
@@ -182,10 +320,25 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
 
                   // CLOSE BUTTON
-                  InkWell(
-                    onTap: () {
+                  GestureDetector(
+                    onTap: () async {
                       HapticFeedback.selectionClick();
-                      FlutterOverlayWindow.closeOverlay();
+
+                      // 1. Live Data Bhejo
+                      Map<String, dynamic> data = {
+                        'type': 'sync_to_main',
+                        'eq': _equationController.text,
+                        'res': result,
+                        'eval': isEvaluated
+                      };
+                      FlutterOverlayWindow.shareData(jsonEncode(data));
+
+                      // 2. NAYA: Backup ke liye SharedPreferences mein bhi save karo
+                      await _saveSyncState();
+
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        FlutterOverlayWindow.closeOverlay();
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.all(5),
@@ -239,7 +392,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                                 textAlign: TextAlign.right,
                                 // NAYA: Jab evaluate ho jaye to chota aur halka ho jaye
                                 style: TextStyle(
-                                    color: isEvaluated ? Colors.white38 : Colors.white54,
+                                    color: isEvaluated ? Colors.white60 : Colors.white,
                                     fontSize: isEvaluated ? 14 : 18,
                                     fontWeight: isEvaluated ? FontWeight.normal : FontWeight.w500
                                 ),
@@ -257,7 +410,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                             maxLines: 1,
                             // NAYA: Jab evaluate ho jaye to bada aur bright ho jaye
                             style: TextStyle(
-                                color: isEvaluated ? cyanColor : Colors.white,
+                                color: isEvaluated ? Colors.white : Colors.white60,
                                 fontSize: isEvaluated ? 28 : 20,
                                 fontWeight: FontWeight.bold
                             ),

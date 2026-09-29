@@ -93,7 +93,8 @@ class CalculatorScreen extends StatefulWidget {
   State<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
+//class _CalculatorScreenState extends State<CalculatorScreen> {
+class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBindingObserver {
   bool isScientific = false;
   bool isEvaluated = false;
   bool isDegreeMode = true;
@@ -141,21 +142,42 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // NAYA: Lifecycle observe karne ke liye
+    _loadSyncState();
     _loadHistory();
     _loadAd();
     _loadHapticsSetting();
 
-    // NAYA FIX: Floating window se message sunne ke liye Listener
+    // NAYA FIX: Direct Isolate Communication (No SharedPreferences needed for sync)
     FlutterOverlayWindow.overlayListener.listen((event) {
       if (event == 'openApp') {
-        // 1. Background se app ko wapas screen par lao (Kotlin command)
         const MethodChannel('com.sptechstudios/app').invokeMethod('openApp');
-
-        // 2. App open hone ke baad floating window ko band kardo
         FlutterOverlayWindow.closeOverlay();
+      } else if (event == 'request_data') {
+        // Jaise hi mini window khulegi, wo data mangegi, hum turant bhej denge
+        Map<String, dynamic> data = {
+          'type': 'sync_to_mini',
+          'eq': _equationController.text,
+          'res': result,
+          'eval': isEvaluated
+        };
+        FlutterOverlayWindow.shareData(jsonEncode(data));
+      } else if (event is String) {
+        // Jab mini window close hogi, wo apna data yahan bhejegi
+        try {
+          final data = jsonDecode(event);
+          if (data['type'] == 'sync_to_main') {
+            setState(() {
+              _equationController.text = data['eq'] ?? '';
+              result = data['res'] ?? '';
+              isEvaluated = data['eval'] ?? false;
+            });
+          }
+        } catch (e) {
+          debugPrint("Sync error: $e");
+        }
       }
     });
-
     // Screen open hote hi cursor show karne ke liye
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -164,12 +186,44 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _bannerAd?.dispose();
     _equationController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
     super.dispose();
   }
+
+  //--- NAYA: MAIN APP <=> MINI APP SYNC LOGIC ---
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadSyncState(); // Jab app background se wapas aaye toh data refresh kare
+    }
+  }
+
+  Future<void> _loadSyncState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload(); // Force sync from background
+
+    bool hasSyncData = prefs.getBool('has_sync_data') ?? false;
+    if (hasSyncData) {
+      setState(() {
+        _equationController.text = prefs.getString('sync_eq') ?? '';
+        result = prefs.getString('sync_res') ?? '';
+        isEvaluated = prefs.getBool('sync_eval') ?? false;
+      });
+      await prefs.setBool('has_sync_data', false); // Data padhne ke baad clear kar do
+    }
+  }
+
+  // Future<void> _saveSyncState() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('sync_eq', _equationController.text);
+  //   await prefs.setString('sync_res', result);
+  //   await prefs.setBool('sync_eval', isEvaluated);
+  //   await prefs.setBool('has_sync_data', true);
+  // }
 
   // --- Basic Calculation Functions ---
   double _add(double a, double b) => a + b;
@@ -375,6 +429,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
             if (finalResult != 'Expression error') {
               _saveToHistory(_equationController.text, finalResult);
+              //_saveSyncState();
             }
           }
         }
@@ -1514,6 +1569,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 onTap: () async {
                   if (_isHapticsEnabled) HapticFeedback.lightImpact();
 
+                  //await _saveSyncState();
+                  //await Future.delayed(const Duration(milliseconds: 250));
+
                   try {
                     // 1. Permission check karein
                     bool isGranted = await FlutterOverlayWindow.isPermissionGranted();
@@ -1540,6 +1598,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       // FIX 1: Isko wapas -2 kar dein
                       height: 1000, // FIX 1: Isko wapas -2 kar dein
                     );
+
+                    Map<String, dynamic> data = {
+                      'type': 'sync_to_mini',
+                      'eq': _equationController.text,
+                      'res': result,
+                      'eval': isEvaluated
+                    };
+                    await FlutterOverlayWindow.shareData(jsonEncode(data));
 
                     // 4. Main App ko Background mein bhej dein
                     Future.delayed(const Duration(milliseconds: 200), () {
