@@ -39,54 +39,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   final Color cyanColor = const Color(0xFF4CD7F6);
   final Color orangeColor = const Color(0xFFFF9500);
 
-  // void _onPress(String text) {
-  //   HapticFeedback.lightImpact(); // FIX 4: Button dabne par mast vibration
-  //
-  //   setState(() {
-  //     if (text == 'AC') {
-  //       _equationController.clear();
-  //       result = "0";
-  //     } else if (text == 'BACK') {
-  //       if (_equationController.text.isNotEmpty) {
-  //         _equationController.text = _equationController.text.substring(0, _equationController.text.length - 1);
-  //       }
-  //     } else if (text == '=') {
-  //       // Realtime me calculate ho raha hai, equal dabane pe kuch extra nai karna
-  //     } else {
-  //       _equationController.text += text;
-  //     }
-  //
-  //     // FIX 3: Real-time Answer Update
-  //     if (_equationController.text.isEmpty) {
-  //       result = "0";
-  //     } else {
-  //       try {
-  //         String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
-  //         Parser p = Parser();
-  //         Expression exp = p.parse(sanitized);
-  //         double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-  //         result = eval == eval.toInt()
-  //             ? eval.toInt().toString()
-  //             : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-  //       } catch (e) {
-  //         // Type karte waqt format galat ho (jaise "5+") toh error hide rakho, purana result dikhao
-  //       }
-  //     }
-  //   });
-  //
-  //   // FIX 2: Input aate hi hamesha last mein Auto-Scroll karega
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_scrollController.hasClients) {
-  //       _scrollController.animateTo(
-  //         _scrollController.position.maxScrollExtent,
-  //         duration: const Duration(milliseconds: 100),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
-
-  // NAYA: History Save Karne Ke Liye Function
   Future<void> _saveToHistory(String eq, String res) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> history = prefs.getStringList('calculator_history') ?? [];
@@ -273,28 +225,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          // Expanded(
-                          //   child: Align(
-                          //     alignment: Alignment.bottomRight,
-                          //     child: TextField(
-                          //       controller: _equationController,
-                          //       focusNode: _focusNode,
-                          //       scrollController: _scrollController,
-                          //       readOnly: true, // Keyboard popup na ho
-                          //       showCursor: true, // Cursor dikhega
-                          //       cursorColor: cyanColor,
-                          //       cursorWidth: 2,
-                          //       textAlign: TextAlign.right,
-                          //       style: const TextStyle(color: Colors.white54, fontSize: 16),
-                          //       decoration: const InputDecoration(
-                          //         border: InputBorder.none,
-                          //         isDense: true,
-                          //         contentPadding: EdgeInsets.zero,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomRight,
