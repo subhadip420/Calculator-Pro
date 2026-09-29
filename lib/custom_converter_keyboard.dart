@@ -6,6 +6,7 @@ class ConverterKeyboard extends StatelessWidget {
   final VoidCallback onBackspace;
   final VoidCallback onClear;
   final bool isHapticsEnabled;
+  final String buttonShape;
 
   const ConverterKeyboard({
     super.key,
@@ -13,6 +14,7 @@ class ConverterKeyboard extends StatelessWidget {
     required this.onBackspace,
     required this.onClear,
     this.isHapticsEnabled = true,
+    this.buttonShape = 'rounded',
   });
 
   final Color surfaceColor = const Color(0xFF1E2638);
@@ -20,6 +22,12 @@ class ConverterKeyboard extends StatelessWidget {
 
   void _triggerHaptic() {
     if (isHapticsEnabled) HapticFeedback.selectionClick();
+  }
+
+  BorderRadius _getShapeRadius() {
+    return buttonShape == 'circle'
+        ? BorderRadius.circular(100) // Circle ke liye full round
+        : BorderRadius.circular(16); // Rounded ke liye normal curve
   }
 
   @override
@@ -91,14 +99,16 @@ class ConverterKeyboard extends StatelessWidget {
     return Expanded(
       child: Material(
         color: surfaceColor.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(16),
+        //borderRadius: BorderRadius.circular(16),
+        borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias, // Ripple border ke bahar na nikle
         child: InkWell(
           onTap: () {
             _triggerHaptic();
             onTap();
           },
-          borderRadius: BorderRadius.circular(16),
+          //borderRadius: BorderRadius.circular(16),
+          borderRadius: _getShapeRadius(),
           // NAYA: Ripple aur highlight animation colors
           splashColor: (textColor ?? cyanColor).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
@@ -123,7 +133,8 @@ class ConverterKeyboard extends StatelessWidget {
     return Expanded(
       child: Material(
         color: surfaceColor.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(16),
+        //borderRadius: BorderRadius.circular(16),
+        borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
@@ -135,7 +146,8 @@ class ConverterKeyboard extends StatelessWidget {
             _triggerHaptic();
             onClear();
           },
-          borderRadius: BorderRadius.circular(16),
+          //borderRadius: BorderRadius.circular(16),
+          borderRadius: _getShapeRadius(),
           // NAYA: Icon key ke liye splash animation
           splashColor: cyanColor.withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),

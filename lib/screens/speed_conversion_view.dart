@@ -24,7 +24,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
+  String _buttonShape = 'rounded';
   bool isFromSelected = true;
 
   // NAYA FIX: Exact match with the names in the new Map
@@ -84,8 +84,8 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
-
+    //_loadHaptics();
+    _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -97,10 +97,18 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -474,6 +482,7 @@ class _SpeedConverterViewState extends State<SpeedConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,

@@ -24,7 +24,7 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
 
   bool _isHapticsEnabled = true;
   bool isFromSelected = true;
-
+  String _buttonShape = 'rounded';
   String fromUnit = 'Megabyte';
   String fromSymbol = 'MB';
   String fromValue = '1';
@@ -79,8 +79,8 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
-
+    //_loadHaptics();
+    _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -92,9 +92,17 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
     });
   }
@@ -474,6 +482,7 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,

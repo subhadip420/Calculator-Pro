@@ -24,7 +24,7 @@ class _PowerConverterViewState extends State<PowerConverterView> {
 
   bool _isHapticsEnabled = true;
   bool isFromSelected = true;
-
+  String _buttonShape = 'rounded';
   String fromUnit = 'Watt';
   String fromSymbol = 'W';
   String fromValue = '1';
@@ -76,8 +76,8 @@ class _PowerConverterViewState extends State<PowerConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
-
+    //_loadHaptics();
+    _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -89,10 +89,17 @@ class _PowerConverterViewState extends State<PowerConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -472,6 +479,7 @@ class _PowerConverterViewState extends State<PowerConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,

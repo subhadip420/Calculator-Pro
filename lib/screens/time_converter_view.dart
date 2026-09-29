@@ -22,7 +22,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
+  String _buttonShape = 'rounded';
   // --- FOCUS STATE ---
   // activeField can be: 'd', 'hr', 'm', 's', 'from', 'to'
   String activeField = 'hr';
@@ -70,7 +70,8 @@ class _TimeConverterViewState extends State<TimeConverterView> {
     super.initState();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
-    _loadHaptics();
+    //_loadHaptics();
+    _loadSettings();
   }
 
   @override
@@ -80,10 +81,18 @@ class _TimeConverterViewState extends State<TimeConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -494,6 +503,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,

@@ -23,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Toggle ke liye variable
   bool _isHapticsEnabled = true; // Default ON rahega
-
+  String _buttonShape = 'rounded';
   @override
   void initState() {
     super.initState();
@@ -38,6 +38,14 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'oval';
+    });
+  }
+
   // SharedPreferences me save karne ka function
   Future<void> _toggleHaptics(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -45,6 +53,151 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _isHapticsEnabled = value;
     });
+  }
+
+  Future<void> _saveButtonShape(String shape) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('button_shape', shape);
+    setState(() {
+      _buttonShape = shape;
+    });
+  }
+// NAYA: Theme Selection Dialog dikhane ka function
+  void _showThemeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              backgroundColor: surfaceColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Button Shape',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Options Row (Side-by-Side)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // --- 1. ROUNDED OPTION (Pehle Oval tha) ---
+                        GestureDetector(
+                          onTap: () {
+                            if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                            // 'oval' ki jagah ab 'rounded' save karenge
+                            setDialogState(() => _buttonShape = 'rounded');
+                            _saveButtonShape('rounded');
+
+                            // Bina Done button ke, select karte hi thodi der me auto-close hoga
+                            Future.delayed(const Duration(milliseconds: 250), () {
+                              if (context.mounted) Navigator.pop(context);
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Sample Rounded Shape
+                              Container(
+                                width: 65,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  color: _buttonShape == 'rounded' ? cyanColor.withOpacity(0.2) : bgColor,
+                                  borderRadius: BorderRadius.circular(16), // Yeh Rounded Rectangle banata hai
+                                  border: Border.all(
+                                    color: _buttonShape == 'rounded' ? cyanColor : Colors.white.withOpacity(0.1),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              // Title
+                              Text(
+                                'Rounded', // Naam badal kar Rounded kar diya
+                                style: TextStyle(
+                                  color: _buttonShape == 'rounded' ? Colors.white : textGrey,
+                                  fontSize: 16,
+                                  fontWeight: _buttonShape == 'rounded' ? FontWeight.bold : FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Radio Button
+                              Icon(
+                                _buttonShape == 'rounded' ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                                color: _buttonShape == 'rounded' ? cyanColor : textGrey.withOpacity(0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // --- 2. CIRCLE OPTION ---
+                        GestureDetector(
+                          onTap: () {
+                            if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                            setDialogState(() => _buttonShape = 'circle');
+                            _saveButtonShape('circle');
+
+                            // Auto-close after selection
+                            Future.delayed(const Duration(milliseconds: 250), () {
+                              if (context.mounted) Navigator.pop(context);
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Sample Circle Shape
+                              Container(
+                                width: 55,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  color: _buttonShape == 'circle' ? cyanColor.withOpacity(0.2) : bgColor,
+                                  shape: BoxShape.circle, // Yeh Circle banata hai
+                                  border: Border.all(
+                                    color: _buttonShape == 'circle' ? cyanColor : Colors.white.withOpacity(0.1),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              // Title
+                              Text(
+                                'Circle',
+                                style: TextStyle(
+                                  color: _buttonShape == 'circle' ? Colors.white : textGrey,
+                                  fontSize: 16,
+                                  fontWeight: _buttonShape == 'circle' ? FontWeight.bold : FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Radio Button
+                              Icon(
+                                _buttonShape == 'circle' ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                                color: _buttonShape == 'circle' ? cyanColor : textGrey.withOpacity(0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -97,33 +250,45 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // _buildSettingsItem(
+                    //   icon: Icons.palette_outlined,
+                    //   title: 'Theme Settings',
+                    //   subtitle: 'Change button colors & look',
+                    //   iconColor: cyanColor,
+                    //   onTap: () {
+                    //     if (_isHapticsEnabled) {
+                    //       HapticFeedback.lightImpact(); // Halka sa premium vibration
+                    //     }
+                    //     // "Coming Soon" Dialog
+                    //     showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return CustomDialog(
+                    //           title: 'Coming Soon!',
+                    //           subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                    //           isSingleButton: true,
+                    //           primaryButtonText: 'Okay',
+                    //           onPrimaryPressed: () {
+                    //             if (_isHapticsEnabled) {
+                    //               HapticFeedback.selectionClick(); // Halka sa premium vibration
+                    //             }
+                    //             Navigator.of(context).pop();
+                    //           },
+                    //         );
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                     _buildSettingsItem(
                       icon: Icons.palette_outlined,
                       title: 'Theme Settings',
-                      subtitle: 'Change app colors & look',
+                      subtitle: 'Change button shapes',
                       iconColor: cyanColor,
                       onTap: () {
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
-                        // "Coming Soon" Dialog
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomDialog(
-                              title: 'Coming Soon!',
-                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                              isSingleButton: true,
-                              primaryButtonText: 'Okay',
-                              onPrimaryPressed: () {
-                                if (_isHapticsEnabled) {
-                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
-                                }
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                        );
+                        _showThemeDialog(); // NAYA: Calling Theme Dialog
                       },
                     ),
 

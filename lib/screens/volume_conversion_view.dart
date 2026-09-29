@@ -24,7 +24,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
   final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
-
+  String _buttonShape = 'rounded';
   bool isFromSelected = true;
 
   String fromUnit = 'Liter';
@@ -110,8 +110,8 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
-
+    //_loadHaptics();
+    _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -123,10 +123,18 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -500,6 +508,7 @@ class _VolumeConverterViewState extends State<VolumeConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,

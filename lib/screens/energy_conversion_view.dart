@@ -24,7 +24,7 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
 
   bool _isHapticsEnabled = true;
   bool isFromSelected = true;
-
+  String _buttonShape = 'rounded';
   String fromUnit = 'Joule';
   String fromSymbol = 'J';
   String fromValue = '1';
@@ -81,8 +81,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
   @override
   void initState() {
     super.initState();
-    _loadHaptics();
-
+    //_loadHaptics();
+    _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
@@ -94,10 +94,18 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
     super.dispose();
   }
 
-  Future<void> _loadHaptics() async {
+  // Future<void> _loadHaptics() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -476,6 +484,7 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
 
         // --- 4. REUSABLE KEYBOARD ---
         ConverterKeyboard(
+          buttonShape: _buttonShape,
           isHapticsEnabled: _isHapticsEnabled,
           onKeyPress: _onKeyPress,
           onBackspace: _onBackspace,
