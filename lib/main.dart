@@ -100,7 +100,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
   BannerAd? _bannerAd;
   bool _isLoaded = false;
-
+  String _buttonShape = 'rounded';
   // Google Test Ad Unit ID (Android ke liye)
   final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
 
@@ -120,8 +120,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     _loadSyncState();
     _loadHistory();
     _loadAd();
-    _loadHapticsSetting();
-
+    //_loadHapticsSetting();
+    _loadSettings();
     FlutterOverlayWindow.overlayListener.listen((event) {
       // if (event == 'haptic') {
       //   if (_isHapticsEnabled) {
@@ -215,10 +215,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     });
   }
 
-  Future<void> _loadHapticsSetting() async {
+  // Future<void> _loadHapticsSetting() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
+  //   });
+  // }
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
+      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded'; // Shape load kiya
     });
   }
 
@@ -1069,6 +1077,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('log10('),
                                                               ),
                                                               CalculatorButton(
@@ -1076,6 +1085,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('sin('),
                                                               ),
                                                               CalculatorButton(
@@ -1083,6 +1093,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('cos('),
                                                               ),
                                                               CalculatorButton(
@@ -1090,6 +1101,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('tan('),
                                                               ),
                                                               CalculatorButton(
@@ -1097,6 +1109,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('ln('),
                                                               ),
                                                               CalculatorButton(
@@ -1104,6 +1117,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: cyanColor,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('deg'),
                                                               ),
                                                             ],
@@ -1117,6 +1131,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('log2('),
                                                               ),
                                                               CalculatorButton(
@@ -1124,6 +1139,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('²'),
                                                               ),
                                                               CalculatorButton(
@@ -1131,6 +1147,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('('),
                                                               ),
                                                               CalculatorButton(
@@ -1138,6 +1155,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress(')'),
                                                               ),
                                                               CalculatorButton(
@@ -1145,6 +1163,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('rad'),
                                                               ),
                                                               CalculatorButton(
@@ -1152,6 +1171,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('Inv'),
                                                               ),
                                                             ],
@@ -1167,12 +1187,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('!'),
                                                               ),
                                                             CalculatorButton(
                                                               text: 'AC',
                                                               textColor: Colors.orangeAccent,
                                                               bgColor: surfaceColor,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('AC'),
                                                             ),
                                                             CalculatorButton(
@@ -1180,12 +1202,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: cyanColor,
                                                               bgColor: surfaceColor,
                                                               fontSize: 18,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('%'),
                                                             ),
                                                             CalculatorButton(
                                                               icon: Icons.backspace_outlined,
                                                               textColor: cyanColor,
                                                               bgColor: surfaceColor,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('BACK'),
                                                             ),
                                                             CalculatorButton(
@@ -1193,6 +1217,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: orangeColor.withOpacity(0.15),
                                                               fontSize: 30,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('÷'),
                                                             ),
                                                           ],
@@ -1207,6 +1232,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('^'),
                                                               ),
                                                             CalculatorButton(
@@ -1214,6 +1240,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('7'),
                                                             ),
                                                             CalculatorButton(
@@ -1221,6 +1248,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('8'),
                                                             ),
                                                             CalculatorButton(
@@ -1228,6 +1256,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('9'),
                                                             ),
                                                             CalculatorButton(
@@ -1235,6 +1264,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: orangeColor.withOpacity(0.15),
                                                               fontSize: 30,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('×'),
                                                             ),
                                                           ],
@@ -1249,6 +1279,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('√'),
                                                               ),
                                                             CalculatorButton(
@@ -1256,6 +1287,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('4'),
                                                             ),
                                                             CalculatorButton(
@@ -1263,6 +1295,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('5'),
                                                             ),
                                                             CalculatorButton(
@@ -1270,6 +1303,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('6'),
                                                             ),
                                                             CalculatorButton(
@@ -1277,6 +1311,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: orangeColor.withOpacity(0.15),
                                                               fontSize: 30,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('-'),
                                                             ),
                                                           ],
@@ -1291,6 +1326,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('π'),
                                                               ),
                                                             CalculatorButton(
@@ -1298,6 +1334,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('1'),
                                                             ),
                                                             CalculatorButton(
@@ -1305,6 +1342,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('2'),
                                                             ),
                                                             CalculatorButton(
@@ -1312,6 +1350,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('3'),
                                                             ),
                                                             CalculatorButton(
@@ -1319,6 +1358,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: orangeColor.withOpacity(0.15),
                                                               fontSize: 30,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('+'),
                                                             ),
                                                           ],
@@ -1333,6 +1373,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 textColor: white,
                                                                 bgColor: surfaceColor,
                                                                 fontSize: 18,
+                                                                buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('e'),
                                                               ),
                                                             CalculatorButton(
@@ -1340,6 +1381,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('00'),
                                                             ),
                                                             CalculatorButton(
@@ -1347,6 +1389,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('0'),
                                                             ),
                                                             CalculatorButton(
@@ -1354,6 +1397,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: surfaceColor,
                                                               fontSize: 25,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('.'),
                                                             ),
                                                             CalculatorButton(
@@ -1361,6 +1405,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               textColor: white,
                                                               bgColor: orangeColor,
                                                               fontSize: 30,
+                                                              buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('='),
                                                             ),
                                                           ],
@@ -1533,12 +1578,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 icon: Icons.settings_outlined,
                 contentColor: textGrey,
                 bgColor: surfaceColor.withOpacity(0.5),
-                onTap: () {
+                // onTap: () {
+                //   if (_isHapticsEnabled) {
+                //     HapticFeedback.lightImpact(); // Halka sa premium vibration
+                //   }
+                //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+                // },
+                onTap: () async { // NAYA: async lagaya
                   if (_isHapticsEnabled) {
-                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                    HapticFeedback.lightImpact();
                   }
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+
+                  // NAYA: await lagaya taaki settings band hone ka wait kare
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SettingsPage())
+                  );
+
+                  // NAYA: Settings se wapas aate hi turant naya theme load karo
+                  _loadSettings();
                 },
+
               ),
             ],
           ),

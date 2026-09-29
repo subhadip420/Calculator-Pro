@@ -10,6 +10,7 @@ class CalculatorButton extends StatelessWidget {
   // Naye parameters size ko dynamic banane ke liye
   final double? fontSize;
   final double? iconSize;
+  final String buttonShape;
 
   const CalculatorButton({
     super.key,
@@ -20,7 +21,14 @@ class CalculatorButton extends StatelessWidget {
     required this.onTap,
     this.fontSize,
     this.iconSize,
+    this.buttonShape = 'rounded',
   });
+
+  BorderRadius _getShapeRadius() {
+    return buttonShape == 'circle'
+        ? BorderRadius.circular(100) // Circle ke liye full round
+        : BorderRadius.circular(16); // Rounded ke liye normal curve
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +38,8 @@ class CalculatorButton extends StatelessWidget {
         child: Container(
           // 1. Shadow aur Border ko bahar wale Container me rakha hai
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            //borderRadius: BorderRadius.circular(16),
+            borderRadius: _getShapeRadius(),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
             boxShadow: [
               BoxShadow(
@@ -43,7 +52,8 @@ class CalculatorButton extends StatelessWidget {
           // 2. Material widget use kiya background color aur ripple ke liye
           child: Material(
             color: bgColor, // FIX: Background color yahan shift kiya
-            borderRadius: BorderRadius.circular(16),
+            //borderRadius: BorderRadius.circular(16),
+            borderRadius: _getShapeRadius(),
             clipBehavior: Clip.antiAlias, // Taaki ripple gol corners ke bahar na nikle
             child: InkWell(
               onTap: onTap,
