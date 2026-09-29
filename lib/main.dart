@@ -183,8 +183,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double _modulo(double a, double b) => a % b;
 
   // NAYA: Local storage se history nikalna
+  // Future<void> _loadHistory() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _historyList = prefs.getStringList('calculator_history') ?? [];
+  //   });
+  // }
+
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
+
+    // YAHAN NAYI LINE ADD KI HAI: Background changes ko sync karne ke liye
+    await prefs.reload();
+
     setState(() {
       _historyList = prefs.getStringList('calculator_history') ?? [];
     });
@@ -1569,9 +1580,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 // Agar open hai toh cyan color dikhega, warna grey
                 contentColor: isHistoryOpen ? cyanColor : textGrey,
                 bgColor: isHistoryOpen ? cyanColor.withOpacity(0.1) : surfaceColor.withOpacity(0.5),
-                onTap: () {
+                onTap: () async {
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact(); // Halka sa premium vibration
+                  }
+                  if (!isHistoryOpen) {
+                    await _loadHistory();
                   }
                   setState(() {
                     isHistoryOpen = !isHistoryOpen; // NAYA: History Toggle Logic
