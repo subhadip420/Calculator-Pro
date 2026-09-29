@@ -27,16 +27,17 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadHapticsSetting(); // App khulte hi setting load hogi
+    //_loadHapticsSetting(); // App khulte hi setting load hogi
+    _loadSettings();
   }
 
   // SharedPreferences se load karne ka function
-  Future<void> _loadHapticsSetting() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-    });
-  }
+  // Future<void> _loadHapticsSetting() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
+  //   });
+  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
