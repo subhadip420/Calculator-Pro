@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPref
 import 'package:url_launcher/url_launcher.dart';
 import 'custom_action_button.dart';
 import 'custom_dialog.dart';
+import 'main.dart';
 
 // NAYA: StatefulWidget banaya taaki toggle state update ho sake
 class SettingsPage extends StatefulWidget {
@@ -15,11 +16,18 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool get isDark => appThemeNotifier.value == 'dark';
   // Main screen wale same theme colors
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
+
+  Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
+  Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
+  Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF757575);
+  Color get textColor => isDark ? Colors.white : Colors.black87;
 
   // Toggle ke liye variable
   bool _isHapticsEnabled = true; // Default ON rahega
@@ -29,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     //_loadHapticsSetting(); // App khulte hi setting load hogi
     _loadSettings();
+    _loadTheme();
   }
 
   // SharedPreferences se load karne ka function
@@ -45,6 +54,12 @@ class _SettingsPageState extends State<SettingsPage> {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
       _buttonShape = prefs.getString('button_shape') ?? 'oval';
     });
+  }
+
+  Future<void> _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    String savedTheme = prefs.getString('app_theme') ?? 'dark';
+    appThemeNotifier.value = savedTheme;
   }
 
   // SharedPreferences me save karne ka function
@@ -71,17 +86,17 @@ class _SettingsPageState extends State<SettingsPage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return Dialog(
-              backgroundColor: surfaceColor,
+              backgroundColor: surfaceColor, // Dynamic background
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Button Shape',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: textColor, // NAYA FIX: dynamic color for light/dark
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -92,15 +107,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // --- 1. ROUNDED OPTION (Pehle Oval tha) ---
+                        // --- 1. ROUNDED OPTION ---
                         GestureDetector(
                           onTap: () {
                             if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                            // 'oval' ki jagah ab 'rounded' save karenge
                             setDialogState(() => _buttonShape = 'rounded');
                             _saveButtonShape('rounded');
 
-                            // Bina Done button ke, select karte hi thodi der me auto-close hoga
                             Future.delayed(const Duration(milliseconds: 250), () {
                               if (context.mounted) Navigator.pop(context);
                             });
@@ -114,9 +127,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 height: 45,
                                 decoration: BoxDecoration(
                                   color: _buttonShape == 'rounded' ? cyanColor.withOpacity(0.2) : bgColor,
-                                  borderRadius: BorderRadius.circular(16), // Yeh Rounded Rectangle banata hai
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: _buttonShape == 'rounded' ? cyanColor : Colors.white.withOpacity(0.1),
+                                    // NAYA FIX: Colors.white ki jagah textGrey use kiya taaki light mode me bhi border dikhe
+                                    color: _buttonShape == 'rounded' ? cyanColor : textGrey.withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
@@ -124,9 +138,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               const SizedBox(height: 12),
                               // Title
                               Text(
-                                'Rounded', // Naam badal kar Rounded kar diya
+                                'Rounded',
                                 style: TextStyle(
-                                  color: _buttonShape == 'rounded' ? Colors.white : textGrey,
+                                  // NAYA FIX: Colors.white ki jagah dynamic textColor lagaya
+                                  color: _buttonShape == 'rounded' ? textColor : textGrey,
                                   fontSize: 16,
                                   fontWeight: _buttonShape == 'rounded' ? FontWeight.bold : FontWeight.w500,
                                 ),
@@ -148,7 +163,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             setDialogState(() => _buttonShape = 'circle');
                             _saveButtonShape('circle');
 
-                            // Auto-close after selection
                             Future.delayed(const Duration(milliseconds: 250), () {
                               if (context.mounted) Navigator.pop(context);
                             });
@@ -162,9 +176,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 height: 55,
                                 decoration: BoxDecoration(
                                   color: _buttonShape == 'circle' ? cyanColor.withOpacity(0.2) : bgColor,
-                                  shape: BoxShape.circle, // Yeh Circle banata hai
+                                  shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: _buttonShape == 'circle' ? cyanColor : Colors.white.withOpacity(0.1),
+                                    // NAYA FIX: Colors.white ki jagah textGrey use kiya
+                                    color: _buttonShape == 'circle' ? cyanColor : textGrey.withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
@@ -174,7 +189,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               Text(
                                 'Circle',
                                 style: TextStyle(
-                                  color: _buttonShape == 'circle' ? Colors.white : textGrey,
+                                  // NAYA FIX: Colors.white ki jagah dynamic textColor lagaya
+                                  color: _buttonShape == 'circle' ? textColor : textGrey,
                                   fontSize: 16,
                                   fontWeight: _buttonShape == 'circle' ? FontWeight.bold : FontWeight.w500,
                                 ),
@@ -184,6 +200,143 @@ class _SettingsPageState extends State<SettingsPage> {
                               Icon(
                                 _buttonShape == 'circle' ? Icons.radio_button_checked : Icons.radio_button_unchecked,
                                 color: _buttonShape == 'circle' ? cyanColor : textGrey.withOpacity(0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+  // --- NAYA: APP THEME DIALOG ---
+  void _showAppThemeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              backgroundColor: surfaceColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'App Theme',
+                      style: TextStyle(color: textColor, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 30),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // --- 1. DARK THEME OPTION ---
+                        GestureDetector(
+                          onTap: () async {
+                            if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                            setDialogState(() {}); // Dialog ka UI update
+
+                            // REAL-TIME JADOO: Notifier ko change karte hi pura app turant dark ho jayega!
+                            appThemeNotifier.value = 'dark';
+
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setString('app_theme', 'dark');
+
+                            Future.delayed(const Duration(milliseconds: 250), () {
+                              if (context.mounted) Navigator.pop(context);
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 65,
+                                height: 65,
+                                decoration: BoxDecoration(
+                                  color: isDark ? cyanColor.withOpacity(0.2) : bgColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isDark ? cyanColor : textGrey.withOpacity(0.2),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Icon(Icons.dark_mode_rounded, color: isDark ? cyanColor : textGrey, size: 30),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Dark',
+                                style: TextStyle(
+                                  color: isDark ? textColor : textGrey,
+                                  fontSize: 16,
+                                  fontWeight: isDark ? FontWeight.bold : FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Icon(
+                                isDark ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                                color: isDark ? cyanColor : textGrey.withOpacity(0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // --- 2. LIGHT THEME OPTION ---
+                        GestureDetector(
+                          onTap: () async {
+                            if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                            setDialogState(() {});
+
+                            // REAL-TIME JADOO: Notifier ko change karte hi pura app turant light ho jayega!
+                            appThemeNotifier.value = 'light';
+
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setString('app_theme', 'light');
+
+                            Future.delayed(const Duration(milliseconds: 250), () {
+                              if (context.mounted) Navigator.pop(context);
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 65,
+                                height: 65,
+                                decoration: BoxDecoration(
+                                  color: !isDark ? cyanColor.withOpacity(0.2) : bgColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: !isDark ? cyanColor : textGrey.withOpacity(0.2),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Icon(Icons.light_mode_rounded, color: !isDark ? cyanColor : textGrey, size: 30),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Light',
+                                style: TextStyle(
+                                  color: !isDark ? textColor : textGrey,
+                                  fontSize: 16,
+                                  fontWeight: !isDark ? FontWeight.bold : FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Icon(
+                                !isDark ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                                color: !isDark ? cyanColor : textGrey.withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -229,11 +382,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(width: 16), // Button aur title ke beech gap
 
                   // Title (Ab Left aligned hai)
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Settings',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: textColor,
                           fontSize: 22, // Size thoda bada kiya premium look ke liye
                           fontWeight: FontWeight.bold
                       ),
@@ -302,7 +455,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (_isHapticsEnabled) {
                           HapticFeedback.lightImpact();
                         }
-                        //_showThemeDialog();
+                        _showAppThemeDialog();
                       },
                     ),
 
@@ -356,7 +509,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.star_outline_rounded,
                       title: 'Rate Us',
                       subtitle: 'Love Calculator Pro?',
-                      iconColor: Colors.yellow,
+                      iconColor: Colors.blue,
                       onTap: () {
                         if (_isHapticsEnabled) {
                           HapticFeedback.lightImpact(); // Halka sa premium vibration
@@ -521,7 +674,7 @@ class _SettingsPageState extends State<SettingsPage> {
           decoration: BoxDecoration(
             color: surfaceColor.withOpacity(0.4), // Premium Card Background
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.black12),
           ),
           child: Row(
             children: [
@@ -536,8 +689,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                          color: Colors.white,
+                      style: TextStyle(
+                          color: textColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600
                       ),
@@ -546,7 +699,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(
                       subtitle,
                       style: TextStyle(
-                          color: textGrey.withOpacity(0.6),
+                          color: textGrey,
                           fontSize: 13
                       ),
                     ),
