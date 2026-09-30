@@ -9,7 +9,7 @@ class AppColors {
   // --- DYNAMIC COLORS (Dono themes ke hisaab se badlenge) ---
 
   static Color bgColor(BuildContext context) {
-    return isDark(context) ? const Color(0xFF0E131D) : const Color(0xFFF5F6FA);
+    return isDark(context) ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
   }
 
   static Color surfaceColor(BuildContext context) {
