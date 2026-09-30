@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'app_colors.dart';
 import 'custom_action_button.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgColor,
+      //backgroundColor: bgColor,
+      backgroundColor: AppColors.bgColor(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -24,17 +26,17 @@ class PrivacyPolicyPage extends StatelessWidget {
                 children: [
                   ActionButton(
                     icon: Icons.arrow_back_ios_new_rounded,
-                    contentColor: textGrey,
-                    bgColor: surfaceColor.withOpacity(0.5),
+                    contentColor: AppColors.textGrey(context),
+                    bgColor: AppColors.surfaceColor(context).withOpacity(AppColors.isDark(context) ? 0.5 : 1.0),
                     onTap: () {
                       Navigator.pop(context);
                     },
                   ),
                   const SizedBox(width: 16),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Privacy Policy',
-                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(color:AppColors.textColor(context), fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -50,30 +52,34 @@ class PrivacyPolicyPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSection(
+                      context,
                       '1. Introduction',
                       'SP Tech Studios built the Calculator Pro app as a Free/Commercial app. This SERVICE is provided by SP Tech Studios and is intended for use as is.',
                     ),
 
                     _buildSection(
+                      context,
                       '2. Data Collection and Use',
                       'Calculator Pro itself does not collect, store, or share any personal information directly. Your calculations and app settings (like theme and haptics) are saved locally on your device.',
                     ),
 
                     _buildSection(
+                      context,
                       '3. Third-Party Services (Ads)',
                       'To keep the app free, we use Google AdMob for advertising. AdMob may use device identifiers and cookies to serve personalized or non-personalized ads based on your location and usage.',
                     ),
 
                     _buildSection(
+                      context,
                       '4. Permissions',
                       'The app requires Internet permission to serve advertisements and Vibration permission to provide haptic feedback during typing.',
                     ),
 
                     // --- NAYA: Clickable Email ID Section ---
-                    _buildContactUsSection(),
+                    _buildContactUsSection(context),
 
                     // --- Clickable Hyperlink Section ---
-                    _buildLinkSection(),
+                    _buildLinkSection(context),
 
                     const SizedBox(height: 40),
                   ],
@@ -87,7 +93,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   }
 
   // Premium Section Builder (Normal Text ke liye)
-  Widget _buildSection(String title, String content) {
+  Widget _buildSection(BuildContext context,String title, String content) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 28.0),
       child: Column(
@@ -95,7 +101,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: cyanColor, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
           ),
           const SizedBox(height: 10),
           Text(content, style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 15, height: 1.6)),
@@ -105,7 +111,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   }
 
   // --- NAYA: Contact Us Section (Clickable Mailto) ---
-  Widget _buildContactUsSection() {
+  Widget _buildContactUsSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 28.0),
       child: Column(
@@ -113,7 +119,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Text(
             '5. Contact Us',
-            style: TextStyle(color: cyanColor, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
           ),
           const SizedBox(height: 10),
           Text(
@@ -153,13 +159,13 @@ class PrivacyPolicyPage extends StatelessWidget {
   }
 
   // Link Section Builder (Website ke liye)
-  Widget _buildLinkSection() {
+  Widget _buildLinkSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '6. More Information',
-          style: TextStyle(color: cyanColor, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
         ),
         const SizedBox(height: 10),
         Text(
