@@ -23,14 +23,24 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   bool isEvaluated = false;
 
   // Colors (Main app se match karne ke liye)
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color orangeColor = const Color(0xFFFF9500);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color orangeColor = const Color(0xFFFF9500);
+
+  String _currentTheme = 'dark';
+  bool get isDark => _currentTheme == 'dark';
+
+  Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFF5F6FA);
+  Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  Color get cyanColor => const Color(0xFF4CD7F6);
+  Color get orangeColor => const Color(0xFFFF9500);
+  Color get textColor => isDark ? Colors.white : Colors.black87;
 
   @override
   void initState() {
     super.initState();
+    _loadTheme();
     FlutterOverlayWindow.overlayListener.listen((event) {
       if (event is String) {
         try {
@@ -54,6 +64,14 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     });
 
     FlutterOverlayWindow.shareData('request_data');
+  }
+
+  Future<void> _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload(); // Ensure fresh data from main app
+    setState(() {
+      _currentTheme = prefs.getString('app_theme') ?? 'dark';
+    });
   }
 
   @override
@@ -266,7 +284,8 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                     ),
                   ),
 
-                  const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
+                  //const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
+                  Icon(Icons.drag_handle_rounded, color: isDark ? Colors.white38 : Colors.black38, size: 20),
 
                   // CLOSE BUTTON
                   GestureDetector(
@@ -334,7 +353,8 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                                 cursorWidth: 2,
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
-                                    color: isEvaluated ? Colors.white60 : Colors.white,
+                                    //color: isEvaluated ? Colors.white60 : Colors.white,
+                                    color: isEvaluated ? textColor.withOpacity(0.6) : textColor,
                                     fontSize: isEvaluated ? 14 : 18,
                                     fontWeight: isEvaluated ? FontWeight.normal : FontWeight.w500
                                 ),
@@ -351,7 +371,8 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                             result,
                             maxLines: 1,
                             style: TextStyle(
-                                color: isEvaluated ? Colors.white : Colors.white60,
+                                //color: isEvaluated ? Colors.white : Colors.white60,
+                                color: isEvaluated ? textColor : textColor.withOpacity(0.6),
                                 fontSize: isEvaluated ? 28 : 20,
                                 fontWeight: FontWeight.bold
                             ),
@@ -389,7 +410,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     return Expanded(
       child: Row(
         children: buttons.map((text) {
-          Color txtColor = Colors.white;
+          Color txtColor = textColor;
           Color bgCol = surfaceColor;
 
           if (text == 'AC') {
@@ -397,10 +418,11 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
           } else if (text == 'BACK' || text == '%') {
             txtColor = cyanColor;
           } else if (['÷', '×', '-', '+', '='].contains(text)) {
-            bgCol = orangeColor.withOpacity(0.2);
+            bgCol = orangeColor.withOpacity(0.5);
             if (text == '=') {
               bgCol = orangeColor;
-              txtColor = Colors.white;
+              //bgCol = orangeColor.withOpacity(isDark ? 0.15 : 0.20);
+              txtColor = textColor;
             }
           }
 
@@ -417,7 +439,8 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                   onTap: () => _onPress(text),
                   borderRadius: BorderRadius.circular(18),
                   splashColor: txtColor.withOpacity(0.2), // Dark mode ke liye premium splash
-                  highlightColor: Colors.white.withOpacity(0.1),
+                  //highlightColor: Colors.white.withOpacity(0.1),
+                  highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                   child: Container(
                     alignment: Alignment.center, // Center mein laane ke liye
                     // Yahan se decoration hata diya taaki ripple hide na ho
