@@ -15,6 +15,7 @@ import 'package:calculator_pro/screens/weight_mass_conversion_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'main.dart';
 import 'screens/acceleration_converter_view.dart';
 import 'screens/angle_converter_view.dart';
 import 'custom_action_button.dart';
@@ -38,10 +39,20 @@ class MenuOptions extends StatefulWidget {
 
 class _MenuOptionsState extends State<MenuOptions> {
   // Main screen wale same theme colors yahan define kiye
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
+
+  bool get isDark => appThemeNotifier.value == 'dark';
+  Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
+  Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
+  Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
+  Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
+  Color get redColor => const Color(0xFFFFB4AB);
+  Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
+  Color get white => isDark ? Colors.white : Colors.black87;
 
   // NAYA: Expand/Collapse track karne ke liye variables
   bool _isUnitExpanded = true;
@@ -385,8 +396,8 @@ class _MenuOptionsState extends State<MenuOptions> {
                 },
               ),
               const SizedBox(width: 16),
-              const Expanded(
-                child: Text('Tools & Converters', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text('Tools & Converters', style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold)),
               ),
               if (_showTopSearch) ...[
                 ActionButton(
@@ -437,8 +448,8 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Unit Converters', style: TextStyle(color: Colors.cyanAccent, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isUnitExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded, color: Colors.cyanAccent, size: 24),
+                          Text('Unit Converters', style: TextStyle(color: cyanColor, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                          Icon(_isUnitExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: cyanColor, size: 24),
                         ],
                       ),
                     ),
@@ -479,8 +490,8 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Other Tools', style: TextStyle(color: Colors.cyanAccent, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isOtherExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded, color: Colors.cyanAccent, size: 24),
+                          Text('Other Tools', style: TextStyle(color: cyanColor, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                          Icon(_isOtherExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: cyanColor, size: 24),
                         ],
                       ),
                     ),
@@ -559,7 +570,7 @@ class _MenuOptionsState extends State<MenuOptions> {
             _searchQuery = value.toLowerCase();
           });
         },
-        style: const TextStyle(color: Colors.white, fontSize: 16),
+        style: TextStyle(color: white, fontSize: 16),
         cursorColor: cyanColor,
         decoration: InputDecoration(
           hintText: 'Search',
@@ -633,9 +644,9 @@ class _MenuOptionsState extends State<MenuOptions> {
             children: [
               const Icon(Icons.star_rounded, color: Colors.amberAccent, size: 20),
               const SizedBox(width: 8),
-              const Text(
+               Text(
                 'Favorites',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
+                style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
               ),
             ],
           ),
@@ -735,7 +746,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
                     Text(subtitle, style: TextStyle(color: textGrey.withOpacity(0.6), fontSize: 13)),
