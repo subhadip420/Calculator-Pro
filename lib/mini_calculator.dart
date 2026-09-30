@@ -88,69 +88,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     await prefs.setStringList('calculator_history', history);
   }
 
-  // void _onPress(String text) {
-  //   //HapticFeedback.lightImpact();
-  //   //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
-  //   setState(() {
-  //     bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
-  //
-  //     if (text == 'AC') {
-  //       _equationController.clear();
-  //       result = "0";
-  //       isEvaluated = false; // Reset state
-  //     } else if (text == 'BACK') {
-  //       if (_equationController.text.isNotEmpty && !isEvaluated) {
-  //         _equationController.text = _equationController.text.substring(0, _equationController.text.length - 1);
-  //       }
-  //     } else if (text == '=') {
-  //       if (_equationController.text.isNotEmpty && !isEvaluated) {
-  //         isEvaluated = true; // State change
-  //
-  //         if (result != "0" && result != "Expression error") {
-  //           _saveToHistory(_equationController.text, result);
-  //         }
-  //       }
-  //     } else {
-  //       if (isEvaluated) {
-  //         if (isOperator) {
-  //           _equationController.text = result + text;
-  //         } else {
-  //
-  //           _equationController.text = text;
-  //         }
-  //         isEvaluated = false;
-  //       } else {
-  //         _equationController.text += text;
-  //       }
-  //     }
-  //     if (text != '=' && text != 'AC' && _equationController.text.isNotEmpty) {
-  //       try {
-  //         String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
-  //         Parser p = Parser();
-  //         Expression exp = p.parse(sanitized);
-  //         double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-  //         result = eval == eval.toInt()
-  //             ? eval.toInt().toString()
-  //             : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-  //       } catch (e) {
-  //         // Ignore
-  //       }
-  //     } else if (_equationController.text.isEmpty) {
-  //       result = "0";
-  //     }
-  //   });
-  //
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_scrollController.hasClients) {
-  //       _scrollController.animateTo(
-  //         _scrollController.position.maxScrollExtent,
-  //         duration: const Duration(milliseconds: 100),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
-
   void _onPress(String text) {
     setState(() {
       // 1. Cursor position nikalna (kahan par type ho raha hai)
