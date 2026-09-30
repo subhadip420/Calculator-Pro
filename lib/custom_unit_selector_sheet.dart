@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+
 class UnitSelectorSheet extends StatefulWidget {
   final String category; // 'Length', 'Weight' etc.
 
@@ -13,10 +15,10 @@ class UnitSelectorSheet extends StatefulWidget {
 }
 
 class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   // --- UPDATED MASTER DATA STORE (Group-wise) ---
   final Map<String, Map<String, List<Map<String, String>>>> unitData = {
@@ -974,7 +976,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
       height: MediaQuery.of(context).size.height * 0.80, // Height thodi aur badha di taaki cards acche se dikhein
       padding: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
-        color: surfaceColor,
+        color: AppColors.surfaceColor(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -984,7 +986,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
             width: 40,
             height: 5,
             decoration: BoxDecoration(
-              color: textGrey.withOpacity(0.3),
+              color: AppColors.textGrey(context).withOpacity(0.3),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -1019,24 +1021,24 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Container(
               decoration: BoxDecoration(
-                color: bgColor.withOpacity(0.5),
+                color: AppColors.bgColor(context).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: AppColors.textColor(context).withOpacity(0.05)),
               ),
               child: TextField(
                 controller: searchController,
                 onChanged: _filterUnits,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-                cursorColor: cyanColor,
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 16),
+                cursorColor: AppColors.cyanColor(context),
                 decoration: InputDecoration(
                   hintText: 'Search in ${widget.category}',
-                  hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
-                  prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 15),
+                  prefixIcon: Icon(Icons.search_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
 
                   // --- NAYA: Clear (X) Button Logic ---
                   suffixIcon: searchController.text.isNotEmpty
                       ? IconButton(
-                    icon: Icon(Icons.close_rounded, color: textGrey.withOpacity(0.7)),
+                    icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
                     tooltip: 'Clear search',
                     onPressed: () {
                       setState(() {
@@ -1062,7 +1064,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
                 ? Center(
               child: Text(
                 'No unit found',
-                style: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 16),
+                style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 16),
               ),
             )
                 : ListView.builder(
@@ -1087,9 +1089,9 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
     return Container(
       margin: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
-        color: bgColor.withOpacity(0.4), // Card ka background color
+        color: AppColors.bgColor(context).withOpacity(0.4), // Card ka background color
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
+        border: Border.all(color: AppColors.textColor(context).withOpacity(0.03)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1100,7 +1102,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
             child: Text(
               groupName.toUpperCase(),
               style: TextStyle(
-                color: cyanColor.withOpacity(0.8),
+                color: AppColors.cyanColor(context).withOpacity(0.8),
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
@@ -1117,16 +1119,16 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
               contentPadding: const EdgeInsets.symmetric(horizontal: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               leading: CircleAvatar(
-                backgroundColor: surfaceColor.withOpacity(0.5),
+                backgroundColor: AppColors.bgColor(context).withOpacity(0.9),
                 radius: 20,
                 child: Text(
                   unit['symbol']!,
-                  style: TextStyle(color: textGrey, fontWeight: FontWeight.bold, fontSize: 11),
+                  style: TextStyle(color: AppColors.textGrey(context), fontWeight: FontWeight.bold, fontSize: 11),
                 ),
               ),
               title: Text(
                 unit['name']!,
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w500),
               ),
             );
           }),

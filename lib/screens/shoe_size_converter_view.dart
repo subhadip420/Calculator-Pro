@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_shoe_size_selector_sheet.dart';
 import '../custom_top_bar.dart'; // Apna correct path check kar lena
 import '../custom_unit_selector_sheet.dart';
@@ -14,10 +15,10 @@ class ShoeSizeConverterView extends StatefulWidget {
 }
 
 class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
 
@@ -129,21 +130,21 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           decoration: BoxDecoration(
-            color: isSelected ? cyanColor.withOpacity(0.15) : surfaceColor.withOpacity(0.5),
+            color: isSelected ? AppColors.cyanColor(context).withOpacity(0.15) : AppColors.surfaceColor(context).withOpacity(0.5),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? cyanColor : Colors.white.withOpacity(0.05),
+              color: isSelected ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05),
               width: 1.5,
             ),
           ),
           child: Column(
             children: [
-              Icon(icon, color: isSelected ? cyanColor : textGrey, size: 24),
+              Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 24),
               const SizedBox(height: 6),
               Text(
                 title,
                 style: TextStyle(
-                  color: isSelected ? cyanColor : textGrey,
+                  color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context),
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -165,9 +166,9 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: surfaceColor.withOpacity(0.6),
+          color: AppColors.surfaceColor(context).withOpacity(0.6),
           border: Border(
-            bottom: isBottom ? BorderSide.none : BorderSide(color: Colors.white.withOpacity(0.05), width: 1),
+            bottom: isBottom ? BorderSide.none : BorderSide(color: AppColors.textColor(context).withOpacity(0.05), width: 1),
           ),
         ),
         child: Row(
@@ -176,29 +177,29 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: bgColor,
+                color: AppColors.bgColor(context),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                border: Border.all(color: AppColors.textColor(context).withOpacity(0.1)),
               ),
               alignment: Alignment.center,
               child: Text(
                 badgeText,
-                style: TextStyle(color: textGrey, fontSize: 10, fontWeight: FontWeight.bold),
+                style: TextStyle(color: AppColors.textGrey(context), fontSize: 10, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ),
             Text(
               currentValue,
-              style: TextStyle(color: cyanColor, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 8),
-            Icon(Icons.keyboard_arrow_down_rounded, color: textGrey.withOpacity(0.6), size: 20),
+            Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context).withOpacity(0.6), size: 20),
           ],
         ),
       ),
@@ -242,7 +243,7 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
                   padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                   child: Text(
                     'Common',
-                    style: TextStyle(color: textGrey.withOpacity(0.8), fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.8), fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
                 ClipRRect(
@@ -264,7 +265,7 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
                   padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                   child: Text(
                     'Other',
-                    style: TextStyle(color: textGrey.withOpacity(0.8), fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.8), fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
                 ClipRRect(

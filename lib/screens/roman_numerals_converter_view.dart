@@ -96,6 +96,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_toast.dart';
 import '../custom_top_bar.dart';
 
@@ -109,10 +110,10 @@ class RomanNumeralsConverterView extends StatefulWidget {
 }
 
 class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
@@ -290,10 +291,10 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? surfaceColor.withOpacity(0.8) : surfaceColor.withOpacity(0.3),
+          color: isActive ? AppColors.surfaceColor(context).withOpacity(0.8) : AppColors.surfaceColor(context).withOpacity(0.3),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
+            color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05),
             width: isActive ? 1.5 : 1.0,
           ),
         ),
@@ -303,7 +304,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
             Text(
               title,
               style: TextStyle(
-                color: isActive ? cyanColor : textGrey.withOpacity(0.7),
+                color: isActive ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.9),
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
@@ -317,11 +318,11 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
                 focusNode: focusNode,
                 readOnly: true,
                 showCursor: isActive,
-                cursorColor: cyanColor,
+                cursorColor: AppColors.cyanColor(context),
                 cursorWidth: 2.5,
                 scrollPhysics: const BouncingScrollPhysics(),
                 style: TextStyle(
-                  color: isActive ? Colors.white : Colors.white70,
+                  color: isActive ? AppColors.textColor(context) : AppColors.textColor(context).withOpacity(0.8),
                   fontSize: 28,
                   fontWeight: FontWeight.w400,
                   letterSpacing: fieldKey == 'rom' ? 2.0 : 1.0,
@@ -331,7 +332,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                   hintText: fieldKey == 'rom' ? 'Roman Numeral' : '0',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.1)),
+                  hintStyle: TextStyle(color: AppColors.textColor(context).withOpacity(0.1)),
                 ),
                 onTap: () {
                   if (_isHapticsEnabled && !isActive) HapticFeedback.selectionClick();
@@ -363,8 +364,8 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
 
     // Background color set karna
     Color bgCol = isAction
-        ? surfaceColor.withOpacity(0.5)
-        : (enabled ? surfaceColor.withOpacity(0.3) : surfaceColor.withOpacity(0.1));
+        ? AppColors.surfaceColor(context).withOpacity(0.5)
+        : (enabled ? AppColors.surfaceColor(context).withOpacity(0.3) : AppColors.surfaceColor(context).withOpacity(0.1));
 
     return Expanded(
       child: Material(
@@ -381,7 +382,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Ripple/Splash Animation Colors
-          splashColor: (textColor ?? cyanColor).withOpacity(0.2),
+          splashColor: (textColor ?? AppColors.cyanColor(context)).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
           child: Container(
             height: 55,
@@ -389,7 +390,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
             child: Text(
               text,
               style: TextStyle(
-                color: textColor ?? (enabled ? Colors.white : textGrey.withOpacity(0.2)),
+                color: textColor ?? (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
               ),
@@ -403,7 +404,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
   Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
     return Expanded(
       child: Material(
-        color: surfaceColor.withOpacity(0.5),
+        color: AppColors.surfaceColor(context).withOpacity(0.5),
         //borderRadius: BorderRadius.circular(14),
         borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
@@ -415,12 +416,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Icon key ke liye splash color
-          splashColor: cyanColor.withOpacity(0.2),
+          splashColor: AppColors.cyanColor(context).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
           child: Container(
             height: 55,
             alignment: Alignment.center, // Icon ko center karne ke liye
-            child: Icon(icon, color: cyanColor, size: 26),
+            child: Icon(icon, color: AppColors.cyanColor(context), size: 26),
           ),
         ),
       ),
@@ -455,7 +456,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
                   child: Text(
                     'I=1    V=5    X=10    L=50    C=100    D=500    M=1000',
                     style: TextStyle(
-                      color: textGrey.withOpacity(0.6),
+                      color: AppColors.textGrey(context).withOpacity(0.9),
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.0,
@@ -490,7 +491,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
                   _buildKey('C'), const SizedBox(width: 8),
                   _buildKey('D'), const SizedBox(width: 8),
                   _buildKey('M'), const SizedBox(width: 8),
-                  _buildKey('AC', isAction: true, textColor: cyanColor, onTap: _onClear),
+                  _buildKey('AC', isAction: true, textColor: AppColors.cyanColor(context), onTap: _onClear),
                 ],
               ),
               const SizedBox(height: 10),

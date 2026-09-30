@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_conversion_card.dart';
 import '../custom_converter_keyboard.dart';
 import '../custom_top_bar.dart';
@@ -16,10 +17,10 @@ class TimeConverterView extends StatefulWidget {
 }
 
 class _TimeConverterViewState extends State<TimeConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
@@ -323,16 +324,16 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? cyanColor.withOpacity(0.15) : Colors.transparent,
+            color: isActive ? AppColors.cyanColor(context).withOpacity(0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isActive ? cyanColor : Colors.white.withOpacity(0.05)),
+            border: Border.all(color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05)),
           ),
           child: Column(
             children: [
               Text(
                 value,
                 style: TextStyle(
-                  color: isActive ? cyanColor : Colors.white,
+                  color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context),
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
                 ),
@@ -343,7 +344,7 @@ class _TimeConverterViewState extends State<TimeConverterView> {
               Text(
                 label,
                 style: TextStyle(
-                  color: textGrey.withOpacity(isActive ? 0.9 : 0.5),
+                  color: AppColors.textGrey(context).withOpacity(isActive ? 0.9 : 0.7),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -384,10 +385,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                     decoration: BoxDecoration(
-                      color: surfaceColor.withOpacity(0.3),
+                      color: AppColors.surfaceColor(context).withOpacity(0.3),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                          color: ['d', 'hr', 'm', 's'].contains(activeField) ? cyanColor : Colors.white.withOpacity(0.05),
+                          color: ['d', 'hr', 'm', 's'].contains(activeField) ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05),
                           width: 1.5
                       ),
                     ),
@@ -398,18 +399,18 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                           padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
                           child: Text(
                             'Compound Input',
-                            style: TextStyle(color: textGrey, fontSize: 14, fontWeight: FontWeight.w500),
+                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w500),
                           ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _buildTimeBlock('Days', inputDays, 'd'),
-                            Text(':', style: TextStyle(color: textGrey.withOpacity(0.3), fontSize: 24)),
+                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
                             _buildTimeBlock('Hours', inputHours, 'hr'),
-                            Text(':', style: TextStyle(color: textGrey.withOpacity(0.3), fontSize: 24)),
+                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
                             _buildTimeBlock('Mins', inputMins, 'm'),
-                            Text(':', style: TextStyle(color: textGrey.withOpacity(0.3), fontSize: 24)),
+                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
                             _buildTimeBlock('Secs', inputSecs, 's'),
                           ],
                         ),
@@ -454,11 +455,11 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                           height: swapBtnSize,
                           width: swapBtnSize,
                           decoration: BoxDecoration(
-                            color: cyanColor,
+                            color: AppColors.cyanColor(context),
                             shape: BoxShape.circle,
-                            border: Border.all(color: bgColor, width: 4),
+                            border: Border.all(color: AppColors.bgColor(context), width: 4),
                             boxShadow: [
-                              BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                              BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
                             ],
                           ),
                           child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
@@ -482,14 +483,14 @@ class _TimeConverterViewState extends State<TimeConverterView> {
               key: ValueKey<String>(_getEquivalenceText()),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
-                color: surfaceColor.withOpacity(0.4),
+                color: AppColors.surfaceColor(context).withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: AppColors.textColor(context).withOpacity(0.05)),
               ),
               child: Text(
                 _getEquivalenceText(),
                 style: TextStyle(
-                  color: cyanColor.withOpacity(0.9),
+                  color: AppColors.cyanColor(context).withOpacity(0.9),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
