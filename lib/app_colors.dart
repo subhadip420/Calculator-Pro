@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+
+class AppColors {
+  // Theme check karne ka helper method
+  static bool isDark(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
+
+  // --- DYNAMIC COLORS (Dono themes ke hisaab se badlenge) ---
+
+  static Color bgColor(BuildContext context) {
+    return isDark(context) ? const Color(0xFF0E131D) : const Color(0xFFF5F6FA);
+  }
+
+  static Color surfaceColor(BuildContext context) {
+    return isDark(context) ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  }
+
+  static Color textGrey(BuildContext context) {
+    return isDark(context) ? const Color(0xFFDBC2AD) : const Color(0xFF757575);
+  }
+
+  static Color textColor(BuildContext context) {
+    return isDark(context) ? Colors.white : Colors.black87;
+  }
+
+  static Color operatorBgColor(BuildContext context) {
+    return isDark(context) ? Colors.orange.withOpacity(0.15) : Colors.orange.withOpacity(0.20);
+  }
+
+  static Color cyanColor(BuildContext context) {
+    return isDark(context) ? Colors.cyanAccent : Colors.cyan;
+  }
+
+  static Color orangeColor(BuildContext context) {
+    return isDark(context) ? Colors.orangeAccent : Colors.orange;
+  }
+
+  static Color redColor(BuildContext context) {
+    return isDark(context) ? Colors.redAccent : Colors.red;
+  }
+  // --- CONSTANT COLORS (Jo har theme mein same rahenge) ---
+
+  //static const Color cyanColor = Color(0xFF4CD7F6);
+  //static const Color orangeColor = Color(0xFFFF9500);
+  //tatic const Color redColor = Color(0xFFFFB4AB);
+}
