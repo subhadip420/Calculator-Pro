@@ -64,13 +64,6 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
     _toController = TextEditingController(text: toValue);
   }
 
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
-
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -233,43 +226,6 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
 
     return Column(
       children: [
-        // --- 1. TOP BAR ---
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       ActionButton(
-        //         icon: Icons.arrow_back_ios_new_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //           widget.onBack();
-        //         },
-        //       ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Acceleration',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //           // TODO: Add to favorites logic
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         // --- 1. DYNAMIC TOP BAR WITH FAVORITES ---
         CustomTopBar(
           toolId: 'acceleration', // Apne _allTools me jo ID di hai, wahi use karni hai
