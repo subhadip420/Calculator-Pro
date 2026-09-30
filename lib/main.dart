@@ -48,6 +48,11 @@ void overlayMain() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
+
+  final prefs = await SharedPreferences.getInstance();
+  String savedTheme = prefs.getString('app_theme') ?? 'dark';
+  appThemeNotifier.value = savedTheme;
+
   runApp(const CalculatorProApp());
 }
 
