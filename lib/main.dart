@@ -21,6 +21,8 @@ import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import 'mini_calculator.dart'; // NAYA IMPORT
 
+final ValueNotifier<String> appThemeNotifier = ValueNotifier('dark');
+
 @pragma("vm:entry-point")
 void overlayMain() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,17 +53,37 @@ Future<void> main() async {
 class CalculatorProApp extends StatelessWidget {
   const CalculatorProApp({super.key});
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     debugShowCheckedModeBanner: false,
+  //     title: 'Calculator Pro',
+  //     theme: ThemeData(
+  //       brightness: Brightness.dark,
+  //       scaffoldBackgroundColor: const Color(0xFF0E131D),
+  //       fontFamily: 'Inter',
+  //     ),
+  //     home: const CalculatorScreen(),
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Calculator Pro',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0E131D),
-        fontFamily: 'Inter',
-      ),
-      home: const CalculatorScreen(),
+    // NAYA: Ye poore app ko real-time update karega jab bhi theme change hogi
+    return ValueListenableBuilder<String>(
+      valueListenable: appThemeNotifier,
+      builder: (context, currentTheme, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Calculator Pro',
+          theme: ThemeData(
+            // Agar light mode hai toh Brightness.light warna dark
+            brightness: currentTheme == 'light' ? Brightness.light : Brightness.dark,
+            scaffoldBackgroundColor: currentTheme == 'light' ? const Color(0xFFF5F6FA) : const Color(0xFF0E131D),
+            fontFamily: 'Inter',
+          ),
+          home: const CalculatorScreen(),
+        );
+      },
     );
   }
 }
@@ -105,13 +127,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
 
   // Theme Colors
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color orangeColor = const Color(0xFFFF9500);
-  final Color redColor = const Color(0xFFFFB4AB);
-  final Color textGrey = const Color(0xFFDBC2AD);
-  final Color white = Colors.white;
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color orangeColor = const Color(0xFFFF9500);
+  // final Color redColor = const Color(0xFFFFB4AB);
+  // final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color white = Colors.white;
+
+  bool get isDark => appThemeNotifier.value == 'dark';
+
+  Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
+  Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
+  Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
+  Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
+  Color get redColor => const Color(0xFFFFB4AB);
+
+  // Text colors mode ke hisaab se badlenge
+  Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
+  Color get white => isDark ? Colors.white : Colors.black87;
 
   @override
   void initState() {
@@ -723,7 +758,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                   elevation: 0,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(24),
-                                                    side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                                    side: BorderSide(color: white.withOpacity(0.05)),
                                                   ),
                                                   child: Column(
                                                     children: [
@@ -740,19 +775,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                             Row(
                                                               children: [
                                                                 IconButton(
-                                                                  icon: const Icon(
+                                                                  icon: Icon(
                                                                     Icons.arrow_back_ios_new,
-                                                                    color: Colors.white,
+                                                                    color: white,
                                                                     size: 20,
                                                                   ),
                                                                   onPressed: () =>
                                                                       setState(() => isHistoryOpen = false),
                                                                 ),
                                                                 const SizedBox(width: 4),
-                                                                const Text(
+                                                                 Text(
                                                                   'History',
                                                                   style: TextStyle(
-                                                                    color: Colors.white,
+                                                                    color: white,
                                                                     fontSize: 18,
                                                                     fontWeight: FontWeight.bold,
                                                                   ),
@@ -760,7 +795,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                               ],
                                                             ),
                                                             IconButton(
-                                                              icon: Icon(Icons.delete_outline, color: redColor),
+                                                              icon: Icon(Icons.delete_outline, color: orangeColor),
                                                               onPressed: _showClearHistoryDialog,
                                                             ),
                                                           ],
@@ -854,8 +889,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                           ),
                                                                           Text(
                                                                             item['result'] ?? '',
-                                                                            style: const TextStyle(
-                                                                              color: Colors.white,
+                                                                            style: TextStyle(
+                                                                              color: white,
                                                                               fontSize: 20,
                                                                               fontWeight: FontWeight.bold,
                                                                             ),
@@ -972,7 +1007,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                   padding: const EdgeInsets.only(bottom: 8.0, right: 16.0),
                                                                   child: Icon(
                                                                     Icons.copy_all_rounded,
-                                                                    color: textGrey.withOpacity(0.5),
+                                                                    color: textGrey,
                                                                     size: 22,
                                                                   ),
                                                                 ),
@@ -1046,8 +1081,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                             ? FontWeight.w300
                                                                             : FontWeight.normal,
                                                                         color: isEvaluated
-                                                                            ? Colors.white
-                                                                            : Colors.white.withOpacity(0.8),
+                                                                            ? white
+                                                                            : white.withOpacity(0.8),
                                                                       ),
                                                                     );
                                                                   },
@@ -1215,7 +1250,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                             CalculatorButton(
                                                               text: '÷',
                                                               textColor: white,
-                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              bgColor: operatorBgColor,
                                                               fontSize: 30,
                                                               buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('÷'),
@@ -1262,7 +1297,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                             CalculatorButton(
                                                               text: '×',
                                                               textColor: white,
-                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              bgColor: operatorBgColor,
                                                               fontSize: 30,
                                                               buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('×'),
@@ -1309,7 +1344,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                             CalculatorButton(
                                                               text: '−',
                                                               textColor: white,
-                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              bgColor: operatorBgColor,
                                                               fontSize: 30,
                                                               buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('-'),
@@ -1356,7 +1391,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                             CalculatorButton(
                                                               text: '+',
                                                               textColor: white,
-                                                              bgColor: orangeColor.withOpacity(0.15),
+                                                              bgColor: operatorBgColor,
                                                               fontSize: 30,
                                                               buttonShape: _buttonShape,
                                                               onTap: () => _onKeyPress('+'),
