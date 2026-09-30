@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_action_button.dart';
 import '../custom_conversion_card.dart';
 import '../custom_converter_keyboard.dart';
 import 'package:calculator_pro/custom_unit_selector_sheet.dart';
 
-import '../custom_top_bar.dart'; // Agar path alag ho to adjust kar lena
+import '../custom_top_bar.dart';
+import '../main.dart'; // Agar path alag ho to adjust kar lena
 
 class AccelerationConverterView extends StatefulWidget {
   final VoidCallback onBack;
@@ -18,10 +20,17 @@ class AccelerationConverterView extends StatefulWidget {
 }
 
 class _AccelerationConverterViewState extends State<AccelerationConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+
+  // final Color bgColor = const Color(0xFF0E131D);
+  //   // final Color surfaceColor = const Color(0xFF1E2638);
+  //   // final Color cyanColor = const Color(0xFF4CD7F6);
+  //   // final Color textGrey = const Color(0xFFDBC2AD);
+
+  // bool get isDark => appThemeNotifier.value == 'dark';
+  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
+  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
+  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
 
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
@@ -277,11 +286,11 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
                       height: swapBtnSize,
                       width: swapBtnSize,
                       decoration: BoxDecoration(
-                        color: cyanColor,
+                        color: AppColors.cyanColor(context),
                         shape: BoxShape.circle,
-                        border: Border.all(color: bgColor, width: isShortScreen ? 3 : 4),
+                        border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                         boxShadow: [
-                          BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
                         ],
                       ),
                       child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),
@@ -302,14 +311,14 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
               key: ValueKey<String>(_getEquivalenceText()),
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: isShortScreen ? 4.0 : 6.0),
               decoration: BoxDecoration(
-                color: surfaceColor.withOpacity(0.4),
+                color: AppColors.surfaceColor(context).withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.white.withOpacity(0.05)),
               ),
               child: Text(
                 _getEquivalenceText(),
                 style: TextStyle(
-                  color: cyanColor.withOpacity(0.9),
+                  color: AppColors.cyanColor(context).withOpacity(0.9),
                   fontSize: isShortScreen ? 13 : 15,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,

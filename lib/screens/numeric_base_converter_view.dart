@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_top_bar.dart';
 
 class NumericBaseConverterView extends StatefulWidget {
@@ -13,10 +14,10 @@ class NumericBaseConverterView extends StatefulWidget {
 }
 
 class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
@@ -184,10 +185,10 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isActive ? surfaceColor.withOpacity(0.8) : surfaceColor.withOpacity(0.3),
+          color: isActive ? AppColors.surfaceColor(context).withOpacity(0.8) : AppColors.surfaceColor(context).withOpacity(0.3),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? cyanColor : Colors.white.withOpacity(0.05),
+            color: isActive ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05),
             width: isActive ? 1.5 : 1.0,
           ),
         ),
@@ -200,7 +201,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
                 Text(
                   title,
                   style: TextStyle(
-                    color: isActive ? cyanColor : textGrey.withOpacity(0.7),
+                    color: isActive ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.9),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -208,7 +209,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
                 Text(
                   baseText,
                   style: TextStyle(
-                    color: textGrey.withOpacity(0.4),
+                    color: AppColors.textGrey(context).withOpacity(0.8),
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -225,13 +226,14 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
                 controller: controller,
                 readOnly: true, // Natively keyboard open nahi hoga
                 showCursor: isActive,
-                cursorColor: cyanColor,
+                cursorColor: AppColors.cyanColor(context),
                 focusNode: focusNode,
                 cursorWidth: 2.5,
                 textAlign: TextAlign.right, // Text right side se shuru hoga
                 scrollPhysics: const BouncingScrollPhysics(),
                 style: TextStyle(
-                  color: isActive ? Colors.white : Colors.white70,
+                  // color: isActive ? Colors.white : Colors.white70,
+                  color: isActive ? AppColors.textColor(context) : AppColors.textColor(context).withOpacity(0.7),
                   fontSize: 22,
                   fontWeight: FontWeight.w400,
                   letterSpacing: fieldKey == 'bin' ? 2.0 : 1.0,
@@ -271,8 +273,8 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
 
     // Background color set karna based on state
     Color bgCol = isAction
-        ? surfaceColor.withOpacity(0.5)
-        : (enabled ? surfaceColor.withOpacity(0.3) : surfaceColor.withOpacity(0.1));
+        ? AppColors.surfaceColor(context).withOpacity(0.5)
+        : (enabled ? AppColors.surfaceColor(context).withOpacity(0.3) : AppColors.surfaceColor(context).withOpacity(0.1));
 
     return Expanded(
       child: Material(
@@ -289,7 +291,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Premium splash colors
-          splashColor: (textColor ?? cyanColor).withOpacity(0.2),
+          splashColor: (textColor ?? AppColors.cyanColor(context)).withOpacity(0.2),
           highlightColor: Colors.white.withOpacity(0.1),
           child: Container(
             height: 55,
@@ -297,7 +299,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
             child: Text(
               text,
               style: TextStyle(
-                color: textColor ?? (enabled ? Colors.white : textGrey.withOpacity(0.2)),
+                color: textColor ?? (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
               ),
@@ -311,7 +313,8 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
     return Expanded(
       child: Material(
-        color: surfaceColor.withOpacity(0.5),
+        color: AppColors.surfaceColor(context)
+            .withOpacity(0.5),
         //borderRadius: BorderRadius.circular(14),
         borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
@@ -323,12 +326,12 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Icon key (Backspace) ke liye splash color
-          splashColor: cyanColor.withOpacity(0.2),
-          highlightColor: Colors.white.withOpacity(0.1),
+          splashColor: AppColors.cyanColor(context).withOpacity(0.2),
+          highlightColor: AppColors.textColor(context).withOpacity(0.1),
           child: Container(
             height: 55,
             alignment: Alignment.center, // Icon ko center karne ke liye
-            child: Icon(icon, color: cyanColor, size: 26),
+            child: Icon(icon, color: AppColors.cyanColor(context), size: 26),
           ),
         ),
       ),
@@ -386,7 +389,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
                   _buildKey('7'), const SizedBox(width: 8),
                   _buildKey('8'), const SizedBox(width: 8),
                   _buildKey('9'), const SizedBox(width: 8),
-                  _buildKey('AC', isAction: true, textColor: cyanColor, onTap: _onClear),
+                  _buildKey('AC', isAction: true, textColor: AppColors.cyanColor(context), onTap: _onClear),
                 ],
               ),
               const SizedBox(height: 10),

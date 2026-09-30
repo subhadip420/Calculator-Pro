@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_colors.dart';
 import '../custom_action_button.dart';
 import '../custom_conversion_card.dart';
 import '../custom_converter_keyboard.dart';
@@ -19,10 +20,10 @@ class WeightMassConverterView extends StatefulWidget {
 }
 
 class _WeightMassConverterViewState extends State<WeightMassConverterView> {
-  final Color bgColor = const Color(0xFF0E131D);
-  final Color surfaceColor = const Color(0xFF1E2638);
-  final Color cyanColor = const Color(0xFF4CD7F6);
-  final Color textGrey = const Color(0xFFDBC2AD);
+  // final Color bgColor = const Color(0xFF0E131D);
+  // final Color surfaceColor = const Color(0xFF1E2638);
+  // final Color cyanColor = const Color(0xFF4CD7F6);
+  // final Color textGrey = const Color(0xFFDBC2AD);
 
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
@@ -361,11 +362,11 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
                       height: 46,
                       width: 46,
                       decoration: BoxDecoration(
-                        color: cyanColor,
+                        color: AppColors.cyanColor(context),
                         shape: BoxShape.circle,
-                        border: Border.all(color: bgColor, width: 4),
+                        border: Border.all(color: AppColors.bgColor(context), width: 4),
                         boxShadow: [
-                          BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
                         ],
                       ),
                       child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
@@ -386,14 +387,15 @@ class _WeightMassConverterViewState extends State<WeightMassConverterView> {
               key: ValueKey<String>(_getEquivalenceText()),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
               decoration: BoxDecoration(
-                color: surfaceColor.withOpacity(0.4),
+                color: AppColors.surfaceColor(context)
+                    .withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.white.withOpacity(0.05)),
               ),
               child: Text(
                 _getEquivalenceText(),
                 style: TextStyle(
-                  color: cyanColor.withOpacity(0.9),
+                  color: AppColors.cyanColor(context).withOpacity(0.9),
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
