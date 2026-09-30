@@ -87,28 +87,6 @@ class _CustomTopBarState extends State<CustomTopBar> {
     });
   }
 
-  // Premium Floating Toast (SnackBar)
-  // void _showToast(String message) {
-  //   ScaffoldMessenger.of(context).clearSnackBars(); // Purana toast hatao
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(
-  //         message,
-  //         textAlign: TextAlign.center,
-  //         style: TextStyle(color: cyanColor, fontSize: 14),
-  //       ),
-  //       backgroundColor: surfaceColor.withOpacity(0.9), // Premium look ke liye transparent cyan
-  //       behavior: SnackBarBehavior.floating,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(12),
-  //         side: BorderSide(color: surfaceColor.withOpacity(0.5), width: 1),
-  //       ),
-  //       margin: const EdgeInsets.only(bottom: 100, left: 60, right: 60), // Center me chota box
-  //       duration: const Duration(seconds: 2),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
