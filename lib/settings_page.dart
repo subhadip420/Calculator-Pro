@@ -64,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 // NAYA: Theme Selection Dialog dikhane ka function
-  void _showThemeDialog() {
+  void _showButtonShapeDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -281,15 +281,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     //   },
                     // ),
                     _buildSettingsItem(
-                      icon: Icons.palette_outlined,
-                      title: 'Theme Settings',
+                      icon: Icons.category_outlined,
+                      title: 'Button Shape',
                       subtitle: 'Change button shapes',
                       iconColor: cyanColor,
                       onTap: () {
                         if (_isHapticsEnabled) {
                           HapticFeedback.lightImpact();
                         }
-                        _showThemeDialog(); // NAYA: Calling Theme Dialog
+                        _showButtonShapeDialog();
+                      },
+                    ),
+
+                    _buildSettingsItem(
+                      icon: Icons.palette_outlined,
+                      title: 'Theme Settings',
+                      subtitle: 'Change dark or light theme',
+                      iconColor: cyanColor,
+                      onTap: () {
+                        if (_isHapticsEnabled) {
+                          HapticFeedback.lightImpact();
+                        }
+                        //_showThemeDialog();
                       },
                     ),
 
