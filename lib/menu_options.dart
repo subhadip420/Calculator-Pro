@@ -15,6 +15,7 @@ import 'package:calculator_pro/screens/weight_mass_conversion_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_colors.dart';
 import 'main.dart';
 import 'screens/acceleration_converter_view.dart';
 import 'screens/angle_converter_view.dart';
@@ -44,15 +45,15 @@ class _MenuOptionsState extends State<MenuOptions> {
   // final Color cyanColor = const Color(0xFF4CD7F6);
   // final Color textGrey = const Color(0xFFDBC2AD);
 
-  bool get isDark => appThemeNotifier.value == 'dark';
-  Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
-  Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-  Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
-  Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
-  Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
-  Color get redColor => const Color(0xFFFFB4AB);
-  Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
-  Color get white => isDark ? Colors.white : Colors.black87;
+  // bool get isDark => appThemeNotifier.value == 'dark';
+  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
+  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
+  // Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
+  // Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
+  // Color get redColor => const Color(0xFFFFB4AB);
+  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
+  // Color get white => isDark ? Colors.white : Colors.black87;
 
   // NAYA: Expand/Collapse track karne ke liye variables
   bool _isUnitExpanded = true;
@@ -355,7 +356,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       },
       child: Container(
         width: double.infinity,
-        color: bgColor,
+        color: AppColors.bgColor(context),
         child: SafeArea(
           // NAYA: Smooth transition animation ke liye AnimatedSwitcher
           child: AnimatedSwitcher(
@@ -388,8 +389,8 @@ class _MenuOptionsState extends State<MenuOptions> {
             children: [
               ActionButton(
                 icon: Icons.settings_outlined,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
+                contentColor: AppColors.textGrey(context),
+                bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
                 onTap: () {
                   if (_isHapticsEnabled) HapticFeedback.lightImpact();
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
@@ -397,21 +398,21 @@ class _MenuOptionsState extends State<MenuOptions> {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Text('Tools & Converters', style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold)),
+                child: Text('Tools & Converters', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
               ),
               if (_showTopSearch) ...[
                 ActionButton(
                   icon: Icons.search_rounded,
-                  contentColor: textGrey,
-                  bgColor: surfaceColor.withOpacity(0.5),
+                  contentColor: AppColors.textGrey(context),
+                  bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
                   onTap: () => _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
                 ),
                 const SizedBox(width: 8),
               ],
               ActionButton(
                 icon: Icons.arrow_forward_ios_rounded,
-                contentColor: textGrey,
-                bgColor: surfaceColor.withOpacity(0.5),
+                contentColor: AppColors.textGrey(context),
+                bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
                 onTap: () {
                   if (_isHapticsEnabled) HapticFeedback.lightImpact();
                   widget.onClose();
@@ -448,8 +449,8 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Unit Converters', style: TextStyle(color: cyanColor, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isUnitExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: cyanColor, size: 24),
+                          Text('Unit Converters', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                          Icon(_isUnitExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: AppColors.cyanColor(context), size: 24),
                         ],
                       ),
                     ),
@@ -462,7 +463,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                         ? Container(
                       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
                       decoration: BoxDecoration(
-                        color: surfaceColor.withOpacity(0.2),
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
@@ -490,8 +491,8 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Other Tools', style: TextStyle(color: cyanColor, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isOtherExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: cyanColor, size: 24),
+                          Text('Other Tools', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                          Icon(_isOtherExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: AppColors.cyanColor(context), size: 24),
                         ],
                       ),
                     ),
@@ -504,7 +505,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                         ? Container(
                       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
                       decoration: BoxDecoration(
-                        color: surfaceColor.withOpacity(0.2),
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
@@ -543,7 +544,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                     Padding(
                       padding: const EdgeInsets.only(top: 40.0),
                       child: Center(
-                        child: Text("No tools found for '$_searchQuery'", style: TextStyle(color: textGrey.withOpacity(0.7), fontSize: 16)),
+                        child: Text("No tools found for '$_searchQuery'", style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.7), fontSize: 16)),
                       ),
                     ),
                 ]
@@ -559,7 +560,7 @@ class _MenuOptionsState extends State<MenuOptions> {
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: surfaceColor.withOpacity(0.4),
+        color: AppColors.surfaceColor(context).withOpacity(0.4),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
@@ -570,17 +571,17 @@ class _MenuOptionsState extends State<MenuOptions> {
             _searchQuery = value.toLowerCase();
           });
         },
-        style: TextStyle(color: white, fontSize: 16),
-        cursorColor: cyanColor,
+        style: TextStyle(color: AppColors.textColor(context), fontSize: 16),
+        cursorColor: AppColors.cyanColor(context),
         decoration: InputDecoration(
           hintText: 'Search',
-          hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
-          prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
+          hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 15),
+          prefixIcon: Icon(Icons.search_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
 
           // NAYA: 'X' Clear Button Logic
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-              icon: Icon(Icons.close_rounded, color: textGrey.withOpacity(0.7)),
+              icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
               tooltip: 'Clear search', // NAYA: Tooltip add kar diya hai
               onPressed: () { // FIX: onTap ki jagah onPressed aayega
                 setState(() {
@@ -632,7 +633,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: surfaceColor.withOpacity(0.4),
+        color: AppColors.surfaceColor(context).withOpacity(0.4),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
@@ -646,7 +647,7 @@ class _MenuOptionsState extends State<MenuOptions> {
               const SizedBox(width: 8),
                Text(
                 'Favorites',
-                style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
               ),
             ],
           ),
@@ -678,7 +679,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: bgColor.withOpacity(0.6),
+                        color: AppColors.bgColor(context).withOpacity(0.6),
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
@@ -700,7 +701,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                       maxLines: 1, // Text ko ek line me rakhega
                       overflow: TextOverflow.ellipsis, // Agar lamba hua toh '...' dikhayega
                       style: TextStyle(
-                        color: textGrey.withOpacity(0.9),
+                        color: AppColors.textGrey(context).withOpacity(0.9),
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                       ),
@@ -724,7 +725,7 @@ class _MenuOptionsState extends State<MenuOptions> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
-            color: surfaceColor.withOpacity(0.4),
+            color: AppColors.surfaceColor(context).withOpacity(0.4),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
@@ -746,14 +747,14 @@ class _MenuOptionsState extends State<MenuOptions> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: TextStyle(color: textGrey.withOpacity(0.6), fontSize: 13)),
+                    Text(subtitle, style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.6), fontSize: 13)),
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
+              Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textGrey(context).withOpacity(0.3), size: 16),
             ],
           ),
         ),
