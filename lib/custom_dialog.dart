@@ -1,4 +1,172 @@
+// import 'package:flutter/material.dart';
+//
+// class CustomDialog extends StatelessWidget {
+//   // Texts
+//   final String title;
+//   final String? subtitle;
+//   final Widget? customContent;
+//   final bool isSingleButton;
+//   final String primaryButtonText;
+//   final String? secondaryButtonText;
+//
+//   // Actions
+//   final VoidCallback onPrimaryPressed;
+//   final VoidCallback? onSecondaryPressed;
+//
+//   // Customization (Colors & Font Sizes)
+//   final Color backgroundColor;
+//   final Color titleColor;
+//   final double titleFontSize;
+//   final Color subtitleColor;
+//   final double subtitleFontSize;
+//
+//   final Color primaryButtonBgColor;
+//   final Color primaryButtonTextColor;
+//   final double primaryButtonFontSize;
+//
+//   final Color secondaryButtonBgColor;
+//   final Color secondaryButtonTextColor;
+//   final double secondaryButtonFontSize;
+//
+//   const CustomDialog({
+//     super.key,
+//     required this.title,
+//     this.subtitle,
+//     this.customContent,
+//     this.isSingleButton = false,
+//     required this.primaryButtonText,
+//     this.secondaryButtonText,
+//     required this.onPrimaryPressed,
+//     this.onSecondaryPressed,
+//
+//     // Default theme colors (Aapke app ke colors se matched)
+//     this.backgroundColor = const Color(0xFF1E2638),
+//     this.titleColor = Colors.white,
+//     this.titleFontSize = 22.0,
+//     this.subtitleColor = const Color(0xFFDBC2AD),
+//     this.subtitleFontSize = 14.0,
+//
+//     this.primaryButtonBgColor = const Color(0xFF4CD7F6), // Cyan
+//     this.primaryButtonTextColor = const Color(0xFF0E131D), // Dark text for contrast
+//     this.primaryButtonFontSize = 16.0,
+//
+//     this.secondaryButtonBgColor = Colors.transparent,
+//     this.secondaryButtonTextColor = Colors.white,
+//     this.secondaryButtonFontSize = 16.0,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Dialog(
+//       backgroundColor: Colors.transparent, // Background transparent for custom shape
+//       elevation: 0,
+//       child: Container(
+//         padding: const EdgeInsets.all(24.0),
+//         decoration: BoxDecoration(
+//           color: backgroundColor,
+//           borderRadius: BorderRadius.circular(24.0),
+//           border: Border.all(color: Colors.white.withOpacity(0.05)),
+//         ),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min, // Jitna content utni height
+//           children: [
+//             // --- TITLE ---
+//             Text(
+//               title,
+//               style: TextStyle(
+//                 color: titleColor,
+//                 fontSize: titleFontSize,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//
+//             // --- SUBTITLE ---
+//             if (subtitle != null) ...[
+//               const SizedBox(height: 12),
+//               Text(
+//                 subtitle!,
+//                 style: TextStyle(
+//                   color: subtitleColor,
+//                   fontSize: subtitleFontSize,
+//                 ),
+//                 textAlign: TextAlign.center,
+//               ),
+//             ],
+//
+//             if (customContent != null) ...[
+//               const SizedBox(height: 8),
+//               customContent!, // Ye hamara clickable email yahan dikhayega
+//             ],
+//
+//             const SizedBox(height: 24),
+//
+//             // --- BUTTONS ---
+//             Row(
+//               children: [
+//                 // Secondary Button (Cancel)
+//                 if (!isSingleButton) ...[
+//                   Expanded(
+//                     child: TextButton(
+//                       onPressed: onSecondaryPressed ?? () => Navigator.of(context).pop(),
+//                       style: TextButton.styleFrom(
+//                         backgroundColor: secondaryButtonBgColor,
+//                         padding: const EdgeInsets.symmetric(vertical: 14),
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                           side: BorderSide(
+//                             color: secondaryButtonBgColor == Colors.transparent
+//                                 ? Colors.white.withOpacity(0.1) // Light border if transparent
+//                                 : Colors.transparent,
+//                           ),
+//                         ),
+//                       ),
+//                       child: Text(
+//                         secondaryButtonText ?? 'Cancel',
+//                         style: TextStyle(
+//                           color: secondaryButtonTextColor,
+//                           fontSize: secondaryButtonFontSize,
+//                           fontWeight: FontWeight.w600,
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   const SizedBox(width: 12),
+//                 ],
+//
+//                 // Primary Button (OK / Confirm)
+//                 Expanded(
+//                   child: ElevatedButton(
+//                     onPressed: onPrimaryPressed,
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: primaryButtonBgColor,
+//                       foregroundColor: primaryButtonTextColor,
+//                       elevation: 0,
+//                       padding: const EdgeInsets.symmetric(vertical: 14),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(12),
+//                       ),
+//                     ),
+//                     child: Text(
+//                       primaryButtonText,
+//                       style: TextStyle(
+//                         fontSize: primaryButtonFontSize,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
+import 'app_colors.dart'; // NAYA: AppColors import kiya
 
 class CustomDialog extends StatelessWidget {
   // Texts
@@ -13,19 +181,19 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback onPrimaryPressed;
   final VoidCallback? onSecondaryPressed;
 
-  // Customization (Colors & Font Sizes)
-  final Color backgroundColor;
-  final Color titleColor;
+  // Customization (Colors nullable kar diye taaki AppColors handle kare)
+  final Color? backgroundColor;
+  final Color? titleColor;
   final double titleFontSize;
-  final Color subtitleColor;
+  final Color? subtitleColor;
   final double subtitleFontSize;
 
-  final Color primaryButtonBgColor;
-  final Color primaryButtonTextColor;
+  final Color? primaryButtonBgColor;
+  final Color? primaryButtonTextColor;
   final double primaryButtonFontSize;
 
-  final Color secondaryButtonBgColor;
-  final Color secondaryButtonTextColor;
+  final Color? secondaryButtonBgColor;
+  final Color? secondaryButtonTextColor;
   final double secondaryButtonFontSize;
 
   const CustomDialog({
@@ -39,42 +207,60 @@ class CustomDialog extends StatelessWidget {
     required this.onPrimaryPressed,
     this.onSecondaryPressed,
 
-    // Default theme colors (Aapke app ke colors se matched)
-    this.backgroundColor = const Color(0xFF1E2638),
-    this.titleColor = Colors.white,
+    // Default null rakha hai taaki build() method AppColors se fetch kar sake
+    this.backgroundColor,
+    this.titleColor,
     this.titleFontSize = 22.0,
-    this.subtitleColor = const Color(0xFFDBC2AD),
+    this.subtitleColor,
     this.subtitleFontSize = 14.0,
 
-    this.primaryButtonBgColor = const Color(0xFF4CD7F6), // Cyan
-    this.primaryButtonTextColor = const Color(0xFF0E131D), // Dark text for contrast
+    this.primaryButtonBgColor,
+    this.primaryButtonTextColor,
     this.primaryButtonFontSize = 16.0,
 
-    this.secondaryButtonBgColor = Colors.transparent,
-    this.secondaryButtonTextColor = Colors.white,
+    this.secondaryButtonBgColor,
+    this.secondaryButtonTextColor,
     this.secondaryButtonFontSize = 16.0,
   });
 
   @override
   Widget build(BuildContext context) {
+    // --- DYNAMIC COLORS RESOLUTION ---
+    final isDark = AppColors.isDark(context);
+
+    // Agar constructor se color aaya hai to wo use hoga, warna AppColors se default
+    final Color actualBgColor = backgroundColor ?? AppColors.surfaceColor(context);
+    final Color actualTitleColor = titleColor ?? AppColors.textColor(context);
+    final Color actualSubtitleColor = subtitleColor ?? AppColors.textGrey(context);
+
+    final Color actualPrimaryBtnBg = primaryButtonBgColor ?? AppColors.cyanColor(context);
+    // Default cyan button ke upar dark text hi acha lagta hai (dono themes me)
+    final Color actualPrimaryBtnText = primaryButtonTextColor ?? const Color(0xFF0E131D);
+
+    final Color actualSecondaryBtnBg = secondaryButtonBgColor ?? Colors.transparent;
+    final Color actualSecondaryBtnText = secondaryButtonTextColor ?? AppColors.textColor(context);
+
     return Dialog(
-      backgroundColor: Colors.transparent, // Background transparent for custom shape
+      backgroundColor: Colors.transparent,
       elevation: 0,
       child: Container(
         padding: const EdgeInsets.all(24.0),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: actualBgColor,
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          // Light mode mein halka black border, Dark mein white border
+          border: Border.all(
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+          ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Jitna content utni height
+          mainAxisSize: MainAxisSize.min,
           children: [
             // --- TITLE ---
             Text(
               title,
               style: TextStyle(
-                color: titleColor,
+                color: actualTitleColor,
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.bold,
               ),
@@ -87,7 +273,7 @@ class CustomDialog extends StatelessWidget {
               Text(
                 subtitle!,
                 style: TextStyle(
-                  color: subtitleColor,
+                  color: actualSubtitleColor,
                   fontSize: subtitleFontSize,
                 ),
                 textAlign: TextAlign.center,
@@ -96,7 +282,7 @@ class CustomDialog extends StatelessWidget {
 
             if (customContent != null) ...[
               const SizedBox(height: 8),
-              customContent!, // Ye hamara clickable email yahan dikhayega
+              customContent!,
             ],
 
             const SizedBox(height: 24),
@@ -110,13 +296,14 @@ class CustomDialog extends StatelessWidget {
                     child: TextButton(
                       onPressed: onSecondaryPressed ?? () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        backgroundColor: secondaryButtonBgColor,
+                        backgroundColor: actualSecondaryBtnBg,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide(
-                            color: secondaryButtonBgColor == Colors.transparent
-                                ? Colors.white.withOpacity(0.1) // Light border if transparent
+                            color: actualSecondaryBtnBg == Colors.transparent
+                            // Transparent hai toh light/dark ke hisaab se border
+                                ? AppColors.textColor(context).withOpacity(0.1)
                                 : Colors.transparent,
                           ),
                         ),
@@ -124,7 +311,7 @@ class CustomDialog extends StatelessWidget {
                       child: Text(
                         secondaryButtonText ?? 'Cancel',
                         style: TextStyle(
-                          color: secondaryButtonTextColor,
+                          color: actualSecondaryBtnText,
                           fontSize: secondaryButtonFontSize,
                           fontWeight: FontWeight.w600,
                         ),
@@ -139,8 +326,8 @@ class CustomDialog extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onPrimaryPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryButtonBgColor,
-                      foregroundColor: primaryButtonTextColor,
+                      backgroundColor: actualPrimaryBtnBg,
+                      foregroundColor: actualPrimaryBtnText,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
