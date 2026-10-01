@@ -225,8 +225,91 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       ..load();
   }
 
+  // String _calculateResult(String eq, {bool isFinalCall = false}) {
+  //   if (eq.isEmpty) return '';
+  //
+  //   if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
+  //     return isFinalCall ? 'Expression error' : '';
+  //   }
+  //
+  //   try {
+  //     String sanitized = eq;
+  //     sanitized = sanitized.replaceAllMapped(
+  //       RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
+  //           (Match m) => '${m[1]}*${m[2]}',
+  //     );
+  //     sanitized = sanitized.replaceAllMapped(
+  //       RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
+  //           (Match m) => '${m[1]}*${m[2]}',
+  //     );
+  //     sanitized = sanitized.replaceAllMapped(
+  //       RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
+  //           (Match m) => '${m[1]}*${m[2]}',
+  //     );
+  //     sanitized = sanitized
+  //         .replaceAll('×', '*')
+  //         .replaceAll('÷', '/')
+  //         .replaceAll('π', '3.141592653589793')
+  //         .replaceAll('e', '2.718281828459045')
+  //         .replaceAll('√', 'sqrt(')
+  //         .replaceAll('²', '^2');
+  //
+  //     sanitized = sanitized
+  //         .replaceAll('log10(', '(1/2.302585092994046)*ln(')
+  //         .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
+  //
+  //     if (isDegreeMode) {
+  //       sanitized = sanitized
+  //           .replaceAll('sin(', 'sin((3.141592653589793/180)*')
+  //           .replaceAll('cos(', 'cos((3.141592653589793/180)*')
+  //           .replaceAll('tan(', 'tan((3.141592653589793/180)*');
+  //     }
+  //
+  //     int openParens = sanitized
+  //         .split('(')
+  //         .length - 1;
+  //     int closeParens = sanitized
+  //         .split(')')
+  //         .length - 1;
+  //     for (int i = 0; i < (openParens - closeParens); i++) {
+  //       sanitized += ')';
+  //     }
+  //
+  //     Parser p = Parser();
+  //     Expression exp = p.parse(sanitized);
+  //     ContextModel cm = ContextModel();
+  //     double eval = exp.evaluate(EvaluationType.REAL, cm);
+  //
+  //     // Agar math error aaye jaise (1/0)
+  //     if (eval.isNaN || eval.isInfinite) return 'Expression error';
+  //
+  //     // Negative zero fix
+  //     if (eval == -0.0) eval = 0.0;
+  //
+  //     // Output Formatting
+  //     if (eval == eval.toInt()) {
+  //       return eval.toInt().toString();
+  //     }
+  //     return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //   } catch (e) {
+  //     // 6. ERROR HANDLING
+  //     // Agar user ne = daba diya hai aur format galat hai, toh properly error dikhao
+  //     if (isFinalCall) {
+  //       return 'Expression error';
+  //     }
+  //     // Type karte waqt error aaye (jaise 5+) toh purana result hold karo
+  //     return result;
+  //   }
+  // }
+
   String _calculateResult(String eq, {bool isFinalCall = false}) {
     if (eq.isEmpty) return '';
+
+    // --- NAYA FIX 1: Trailing Operators Hatana ---
+    // Agar user ne '=' dabaya hai aur end mein '+', '-', '×', '÷' chhuta hua hai, toh usko hata do
+    if (isFinalCall) {
+      eq = eq.replaceAll(RegExp(r'[\+\-×÷\^]+$'), '');
+    }
 
     if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
       return isFinalCall ? 'Expression error' : '';
@@ -234,6 +317,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
     try {
       String sanitized = eq;
+
+      // --- NAYA FIX 2: Percentage (%) Calculation ---
+      // 500×10% ko 500*(10/100) mein smoothly convert karega
+      sanitized = sanitized.replaceAllMapped(
+          RegExp(r'([0-9.]+)\%'),
+              (Match m) => '(${m[1]}/100)'
+      );
+      sanitized = sanitized.replaceAll('%', '/100'); // Backup for any remaining %
+
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
             (Match m) => '${m[1]}*${m[2]}',
@@ -265,12 +357,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
             .replaceAll('tan(', 'tan((3.141592653589793/180)*');
       }
 
-      int openParens = sanitized
-          .split('(')
-          .length - 1;
-      int closeParens = sanitized
-          .split(')')
-          .length - 1;
+      int openParens = sanitized.split('(').length - 1;
+      int closeParens = sanitized.split(')').length - 1;
       for (int i = 0; i < (openParens - closeParens); i++) {
         sanitized += ')';
       }
@@ -280,33 +368,142 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       ContextModel cm = ContextModel();
       double eval = exp.evaluate(EvaluationType.REAL, cm);
 
-      // Agar math error aaye jaise (1/0)
       if (eval.isNaN || eval.isInfinite) return 'Expression error';
-
-      // Negative zero fix
       if (eval == -0.0) eval = 0.0;
 
-      // Output Formatting
       if (eval == eval.toInt()) {
         return eval.toInt().toString();
       }
       return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
     } catch (e) {
-      // 6. ERROR HANDLING
-      // Agar user ne = daba diya hai aur format galat hai, toh properly error dikhao
-      if (isFinalCall) {
-        return 'Expression error';
-      }
-      // Type karte waqt error aaye (jaise 5+) toh purana result hold karo
+      if (isFinalCall) return 'Expression error';
       return result;
     }
   }
 
+
+
   // --- Button Press Handler Update ---
+  // void _onKeyPress(String key) {
+  //   if (_isHapticsEnabled) {
+  //     HapticFeedback.selectionClick(); // Halka sa premium vibration
+  //   }
+  //
+  //   if (!_focusNode.hasFocus) {
+  //     FocusScope.of(context).requestFocus(_focusNode);
+  //   }
+  //
+  //   setState(() {
+  //     int cursorPos = _equationController.selection.baseOffset;
+  //     if (cursorPos < 0) cursorPos = _equationController.text.length;
+  //
+  //     // Degree aur Radian mode toggle karna (Iska output turant result me dikhega)
+  //     if (key == 'deg') {
+  //       isDegreeMode = true;
+  //       result = _calculateResult(_equationController.text);
+  //       return;
+  //     } else if (key == 'rad') {
+  //       isDegreeMode = false;
+  //       result = _calculateResult(_equationController.text);
+  //       return;
+  //     } else if (key == 'Inv') {
+  //       return;
+  //     }
+  //
+  //     bool isOperator = ['+', '-', '×', '÷', '%', '^'].contains(key);
+  //     String inputKey = key;
+  //
+  //     if (key == 'AC') {
+  //       _equationController.clear();
+  //       result = '';
+  //       isEvaluated = false;
+  //     } else if (key == 'BACK') {
+  //       if (_equationController.text.isNotEmpty && cursorPos > 0) {
+  //         String text = _equationController.text;
+  //         String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
+  //         _equationController.value = TextEditingValue(
+  //           text: newText,
+  //           selection: TextSelection.collapsed(offset: cursorPos - 1),
+  //         );
+  //         isEvaluated = false;
+  //       }
+  //     } else if (key == '=') {
+  //       if (_equationController.text.isNotEmpty) {
+  //         // NAYA LOGIC: Yahan isFinalCall ko true pass kiya hai
+  //         String finalResult = _calculateResult(_equationController.text, isFinalCall: true);
+  //         if (finalResult.isNotEmpty) {
+  //           result = finalResult;
+  //           isEvaluated = true;
+  //
+  //           if (finalResult != 'Expression error') {
+  //             _saveToHistory(_equationController.text, finalResult);
+  //             //_saveSyncState();
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       if (isEvaluated) {
+  //         if (isOperator) {
+  //           if (result == 'Expression error') {
+  //             _equationController.text = inputKey;
+  //             _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
+  //           } else {
+  //             _equationController.text = result + inputKey;
+  //             _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+  //           }
+  //         } else {
+  //           _equationController.text = inputKey;
+  //           _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
+  //         }
+  //         isEvaluated = false;
+  //       } else {
+  //         String before = _equationController.text.substring(0, cursorPos);
+  //         String after = _equationController.text.substring(cursorPos);
+  //
+  //         if (isOperator && before.isNotEmpty) {
+  //           String lastChar = before[before.length - 1];
+  //           if (['+', '-', '×', '÷', '%', '^'].contains(lastChar)) {
+  //             if (lastChar == key) {
+  //               return;
+  //             } else {
+  //               String newBefore = before.substring(0, before.length - 1) + inputKey;
+  //               _equationController.value = TextEditingValue(
+  //                 text: newBefore + after,
+  //                 selection: TextSelection.collapsed(offset: newBefore.length),
+  //               );
+  //               result = _calculateResult(_equationController.text);
+  //               return;
+  //             }
+  //           }
+  //         }
+  //
+  //         String newText = before + inputKey + after;
+  //         _equationController.value = TextEditingValue(
+  //           text: newText,
+  //           selection: TextSelection.collapsed(offset: before.length + inputKey.length),
+  //         );
+  //       }
+  //     }
+  //
+  //     // Type karte hi real-time answer calculate karna
+  //     if (key != '=' && key != 'AC') {
+  //       result = _calculateResult(_equationController.text);
+  //     }
+  //   });
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients && _equationController.selection.baseOffset == _equationController.text.length) {
+  //       _scrollController.animateTo(
+  //         _scrollController.position.maxScrollExtent,
+  //         duration: const Duration(milliseconds: 100),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
   void _onKeyPress(String key) {
-    if (_isHapticsEnabled) {
-      HapticFeedback.selectionClick(); // Halka sa premium vibration
-    }
+    if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
     if (!_focusNode.hasFocus) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -316,7 +513,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       int cursorPos = _equationController.selection.baseOffset;
       if (cursorPos < 0) cursorPos = _equationController.text.length;
 
-      // Degree aur Radian mode toggle karna (Iska output turant result me dikhega)
       if (key == 'deg') {
         isDegreeMode = true;
         result = _calculateResult(_equationController.text);
@@ -329,7 +525,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         return;
       }
 
-      bool isOperator = ['+', '-', '×', '÷', '%', '^'].contains(key);
+      // NAYA FIX 3: % ko basic operators se alag kiya taaki over-replace na ho
+      bool isBasicOperator = ['+', '-', '×', '÷', '^'].contains(key);
       String inputKey = key;
 
       if (key == 'AC') {
@@ -348,21 +545,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         }
       } else if (key == '=') {
         if (_equationController.text.isNotEmpty) {
-          // NAYA LOGIC: Yahan isFinalCall ko true pass kiya hai
           String finalResult = _calculateResult(_equationController.text, isFinalCall: true);
           if (finalResult.isNotEmpty) {
             result = finalResult;
             isEvaluated = true;
-
             if (finalResult != 'Expression error') {
               _saveToHistory(_equationController.text, finalResult);
-              //_saveSyncState();
             }
           }
         }
       } else {
+        // --- NAYA FIX 4: Double Decimal (.) Rokna ---
+        if (key == '.') {
+          String before = _equationController.text.substring(0, cursorPos);
+          RegExp regex = RegExp(r'[0-9\.]+$');
+          Match? match = regex.firstMatch(before);
+          // Agar aakhiri number mein pehle se dot hai, toh aur dot mat lagne do
+          if (match != null && match.group(0)!.contains('.')) return;
+        }
+
         if (isEvaluated) {
-          if (isOperator) {
+          if (isBasicOperator || key == '%') {
             if (result == 'Expression error') {
               _equationController.text = inputKey;
               _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
@@ -379,9 +582,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           String before = _equationController.text.substring(0, cursorPos);
           String after = _equationController.text.substring(cursorPos);
 
-          if (isOperator && before.isNotEmpty) {
+          // --- NAYA FIX 5: Operator Replacement Logic ---
+          // Sirf basic operators (+, -, ×, ÷) ek dusre ko replace karenge. '%' safe rahega.
+          if (isBasicOperator && before.isNotEmpty) {
             String lastChar = before[before.length - 1];
-            if (['+', '-', '×', '÷', '%', '^'].contains(lastChar)) {
+            if (['+', '-', '×', '÷', '^'].contains(lastChar)) {
               if (lastChar == key) {
                 return;
               } else {
@@ -404,7 +609,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         }
       }
 
-      // Type karte hi real-time answer calculate karna
       if (key != '=' && key != 'AC') {
         result = _calculateResult(_equationController.text);
       }
