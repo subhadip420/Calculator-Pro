@@ -22,19 +22,18 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
   String result = "0";
   bool isEvaluated = false;
 
-  // Colors (Main app se match karne ke liye)
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color orangeColor = const Color(0xFFFF9500);
-
   String _currentTheme = 'dark';
+
   bool get isDark => _currentTheme == 'dark';
 
   Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFF5F6FA);
+
   Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
+
   Color get cyanColor => const Color(0xFF4CD7F6);
+
   Color get orangeColor => const Color(0xFFFF9500);
+
   Color get textColor => isDark ? Colors.white : Colors.black87;
 
   @override
@@ -139,7 +138,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
       } else {
         if (isEvaluated) {
           if (isOperator) {
-            // NAYA: Agar "Expression error" aaya tha toh usko result ke sath mat jodo
             if (result == 'Expression error') {
               _equationController.text = text;
               _equationController.selection = TextSelection.collapsed(offset: text.length);
@@ -249,14 +247,12 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      //HapticFeedback.selectionClick();
-                      //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
                         'type': 'sync_to_main',
                         'eq': _equationController.text,
                         'res': result,
-                        'eval': isEvaluated
+                        'eval': isEvaluated,
                       };
                       FlutterOverlayWindow.shareData(jsonEncode(data));
                       await _saveSyncState();
@@ -284,20 +280,17 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                     ),
                   ),
 
-                  //const Icon(Icons.drag_handle_rounded, color: Colors.white38, size: 20),
                   Icon(Icons.drag_handle_rounded, color: isDark ? Colors.white38 : Colors.black38, size: 20),
 
                   // CLOSE BUTTON
                   GestureDetector(
                     onTap: () async {
-                      //HapticFeedback.selectionClick();
-                      //const MethodChannel('x-slayer/overlay').invokeMethod('haptic');
                       // 1. Live Data Bhejo
                       Map<String, dynamic> data = {
                         'type': 'sync_to_main',
                         'eq': _equationController.text,
                         'res': result,
-                        'eval': isEvaluated
+                        'eval': isEvaluated,
                       };
                       FlutterOverlayWindow.shareData(jsonEncode(data));
                       await _saveSyncState();
@@ -322,65 +315,65 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 children: [
                   Expanded(
                     flex: 2,
-                child: Listener(
-                  onPointerDown: (_) {
-                    FlutterOverlayWindow.resizeOverlay(215, 335, false).catchError((e){});
-                  },
-                  onPointerUp: (_) {
-                    FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
-                  },
-                  onPointerCancel: (_) {
-                    FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e){});
-                  },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      color: bgColor.withOpacity(0.5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: TextField(
-                                controller: _equationController,
-                                focusNode: _focusNode,
-                                scrollController: _scrollController,
-                                readOnly: true,
-                                showCursor: !isEvaluated,
-                                cursorColor: cyanColor,
-                                cursorWidth: 2,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
+                    child: Listener(
+                      onPointerDown: (_) {
+                        FlutterOverlayWindow.resizeOverlay(215, 335, false).catchError((e) {});
+                      },
+                      onPointerUp: (_) {
+                        FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e) {});
+                      },
+                      onPointerCancel: (_) {
+                        FlutterOverlayWindow.resizeOverlay(215, 335, true).catchError((e) {});
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        color: bgColor.withOpacity(0.5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: TextField(
+                                  controller: _equationController,
+                                  focusNode: _focusNode,
+                                  scrollController: _scrollController,
+                                  readOnly: true,
+                                  showCursor: !isEvaluated,
+                                  cursorColor: cyanColor,
+                                  cursorWidth: 2,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
                                     //color: isEvaluated ? Colors.white60 : Colors.white,
                                     color: isEvaluated ? textColor.withOpacity(0.6) : textColor,
                                     fontSize: isEvaluated ? 14 : 18,
-                                    fontWeight: isEvaluated ? FontWeight.normal : FontWeight.w500
-                                ),
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.zero,
+                                    fontWeight: isEvaluated ? FontWeight.normal : FontWeight.w500,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            result,
-                            maxLines: 1,
-                            style: TextStyle(
+                            const SizedBox(height: 2),
+                            Text(
+                              result,
+                              maxLines: 1,
+                              style: TextStyle(
                                 //color: isEvaluated ? Colors.white : Colors.white60,
                                 color: isEvaluated ? textColor : textColor.withOpacity(0.6),
                                 fontSize: isEvaluated ? 28 : 20,
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                ),
                   ),
                   Expanded(
                     flex: 5,
@@ -388,7 +381,7 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                       padding: const EdgeInsets.all(0.0),
                       child: Column(
                         children: [
-                          _buildRow(['AC', '%','BACK', '÷']),
+                          _buildRow(['AC', '%', 'BACK', '÷']),
                           _buildRow(['7', '8', '9', '×']),
                           _buildRow(['4', '5', '6', '-']),
                           _buildRow(['1', '2', '3', '+']),
@@ -438,7 +431,8 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                 child: InkWell(
                   onTap: () => _onPress(text),
                   borderRadius: BorderRadius.circular(18),
-                  splashColor: txtColor.withOpacity(0.2), // Dark mode ke liye premium splash
+                  splashColor: txtColor.withOpacity(0.2),
+                  // Dark mode ke liye premium splash
                   //highlightColor: Colors.white.withOpacity(0.1),
                   highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                   child: Container(
@@ -446,7 +440,10 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
                     // Yahan se decoration hata diya taaki ripple hide na ho
                     child: text == 'BACK'
                         ? Icon(Icons.backspace_outlined, color: txtColor, size: 18)
-                        : Text(text, style: TextStyle(color: txtColor, fontSize: 18, fontWeight: FontWeight.bold)),
+                        : Text(
+                            text,
+                            style: TextStyle(color: txtColor, fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ),
