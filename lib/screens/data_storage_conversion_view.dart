@@ -11,6 +11,7 @@ import '../custom_top_bar.dart';
 
 class DataStorageConverterView extends StatefulWidget {
   final VoidCallback onBack;
+
   const DataStorageConverterView({super.key, required this.onBack});
 
   @override
@@ -18,11 +19,6 @@ class DataStorageConverterView extends StatefulWidget {
 }
 
 class _DataStorageConverterViewState extends State<DataStorageConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   bool isFromSelected = true;
   String _buttonShape = 'rounded';
@@ -40,8 +36,8 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
   // --- REAL MATH LOGIC: Base unit is Byte (B) = 1.0 ---
   final Map<String, double> dataConversionRates = {
     // Base Units
-    'Bit': 0.125,           // 1 Byte = 8 Bits -> 1 Bit = 0.125 Bytes
-    'Nibble': 0.5,          // 1 Byte = 2 Nibbles -> 1 Nibble = 0.5 Bytes
+    'Bit': 0.125, // 1 Byte = 8 Bits -> 1 Bit = 0.125 Bytes
+    'Nibble': 0.5, // 1 Byte = 2 Nibbles -> 1 Nibble = 0.5 Bytes
     'Byte': 1.0,
 
     // Decimal Bytes (Multiples of 1000)
@@ -53,13 +49,12 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     'Exabyte': 1e18,
 
     // Decimal Bits (Multiples of 1000)
-    'Kilobit': 125.0,               // 1000 / 8
-    'Megabit': 125000.0,            // 10^6 / 8
-    'Gigabit': 125000000.0,         // 10^9 / 8
-    'Terabit': 125000000000.0,      // 10^12 / 8
-    'Petabit': 125000000000000.0,   // 10^15 / 8
+    'Kilobit': 125.0, // 1000 / 8
+    'Megabit': 125000.0, // 10^6 / 8
+    'Gigabit': 125000000.0, // 10^9 / 8
+    'Terabit': 125000000000.0, // 10^12 / 8
+    'Petabit': 125000000000000.0, // 10^15 / 8
     'Exabit': 125000000000000000.0, // 10^18 / 8
-
     // Binary Bytes (Multiples of 1024)
     'Kibibyte': 1024.0,
     'Mebibyte': 1048576.0,
@@ -69,12 +64,12 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     'Exbibyte': 1152921504606846976.0,
 
     // Binary Bits (Multiples of 1024)
-    'Kibibit': 128.0,                 // 1024 / 8
-    'Mebibit': 131072.0,              // 1024^2 / 8
-    'Gibibit': 134217728.0,           // 1024^3 / 8
-    'Tebibit': 137438953472.0,        // 1024^4 / 8
-    'Pebibit': 140737488355328.0,     // 1024^5 / 8
-    'Exbibit': 144115188075855872.0,  // 1024^6 / 8
+    'Kibibit': 128.0, // 1024 / 8
+    'Mebibit': 131072.0, // 1024^2 / 8
+    'Gibibit': 134217728.0, // 1024^3 / 8
+    'Tebibit': 137438953472.0, // 1024^4 / 8
+    'Pebibit': 140737488355328.0, // 1024^5 / 8
+    'Exbibit': 144115188075855872.0, // 1024^6 / 8
   };
 
   @override
@@ -92,13 +87,6 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     _toController.dispose();
     super.dispose();
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -263,115 +251,6 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       CustomTopBar(
-  //         toolId: 'data storage', // Apne _allTools me jo ID di hai, wahi use karni hai
-  //         title: 'Data Storage',
-  //         iconPath: 'assets/images/data_storage.png',
-  //         onBack: widget.onBack,
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //       ),
-  //
-  //       // --- 2. MAIN CONVERSION CARDS ---
-  //       Expanded(
-  //         child: SingleChildScrollView(
-  //           physics: const BouncingScrollPhysics(),
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-  //             child: Stack(
-  //               alignment: Alignment.center,
-  //               children: [
-  //                 Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     ConversionCard(
-  //                       isActive: isFromSelected,
-  //                       unitName: fromUnit,
-  //                       unitSymbol: fromSymbol,
-  //                       controller: _fromController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = true; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(true),
-  //                     ),
-  //                     const SizedBox(height: 16),
-  //                     ConversionCard(
-  //                       isActive: !isFromSelected,
-  //                       unitName: toUnit,
-  //                       unitSymbol: toSymbol,
-  //                       controller: _toController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = false; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(false),
-  //                     ),
-  //                   ],
-  //                 ),
-  //
-  //                 // --- SWAP BUTTON ---
-  //                 GestureDetector(
-  //                   onTap: _swapUnits,
-  //                   child: Container(
-  //                     height: 46,
-  //                     width: 46,
-  //                     decoration: BoxDecoration(
-  //                       color: cyanColor,
-  //                       shape: BoxShape.circle,
-  //                       border: Border.all(color: bgColor, width: 4),
-  //                       boxShadow: [
-  //                         BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-  //                       ],
-  //                     ),
-  //                     child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //
-  //       // --- 3. REAL-TIME EQUIVALENCE TEXT ---
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-  //         child: AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 300),
-  //           child: Container(
-  //             key: ValueKey<String>(_getEquivalenceText()),
-  //             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  //             decoration: BoxDecoration(
-  //               color: surfaceColor.withOpacity(0.4),
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(color: Colors.white.withOpacity(0.05)),
-  //             ),
-  //             child: Text(
-  //               _getEquivalenceText(),
-  //               style: TextStyle(
-  //                 color: cyanColor.withOpacity(0.9),
-  //                 fontSize: 15,
-  //                 fontWeight: FontWeight.w500,
-  //                 letterSpacing: 0.5,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 8),
-  //
-  //       // --- 4. REUSABLE KEYBOARD ---
-  //       ConverterKeyboard(
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //         onKeyPress: _onKeyPress,
-  //         onBackspace: _onBackspace,
-  //         onClear: _onClear,
-  //       ),
-  //       const SizedBox(height: 10),
-  //     ],
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     // --- NAYA FIX: Screen size detection for parent view ---
@@ -387,7 +266,8 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
     return Column(
       children: [
         CustomTopBar(
-          toolId: 'data storage', // Apne _allTools me jo ID di hai, wahi use karni hai
+          toolId: 'data storage',
+          // Apne _allTools me jo ID di hai, wahi use karni hai
           title: 'Data Storage',
           iconPath: 'assets/images/data_storage.png',
           onBack: widget.onBack,
@@ -410,7 +290,9 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
                       unitSymbol: fromSymbol,
                       controller: _fromController,
                       onTap: () {
-                        setState(() { isFromSelected = true; });
+                        setState(() {
+                          isFromSelected = true;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(true),
                     ),
@@ -423,7 +305,9 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
                       unitSymbol: toSymbol,
                       controller: _toController,
                       onTap: () {
-                        setState(() { isFromSelected = false; });
+                        setState(() {
+                          isFromSelected = false;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(false),
                     ),
@@ -433,7 +317,8 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
                 // --- SWAP BUTTON ---
                 GestureDetector(
                   onTap: _swapUnits,
-                  child: AnimatedContainer( // NAYA: Smooth resize animation
+                  child: AnimatedContainer(
+                    // NAYA: Smooth resize animation
                     duration: const Duration(milliseconds: 250),
                     height: swapBtnSize,
                     width: swapBtnSize,
@@ -442,7 +327,11 @@ class _DataStorageConverterViewState extends State<DataStorageConverterView> {
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                       boxShadow: [
-                        BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                        BoxShadow(
+                          color: AppColors.cyanColor(context).withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
                       ],
                     ),
                     child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),

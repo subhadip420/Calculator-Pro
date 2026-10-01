@@ -19,11 +19,6 @@ class TemperatureConverterView extends StatefulWidget {
 }
 
 class _TemperatureConverterViewState extends State<TemperatureConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
   bool isFromSelected = true;
@@ -42,7 +37,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   @override
   void initState() {
     super.initState();
-    //_loadHaptics();
     _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
@@ -55,12 +49,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
     super.dispose();
   }
 
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -83,35 +71,59 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
   // --- NAYA FIX: EXACT TEMPERATURE FORMULAS (Base Unit: Kelvin) ---
   double _convertToKelvin(double val, String unit) {
     switch (unit) {
-      case 'Celsius': return val + 273.15;
-      case 'Fahrenheit': return (val - 32) * 5 / 9 + 273.15;
-      case 'Kelvin': return val;
-      case 'Rankine': return val * 5 / 9;
-      case 'Electron volt': return val * 11604.525; // 1 eV ≈ 11604.5 K
-      case 'Planck temperature': return val * 1.416784e32;
-      case 'Gas mark': return (val * 14) + 121 + 273.15; // Celsius to Kelvin
-      case 'Delisle': return 373.15 - (val * 2 / 3);
-      case 'Newton': return val * 100 / 33 + 273.15;
-      case 'Réaumur': return val * 5 / 4 + 273.15;
-      case 'Rømer': return (val - 7.5) * 40 / 21 + 273.15;
-      default: return val;
+      case 'Celsius':
+        return val + 273.15;
+      case 'Fahrenheit':
+        return (val - 32) * 5 / 9 + 273.15;
+      case 'Kelvin':
+        return val;
+      case 'Rankine':
+        return val * 5 / 9;
+      case 'Electron volt':
+        return val * 11604.525; // 1 eV ≈ 11604.5 K
+      case 'Planck temperature':
+        return val * 1.416784e32;
+      case 'Gas mark':
+        return (val * 14) + 121 + 273.15; // Celsius to Kelvin
+      case 'Delisle':
+        return 373.15 - (val * 2 / 3);
+      case 'Newton':
+        return val * 100 / 33 + 273.15;
+      case 'Réaumur':
+        return val * 5 / 4 + 273.15;
+      case 'Rømer':
+        return (val - 7.5) * 40 / 21 + 273.15;
+      default:
+        return val;
     }
   }
 
   double _convertFromKelvin(double kelvin, String unit) {
     switch (unit) {
-      case 'Celsius': return kelvin - 273.15;
-      case 'Fahrenheit': return (kelvin - 273.15) * 9 / 5 + 32;
-      case 'Kelvin': return kelvin;
-      case 'Rankine': return kelvin * 9 / 5;
-      case 'Electron volt': return kelvin / 11604.525;
-      case 'Planck temperature': return kelvin / 1.416784e32;
-      case 'Gas mark': return (kelvin - 273.15 - 121) / 14;
-      case 'Delisle': return (373.15 - kelvin) * 3 / 2;
-      case 'Newton': return (kelvin - 273.15) * 33 / 100;
-      case 'Réaumur': return (kelvin - 273.15) * 4 / 5;
-      case 'Rømer': return (kelvin - 273.15) * 21 / 40 + 7.5;
-      default: return kelvin;
+      case 'Celsius':
+        return kelvin - 273.15;
+      case 'Fahrenheit':
+        return (kelvin - 273.15) * 9 / 5 + 32;
+      case 'Kelvin':
+        return kelvin;
+      case 'Rankine':
+        return kelvin * 9 / 5;
+      case 'Electron volt':
+        return kelvin / 11604.525;
+      case 'Planck temperature':
+        return kelvin / 1.416784e32;
+      case 'Gas mark':
+        return (kelvin - 273.15 - 121) / 14;
+      case 'Delisle':
+        return (373.15 - kelvin) * 3 / 2;
+      case 'Newton':
+        return (kelvin - 273.15) * 33 / 100;
+      case 'Réaumur':
+        return (kelvin - 273.15) * 4 / 5;
+      case 'Rømer':
+        return (kelvin - 273.15) * 21 / 40 + 7.5;
+      default:
+        return kelvin;
     }
   }
 
@@ -183,8 +195,10 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -207,8 +221,10 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -281,116 +297,6 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       CustomTopBar(
-  //         toolId: 'temperature',
-  //         title: 'Temperature',
-  //         iconPath: 'assets/images/temperature.png',
-  //         onBack: widget.onBack,
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //       ),
-  //
-  //       // --- 2. MAIN CONVERSION CARDS ---
-  //       Expanded(
-  //         child: SingleChildScrollView(
-  //           physics: const BouncingScrollPhysics(),
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-  //             child: Stack(
-  //               alignment: Alignment.center,
-  //               children: [
-  //                 Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     ConversionCard(
-  //                       isActive: isFromSelected,
-  //                       unitName: fromUnit,
-  //                       unitSymbol: fromSymbol,
-  //                       controller: _fromController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = true; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(true),
-  //                     ),
-  //                     const SizedBox(height: 16),
-  //                     ConversionCard(
-  //                       isActive: !isFromSelected,
-  //                       unitName: toUnit,
-  //                       unitSymbol: toSymbol,
-  //                       controller: _toController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = false; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(false),
-  //                     ),
-  //                   ],
-  //                 ),
-  //
-  //                 // --- SWAP BUTTON ---
-  //                 GestureDetector(
-  //                   onTap: _swapUnits,
-  //                   child: Container(
-  //                     height: 46,
-  //                     width: 46,
-  //                     decoration: BoxDecoration(
-  //                       color: cyanColor,
-  //                       shape: BoxShape.circle,
-  //                       border: Border.all(color: bgColor, width: 4),
-  //                       boxShadow: [
-  //                         BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-  //                       ],
-  //                     ),
-  //                     child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //
-  //       // --- 3. REAL-TIME EQUIVALENCE TEXT ---
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-  //         child: AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 300),
-  //           child: Container(
-  //             key: ValueKey<String>(_getEquivalenceText()),
-  //             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  //             decoration: BoxDecoration(
-  //               color: surfaceColor.withOpacity(0.4),
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(color: Colors.white.withOpacity(0.05)),
-  //             ),
-  //             child: Text(
-  //               _getEquivalenceText(),
-  //               style: TextStyle(
-  //                 color: cyanColor.withOpacity(0.9),
-  //                 fontSize: 15,
-  //                 fontWeight: FontWeight.w500,
-  //                 letterSpacing: 0.5,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 8),
-  //
-  //       // --- 4. REUSABLE KEYBOARD ---
-  //       ConverterKeyboard(
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //         onKeyPress: _onKeyPress,
-  //         onBackspace: _onBackspace,
-  //         onClear: _onClear,
-  //       ),
-  //       const SizedBox(height: 10),
-  //     ],
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     // --- NAYA FIX: Screen size detection for parent view ---
@@ -429,7 +335,9 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                       unitSymbol: fromSymbol,
                       controller: _fromController,
                       onTap: () {
-                        setState(() { isFromSelected = true; });
+                        setState(() {
+                          isFromSelected = true;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(true),
                     ),
@@ -442,7 +350,9 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                       unitSymbol: toSymbol,
                       controller: _toController,
                       onTap: () {
-                        setState(() { isFromSelected = false; });
+                        setState(() {
+                          isFromSelected = false;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(false),
                     ),
@@ -452,7 +362,8 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                 // --- SWAP BUTTON ---
                 GestureDetector(
                   onTap: _swapUnits,
-                  child: AnimatedContainer( // NAYA: Smooth resize animation
+                  child: AnimatedContainer(
+                    // NAYA: Smooth resize animation
                     duration: const Duration(milliseconds: 250),
                     height: swapBtnSize,
                     width: swapBtnSize,
@@ -461,7 +372,11 @@ class _TemperatureConverterViewState extends State<TemperatureConverterView> {
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                       boxShadow: [
-                        BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                        BoxShadow(
+                          color: AppColors.cyanColor(context).withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
                       ],
                     ),
                     child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),

@@ -5,7 +5,7 @@ import 'app_colors.dart';
 
 class ShoeSizeSelectorSheet extends StatelessWidget {
   final String regionName;
-  final List<String> sizes; // Yahan values (numbers) aayengi
+  final List<String> sizes;
   final int selectedIndex;
   final bool isHapticsEnabled;
 
@@ -19,9 +19,6 @@ class ShoeSizeSelectorSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final Color bgColor = const Color(0xFF0E131D);
-    // final Color cyanColor = const Color(0xFF4CD7F6);
-
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
@@ -64,7 +61,7 @@ class ShoeSizeSelectorSheet extends StatelessWidget {
                 return InkWell(
                   onTap: () {
                     if (isHapticsEnabled) HapticFeedback.selectionClick();
-                    Navigator.pop(context, index); // Yahan unit ka naam nahi, uski Position (Index) wapas bhej rahe hain
+                    Navigator.pop(context, index);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -73,7 +70,7 @@ class ShoeSizeSelectorSheet extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          sizes[index], // Yahan 7, 7.5, 8, etc. values dikhengi
+                          sizes[index],
                           style: TextStyle(
                             color: isSelected ? AppColors.cyanColor(context) : AppColors.textColor(context),
                             fontSize: 18,

@@ -67,16 +67,12 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // --- NAYA FIX: Theme check kar rahe hain taaki animation color perfect rahe ---
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       width: 44,
       height: 44,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: boxShadow,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: boxShadow),
       child: Material(
         color: bgColor,
         shape: const CircleBorder(),
@@ -89,21 +85,15 @@ class ActionButton extends StatelessWidget {
           splashColor: contentColor.withOpacity(isDark ? 0.2 : 0.15),
 
           // Dark mode me white highlight, aur Light mode me faint black highlight
-          highlightColor: isDark
-              ? Colors.white.withOpacity(0.1)
-              : Colors.black.withOpacity(0.05),
+          highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
 
           child: Center(
             child: icon != null
                 ? Icon(icon, color: contentColor, size: 20)
                 : Text(
-              text ?? '',
-              style: TextStyle(
-                color: contentColor,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+                    text ?? '',
+                    style: TextStyle(color: contentColor, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
           ),
         ),
       ),

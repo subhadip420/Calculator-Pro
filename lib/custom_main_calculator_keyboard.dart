@@ -41,13 +41,7 @@ class CalculatorButton extends StatelessWidget {
             //borderRadius: BorderRadius.circular(16),
             borderRadius: _getShapeRadius(),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              )
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))],
           ),
           // 2. Material widget use kiya background color aur ripple ke liye
           child: Material(
@@ -68,24 +62,31 @@ class CalculatorButton extends StatelessWidget {
                 // Yahan se color hata diya taaki ripple dikhe
                 child: icon != null
                     ? Icon(
-                  icon,
-                  color: textColor,
-                  size: iconSize ?? 22, // Agar iconSize diya hai to wo use hoga, warna 22
-                )
-                    : FittedBox( // FittedBox ensure karega ki text kabhi 2nd line pe na jaye
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    text ?? '',
-                    style: TextStyle(
-                      color: textColor,
-                      // Agar fontSize diya hai to wo, warna default logic
-                      fontSize: fontSize ?? ((text == 'AC' || text == '=') ? 22 : 18),
-                      fontWeight: (text == 'AC' || text == '=' || text == '÷' || text == '×' || text == '−' || text == '+')
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
+                        icon,
+                        color: textColor,
+                        size: iconSize ?? 22, // Agar iconSize diya hai to wo use hoga, warna 22
+                      )
+                    : FittedBox(
+                        // FittedBox ensure karega ki text kabhi 2nd line pe na jaye
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          text ?? '',
+                          style: TextStyle(
+                            color: textColor,
+                            // Agar fontSize diya hai to wo, warna default logic
+                            fontSize: fontSize ?? ((text == 'AC' || text == '=') ? 22 : 18),
+                            fontWeight:
+                                (text == 'AC' ||
+                                    text == '=' ||
+                                    text == '÷' ||
+                                    text == '×' ||
+                                    text == '−' ||
+                                    text == '+')
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),

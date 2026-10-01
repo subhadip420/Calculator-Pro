@@ -17,13 +17,9 @@ class TimeConverterView extends StatefulWidget {
 }
 
 class _TimeConverterViewState extends State<TimeConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // --- FOCUS STATE ---
   // activeField can be: 'd', 'hr', 'm', 's', 'from', 'to'
   String activeField = 'hr';
@@ -82,13 +78,6 @@ class _TimeConverterViewState extends State<TimeConverterView> {
     super.dispose();
   }
 
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
-
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -146,7 +135,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
 
     // Break down total seconds into Days, Hrs, Mins, Secs
     if (totalSec == 0) {
-      inputDays = '0'; inputHours = '0'; inputMins = '0'; inputSecs = '0';
+      inputDays = '0';
+      inputHours = '0';
+      inputMins = '0';
+      inputSecs = '0';
     } else {
       int days = totalSec ~/ 86400;
       double rem = totalSec % 86400;
@@ -165,19 +157,33 @@ class _TimeConverterViewState extends State<TimeConverterView> {
   // --- KEYBOARD GETTER/SETTER FOR MULTI-INPUT ---
   String _getMultiValue() {
     switch (activeField) {
-      case 'd': return inputDays;
-      case 'hr': return inputHours;
-      case 'm': return inputMins;
-      case 's': return inputSecs;
-      default: return '0';
+      case 'd':
+        return inputDays;
+      case 'hr':
+        return inputHours;
+      case 'm':
+        return inputMins;
+      case 's':
+        return inputSecs;
+      default:
+        return '0';
     }
   }
+
   void _setMultiValue(String val) {
     switch (activeField) {
-      case 'd': inputDays = val; break;
-      case 'hr': inputHours = val; break;
-      case 'm': inputMins = val; break;
-      case 's': inputSecs = val; break;
+      case 'd':
+        inputDays = val;
+        break;
+      case 'hr':
+        inputHours = val;
+        break;
+      case 'm':
+        inputMins = val;
+        break;
+      case 's':
+        inputSecs = val;
+        break;
     }
   }
 
@@ -188,8 +194,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         // Multi-input typing logic
         String currentVal = _getMultiValue();
         if (key == '.' && currentVal.contains('.')) return;
-        if (currentVal == '0' && key != '.') currentVal = key;
-        else currentVal += key;
+        if (currentVal == '0' && key != '.')
+          currentVal = key;
+        else
+          currentVal += key;
         _setMultiValue(currentVal);
         _syncFromMulti();
       } else {
@@ -212,8 +220,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         activeController.text = newText;
         activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-        if (activeField == 'from') fromValue = newText;
-        else toValue = newText;
+        if (activeField == 'from')
+          fromValue = newText;
+        else
+          toValue = newText;
 
         _syncFromStandard(activeField == 'from');
       }
@@ -240,8 +250,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         activeController.text = newText;
         activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-        if (activeField == 'from') fromValue = newText;
-        else toValue = newText;
+        if (activeField == 'from')
+          fromValue = newText;
+        else
+          toValue = newText;
 
         _syncFromStandard(activeField == 'from');
       }
@@ -250,9 +262,14 @@ class _TimeConverterViewState extends State<TimeConverterView> {
 
   void _onClear() {
     setState(() {
-      inputDays = '0'; inputHours = '0'; inputMins = '0'; inputSecs = '0';
-      fromValue = '0'; toValue = '0';
-      _fromController.text = '0'; _toController.text = '0';
+      inputDays = '0';
+      inputHours = '0';
+      inputMins = '0';
+      inputSecs = '0';
+      fromValue = '0';
+      toValue = '0';
+      _fromController.text = '0';
+      _toController.text = '0';
       _fromController.selection = const TextSelection.collapsed(offset: 1);
       _toController.selection = const TextSelection.collapsed(offset: 1);
     });
@@ -326,7 +343,9 @@ class _TimeConverterViewState extends State<TimeConverterView> {
           decoration: BoxDecoration(
             color: isActive ? AppColors.cyanColor(context).withOpacity(0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05)),
+            border: Border.all(
+              color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05),
+            ),
           ),
           child: Column(
             children: [
@@ -379,7 +398,6 @@ class _TimeConverterViewState extends State<TimeConverterView> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
               child: Column(
                 children: [
-
                   // --- 1. TOP CARD: Custom Multi-Input ---
                   Container(
                     width: double.infinity,
@@ -388,8 +406,10 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                       color: AppColors.surfaceColor(context).withOpacity(0.3),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                          color: ['d', 'hr', 'm', 's'].contains(activeField) ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05),
-                          width: 1.5
+                        color: ['d', 'hr', 'm', 's'].contains(activeField)
+                            ? AppColors.cyanColor(context)
+                            : AppColors.textColor(context).withOpacity(0.05),
+                        width: 1.5,
                       ),
                     ),
                     child: Column(
@@ -399,18 +419,31 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                           padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
                           child: Text(
                             'Compound Input',
-                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: AppColors.textGrey(context),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _buildTimeBlock('Days', inputDays, 'd'),
-                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
+                            Text(
+                              ':',
+                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
+                            ),
                             _buildTimeBlock('Hours', inputHours, 'hr'),
-                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
+                            Text(
+                              ':',
+                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
+                            ),
                             _buildTimeBlock('Mins', inputMins, 'm'),
-                            Text(':', style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24)),
+                            Text(
+                              ':',
+                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
+                            ),
                             _buildTimeBlock('Secs', inputSecs, 's'),
                           ],
                         ),
@@ -459,7 +492,11 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                             shape: BoxShape.circle,
                             border: Border.all(color: AppColors.bgColor(context), width: 4),
                             boxShadow: [
-                              BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                              BoxShadow(
+                                color: AppColors.cyanColor(context).withOpacity(0.3),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                              ),
                             ],
                           ),
                           child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
@@ -467,7 +504,6 @@ class _TimeConverterViewState extends State<TimeConverterView> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),

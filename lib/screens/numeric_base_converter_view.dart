@@ -14,13 +14,9 @@ class NumericBaseConverterView extends StatefulWidget {
 }
 
 class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // Active field: 'dec', 'bin', 'oct', 'hex'
   String activeField = 'dec';
 
@@ -38,7 +34,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   @override
   void initState() {
     super.initState();
-    //_loadHaptics();
     _loadSettings();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _decFocus.requestFocus();
@@ -57,13 +52,6 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     _hexFocus.dispose();
     super.dispose();
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -103,10 +91,22 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
       int base;
 
       switch (activeField) {
-        case 'bin': activeCtrl = _binController; base = 2; break;
-        case 'oct': activeCtrl = _octController; base = 8; break;
-        case 'hex': activeCtrl = _hexController; base = 16; break;
-        default: activeCtrl = _decController; base = 10; break;
+        case 'bin':
+          activeCtrl = _binController;
+          base = 2;
+          break;
+        case 'oct':
+          activeCtrl = _octController;
+          base = 8;
+          break;
+        case 'hex':
+          activeCtrl = _hexController;
+          base = 16;
+          break;
+        default:
+          activeCtrl = _decController;
+          base = 10;
+          break;
       }
 
       // Cursor position pata karo
@@ -136,10 +136,22 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
       int base;
 
       switch (activeField) {
-        case 'bin': activeCtrl = _binController; base = 2; break;
-        case 'oct': activeCtrl = _octController; base = 8; break;
-        case 'hex': activeCtrl = _hexController; base = 16; break;
-        default: activeCtrl = _decController; base = 10; break;
+        case 'bin':
+          activeCtrl = _binController;
+          base = 2;
+          break;
+        case 'oct':
+          activeCtrl = _octController;
+          base = 8;
+          break;
+        case 'hex':
+          activeCtrl = _hexController;
+          base = 16;
+          break;
+        default:
+          activeCtrl = _decController;
+          base = 10;
+          break;
       }
 
       int cursorPos = activeCtrl.selection.baseOffset;
@@ -171,7 +183,13 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   }
 
   // --- UI WIDGETS ---
-  Widget _buildInputCard(String title, String baseText, TextEditingController controller,FocusNode focusNode, String fieldKey) {
+  Widget _buildInputCard(
+    String title,
+    String baseText,
+    TextEditingController controller,
+    FocusNode focusNode,
+    String fieldKey,
+  ) {
     bool isActive = activeField == fieldKey;
 
     return GestureDetector(
@@ -185,7 +203,9 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.surfaceColor(context).withOpacity(0.8) : AppColors.surfaceColor(context).withOpacity(0.3),
+          color: isActive
+              ? AppColors.surfaceColor(context).withOpacity(0.8)
+              : AppColors.surfaceColor(context).withOpacity(0.3),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isActive ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05),
@@ -218,21 +238,19 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
             ),
             const SizedBox(height: 8),
 
-            // YAHAN CHANGE HUA HAI: Text ki jagah TextField add kiya hai
             Container(
               height: 35,
               alignment: Alignment.centerRight,
               child: TextField(
                 controller: controller,
-                readOnly: true, // Natively keyboard open nahi hoga
+                readOnly: true,
                 showCursor: isActive,
                 cursorColor: AppColors.cyanColor(context),
                 focusNode: focusNode,
                 cursorWidth: 2.5,
-                textAlign: TextAlign.right, // Text right side se shuru hoga
+                textAlign: TextAlign.right,
                 scrollPhysics: const BouncingScrollPhysics(),
                 style: TextStyle(
-                  // color: isActive ? Colors.white : Colors.white70,
                   color: isActive ? AppColors.textColor(context) : AppColors.textColor(context).withOpacity(0.7),
                   fontSize: 22,
                   fontWeight: FontWeight.w400,
@@ -263,9 +281,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   }
 
   BorderRadius _getShapeRadius() {
-    return _buttonShape == 'circle'
-        ? BorderRadius.circular(100)
-        : BorderRadius.circular(14);
+    return _buttonShape == 'circle' ? BorderRadius.circular(100) : BorderRadius.circular(14);
   }
 
   Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
@@ -274,7 +290,9 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
     // Background color set karna based on state
     Color bgCol = isAction
         ? AppColors.surfaceColor(context).withOpacity(0.5)
-        : (enabled ? AppColors.surfaceColor(context).withOpacity(0.3) : AppColors.surfaceColor(context).withOpacity(0.1));
+        : (enabled
+              ? AppColors.surfaceColor(context).withOpacity(0.3)
+              : AppColors.surfaceColor(context).withOpacity(0.1));
 
     return Expanded(
       child: Material(
@@ -283,11 +301,16 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
         borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias, // Ripple border ke bahar na nikle
         child: InkWell(
-          onTap: enabled ? () {
-            if (_isHapticsEnabled) HapticFeedback.selectionClick();
-            if (onTap != null) onTap();
-            else _onKeyPress(text);
-          } : null, // Agar disabled hai toh tap register nahi hoga
+          onTap: enabled
+              ? () {
+                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                  if (onTap != null)
+                    onTap();
+                  else
+                    _onKeyPress(text);
+                }
+              : null,
+          // Agar disabled hai toh tap register nahi hoga
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Premium splash colors
@@ -299,7 +322,9 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
             child: Text(
               text,
               style: TextStyle(
-                color: textColor ?? (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
+                color:
+                    textColor ??
+                    (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
               ),
@@ -313,8 +338,7 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
   Widget _buildIconKey(IconData icon, {required VoidCallback onTap}) {
     return Expanded(
       child: Material(
-        color: AppColors.surfaceColor(context)
-            .withOpacity(0.5),
+        color: AppColors.surfaceColor(context).withOpacity(0.5),
         //borderRadius: BorderRadius.circular(14),
         borderRadius: _getShapeRadius(),
         clipBehavior: Clip.antiAlias,
@@ -374,11 +398,16 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
               // HEX Row: A B C D E F
               Row(
                 children: [
-                  _buildKey('A'), const SizedBox(width: 8),
-                  _buildKey('B'), const SizedBox(width: 8),
-                  _buildKey('C'), const SizedBox(width: 8),
-                  _buildKey('D'), const SizedBox(width: 8),
-                  _buildKey('E'), const SizedBox(width: 8),
+                  _buildKey('A'),
+                  const SizedBox(width: 8),
+                  _buildKey('B'),
+                  const SizedBox(width: 8),
+                  _buildKey('C'),
+                  const SizedBox(width: 8),
+                  _buildKey('D'),
+                  const SizedBox(width: 8),
+                  _buildKey('E'),
+                  const SizedBox(width: 8),
                   _buildKey('F'),
                 ],
               ),
@@ -386,9 +415,12 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
               // Row 1: 7 8 9 AC
               Row(
                 children: [
-                  _buildKey('7'), const SizedBox(width: 8),
-                  _buildKey('8'), const SizedBox(width: 8),
-                  _buildKey('9'), const SizedBox(width: 8),
+                  _buildKey('7'),
+                  const SizedBox(width: 8),
+                  _buildKey('8'),
+                  const SizedBox(width: 8),
+                  _buildKey('9'),
+                  const SizedBox(width: 8),
                   _buildKey('AC', isAction: true, textColor: AppColors.cyanColor(context), onTap: _onClear),
                 ],
               ),
@@ -396,9 +428,12 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
               // Row 2: 4 5 6 BACKSPACE
               Row(
                 children: [
-                  _buildKey('4'), const SizedBox(width: 8),
-                  _buildKey('5'), const SizedBox(width: 8),
-                  _buildKey('6'), const SizedBox(width: 8),
+                  _buildKey('4'),
+                  const SizedBox(width: 8),
+                  _buildKey('5'),
+                  const SizedBox(width: 8),
+                  _buildKey('6'),
+                  const SizedBox(width: 8),
                   _buildIconKey(Icons.backspace_outlined, onTap: _onBackspace),
                 ],
               ),
@@ -406,9 +441,12 @@ class _NumericBaseConverterViewState extends State<NumericBaseConverterView> {
               // Row 3: 1 2 3 0
               Row(
                 children: [
-                  _buildKey('1'), const SizedBox(width: 8),
-                  _buildKey('2'), const SizedBox(width: 8),
-                  _buildKey('3'), const SizedBox(width: 8),
+                  _buildKey('1'),
+                  const SizedBox(width: 8),
+                  _buildKey('2'),
+                  const SizedBox(width: 8),
+                  _buildKey('3'),
+                  const SizedBox(width: 8),
                   _buildKey('0'),
                 ],
               ),

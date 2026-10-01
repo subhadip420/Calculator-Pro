@@ -196,9 +196,7 @@ class ConverterKeyboard extends StatelessWidget {
   }
 
   BorderRadius _getShapeRadius() {
-    return buttonShape == 'circle'
-        ? BorderRadius.circular(100)
-        : BorderRadius.circular(16);
+    return buttonShape == 'circle' ? BorderRadius.circular(100) : BorderRadius.circular(16);
   }
 
   @override
@@ -267,7 +265,7 @@ class ConverterKeyboard extends StatelessWidget {
     );
   }
 
-// 1. NUMBER KEYS WALA FUNCTION
+  // 1. NUMBER KEYS WALA FUNCTION
   Widget _buildKey(BuildContext context, String text, {required VoidCallback onTap, Color? textColor}) {
     final isDark = AppColors.isDark(context);
 

@@ -20,20 +20,9 @@ class AccelerationConverterView extends StatefulWidget {
 }
 
 class _AccelerationConverterViewState extends State<AccelerationConverterView> {
-
-  // final Color bgColor = const Color(0xFF0E131D);
-  //   // final Color surfaceColor = const Color(0xFF1E2638);
-  //   // final Color cyanColor = const Color(0xFF4CD7F6);
-  //   // final Color textGrey = const Color(0xFFDBC2AD);
-
-  // bool get isDark => appThemeNotifier.value == 'dark';
-  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
-  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
-  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // --- State Variables ---
   bool isFromSelected = true;
 
@@ -131,8 +120,10 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -152,8 +143,10 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -237,7 +230,8 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
       children: [
         // --- 1. DYNAMIC TOP BAR WITH FAVORITES ---
         CustomTopBar(
-          toolId: 'acceleration', // Apne _allTools me jo ID di hai, wahi use karni hai
+          toolId: 'acceleration',
+          // Apne _allTools me jo ID di hai, wahi use karni hai
           title: 'Acceleration',
           iconPath: 'assets/images/acceleration.png',
           onBack: widget.onBack,
@@ -290,7 +284,11 @@ class _AccelerationConverterViewState extends State<AccelerationConverterView> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                         boxShadow: [
-                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(
+                            color: AppColors.cyanColor(context).withOpacity(0.3),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
                         ],
                       ),
                       child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),

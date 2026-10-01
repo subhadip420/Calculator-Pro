@@ -11,6 +11,7 @@ import '../custom_top_bar.dart';
 
 class EnergyConverterView extends StatefulWidget {
   final VoidCallback onBack;
+
   const EnergyConverterView({super.key, required this.onBack});
 
   @override
@@ -18,11 +19,6 @@ class EnergyConverterView extends StatefulWidget {
 }
 
 class _EnergyConverterViewState extends State<EnergyConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   bool isFromSelected = true;
   String _buttonShape = 'rounded';
@@ -82,7 +78,6 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
   @override
   void initState() {
     super.initState();
-    //_loadHaptics();
     _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
@@ -94,13 +89,6 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
     _toController.dispose();
     super.dispose();
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -265,115 +253,6 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       CustomTopBar(
-  //         toolId: 'energy',
-  //         title: 'Energy',
-  //         iconPath: 'assets/images/energy.png',
-  //         onBack: widget.onBack,
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //       ),
-  //
-  //       // --- 2. MAIN CONVERSION CARDS ---
-  //       Expanded(
-  //         child: SingleChildScrollView(
-  //           physics: const BouncingScrollPhysics(),
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-  //             child: Stack(
-  //               alignment: Alignment.center,
-  //               children: [
-  //                 Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     ConversionCard(
-  //                       isActive: isFromSelected,
-  //                       unitName: fromUnit,
-  //                       unitSymbol: fromSymbol,
-  //                       controller: _fromController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = true; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(true),
-  //                     ),
-  //                     const SizedBox(height: 16),
-  //                     ConversionCard(
-  //                       isActive: !isFromSelected,
-  //                       unitName: toUnit,
-  //                       unitSymbol: toSymbol,
-  //                       controller: _toController,
-  //                       onTap: () {
-  //                         setState(() { isFromSelected = false; });
-  //                       },
-  //                       onUnitTap: () => _showUnitPicker(false),
-  //                     ),
-  //                   ],
-  //                 ),
-  //
-  //                 // --- SWAP BUTTON ---
-  //                 GestureDetector(
-  //                   onTap: _swapUnits,
-  //                   child: Container(
-  //                     height: 46,
-  //                     width: 46,
-  //                     decoration: BoxDecoration(
-  //                       color: cyanColor,
-  //                       shape: BoxShape.circle,
-  //                       border: Border.all(color: bgColor, width: 4),
-  //                       boxShadow: [
-  //                         BoxShadow(color: cyanColor.withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
-  //                       ],
-  //                     ),
-  //                     child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //
-  //       // --- 3. REAL-TIME EQUIVALENCE TEXT ---
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-  //         child: AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 300),
-  //           child: Container(
-  //             key: ValueKey<String>(_getEquivalenceText()),
-  //             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  //             decoration: BoxDecoration(
-  //               color: surfaceColor.withOpacity(0.4),
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(color: Colors.white.withOpacity(0.05)),
-  //             ),
-  //             child: Text(
-  //               _getEquivalenceText(),
-  //               style: TextStyle(
-  //                 color: cyanColor.withOpacity(0.9),
-  //                 fontSize: 15,
-  //                 fontWeight: FontWeight.w500,
-  //                 letterSpacing: 0.5,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 8),
-  //
-  //       // --- 4. REUSABLE KEYBOARD ---
-  //       ConverterKeyboard(
-  //         isHapticsEnabled: _isHapticsEnabled,
-  //         onKeyPress: _onKeyPress,
-  //         onBackspace: _onBackspace,
-  //         onClear: _onClear,
-  //       ),
-  //       const SizedBox(height: 10),
-  //     ],
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     // --- NAYA FIX: Screen size detection for parent view ---
@@ -412,7 +291,9 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
                       unitSymbol: fromSymbol,
                       controller: _fromController,
                       onTap: () {
-                        setState(() { isFromSelected = true; });
+                        setState(() {
+                          isFromSelected = true;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(true),
                     ),
@@ -425,7 +306,9 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
                       unitSymbol: toSymbol,
                       controller: _toController,
                       onTap: () {
-                        setState(() { isFromSelected = false; });
+                        setState(() {
+                          isFromSelected = false;
+                        });
                       },
                       onUnitTap: () => _showUnitPicker(false),
                     ),
@@ -435,7 +318,8 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
                 // --- SWAP BUTTON ---
                 GestureDetector(
                   onTap: _swapUnits,
-                  child: AnimatedContainer( // NAYA: Smooth resize animation
+                  child: AnimatedContainer(
+                    // NAYA: Smooth resize animation
                     duration: const Duration(milliseconds: 250),
                     height: swapBtnSize,
                     width: swapBtnSize,
@@ -444,7 +328,11 @@ class _EnergyConverterViewState extends State<EnergyConverterView> {
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                       boxShadow: [
-                        BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                        BoxShadow(
+                          color: AppColors.cyanColor(context).withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
                       ],
                     ),
                     child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),

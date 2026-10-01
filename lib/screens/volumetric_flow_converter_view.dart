@@ -19,13 +19,9 @@ class VolumetricFlowConverterView extends StatefulWidget {
 }
 
 class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // --- State Variables ---
   bool isFromSelected = true;
 
@@ -55,13 +51,6 @@ class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterVie
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -121,8 +110,10 @@ class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterVie
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -142,8 +133,10 @@ class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterVie
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -224,41 +217,6 @@ class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterVie
 
     return Column(
       children: [
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       ActionButton(
-        //         icon: Icons.arrow_back_ios_new_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //           widget.onBack();
-        //         },
-        //       ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Volumetric Flow',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         CustomTopBar(
           toolId: 'volumetric_flow',
           title: 'Volumetric Flow',
@@ -310,7 +268,11 @@ class _VolumetricFlowConverterViewState extends State<VolumetricFlowConverterVie
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                         boxShadow: [
-                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(
+                            color: AppColors.cyanColor(context).withOpacity(0.3),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
                         ],
                       ),
                       child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),

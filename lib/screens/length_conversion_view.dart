@@ -18,15 +18,9 @@ class LengthConverterView extends StatefulWidget {
 }
 
 class _LengthConverterViewState extends State<LengthConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
-  // State Variables for Conversions
-  bool isFromSelected = true; // Track karega ki kaunsa card active hai
+  bool isFromSelected = true;
 
   String fromUnit = 'Meter';
   String fromSymbol = 'm';
@@ -34,13 +28,10 @@ class _LengthConverterViewState extends State<LengthConverterView> {
 
   String toUnit = 'Foot';
   String toSymbol = 'ft';
-  String toValue = '3.28084'; // Default 1 meter in feet
-
-  // NAYA FIX: Controllers add kiye gaye hain
+  String toValue = '3.28084';
   late TextEditingController _fromController;
   late TextEditingController _toController;
 
-  // --- REAL MATH LOGIC: Har unit ki value in 1 Meter ---
   final Map<String, double> lengthConversionRates = {
     // Metric
     'Kilometer': 1000.0, 'Hectometer': 100.0, 'Decameter': 10.0, 'Meter': 1.0,
@@ -87,23 +78,13 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     'Cable Length': 185.2, 'Nautical Mile': 1852.0,
   };
 
-
   @override
   void initState() {
     super.initState();
-    //_loadHaptics();
     _loadSettings();
-    // NAYA FIX: Controllers ko initial values ke sath setup karna
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -119,8 +100,8 @@ class _LengthConverterViewState extends State<LengthConverterView> {
     // Max 8 decimal places tak dikhayega aur trailing zero hata dega
     String res = value.toStringAsPrecision(8);
     if (res.contains('.')) {
-      res = res.replaceAll(RegExp(r'0*$'), ''); // Piche ke extra 0 hatao
-      res = res.replaceAll(RegExp(r'\.$'), ''); // Agar aakhir me sirf dot bacha h to hatao
+      res = res.replaceAll(RegExp(r'0*$'), '');
+      res = res.replaceAll(RegExp(r'\.$'), '');
     }
     return res;
   }
@@ -160,7 +141,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
         newText = key;
         cursorPos = 0; // Replace ho gaya toh insert position 0
       } else {
-        // Cursor jahan hai, text wahi insert hoga
         newText = currentText.substring(0, cursorPos) + key + currentText.substring(cursorPos);
       }
 
@@ -168,8 +148,10 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -195,8 +177,10 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -227,7 +211,6 @@ class _LengthConverterViewState extends State<LengthConverterView> {
       toUnit = tempUnit;
       toSymbol = tempSymbol;
 
-      // Swap hone par calculation bhi update hogi (Value wahi rahegi par answer badlega)
       _calculateConversion();
     });
   }
@@ -254,18 +237,17 @@ class _LengthConverterViewState extends State<LengthConverterView> {
           toSymbol = selectedUnit['symbol']!;
         }
 
-        _calculateConversion(); // NAYA: Naya unit choose hote hi calculation update hoga
+        _calculateConversion();
       });
     }
   }
 
-  // --- NAYA: Exact Realtime Equivalence Generator ---
   String _getEquivalenceText() {
     double rateFrom = lengthConversionRates[fromUnit] ?? 1.0;
     double rateTo = lengthConversionRates[toUnit] ?? 1.0;
 
     if (isFromSelected) {
-      double eqValue = rateFrom / rateTo; // 1 FromUnit = X ToUnit
+      double eqValue = rateFrom / rateTo;
       return '1 $fromSymbol = ${_formatResult(eqValue)} $toSymbol';
     } else {
       double eqValue = rateTo / rateFrom; // 1 ToUnit = X FromUnit
@@ -275,15 +257,13 @@ class _LengthConverterViewState extends State<LengthConverterView> {
 
   @override
   Widget build(BuildContext context) {
-    // --- NAYA FIX: Screen size detection for parent view ---
     final screenHeight = MediaQuery.of(context).size.height;
-    final bool isShortScreen = screenHeight < 720; // Chhoti screen detect karna
+    final bool isShortScreen = screenHeight < 720;
 
-    // Dynamic sizes for perfect fit
     final double topBarPadding = isShortScreen ? 4.0 : 8.0;
     final double cardVerticalPadding = isShortScreen ? 4.0 : 10.0;
-    final double cardGap = isShortScreen ? 12.0 : 16.0; // Cards ke beech ka gap
-    final double swapBtnSize = isShortScreen ? 40.0 : 46.0; // Swap button size shrink
+    final double cardGap = isShortScreen ? 12.0 : 16.0;
+    final double swapBtnSize = isShortScreen ? 40.0 : 46.0;
     final double swapIconSize = isShortScreen ? 22.0 : 26.0;
 
     return Column(
@@ -306,7 +286,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                 alignment: Alignment.center,
                 children: [
                   Column(
-                    mainAxisSize: MainAxisSize.min, // Swap button theek center me lock hoga
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ConversionCard(
                         isActive: isFromSelected,
@@ -314,12 +294,14 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                         unitSymbol: fromSymbol,
                         controller: _fromController,
                         onTap: () {
-                          setState(() { isFromSelected = true; });
+                          setState(() {
+                            isFromSelected = true;
+                          });
                         },
                         onUnitTap: () => _showUnitPicker(true),
                       ),
 
-                      SizedBox(height: cardGap), // Dynamic gap based on screen size
+                      SizedBox(height: cardGap),
 
                       ConversionCard(
                         isActive: !isFromSelected,
@@ -327,7 +309,9 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                         unitSymbol: toSymbol,
                         controller: _toController,
                         onTap: () {
-                          setState(() { isFromSelected = false; });
+                          setState(() {
+                            isFromSelected = false;
+                          });
                         },
                         onUnitTap: () => _showUnitPicker(false),
                       ),
@@ -337,7 +321,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                   // --- SWAP BUTTON ---
                   GestureDetector(
                     onTap: _swapUnits,
-                    child: AnimatedContainer( // NAYA: Smooth resize animation
+                    child: AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
                       height: swapBtnSize,
                       width: swapBtnSize,
@@ -346,7 +330,11 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                         boxShadow: [
-                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(
+                            color: AppColors.cyanColor(context).withOpacity(0.3),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
                         ],
                       ),
                       child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),
@@ -375,7 +363,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
                 _getEquivalenceText(),
                 style: TextStyle(
                   color: AppColors.cyanColor(context).withOpacity(0.9),
-                  fontSize: isShortScreen ? 13 : 15, // Font size adjusts for small screens
+                  fontSize: isShortScreen ? 13 : 15,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
                 ),
@@ -395,7 +383,7 @@ class _LengthConverterViewState extends State<LengthConverterView> {
           onClear: _onClear,
         ),
 
-        SizedBox(height: isShortScreen ? 4 : 10), // Bottom Safe Area space
+        SizedBox(height: isShortScreen ? 4 : 10),
       ],
     );
   }

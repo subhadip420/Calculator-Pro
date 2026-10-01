@@ -110,13 +110,9 @@ class RomanNumeralsConverterView extends StatefulWidget {
 }
 
 class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // Active field: 'dec', 'rom'
   String activeField = 'dec';
 
@@ -145,13 +141,6 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     _romFocus.dispose();
     super.dispose();
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -260,7 +249,9 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
       if (activeField == 'dec' && newText.isEmpty) newText = '0';
 
       activeCtrl.text = newText;
-      activeCtrl.selection = TextSelection.collapsed(offset: newText == '0' ? (activeField == 'dec' ? 1 : 0) : cursorPos - 1);
+      activeCtrl.selection = TextSelection.collapsed(
+        offset: newText == '0' ? (activeField == 'dec' ? 1 : 0) : cursorPos - 1,
+      );
 
       _updateValues(newText, activeField);
     });
@@ -291,7 +282,9 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.surfaceColor(context).withOpacity(0.8) : AppColors.surfaceColor(context).withOpacity(0.3),
+          color: isActive
+              ? AppColors.surfaceColor(context).withOpacity(0.8)
+              : AppColors.surfaceColor(context).withOpacity(0.3),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: isActive ? AppColors.cyanColor(context) : AppColors.textColor(context).withOpacity(0.05),
@@ -354,9 +347,7 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
   }
 
   BorderRadius _getShapeRadius() {
-    return _buttonShape == 'circle'
-        ? BorderRadius.circular(100)
-        : BorderRadius.circular(14);
+    return _buttonShape == 'circle' ? BorderRadius.circular(100) : BorderRadius.circular(14);
   }
 
   Widget _buildKey(String text, {VoidCallback? onTap, bool isAction = false, Color? textColor}) {
@@ -365,7 +356,9 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
     // Background color set karna
     Color bgCol = isAction
         ? AppColors.surfaceColor(context).withOpacity(0.5)
-        : (enabled ? AppColors.surfaceColor(context).withOpacity(0.3) : AppColors.surfaceColor(context).withOpacity(0.1));
+        : (enabled
+              ? AppColors.surfaceColor(context).withOpacity(0.3)
+              : AppColors.surfaceColor(context).withOpacity(0.1));
 
     return Expanded(
       child: Material(
@@ -374,11 +367,15 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
         //borderRadius: BorderRadius.circular(14),
         clipBehavior: Clip.antiAlias, // Ripple rounded corners ke bahar na jaye
         child: InkWell(
-          onTap: enabled ? () {
-            if (_isHapticsEnabled) HapticFeedback.selectionClick();
-            if (onTap != null) onTap();
-            else _onKeyPress(text);
-          } : null,
+          onTap: enabled
+              ? () {
+                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                  if (onTap != null)
+                    onTap();
+                  else
+                    _onKeyPress(text);
+                }
+              : null,
           //borderRadius: BorderRadius.circular(14),
           borderRadius: _getShapeRadius(),
           // NAYA: Ripple/Splash Animation Colors
@@ -390,7 +387,9 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
             child: Text(
               text,
               style: TextStyle(
-                color: textColor ?? (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
+                color:
+                    textColor ??
+                    (enabled ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.2)),
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
               ),
@@ -477,9 +476,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
               // Row 1: I, V, X, L
               Row(
                 children: [
-                  _buildKey('I'), const SizedBox(width: 8),
-                  _buildKey('V'), const SizedBox(width: 8),
-                  _buildKey('X'), const SizedBox(width: 8),
+                  _buildKey('I'),
+                  const SizedBox(width: 8),
+                  _buildKey('V'),
+                  const SizedBox(width: 8),
+                  _buildKey('X'),
+                  const SizedBox(width: 8),
                   _buildKey('L'),
                 ],
               ),
@@ -488,9 +490,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
               // Row 2: C, D, M, AC
               Row(
                 children: [
-                  _buildKey('C'), const SizedBox(width: 8),
-                  _buildKey('D'), const SizedBox(width: 8),
-                  _buildKey('M'), const SizedBox(width: 8),
+                  _buildKey('C'),
+                  const SizedBox(width: 8),
+                  _buildKey('D'),
+                  const SizedBox(width: 8),
+                  _buildKey('M'),
+                  const SizedBox(width: 8),
                   _buildKey('AC', isAction: true, textColor: AppColors.cyanColor(context), onTap: _onClear),
                 ],
               ),
@@ -499,9 +504,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
               // Row 3: 7, 8, 9, Backspace
               Row(
                 children: [
-                  _buildKey('7'), const SizedBox(width: 8),
-                  _buildKey('8'), const SizedBox(width: 8),
-                  _buildKey('9'), const SizedBox(width: 8),
+                  _buildKey('7'),
+                  const SizedBox(width: 8),
+                  _buildKey('8'),
+                  const SizedBox(width: 8),
+                  _buildKey('9'),
+                  const SizedBox(width: 8),
                   _buildIconKey(Icons.backspace_outlined, onTap: _onBackspace),
                 ],
               ),
@@ -510,9 +518,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
               // Row 4: 4, 5, 6, Empty Placeholder
               Row(
                 children: [
-                  _buildKey('4'), const SizedBox(width: 8),
-                  _buildKey('5'), const SizedBox(width: 8),
-                  _buildKey('6'), const SizedBox(width: 8),
+                  _buildKey('4'),
+                  const SizedBox(width: 8),
+                  _buildKey('5'),
+                  const SizedBox(width: 8),
+                  _buildKey('6'),
+                  const SizedBox(width: 8),
                   _buildKey('00'),
                 ],
               ),
@@ -521,9 +532,12 @@ class _RomanNumeralsConverterViewState extends State<RomanNumeralsConverterView>
               // Row 5: 1, 2, 3, 0
               Row(
                 children: [
-                  _buildKey('1'), const SizedBox(width: 8),
-                  _buildKey('2'), const SizedBox(width: 8),
-                  _buildKey('3'), const SizedBox(width: 8),
+                  _buildKey('1'),
+                  const SizedBox(width: 8),
+                  _buildKey('2'),
+                  const SizedBox(width: 8),
+                  _buildKey('3'),
+                  const SizedBox(width: 8),
                   _buildKey('0'),
                 ],
               ),

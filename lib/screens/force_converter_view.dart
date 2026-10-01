@@ -19,13 +19,9 @@ class ForceConverterView extends StatefulWidget {
 }
 
 class _ForceConverterViewState extends State<ForceConverterView> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   // --- State Variables ---
   bool isFromSelected = true;
 
@@ -60,18 +56,10 @@ class _ForceConverterViewState extends State<ForceConverterView> {
   @override
   void initState() {
     super.initState();
-    //_loadHaptics();
     _loadSettings();
     _fromController = TextEditingController(text: fromValue);
     _toController = TextEditingController(text: toValue);
   }
-
-  // Future<void> _loadHaptics() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -131,8 +119,10 @@ class _ForceConverterViewState extends State<ForceConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: cursorPos + key.length);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -152,8 +142,10 @@ class _ForceConverterViewState extends State<ForceConverterView> {
       activeController.text = newText;
       activeController.selection = TextSelection.collapsed(offset: newText == '0' ? 1 : cursorPos - 1);
 
-      if (isFromSelected) fromValue = newText;
-      else toValue = newText;
+      if (isFromSelected)
+        fromValue = newText;
+      else
+        toValue = newText;
 
       _calculateConversion();
     });
@@ -235,43 +227,6 @@ class _ForceConverterViewState extends State<ForceConverterView> {
 
     return Column(
       children: [
-        // --- 1. TOP BAR ---
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: topBarPadding),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       ActionButton(
-        //         icon: Icons.arrow_back_ios_new_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.lightImpact();
-        //           widget.onBack();
-        //         },
-        //       ),
-        //       const Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //           child: Text(
-        //             'Force',
-        //             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        //           ),
-        //         ),
-        //       ),
-        //       ActionButton(
-        //         icon: Icons.star_border_rounded,
-        //         contentColor: textGrey,
-        //         bgColor: surfaceColor.withOpacity(0.5),
-        //         onTap: () {
-        //           if (_isHapticsEnabled) HapticFeedback.selectionClick();
-        //           // TODO: Add to favorites logic
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         CustomTopBar(
           toolId: 'force',
           title: 'Force',
@@ -326,7 +281,11 @@ class _ForceConverterViewState extends State<ForceConverterView> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.bgColor(context), width: isShortScreen ? 3 : 4),
                         boxShadow: [
-                          BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.3), blurRadius: 10, spreadRadius: 2),
+                          BoxShadow(
+                            color: AppColors.cyanColor(context).withOpacity(0.3),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
                         ],
                       ),
                       child: Icon(Icons.swap_vert_rounded, color: const Color(0xFF003640), size: swapIconSize),
@@ -347,8 +306,7 @@ class _ForceConverterViewState extends State<ForceConverterView> {
               key: ValueKey<String>(_getEquivalenceText()),
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: isShortScreen ? 4.0 : 6.0),
               decoration: BoxDecoration(
-                color: AppColors.surfaceColor(context)
-                    .withOpacity(0.4),
+                color: AppColors.surfaceColor(context).withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.white.withOpacity(0.05)),
               ),
