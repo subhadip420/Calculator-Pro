@@ -9,7 +9,6 @@ import 'custom_action_button.dart';
 import 'custom_dialog.dart';
 import 'main.dart';
 
-// NAYA: StatefulWidget banaya taaki toggle state update ho sake
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -19,36 +18,16 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool get isDark => appThemeNotifier.value == 'dark';
-  // Main screen wale same theme colors
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
 
-  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
-  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
-  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF757575);
-  // Color get textColor => isDark ? Colors.white : Colors.black87;
-
-  // Toggle ke liye variable
-  bool _isHapticsEnabled = true; // Default ON rahega
+  bool _isHapticsEnabled = true;
   String _buttonShape = 'rounded';
+
   @override
   void initState() {
     super.initState();
-    //_loadHapticsSetting(); // App khulte hi setting load hogi
     _loadSettings();
     _loadTheme();
   }
-
-  // SharedPreferences se load karne ka function
-  // Future<void> _loadHapticsSetting() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-  //   });
-  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -64,7 +43,6 @@ class _SettingsPageState extends State<SettingsPage> {
     appThemeNotifier.value = savedTheme;
   }
 
-  // SharedPreferences me save karne ka function
   Future<void> _toggleHaptics(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('haptics_enabled', value);
@@ -80,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _buttonShape = shape;
     });
   }
-// NAYA: Theme Selection Dialog dikhane ka function
+
   void _showButtonShapeDialog() {
     showDialog(
       context: context,
@@ -97,11 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Text(
                       'Button Shape',
-                      style: TextStyle(
-                        color: AppColors.textColor(context), // NAYA FIX: dynamic color for light/dark
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 30),
 
@@ -123,16 +97,18 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Sample Rounded Shape
                               Container(
                                 width: 65,
                                 height: 45,
                                 decoration: BoxDecoration(
-                                  color: _buttonShape == 'rounded' ? AppColors.cyanColor(context).withOpacity(0.2) : AppColors.bgColor(context),
+                                  color: _buttonShape == 'rounded'
+                                      ? AppColors.cyanColor(context).withOpacity(0.2)
+                                      : AppColors.bgColor(context),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    // NAYA FIX: Colors.white ki jagah textGrey use kiya taaki light mode me bhi border dikhe
-                                    color: _buttonShape == 'rounded' ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.2),
+                                    color: _buttonShape == 'rounded'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
@@ -142,8 +118,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               Text(
                                 'Rounded',
                                 style: TextStyle(
-                                  // NAYA FIX: Colors.white ki jagah dynamic textColor lagaya
-                                  color: _buttonShape == 'rounded' ? AppColors.textColor(context) : AppColors.textGrey(context),
+                                  color: _buttonShape == 'rounded'
+                                      ? AppColors.textColor(context)
+                                      : AppColors.textGrey(context),
                                   fontSize: 16,
                                   fontWeight: _buttonShape == 'rounded' ? FontWeight.bold : FontWeight.w500,
                                 ),
@@ -152,7 +129,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               // Radio Button
                               Icon(
                                 _buttonShape == 'rounded' ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                color: _buttonShape == 'rounded' ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                color: _buttonShape == 'rounded'
+                                    ? AppColors.cyanColor(context)
+                                    : AppColors.textGrey(context).withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -172,16 +151,19 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Sample Circle Shape
                               Container(
                                 width: 55,
                                 height: 55,
                                 decoration: BoxDecoration(
-                                  color: _buttonShape == 'circle' ? AppColors.cyanColor(context).withOpacity(0.2) : AppColors.bgColor(context),
+                                  color: _buttonShape == 'circle'
+                                      ? AppColors.cyanColor(context).withOpacity(0.2)
+                                      : AppColors.bgColor(context),
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     // NAYA FIX: Colors.white ki jagah textGrey use kiya
-                                    color: _buttonShape == 'circle' ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.2),
+                                    color: _buttonShape == 'circle'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
@@ -191,8 +173,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               Text(
                                 'Circle',
                                 style: TextStyle(
-                                  // NAYA FIX: Colors.white ki jagah dynamic textColor lagaya
-                                  color: _buttonShape == 'circle' ? AppColors.textColor(context) : AppColors.textGrey(context),
+                                  color: _buttonShape == 'circle'
+                                      ? AppColors.textColor(context)
+                                      : AppColors.textGrey(context),
                                   fontSize: 16,
                                   fontWeight: _buttonShape == 'circle' ? FontWeight.bold : FontWeight.w500,
                                 ),
@@ -201,7 +184,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               // Radio Button
                               Icon(
                                 _buttonShape == 'circle' ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                color: _buttonShape == 'circle' ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                color: _buttonShape == 'circle'
+                                    ? AppColors.cyanColor(context)
+                                    : AppColors.textGrey(context).withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -218,6 +203,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
+
   // --- NAYA: APP THEME DIALOG ---
   void _showAppThemeDialog() {
     showDialog(
@@ -246,15 +232,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         GestureDetector(
                           onTap: () async {
                             if (_isHapticsEnabled) HapticFeedback.selectionClick();
-
-                            setDialogState(() {}); // Dialog ka UI update
-
-                            // REAL-TIME JADOO: Notifier ko change karte hi pura app turant dark ho jayega!
+                            setDialogState(() {});
                             appThemeNotifier.value = 'dark';
-
                             final prefs = await SharedPreferences.getInstance();
                             await prefs.setString('app_theme', 'dark');
-
                             Future.delayed(const Duration(milliseconds: 250), () {
                               if (context.mounted) Navigator.pop(context);
                             });
@@ -266,14 +247,22 @@ class _SettingsPageState extends State<SettingsPage> {
                                 width: 65,
                                 height: 65,
                                 decoration: BoxDecoration(
-                                  color: isDark ? AppColors.cyanColor(context).withOpacity(0.2) : AppColors.bgColor(context),
+                                  color: isDark
+                                      ? AppColors.cyanColor(context).withOpacity(0.2)
+                                      : AppColors.bgColor(context),
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.2),
+                                    color: isDark
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
-                                child: Icon(Icons.dark_mode_rounded, color: isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 30),
+                                child: Icon(
+                                  Icons.dark_mode_rounded,
+                                  color: isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                  size: 30,
+                                ),
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -287,7 +276,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               const SizedBox(height: 8),
                               Icon(
                                 isDark ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                color: isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                color: isDark
+                                    ? AppColors.cyanColor(context)
+                                    : AppColors.textGrey(context).withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -317,14 +308,22 @@ class _SettingsPageState extends State<SettingsPage> {
                                 width: 65,
                                 height: 65,
                                 decoration: BoxDecoration(
-                                  color: !isDark ? AppColors.cyanColor(context).withOpacity(0.2) : AppColors.bgColor(context),
+                                  color: !isDark
+                                      ? AppColors.cyanColor(context).withOpacity(0.2)
+                                      : AppColors.bgColor(context),
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: !isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.2),
+                                    color: !isDark
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.2),
                                     width: 2,
                                   ),
                                 ),
-                                child: Icon(Icons.light_mode_rounded, color: !isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 30),
+                                child: Icon(
+                                  Icons.light_mode_rounded,
+                                  color: !isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                  size: 30,
+                                ),
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -338,7 +337,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               const SizedBox(height: 8),
                               Icon(
                                 !isDark ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                color: !isDark ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                color: !isDark
+                                    ? AppColors.cyanColor(context)
+                                    : AppColors.textGrey(context).withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -375,23 +376,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
                     onTap: () {
                       if (_isHapticsEnabled) {
-                        HapticFeedback.lightImpact(); // Halka sa premium vibration
+                        HapticFeedback.lightImpact();
                       }
                       Navigator.pop(context);
                     },
                   ),
 
-                  const SizedBox(width: 16), // Button aur title ke beech gap
+                  const SizedBox(width: 16),
 
                   // Title (Ab Left aligned hai)
                   Expanded(
                     child: Text(
                       'Settings',
-                      style: TextStyle(
-                          color: AppColors.textColor(context),
-                          fontSize: 22, // Size thoda bada kiya premium look ke liye
-                          fontWeight: FontWeight.bold
-                      ),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -406,35 +403,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // _buildSettingsItem(
-                    //   icon: Icons.palette_outlined,
-                    //   title: 'Theme Settings',
-                    //   subtitle: 'Change button colors & look',
-                    //   iconColor: cyanColor,
-                    //   onTap: () {
-                    //     if (_isHapticsEnabled) {
-                    //       HapticFeedback.lightImpact(); // Halka sa premium vibration
-                    //     }
-                    //     // "Coming Soon" Dialog
-                    //     showDialog(
-                    //       context: context,
-                    //       builder: (BuildContext context) {
-                    //         return CustomDialog(
-                    //           title: 'Coming Soon!',
-                    //           subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                    //           isSingleButton: true,
-                    //           primaryButtonText: 'Okay',
-                    //           onPrimaryPressed: () {
-                    //             if (_isHapticsEnabled) {
-                    //               HapticFeedback.selectionClick(); // Halka sa premium vibration
-                    //             }
-                    //             Navigator.of(context).pop();
-                    //           },
-                    //         );
-                    //       },
-                    //     );
-                    //   },
-                    // ),
                     _buildSettingsItem(
                       icon: Icons.category_outlined,
                       title: 'Button Shape',
@@ -461,10 +429,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
 
-                    // NAYA: Haptics option with Toggle Button
                     _buildSettingsItem(
                       icon: Icons.vibration_rounded,
-                      title: 'Haptic Feedback', // Sound hata diya
+                      title: 'Haptic Feedback',
+                      // Sound hata diya
                       subtitle: 'Enable vibration on tap',
                       iconColor: AppColors.orangeColor(context),
                       // Custom trailing widget (Switch) bheja
@@ -481,37 +449,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.share_rounded,
                       title: 'Share App',
                       subtitle: 'Share Calculator Pro with friends',
-                      iconColor: AppColors.blueColor(context), // Share ke liye blue color
-                      // onTap: () {
-                      //   if (_isHapticsEnabled) {
-                      //     HapticFeedback.lightImpact(); // Halka sa premium vibration
-                      //   }
-                      //   // "Coming Soon" Dialog
-                      //   showDialog(
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return CustomDialog(
-                      //         title: 'Coming Soon!',
-                      //         subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                      //         isSingleButton: true,
-                      //         primaryButtonText: 'Okay',
-                      //         onPrimaryPressed: () {
-                      //           if (_isHapticsEnabled) {
-                      //             HapticFeedback.selectionClick(); // Halka sa premium vibration
-                      //           }
-                      //           Navigator.of(context).pop();
-                      //         },
-                      //       );
-                      //     },
-                      //   );
-                      // },
+                      iconColor: AppColors.blueColor(context),
+
                       onTap: () {
-                        // Haptic feedback (Vibration)
                         if (_isHapticsEnabled) {
                           HapticFeedback.lightImpact();
                         }
-
-                        // NAYA FIX: Dialog ki jagah direct share function call hoga
                         _shareApp();
                       },
                     ),
@@ -521,35 +464,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: 'Rate Us',
                       subtitle: 'Love Calculator Pro?',
                       iconColor: AppColors.blueColor(context),
-                      // onTap: () {
-                      //   if (_isHapticsEnabled) {
-                      //     HapticFeedback.lightImpact(); // Halka sa premium vibration
-                      //   }
-                      //   // "Coming Soon" Dialog
-                      //   showDialog(
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return CustomDialog(
-                      //         title: 'Coming Soon!',
-                      //         subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                      //         isSingleButton: true,
-                      //         primaryButtonText: 'Okay',
-                      //         onPrimaryPressed: () {
-                      //           if (_isHapticsEnabled) {
-                      //             HapticFeedback.selectionClick(); // Halka sa premium vibration
-                      //           }
-                      //           Navigator.of(context).pop();
-                      //         },
-                      //       );
-                      //     },
-                      //   );
-                      // },
+
                       onTap: () {
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
-
-                        // NAYA FIX: Dialog ki jagah direct Play Store open hoga
                         _rateApp();
                       },
                     ),
@@ -561,14 +480,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       iconColor: AppColors.greenColor(context),
                       onTap: () {
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return CustomDialog(
                               title: 'Support & Feedback',
-                              subtitle: 'We would love to hear from you! For any queries, bugs, or feedback, please email us at:',
+                              subtitle:
+                                  'We would love to hear from you! For any queries, bugs, or feedback, please email us at:',
 
                               // NAYA: Clickable Blue Email Address
                               customContent: GestureDetector(
@@ -578,13 +498,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     path: 'support.sptechstudios@gmail.com',
                                     query: 'subject=App Feedback - Calculator Pro',
                                   );
-
-                                  // canLaunchUrl check hata bhi sakte hain ya mode pass kar sakte hain
                                   try {
-                                    await launchUrl(
-                                      emailUri,
-                                      mode: LaunchMode.externalApplication, // NAYA: External app me force kholne ke liye
-                                    );
+                                    await launchUrl(emailUri, mode: LaunchMode.externalApplication);
                                   } catch (e) {
                                     debugPrint("Could not launch email app: $e");
                                   }
@@ -592,7 +507,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 child: Text(
                                   'support.sptechstudios@gmail.com',
                                   style: TextStyle(
-                                    color: AppColors.cyanColor(context), // Premium Blue Color
+                                    color: AppColors.cyanColor(context),
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -604,7 +519,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               primaryButtonText: 'Close',
                               onPrimaryPressed: () {
                                 if (_isHapticsEnabled) {
-                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                  HapticFeedback.selectionClick();
                                 }
                                 Navigator.of(context).pop();
                               },
@@ -616,19 +531,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     // Privacy Policy
                     _buildSettingsItem(
-                      icon: Icons.privacy_tip_outlined, // Privacy ke liye shield/tip icon
+                      icon: Icons.privacy_tip_outlined,
                       title: 'Privacy Policy',
                       subtitle: 'Read our terms & policies',
-                      iconColor: AppColors.tealColor(context), // Privacy ke liye teal color
+                      iconColor: AppColors.tealColor(context),
                       onTap: () {
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
-                        // NAYA: Click karte hi Privacy Policy page open hoga
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
-                        );
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()));
                       },
                     ),
 
@@ -639,22 +551,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       iconColor: AppColors.textGrey(context),
                       onTap: () {
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
-                        // NAYA: About par click karte hi Custom Dialog open hoga
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return CustomDialog(
                               title: 'Calculator Pro',
-                              subtitle: 'Version 1.0.2\n\nA premium calculator and multi-tool designed for seamless daily use.',
-                              isSingleButton: true, // Aapki requirement: Single button
+                              subtitle:
+                                  'Version 1.0.2\n\nA premium calculator and multi-tool designed for seamless daily use.',
+                              isSingleButton: true,
                               primaryButtonText: 'Got it',
                               onPrimaryPressed: () {
                                 if (_isHapticsEnabled) {
-                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
+                                  HapticFeedback.selectionClick();
                                 }
-                                Navigator.of(context).pop(); // Button click par dialog band ho jayega
+                                Navigator.of(context).pop();
                               },
                             );
                           },
@@ -680,11 +592,7 @@ class _SettingsPageState extends State<SettingsPage> {
         "Download it here: $playStoreLink";
 
     try {
-      // PDF Scanner Pro ki tarah same package ka use kar rahe hain
-      await SharePlus.instance.share(ShareParams(
-        text: shareMessage,
-        subject: "Download Calculator Pro",
-      ));
+      await SharePlus.instance.share(ShareParams(text: shareMessage, subject: "Download Calculator Pro"));
     } catch (e) {
       debugPrint("Share error: $e");
     }
@@ -692,24 +600,24 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _rateApp() async {
     // Calculator Pro ka Play Store link
-    final Uri playStoreUri = Uri.parse('https://play.google.com/store/apps/details?id=com.sptechstudios.calculator_pro');
+    final Uri playStoreUri = Uri.parse(
+      'https://play.google.com/store/apps/details?id=com.sptechstudios.calculator_pro',
+    );
 
     try {
-      // externalApplication mode se direct Play Store app open hoga (browser nahi)
       await launchUrl(playStoreUri, mode: LaunchMode.externalApplication);
     } catch (e) {
       debugPrint("Could not launch Play Store: $e");
     }
   }
 
-  // Settings ke Item ka Design (Ab Card View me hai)
   Widget _buildSettingsItem({
     required IconData icon,
     required String title,
     required String subtitle,
     required Color iconColor,
     VoidCallback? onTap,
-    Widget? trailing, // NAYA: Custom right side widget (Arrow ya Switch ke liye)
+    Widget? trailing,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -719,10 +627,9 @@ class _SettingsPageState extends State<SettingsPage> {
         splashColor: iconColor.withOpacity(0.1),
         highlightColor: iconColor.withOpacity(0.05),
         child: Container(
-          // NAYA: Card Design add kiya (MenuOptions jaisa)
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
           decoration: BoxDecoration(
-            color: AppColors.surfaceColor(context).withOpacity(0.4), // Premium Card Background
+            color: AppColors.surfaceColor(context).withOpacity(0.4),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.black12),
           ),
@@ -739,30 +646,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                          color: AppColors.textColor(context),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600
-                      ),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                          color: AppColors.textGrey(context),
-                          fontSize: 13
-                      ),
-                    ),
+                    Text(subtitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 13)),
                   ],
                 ),
               ),
 
-              // Right Arrow Icon ya Custom Widget (jaise Switch)
-              trailing ?? Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: AppColors.textGrey(context).withOpacity(0.3),
-                size: 16,
-              ),
+              trailing ??
+                  Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textGrey(context).withOpacity(0.3), size: 16),
             ],
           ),
         ),
