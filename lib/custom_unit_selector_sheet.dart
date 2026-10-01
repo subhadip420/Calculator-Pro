@@ -5,21 +5,13 @@ import 'app_colors.dart';
 class UnitSelectorSheet extends StatefulWidget {
   final String category; // 'Length', 'Weight' etc.
 
-  const UnitSelectorSheet({
-    super.key,
-    required this.category,
-  });
+  const UnitSelectorSheet({super.key, required this.category});
 
   @override
   State<UnitSelectorSheet> createState() => _UnitSelectorSheetState();
 }
 
 class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   // --- UPDATED MASTER DATA STORE (Group-wise) ---
   final Map<String, Map<String, List<Map<String, String>>>> unitData = {
     'Length': {
@@ -46,8 +38,6 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Furlong', 'symbol': 'fur'},
         {'name': 'Mile', 'symbol': 'mi'},
         {'name': 'League', 'symbol': 'lea'},
-
-
       ],
       'Scientific': [
         {'name': 'Bohr radius', 'symbol': 'a0'},
@@ -249,7 +239,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Millimeter²', 'symbol': 'mm²'},
         {'name': 'Centimeter²', 'symbol': 'cm²'},
         {'name': 'Decimeter²', 'symbol': 'dm²'},
-        {'name': 'Meter²', 'symbol': 'm²'}, // Added base unit
+        {'name': 'Meter²', 'symbol': 'm²'},
         {'name': 'Decameter²', 'symbol': 'dam²'},
         {'name': 'Are', 'symbol': 'a'},
         {'name': 'Hectometer²', 'symbol': 'hm²'},
@@ -258,7 +248,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
       'Imperial Units': [
         {'name': 'Mil²', 'symbol': 'mil²'},
         {'name': 'Inch²', 'symbol': 'in²'},
-        {'name': 'Foot²', 'symbol': 'ft²'}, // Added base unit
+        {'name': 'Foot²', 'symbol': 'ft²'},
         {'name': 'Yard²', 'symbol': 'yd²'},
         {'name': 'Link²', 'symbol': 'li²'},
         {'name': 'Rod²', 'symbol': 'rd²'},
@@ -550,42 +540,42 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
     'Energy': {
       'Standard Units': [
         {'name': 'Joule', 'symbol': 'J'},
-        {'name': 'Kilojoule', 'symbol': 'kJ'}, //[cite: 12]
-        {'name': 'Calorie', 'symbol': 'cal'}, //[cite: 12]
-        {'name': 'Kilocalorie', 'symbol': 'kcal'}, //[cite: 12]
+        {'name': 'Kilojoule', 'symbol': 'kJ'},
+        {'name': 'Calorie', 'symbol': 'cal'},
+        {'name': 'Kilocalorie', 'symbol': 'kcal'},
       ],
       'Metric Units': [
-        {'name': 'Megajoule', 'symbol': 'MJ'}, //[cite: 12]
-        {'name': 'Gigajoule', 'symbol': 'GJ'}, //[cite: 12]
-        {'name': 'Watt hour', 'symbol': 'Wh'}, //[cite: 12]
+        {'name': 'Megajoule', 'symbol': 'MJ'},
+        {'name': 'Gigajoule', 'symbol': 'GJ'},
+        {'name': 'Watt hour', 'symbol': 'Wh'},
         {'name': 'Kilowatt hour', 'symbol': 'kWh'},
-        {'name': 'Megawatt hour', 'symbol': 'MWh'}, //[cite: 12]
-        {'name': 'Gigawatt hour', 'symbol': 'GWh'}, //[cite: 12]
+        {'name': 'Megawatt hour', 'symbol': 'MWh'},
+        {'name': 'Gigawatt hour', 'symbol': 'GWh'},
       ],
       'Imperial Units': [
-        {'name': 'Inch pound', 'symbol': 'in·lb'}, //[cite: 11]
-        {'name': 'Foot pound', 'symbol': 'ft·lb'}, //[cite: 11]
-        {'name': 'Therm', 'symbol': 'thm'}, //[cite: 11]
+        {'name': 'Inch pound', 'symbol': 'in·lb'},
+        {'name': 'Foot pound', 'symbol': 'ft·lb'},
+        {'name': 'Therm', 'symbol': 'thm'},
       ],
       'Scientific': [
-        {'name': 'Erg', 'symbol': 'erg'}, //[cite: 11]
-        {'name': 'Rydberg', 'symbol': 'Ry'}, //[cite: 11]
-        {'name': 'Hartree', 'symbol': 'Ha'}, //[cite: 11]
-        {'name': 'Electronvolt', 'symbol': 'eV'}, //[cite: 11]
+        {'name': 'Erg', 'symbol': 'erg'},
+        {'name': 'Rydberg', 'symbol': 'Ry'},
+        {'name': 'Hartree', 'symbol': 'Ha'},
+        {'name': 'Electronvolt', 'symbol': 'eV'},
       ],
       'Engineering': [
-        {'name': 'Metric horsepower hour', 'symbol': 'PS·h'}, //[cite: 10, 11]
-        {'name': 'Mechanical horsepower hour', 'symbol': 'hp·h'}, //[cite: 10]
+        {'name': 'Metric horsepower hour', 'symbol': 'PS·h'},
+        {'name': 'Mechanical horsepower hour', 'symbol': 'hp·h'},
       ],
       'Military': [
-        {'name': 'Ton of TNT', 'symbol': 'tTNT'}, //[cite: 10]
-        {'name': 'Kiloton of TNT', 'symbol': 'kTNT'}, //[cite: 10]
-        {'name': 'Megaton of TNT', 'symbol': 'MTNT'}, //[cite: 10]
+        {'name': 'Ton of TNT', 'symbol': 'tTNT'},
+        {'name': 'Kiloton of TNT', 'symbol': 'kTNT'},
+        {'name': 'Megaton of TNT', 'symbol': 'MTNT'},
       ],
       'Other': [
-        {'name': 'Barrel of oil equivalent', 'symbol': 'boe'}, //[cite: 10]
-        {'name': 'Ton of coal equivalent', 'symbol': 'tce'}, //[cite: 10]
-        {'name': 'Ton of oil equivalent', 'symbol': 'toe'}, //[cite: 10]
+        {'name': 'Barrel of oil equivalent', 'symbol': 'boe'},
+        {'name': 'Ton of coal equivalent', 'symbol': 'tce'},
+        {'name': 'Ton of oil equivalent', 'symbol': 'toe'},
       ],
     },
     'Power': {
@@ -595,336 +585,334 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         {'name': 'Horsepower', 'symbol': 'hp'},
       ],
       'Metric Units': [
-        {'name': 'Picowatt', 'symbol': 'pW'}, //[cite: 15]
-        {'name': 'Nanowatt', 'symbol': 'nW'}, //[cite: 15]
-        {'name': 'Microwatt', 'symbol': 'μW'}, //[cite: 15]
-        {'name': 'Milliwatt', 'symbol': 'mW'}, //[cite: 15]
-        {'name': 'Megawatt', 'symbol': 'MW'}, //[cite: 15]
-        {'name': 'Gigawatt', 'symbol': 'GW'}, //[cite: 15]
+        {'name': 'Picowatt', 'symbol': 'pW'},
+        {'name': 'Nanowatt', 'symbol': 'nW'},
+        {'name': 'Microwatt', 'symbol': 'μW'},
+        {'name': 'Milliwatt', 'symbol': 'mW'},
+        {'name': 'Megawatt', 'symbol': 'MW'},
+        {'name': 'Gigawatt', 'symbol': 'GW'},
       ],
       'Imperial Units': [
-        {'name': 'Foot-pound / Minute', 'symbol': 'flb/m'}, //[cite: 15]
-        {'name': 'Foot-pound / Second', 'symbol': 'flb/s'}, //[cite: 15]
-        {'name': 'Btu / Hour', 'symbol': 'Btu/h'}, //[cite: 14]
-        {'name': 'Btu / Minute', 'symbol': 'Btu/m'}, //[cite: 14]
-        {'name': 'Btu / Second', 'symbol': 'Btu/s'}, //[cite: 14]
+        {'name': 'Foot-pound / Minute', 'symbol': 'flb/m'},
+        {'name': 'Foot-pound / Second', 'symbol': 'flb/s'},
+        {'name': 'Btu / Hour', 'symbol': 'Btu/h'},
+        {'name': 'Btu / Minute', 'symbol': 'Btu/m'},
+        {'name': 'Btu / Second', 'symbol': 'Btu/s'},
       ],
       'Scientific': [
-        {'name': 'Erg / Second', 'symbol': 'erg/s'}, //[cite: 13, 14]
-        {'name': 'Solar luminosity', 'symbol': 'L☉'}, //[cite: 13, 14]
+        {'name': 'Erg / Second', 'symbol': 'erg/s'},
+        {'name': 'Solar luminosity', 'symbol': 'L☉'},
       ],
       'Engineering': [
-        {'name': 'Metric horsepower', 'symbol': 'PS'}, //[cite: 13, 14]
-        {'name': 'Electrical horsepower', 'symbol': 'ehp'}, //[cite: 13, 14]
-        {'name': 'Boiler horsepower', 'symbol': 'bhp'}, //[cite: 13, 14]
+        {'name': 'Metric horsepower', 'symbol': 'PS'},
+        {'name': 'Electrical horsepower', 'symbol': 'ehp'},
+        {'name': 'Boiler horsepower', 'symbol': 'bhp'},
       ],
       'Historical & Other': [
-        {'name': 'Poncelet', 'symbol': 'p'}, //[cite: 13]
-        {'name': 'Kilocalorie / Hour', 'symbol': 'kcl/h'}, //[cite: 13]
-        {'name': 'Calorie / Second', 'symbol': 'cal/s'}, //[cite: 13]
+        {'name': 'Poncelet', 'symbol': 'p'},
+        {'name': 'Kilocalorie / Hour', 'symbol': 'kcl/h'},
+        {'name': 'Calorie / Second', 'symbol': 'cal/s'},
       ],
     },
     'Data': {
       'Base Units': [
-        {'name': 'Bit', 'symbol': 'b'}, //[cite: 12]
-        {'name': 'Nibble', 'symbol': 'n'}, //[cite: 12]
-        {'name': 'Byte', 'symbol': 'B'}, //[cite: 11, 12]
+        {'name': 'Bit', 'symbol': 'b'},
+        {'name': 'Nibble', 'symbol': 'n'},
+        {'name': 'Byte', 'symbol': 'B'},
       ],
       'Decimal Bytes (Multiples of 1000)': [
-        {'name': 'Kilobyte', 'symbol': 'KB'}, //[cite: 11]
+        {'name': 'Kilobyte', 'symbol': 'KB'},
         {'name': 'Megabyte', 'symbol': 'MB'},
         {'name': 'Gigabyte', 'symbol': 'GB'},
         {'name': 'Terabyte', 'symbol': 'TB'},
-        {'name': 'Petabyte', 'symbol': 'PB'}, //[cite: 11]
-        {'name': 'Exabyte', 'symbol': 'EB'}, //[cite: 11]
+        {'name': 'Petabyte', 'symbol': 'PB'},
+        {'name': 'Exabyte', 'symbol': 'EB'},
       ],
       'Decimal Bits (Multiples of 1000)': [
-        {'name': 'Kilobit', 'symbol': 'Kb'}, //[cite: 12]
-        {'name': 'Megabit', 'symbol': 'Mb'}, //[cite: 12]
-        {'name': 'Gigabit', 'symbol': 'Gb'}, //[cite: 12]
-        {'name': 'Terabit', 'symbol': 'Tb'}, //[cite: 12]
-        {'name': 'Petabit', 'symbol': 'Pb'}, //[cite: 12]
-        {'name': 'Exabit', 'symbol': 'Eb'}, //[cite: 12]
+        {'name': 'Kilobit', 'symbol': 'Kb'},
+        {'name': 'Megabit', 'symbol': 'Mb'},
+        {'name': 'Gigabit', 'symbol': 'Gb'},
+        {'name': 'Terabit', 'symbol': 'Tb'},
+        {'name': 'Petabit', 'symbol': 'Pb'},
+        {'name': 'Exabit', 'symbol': 'Eb'},
       ],
       'Binary Bytes (Multiples of 1024)': [
-        {'name': 'Kibibyte', 'symbol': 'KiB'}, //[cite: 10]
-        {'name': 'Mebibyte', 'symbol': 'MiB'}, //[cite: 10]
-        {'name': 'Gibibyte', 'symbol': 'GiB'}, //[cite: 10]
-        {'name': 'Tebibyte', 'symbol': 'TiB'}, //[cite: 10]
-        {'name': 'Pebibyte', 'symbol': 'PiB'}, //[cite: 10]
-        {'name': 'Exbibyte', 'symbol': 'EiB'}, //[cite: 10]
+        {'name': 'Kibibyte', 'symbol': 'KiB'},
+        {'name': 'Mebibyte', 'symbol': 'MiB'},
+        {'name': 'Gibibyte', 'symbol': 'GiB'},
+        {'name': 'Tebibyte', 'symbol': 'TiB'},
+        {'name': 'Pebibyte', 'symbol': 'PiB'},
+        {'name': 'Exbibyte', 'symbol': 'EiB'},
       ],
       'Binary Bits (Multiples of 1024)': [
-        {'name': 'Kibibit', 'symbol': 'Kib'}, //[cite: 11]
-        {'name': 'Mebibit', 'symbol': 'Mib'}, //[cite: 11]
-        {'name': 'Gibibit', 'symbol': 'Gib'}, //[cite: 11]
-        {'name': 'Tebibit', 'symbol': 'Tib'}, //[cite: 10, 11]
-        {'name': 'Pebibit', 'symbol': 'Pib'}, //[cite: 10, 11]
-        {'name': 'Exbibit', 'symbol': 'Eib'}, //[cite: 10]
+        {'name': 'Kibibit', 'symbol': 'Kib'},
+        {'name': 'Mebibit', 'symbol': 'Mib'},
+        {'name': 'Gibibit', 'symbol': 'Gib'},
+        {'name': 'Tebibit', 'symbol': 'Tib'},
+        {'name': 'Pebibit', 'symbol': 'Pib'},
+        {'name': 'Exbibit', 'symbol': 'Eib'},
       ],
     },
     'Acceleration': {
       'Metric': [
-        {'name': 'Millimeter / Second²', 'symbol': 'mm/s²'}, //[cite: 10]
-        {'name': 'Centimeter / Second²', 'symbol': 'cm/s²'}, //[cite: 10]
-        {'name': 'Kilometer / Second²', 'symbol': 'km/s²'}, //[cite: 10]
+        {'name': 'Millimeter / Second²', 'symbol': 'mm/s²'},
+        {'name': 'Centimeter / Second²', 'symbol': 'cm/s²'},
+        {'name': 'Kilometer / Second²', 'symbol': 'km/s²'},
       ],
       'Imperial': [
-        {'name': 'Inch / Second²', 'symbol': 'in/s²'}, //[cite: 10]
-        {'name': 'Yard / Second²', 'symbol': 'yd/s²'}, //[cite: 10]
-        {'name': 'Mile / Second²', 'symbol': 'mi/s²'}, //[cite: 10]
+        {'name': 'Inch / Second²', 'symbol': 'in/s²'},
+        {'name': 'Yard / Second²', 'symbol': 'yd/s²'},
+        {'name': 'Mile / Second²', 'symbol': 'mi/s²'},
       ],
       'Scientific': [
-        {'name': 'Milligal', 'symbol': 'mGal'}, //[cite: 10]
-        {'name': 'Gal', 'symbol': 'Gal'}, //[cite: 10]
+        {'name': 'Milligal', 'symbol': 'mGal'},
+        {'name': 'Gal', 'symbol': 'Gal'},
       ],
       'Engineering': [
-        {'name': 'Kilometer / Hour / Second', 'symbol': 'kmh/s'}, //[cite: 9]
-        {'name': 'Mile / Hour / Second', 'symbol': 'mph/s'}, //[cite: 9]
+        {'name': 'Kilometer / Hour / Second', 'symbol': 'kmh/s'},
+        {'name': 'Mile / Hour / Second', 'symbol': 'mph/s'},
       ],
       'Other': [
-        {'name': 'Knot / Second', 'symbol': 'kn/s'}, //[cite: 9]
-      ]
+        {'name': 'Knot / Second', 'symbol': 'kn/s'},
+      ],
     },
     'Angle': {
       'Standard': [
-        {'name': 'Degree', 'symbol': '°'}, // Main base unit (implied)
-        {'name': 'Radian', 'symbol': 'rad'}, // Added for completeness
-        {'name': 'Gradian', 'symbol': 'gon'}, // Added for completeness
-        {'name': 'Minute', 'symbol': '\''}, //[cite: 18]
-        {'name': 'Second', 'symbol': '"'}, //[cite: 18]
+        {'name': 'Degree', 'symbol': '°'},
+        {'name': 'Radian', 'symbol': 'rad'},
+        {'name': 'Gradian', 'symbol': 'gon'},
+        {'name': 'Minute', 'symbol': '\''},
+        {'name': 'Second', 'symbol': '"'},
       ],
       'Scientific': [
-        {'name': 'Microarcsecond', 'symbol': 'μas'}, //[cite: 18]
-        {'name': 'Milliarcsecond', 'symbol': 'mas'}, //[cite: 18]
-        {'name': 'Centesimal minute', 'symbol': 'c\''}, //[cite: 18]
-        {'name': 'Centesimal second', 'symbol': 'c"'}, //[cite: 18]
-        {'name': 'Nanoradian', 'symbol': 'nrad'}, //[cite: 18]
-        {'name': 'Microradian', 'symbol': 'μrad'}, //[cite: 17, 18]
-        {'name': 'Milliradian', 'symbol': 'mrad'}, //[cite: 17]
+        {'name': 'Microarcsecond', 'symbol': 'μas'},
+        {'name': 'Milliarcsecond', 'symbol': 'mas'},
+        {'name': 'Centesimal minute', 'symbol': 'c\''},
+        {'name': 'Centesimal second', 'symbol': 'c"'},
+        {'name': 'Nanoradian', 'symbol': 'nrad'},
+        {'name': 'Microradian', 'symbol': 'μrad'},
+        {'name': 'Milliradian', 'symbol': 'mrad'},
       ],
       'Geometric': [
-        {'name': 'Sign', 'symbol': 'sig'}, //[cite: 17]
-        {'name': 'Octant', 'symbol': 'oct'}, //[cite: 17]
-        {'name': 'Sextant', 'symbol': '60°'}, //[cite: 17]
-        {'name': 'Quadrant', 'symbol': '90°'}, //[cite: 17]
-        {'name': 'Semicircle', 'symbol': '180°'}, //[cite: 17]
-        {'name': 'Circle', 'symbol': '360°'}, //[cite: 17]
+        {'name': 'Sign', 'symbol': 'sig'},
+        {'name': 'Octant', 'symbol': 'oct'},
+        {'name': 'Sextant', 'symbol': '60°'},
+        {'name': 'Quadrant', 'symbol': '90°'},
+        {'name': 'Semicircle', 'symbol': '180°'},
+        {'name': 'Circle', 'symbol': '360°'},
       ],
       'Engineering': [
-        {'name': 'Percent grade', 'symbol': '%'}, //[cite: 16]
-        {'name': 'Per mille grade', 'symbol': '‰'}, //[cite: 16]
+        {'name': 'Percent grade', 'symbol': '%'},
+        {'name': 'Per mille grade', 'symbol': '‰'},
       ],
       'Military': [
-        {'name': 'Streck', 'symbol': 'strk'}, //[cite: 16]
-        {'name': 'Mil (NATO)', 'symbol': 'mil'}, //[cite: 16]
-        {'name': 'Mil (Warsaw pact)', 'symbol': 'wpm'}, //[cite: 16]
+        {'name': 'Streck', 'symbol': 'strk'},
+        {'name': 'Mil (NATO)', 'symbol': 'mil'},
+        {'name': 'Mil (Warsaw pact)', 'symbol': 'wpm'},
       ],
       'Other': [
-        {'name': 'Binary degree', 'symbol': 'brad'}, //[cite: 16]
-        {'name': 'Compass point', 'symbol': 'pt'}, //[cite: 16]
-        {'name': 'Hour angle', 'symbol': 'ha'}, //[cite: 16]
-      ]
+        {'name': 'Binary degree', 'symbol': 'brad'},
+        {'name': 'Compass point', 'symbol': 'pt'},
+        {'name': 'Hour angle', 'symbol': 'ha'},
+      ],
     },
     'Data Transfer': {
       'Multiples of 1000': [
-        {'name': 'Bit / Second', 'symbol': 'b/s'}, //
-        {'name': 'Nibble / Second', 'symbol': 'n/s'}, //[cite: 15]
-        {'name': 'Kilobit / Second', 'symbol': 'kb/s'}, // Added for completeness
-        {'name': 'Megabit / Second', 'symbol': 'Mb/s'}, // Added for completeness
-        {'name': 'Gigabit / Second', 'symbol': 'Gb/s'}, // Added for completeness
-        {'name': 'Terabit / Second', 'symbol': 'Tb/s'}, //[cite: 15]
-        {'name': 'Petabit / Second', 'symbol': 'Pb/s'}, //[cite: 15]
-        {'name': 'Exabit / Second', 'symbol': 'Eb/s'}, //[cite: 15]
-        {'name': 'Byte / Second', 'symbol': 'B/s'}, //[cite: 15]
-        {'name': 'Kilobyte / Second', 'symbol': 'KB/s'}, //[cite: 15]
-        {'name': 'Megabyte / Second', 'symbol': 'MB/s'}, //[cite: 15]
-        {'name': 'Gigabyte / Second', 'symbol': 'GB/s'}, //[cite: 14, 15]
-        {'name': 'Terabyte / Second', 'symbol': 'TB/s'}, //[cite: 14]
-        {'name': 'Petabyte / Second', 'symbol': 'PB/s'}, //[cite: 14]
-        {'name': 'Exabyte / Second', 'symbol': 'EB/s'}, //[cite: 14]
+        {'name': 'Bit / Second', 'symbol': 'b/s'},
+        {'name': 'Nibble / Second', 'symbol': 'n/s'},
+        {'name': 'Kilobit / Second', 'symbol': 'kb/s'},
+        {'name': 'Megabit / Second', 'symbol': 'Mb/s'},
+        {'name': 'Gigabit / Second', 'symbol': 'Gb/s'},
+        {'name': 'Terabit / Second', 'symbol': 'Tb/s'},
+        {'name': 'Petabit / Second', 'symbol': 'Pb/s'},
+        {'name': 'Exabit / Second', 'symbol': 'Eb/s'},
+        {'name': 'Byte / Second', 'symbol': 'B/s'},
+        {'name': 'Kilobyte / Second', 'symbol': 'KB/s'},
+        {'name': 'Megabyte / Second', 'symbol': 'MB/s'},
+        {'name': 'Gigabyte / Second', 'symbol': 'GB/s'},
+        {'name': 'Terabyte / Second', 'symbol': 'TB/s'},
+        {'name': 'Petabyte / Second', 'symbol': 'PB/s'},
+        {'name': 'Exabyte / Second', 'symbol': 'EB/s'},
       ],
       'Multiples of 1024': [
-        {'name': 'Kibibit / Second', 'symbol': 'Kib/s'}, //[cite: 14]
-        {'name': 'Mebibit / Second', 'symbol': 'Mib/s'}, //[cite: 14]
-        {'name': 'Gibibit / Second', 'symbol': 'Gib/s'}, //[cite: 14]
-        {'name': 'Tebibit / Second', 'symbol': 'Tib/s'}, //[cite: 13, 14]
-        {'name': 'Pebibit / Second', 'symbol': 'Pib/s'}, //[cite: 13, 14]
-        {'name': 'Exbibit / Second', 'symbol': 'Eib/s'}, //[cite: 13]
-        {'name': 'Kibibyte / Second', 'symbol': 'KiB/s'}, //[cite: 13]
-        {'name': 'Mebibyte / Second', 'symbol': 'MiB/s'}, //[cite: 13]
-        {'name': 'Gibibyte / Second', 'symbol': 'GiB/s'}, //[cite: 13]
-        {'name': 'Tebibyte / Second', 'symbol': 'TiB/s'}, //[cite: 13]
-        {'name': 'Pebibyte / Second', 'symbol': 'PiB/s'}, //[cite: 13]
-        {'name': 'Exbibyte / Second', 'symbol': 'EiB/s'}, //[cite: 13]
+        {'name': 'Kibibit / Second', 'symbol': 'Kib/s'},
+        {'name': 'Mebibit / Second', 'symbol': 'Mib/s'},
+        {'name': 'Gibibit / Second', 'symbol': 'Gib/s'},
+        {'name': 'Tebibit / Second', 'symbol': 'Tib/s'},
+        {'name': 'Pebibit / Second', 'symbol': 'Pib/s'},
+        {'name': 'Exbibit / Second', 'symbol': 'Eib/s'},
+        {'name': 'Kibibyte / Second', 'symbol': 'KiB/s'},
+        {'name': 'Mebibyte / Second', 'symbol': 'MiB/s'},
+        {'name': 'Gibibyte / Second', 'symbol': 'GiB/s'},
+        {'name': 'Tebibyte / Second', 'symbol': 'TiB/s'},
+        {'name': 'Pebibyte / Second', 'symbol': 'PiB/s'},
+        {'name': 'Exbibyte / Second', 'symbol': 'EiB/s'},
       ],
     },
     'Force': {
       'Metric': [
-        {'name': 'Newton', 'symbol': 'N'}, // Base SI Unit (added for completeness)
-        {'name': 'Kilonewton', 'symbol': 'kN'}, //
-        {'name': 'Meganewton', 'symbol': 'MN'}, //[cite: 18]
-        {'name': 'Giganewton', 'symbol': 'GN'}, //[cite: 18]
-        {'name': 'Kilogram force', 'symbol': 'kgf'}, // Implied base unit in screenshots
-        {'name': 'Gram force', 'symbol': 'gf'}, //[cite: 17, 18]
-        {'name': 'Tonne force', 'symbol': 'tf'}, //[cite: 17, 18]
+        {'name': 'Newton', 'symbol': 'N'},
+        {'name': 'Kilonewton', 'symbol': 'kN'},
+        {'name': 'Meganewton', 'symbol': 'MN'},
+        {'name': 'Giganewton', 'symbol': 'GN'},
+        {'name': 'Kilogram force', 'symbol': 'kgf'},
+        {'name': 'Gram force', 'symbol': 'gf'},
+        {'name': 'Tonne force', 'symbol': 'tf'},
       ],
       'Imperial': [
-        {'name': 'Pound force', 'symbol': 'lbf'}, // Added for standard completeness
-        {'name': 'Poundal', 'symbol': 'pdl'}, //[cite: 17, 18]
-        {'name': 'Ounce force', 'symbol': 'ozf'}, //[cite: 17, 18]
-        {'name': 'Short ton force', 'symbol': 'stf'}, //[cite: 17, 18]
-        {'name': 'Long ton force', 'symbol': 'ltf'}, //[cite: 17]
+        {'name': 'Pound force', 'symbol': 'lbf'},
+        {'name': 'Poundal', 'symbol': 'pdl'},
+        {'name': 'Ounce force', 'symbol': 'ozf'},
+        {'name': 'Short ton force', 'symbol': 'stf'},
+        {'name': 'Long ton force', 'symbol': 'ltf'},
       ],
       'Scientific': [
-        {'name': 'Dyne', 'symbol': 'dyn'}, //[cite: 17]
-      ]
+        {'name': 'Dyne', 'symbol': 'dyn'},
+      ],
     },
     'Torque': {
       'Metric': [
-        {'name': 'Newton meter', 'symbol': 'N·m'}, // Base unit (implied)
-        {'name': 'Newton millimeter', 'symbol': 'N·mm'}, //
-        {'name': 'Newton centimeter', 'symbol': 'N·cm'}, //
-        {'name': 'Kilonewton meter', 'symbol': 'kN·m'}, //[cite: 19]
-        {'name': 'Gram-force millimeter', 'symbol': 'gf·mm'}, //[cite: 19]
-        {'name': 'Gram-force centimeter', 'symbol': 'gf·cm'}, //[cite: 19]
-        {'name': 'Gram-force meter', 'symbol': 'gf·m'}, //[cite: 19]
-        {'name': 'Kilogram-force millimeter', 'symbol': 'kgf·mm'}, //[cite: 19]
-        {'name': 'Kilogram-force centimeter', 'symbol': 'kgf·cm'}, //[cite: 19]
-        {'name': 'Kilogram-force meter', 'symbol': 'kgf·m'}, //[cite: 18, 19]
+        {'name': 'Newton meter', 'symbol': 'N·m'},
+        {'name': 'Newton millimeter', 'symbol': 'N·mm'},
+        {'name': 'Newton centimeter', 'symbol': 'N·cm'},
+        {'name': 'Kilonewton meter', 'symbol': 'kN·m'},
+        {'name': 'Gram-force millimeter', 'symbol': 'gf·mm'},
+        {'name': 'Gram-force centimeter', 'symbol': 'gf·cm'},
+        {'name': 'Gram-force meter', 'symbol': 'gf·m'},
+        {'name': 'Kilogram-force millimeter', 'symbol': 'kgf·mm'},
+        {'name': 'Kilogram-force centimeter', 'symbol': 'kgf·cm'},
+        {'name': 'Kilogram-force meter', 'symbol': 'kgf·m'},
       ],
       'Imperial': [
-        {'name': 'Pound-force inch', 'symbol': 'lbf·in'}, // Added for completeness
-        {'name': 'Pound-force foot', 'symbol': 'lbf·ft'}, // Added for completeness
-        {'name': 'Poundal inch', 'symbol': 'pdl·in'}, //[cite: 17, 18]
-        {'name': 'Poundal foot', 'symbol': 'pdl·ft'}, //[cite: 17, 18]
-        {'name': 'Ounce-force inch', 'symbol': 'ozf·in'}, //[cite: 17, 18]
-        {'name': 'Ounce-force foot', 'symbol': 'ozf·ft'}, //[cite: 17, 18]
+        {'name': 'Pound-force inch', 'symbol': 'lbf·in'},
+        {'name': 'Pound-force foot', 'symbol': 'lbf·ft'},
+        {'name': 'Poundal inch', 'symbol': 'pdl·in'},
+        {'name': 'Poundal foot', 'symbol': 'pdl·ft'},
+        {'name': 'Ounce-force inch', 'symbol': 'ozf·in'},
+        {'name': 'Ounce-force foot', 'symbol': 'ozf·ft'},
       ],
       'Scientific': [
-        {'name': 'Dyne millimeter', 'symbol': 'dyn·mm'}, //[cite: 17, 18]
-        {'name': 'Dyne centimeter', 'symbol': 'dyn·cm'}, //[cite: 17, 18]
-        {'name': 'Dyne meter', 'symbol': 'dyn·m'}, //[cite: 17, 18]
+        {'name': 'Dyne millimeter', 'symbol': 'dyn·mm'},
+        {'name': 'Dyne centimeter', 'symbol': 'dyn·cm'},
+        {'name': 'Dyne meter', 'symbol': 'dyn·m'},
       ],
       'Other': [
-        {'name': 'Ton-force meter', 'symbol': 'tf·m'}, //[cite: 17]
-      ]
+        {'name': 'Ton-force meter', 'symbol': 'tf·m'},
+      ],
     },
     'Volumetric Flow': {
       'Standard': [
-        {'name': 'Liter / Minute', 'symbol': 'l/min'}, // Base unit (added for completeness)
-        {'name': 'Liter / Second', 'symbol': 'l/s'}, //[cite: 28]
-        {'name': 'Liter / Hour', 'symbol': 'l/h'}, //[cite: 28]
-        {'name': 'Liter / Day', 'symbol': 'l/d'}, //[cite: 28]
-        {'name': 'Milliliter / Second', 'symbol': 'ml/s'}, //[cite: 28]
-        {'name': 'Milliliter / Minute', 'symbol': 'ml/min'}, //[cite: 28]
-        {'name': 'Milliliter / Hour', 'symbol': 'ml/h'}, //[cite: 28]
-        {'name': 'Milliliter / Day', 'symbol': 'ml/d'}, //[cite: 28]
+        {'name': 'Liter / Minute', 'symbol': 'l/min'},
+        {'name': 'Liter / Second', 'symbol': 'l/s'},
+        {'name': 'Liter / Hour', 'symbol': 'l/h'},
+        {'name': 'Liter / Day', 'symbol': 'l/d'},
+        {'name': 'Milliliter / Second', 'symbol': 'ml/s'},
+        {'name': 'Milliliter / Minute', 'symbol': 'ml/min'},
+        {'name': 'Milliliter / Hour', 'symbol': 'ml/h'},
+        {'name': 'Milliliter / Day', 'symbol': 'ml/d'},
       ],
       'Metric': [
-        {'name': 'Centimeter³ / Second', 'symbol': 'cm³/s'}, //[cite: 27]
-        {'name': 'Centimeter³ / Minute', 'symbol': 'cm³/min'}, //[cite: 27]
-        {'name': 'Centimeter³ / Hour', 'symbol': 'cm³/h'}, //[cite: 27]
-        {'name': 'Centimeter³ / Day', 'symbol': 'cm³/d'}, //
-        {'name': 'Meter³ / Second', 'symbol': 'm³/s'}, //[cite: 27]
-        {'name': 'Meter³ / Minute', 'symbol': 'm³/min'}, //[cite: 27]
-        {'name': 'Meter³ / Hour', 'symbol': 'm³/h'}, //[cite: 27]
-        {'name': 'Meter³ / Day', 'symbol': 'm³/d'}, //[cite: 27]
+        {'name': 'Centimeter³ / Second', 'symbol': 'cm³/s'},
+        {'name': 'Centimeter³ / Minute', 'symbol': 'cm³/min'},
+        {'name': 'Centimeter³ / Hour', 'symbol': 'cm³/h'},
+        {'name': 'Centimeter³ / Day', 'symbol': 'cm³/d'},
+        {'name': 'Meter³ / Second', 'symbol': 'm³/s'},
+        {'name': 'Meter³ / Minute', 'symbol': 'm³/min'},
+        {'name': 'Meter³ / Hour', 'symbol': 'm³/h'},
+        {'name': 'Meter³ / Day', 'symbol': 'm³/d'},
       ],
       'United States': [
-        {'name': 'Gallon (US) / Second', 'symbol': 'gal/s'}, //[cite: 26]
-        {'name': 'Gallon (US) / Minute', 'symbol': 'gal/min'}, // Added for completeness
-        {'name': 'Gallon (US) / Hour', 'symbol': 'gal/h'}, //[cite: 26]
-        {'name': 'Gallon (US) / Day', 'symbol': 'gal/d'}, //[cite: 26]
+        {'name': 'Gallon (US) / Second', 'symbol': 'gal/s'},
+        {'name': 'Gallon (US) / Minute', 'symbol': 'gal/min'},
+        {'name': 'Gallon (US) / Hour', 'symbol': 'gal/h'},
+        {'name': 'Gallon (US) / Day', 'symbol': 'gal/d'},
       ],
       'United Kingdom': [
-        {'name': 'Gallon (UK) / Second', 'symbol': 'gal/s'}, //[cite: 26]
-        {'name': 'Gallon (UK) / Minute', 'symbol': 'gal/min'}, // Added for completeness
-        {'name': 'Gallon (UK) / Hour', 'symbol': 'gal/h'}, //[cite: 26]
-        {'name': 'Gallon (UK) / Day', 'symbol': 'gal/d'}, //[cite: 26]
+        {'name': 'Gallon (UK) / Second', 'symbol': 'gal/s'},
+        {'name': 'Gallon (UK) / Minute', 'symbol': 'gal/min'},
+        {'name': 'Gallon (UK) / Hour', 'symbol': 'gal/h'},
+        {'name': 'Gallon (UK) / Day', 'symbol': 'gal/d'},
       ],
       'Imperial': [
-        {'name': 'Inch³ / Second', 'symbol': 'in³/s'}, //[cite: 25]
-        {'name': 'Inch³ / Minute', 'symbol': 'in³/min'}, //[cite: 25]
-        {'name': 'Inch³ / Hour', 'symbol': 'in³/h'}, //[cite: 25, 26]
-        {'name': 'Inch³ / Day', 'symbol': 'in³/d'}, //[cite: 25, 26]
-        {'name': 'Foot³ / Second', 'symbol': 'ft³/s'}, //[cite: 25]
-        {'name': 'Foot³ / Minute', 'symbol': 'ft³/min'}, //[cite: 25]
-        {'name': 'Foot³ / Hour', 'symbol': 'ft³/h'}, //[cite: 25]
-        {'name': 'Foot³ / Day', 'symbol': 'ft³/d'}, //[cite: 25]
-        {'name': 'Yard³ / Second', 'symbol': 'yd³/s'}, //[cite: 24]
-        {'name': 'Yard³ / Minute', 'symbol': 'yd³/min'}, //[cite: 24]
-        {'name': 'Yard³ / Hour', 'symbol': 'yd³/h'}, //[cite: 24]
-        {'name': 'Yard³ / Day', 'symbol': 'yd³/d'}, //[cite: 24, 25]
+        {'name': 'Inch³ / Second', 'symbol': 'in³/s'},
+        {'name': 'Inch³ / Minute', 'symbol': 'in³/min'},
+        {'name': 'Inch³ / Hour', 'symbol': 'in³/h'},
+        {'name': 'Inch³ / Day', 'symbol': 'in³/d'},
+        {'name': 'Foot³ / Second', 'symbol': 'ft³/s'},
+        {'name': 'Foot³ / Minute', 'symbol': 'ft³/min'},
+        {'name': 'Foot³ / Hour', 'symbol': 'ft³/h'},
+        {'name': 'Foot³ / Day', 'symbol': 'ft³/d'},
+        {'name': 'Yard³ / Second', 'symbol': 'yd³/s'},
+        {'name': 'Yard³ / Minute', 'symbol': 'yd³/min'},
+        {'name': 'Yard³ / Hour', 'symbol': 'yd³/h'},
+        {'name': 'Yard³ / Day', 'symbol': 'yd³/d'},
       ],
       'Scientific': [
-        {'name': 'Sverdrup', 'symbol': 'Sv'}, //[cite: 23, 24]
+        {'name': 'Sverdrup', 'symbol': 'Sv'},
       ],
       'Engineering': [
-        {'name': 'Oil barrel / Second', 'symbol': 'bbl/s'}, //[cite: 23]
-        {'name': 'Oil barrel / Minute', 'symbol': 'bbl/min'}, //[cite: 23, 24]
-        {'name': 'Oil barrel / Hour', 'symbol': 'bbl/h'}, //[cite: 23, 24]
-        {'name': 'Oil barrel / Day', 'symbol': 'bbl/d'}, //[cite: 23, 24]
-        {'name': 'Acre-foot / Day', 'symbol': 'af/d'}, //[cite: 23]
-        {'name': 'Acre-foot / Year', 'symbol': 'af/y'}, //[cite: 23]
+        {'name': 'Oil barrel / Second', 'symbol': 'bbl/s'},
+        {'name': 'Oil barrel / Minute', 'symbol': 'bbl/min'},
+        {'name': 'Oil barrel / Hour', 'symbol': 'bbl/h'},
+        {'name': 'Oil barrel / Day', 'symbol': 'bbl/d'},
+        {'name': 'Acre-foot / Day', 'symbol': 'af/d'},
+        {'name': 'Acre-foot / Year', 'symbol': 'af/y'},
       ],
       'Historical': [
-        {'name': 'Miner\'s inch', 'symbol': 'min'}, //[cite: 23]
-      ]
+        {'name': 'Miner\'s inch', 'symbol': 'min'},
+      ],
     },
     'Time': {
       'Standard': [
         {'name': 'Minute', 'symbol': 'min'},
-        {'name': 'Hour', 'symbol': 'h'}, //[cite: 8]
-        {'name': 'Day', 'symbol': 'd'}, //[cite: 8]
-        {'name': 'Week', 'symbol': 'W'}, //[cite: 8]
-        {'name': 'Month', 'symbol': 'M'}, //[cite: 8]
-        {'name': 'Year', 'symbol': 'Y'}, //[cite: 8]
-        {'name': 'Decade', 'symbol': 'D'}, //[cite: 8]
-        {'name': 'Century', 'symbol': 'C'}, //[cite: 8]
-        {'name': 'Millennium', 'symbol': 'Mil'}, //[cite: 8]
+        {'name': 'Hour', 'symbol': 'h'},
+        {'name': 'Day', 'symbol': 'd'},
+        {'name': 'Week', 'symbol': 'W'},
+        {'name': 'Month', 'symbol': 'M'},
+        {'name': 'Year', 'symbol': 'Y'},
+        {'name': 'Decade', 'symbol': 'D'},
+        {'name': 'Century', 'symbol': 'C'},
+        {'name': 'Millennium', 'symbol': 'Mil'},
       ],
       'Metric': [
-        {'name': 'Picosecond', 'symbol': 'ps'}, //[cite: 7]
-        {'name': 'Nanosecond', 'symbol': 'ns'}, //[cite: 7]
-        {'name': 'Microsecond', 'symbol': 'μs'}, //[cite: 7]
-        {'name': 'Millisecond', 'symbol': 'ms'}, //[cite: 7]
-        {'name': 'Second', 'symbol': 's'}, //[cite: 7]
+        {'name': 'Picosecond', 'symbol': 'ps'},
+        {'name': 'Nanosecond', 'symbol': 'ns'},
+        {'name': 'Microsecond', 'symbol': 'μs'},
+        {'name': 'Millisecond', 'symbol': 'ms'},
+        {'name': 'Second', 'symbol': 's'},
       ],
       'Scientific': [
-        {'name': 'Planck time', 'symbol': 'tp'}, //[cite: 7]
-        {'name': 'Atomic unit of time', 'symbol': 'au'}, //[cite: 7]
-        {'name': 'Svedberg', 'symbol': 'Sv'}, //[cite: 6, 7]
-        {'name': 'Jiffy', 'symbol': 'jif'}, //[cite: 6]
-        {'name': 'Shake', 'symbol': 'shk'}, //[cite: 6]
+        {'name': 'Planck time', 'symbol': 'tp'},
+        {'name': 'Atomic unit of time', 'symbol': 'au'},
+        {'name': 'Svedberg', 'symbol': 'Sv'},
+        {'name': 'Jiffy', 'symbol': 'jif'},
+        {'name': 'Shake', 'symbol': 'shk'},
       ],
       'Astronomical': [
-        {'name': 'Sidereal day', 'symbol': 'sd'}, //[cite: 6]
-        {'name': 'Synodic month', 'symbol': 'syn'}, //[cite: 6]
-        {'name': 'Julian year', 'symbol': 'jyr'}, //[cite: 6]
-        {'name': 'Tropical year', 'symbol': 'tyr'}, //[cite: 6]
-        {'name': 'Sidereal year', 'symbol': 'syr'}, //[cite: 6]
-        {'name': 'Galactic year', 'symbol': 'gyr'}, //[cite: 6]
+        {'name': 'Sidereal day', 'symbol': 'sd'},
+        {'name': 'Synodic month', 'symbol': 'syn'},
+        {'name': 'Julian year', 'symbol': 'jyr'},
+        {'name': 'Tropical year', 'symbol': 'tyr'},
+        {'name': 'Sidereal year', 'symbol': 'syr'},
+        {'name': 'Galactic year', 'symbol': 'gyr'},
       ],
       'Regional': [
-        {'name': 'Chinese ke', 'symbol': 'ke'}, //[cite: 5]
-        {'name': 'Chinese shichen', 'symbol': 'sch'}, //[cite: 5]
-        {'name': 'Hebrew helek', 'symbol': 'hlk'}, //[cite: 5]
-        {'name': 'Indian ghati', 'symbol': 'gha'}, //[cite: 5]
-        {'name': 'Indian muhurta', 'symbol': 'muh'}, //[cite: 5]
-        {'name': 'Indian prahara', 'symbol': 'prh'}, //[cite: 5]
+        {'name': 'Chinese ke', 'symbol': 'ke'},
+        {'name': 'Chinese shichen', 'symbol': 'sch'},
+        {'name': 'Hebrew helek', 'symbol': 'hlk'},
+        {'name': 'Indian ghati', 'symbol': 'gha'},
+        {'name': 'Indian muhurta', 'symbol': 'muh'},
+        {'name': 'Indian prahara', 'symbol': 'prh'},
       ],
       'Historical': [
-        {'name': 'Biblical jubilee', 'symbol': 'jub'}, //[cite: 4, 5]
-        {'name': 'Byzantine indiction', 'symbol': 'ind'}, //[cite: 4, 5]
-        {'name': 'English score', 'symbol': 'sco'}, //[cite: 4]
-        {'name': 'Greek olympiad', 'symbol': 'oly'}, //[cite: 4]
-        {'name': 'Medieval moment', 'symbol': 'mom'}, //[cite: 4]
-        {'name': 'Roman lustrum', 'symbol': 'lst'}, //[cite: 4]
-      ]
-    }
-
-    // Future me Area, Volume etc. add kar sakte hain
+        {'name': 'Biblical jubilee', 'symbol': 'jub'},
+        {'name': 'Byzantine indiction', 'symbol': 'ind'},
+        {'name': 'English score', 'symbol': 'sco'},
+        {'name': 'Greek olympiad', 'symbol': 'oly'},
+        {'name': 'Medieval moment', 'symbol': 'mom'},
+        {'name': 'Roman lustrum', 'symbol': 'lst'},
+      ],
+    },
   };
 
   Map<String, List<Map<String, String>>> displayedGroups = {};
@@ -933,7 +921,6 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
   @override
   void initState() {
     super.initState();
-    // Sheet open hote hi us category ka poora grouped data load hoga
     displayedGroups = unitData[widget.category] ?? {};
   }
 
@@ -951,7 +938,6 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
     final searchLower = query.toLowerCase();
     Map<String, List<Map<String, String>>> filteredGroups = {};
 
-    // Har group ke andar search karega
     allGroups.forEach((groupName, units) {
       final matchedUnits = units.where((unit) {
         final nameLower = unit['name']!.toLowerCase();
@@ -959,7 +945,6 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
         return nameLower.contains(searchLower) || symbolLower.contains(searchLower);
       }).toList();
 
-      // Agar is group mein koi match mila, toh hi isko list me dikhayega
       if (matchedUnits.isNotEmpty) {
         filteredGroups[groupName] = matchedUnits;
       }
@@ -973,7 +958,7 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.80, // Height thodi aur badha di taaki cards acche se dikhein
+      height: MediaQuery.of(context).size.height * 0.80,
       padding: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
         color: AppColors.surfaceColor(context),
@@ -993,30 +978,6 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
           const SizedBox(height: 10),
 
           // 2. Search Bar
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       color: bgColor.withOpacity(0.5),
-          //       borderRadius: BorderRadius.circular(16),
-          //       border: Border.all(color: Colors.white.withOpacity(0.05)),
-          //     ),
-          //     child: TextField(
-          //       controller: searchController,
-          //       onChanged: _filterUnits,
-          //       style: const TextStyle(color: Colors.white, fontSize: 16),
-          //       cursorColor: cyanColor,
-          //       decoration: InputDecoration(
-          //         hintText: 'Search in ${widget.category}',
-          //         hintStyle: TextStyle(color: textGrey.withOpacity(0.5), fontSize: 15),
-          //         prefixIcon: Icon(Icons.search_rounded, color: textGrey.withOpacity(0.7)),
-          //         border: InputBorder.none,
-          //         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // 2. Search Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Container(
@@ -1035,19 +996,18 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
                   hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 15),
                   prefixIcon: Icon(Icons.search_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
 
-                  // --- NAYA: Clear (X) Button Logic ---
                   suffixIcon: searchController.text.isNotEmpty
                       ? IconButton(
-                    icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
-                    tooltip: 'Clear search',
-                    onPressed: () {
-                      setState(() {
-                        searchController.clear(); // TextField ko khali karega
-                        _filterUnits(''); // List ko wapas default state me layega
-                        FocusScope.of(context).unfocus(); // Keyboard ko niche bhej dega
-                      });
-                    },
-                  )
+                          icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
+                          tooltip: 'Clear search',
+                          onPressed: () {
+                            setState(() {
+                              searchController.clear();
+                              _filterUnits('');
+                              FocusScope.of(context).unfocus();
+                            });
+                          },
+                        )
                       : null,
 
                   border: InputBorder.none,
@@ -1062,22 +1022,22 @@ class _UnitSelectorSheetState extends State<UnitSelectorSheet> {
           Expanded(
             child: displayedGroups.isEmpty
                 ? Center(
-              child: Text(
-                'No unit found',
-                style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 16),
-              ),
-            )
+                    child: Text(
+                      'No unit found',
+                      style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5), fontSize: 16),
+                    ),
+                  )
                 : ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: displayedGroups.keys.length,
-              itemBuilder: (context, index) {
-                String groupName = displayedGroups.keys.elementAt(index);
-                List<Map<String, String>> units = displayedGroups[groupName]!;
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    itemCount: displayedGroups.keys.length,
+                    itemBuilder: (context, index) {
+                      String groupName = displayedGroups.keys.elementAt(index);
+                      List<Map<String, String>> units = displayedGroups[groupName]!;
 
-                return _buildGroupCard(groupName, units);
-              },
-            ),
+                      return _buildGroupCard(groupName, units);
+                    },
+                  ),
           ),
         ],
       ),
