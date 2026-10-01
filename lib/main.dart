@@ -34,10 +34,7 @@ void overlayMain() {
         textDirection: TextDirection.ltr,
         child: Localizations(
           locale: const Locale('en', 'US'),
-          delegates: const [
-            DefaultMaterialLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-          ],
+          delegates: const [DefaultMaterialLocalizations.delegate, DefaultWidgetsLocalizations.delegate],
           child: const MiniFloatingCalculator(),
         ),
       ),
@@ -58,6 +55,7 @@ Future<void> main() async {
 
 class CalculatorProApp extends StatelessWidget {
   const CalculatorProApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
@@ -112,6 +110,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   BannerAd? _bannerAd;
   bool _isLoaded = false;
   String _buttonShape = 'rounded';
+
   // Google Test Ad Unit ID (Android ke liye)
   final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
 
@@ -132,7 +131,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           'type': 'sync_to_mini',
           'eq': _equationController.text,
           'res': result,
-          'eval': isEvaluated
+          'eval': isEvaluated,
         };
         FlutterOverlayWindow.shareData(jsonEncode(data));
       } else if (event is String) {
@@ -221,91 +220,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           ad.dispose();
         },
       ),
-    )
-      ..load();
+    )..load();
   }
-
-  // String _calculateResult(String eq, {bool isFinalCall = false}) {
-  //   if (eq.isEmpty) return '';
-  //
-  //   if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
-  //     return isFinalCall ? 'Expression error' : '';
-  //   }
-  //
-  //   try {
-  //     String sanitized = eq;
-  //     sanitized = sanitized.replaceAllMapped(
-  //       RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
-  //           (Match m) => '${m[1]}*${m[2]}',
-  //     );
-  //     sanitized = sanitized.replaceAllMapped(
-  //       RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-  //           (Match m) => '${m[1]}*${m[2]}',
-  //     );
-  //     sanitized = sanitized.replaceAllMapped(
-  //       RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-  //           (Match m) => '${m[1]}*${m[2]}',
-  //     );
-  //     sanitized = sanitized
-  //         .replaceAll('×', '*')
-  //         .replaceAll('÷', '/')
-  //         .replaceAll('π', '3.141592653589793')
-  //         .replaceAll('e', '2.718281828459045')
-  //         .replaceAll('√', 'sqrt(')
-  //         .replaceAll('²', '^2');
-  //
-  //     sanitized = sanitized
-  //         .replaceAll('log10(', '(1/2.302585092994046)*ln(')
-  //         .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
-  //
-  //     if (isDegreeMode) {
-  //       sanitized = sanitized
-  //           .replaceAll('sin(', 'sin((3.141592653589793/180)*')
-  //           .replaceAll('cos(', 'cos((3.141592653589793/180)*')
-  //           .replaceAll('tan(', 'tan((3.141592653589793/180)*');
-  //     }
-  //
-  //     int openParens = sanitized
-  //         .split('(')
-  //         .length - 1;
-  //     int closeParens = sanitized
-  //         .split(')')
-  //         .length - 1;
-  //     for (int i = 0; i < (openParens - closeParens); i++) {
-  //       sanitized += ')';
-  //     }
-  //
-  //     Parser p = Parser();
-  //     Expression exp = p.parse(sanitized);
-  //     ContextModel cm = ContextModel();
-  //     double eval = exp.evaluate(EvaluationType.REAL, cm);
-  //
-  //     // Agar math error aaye jaise (1/0)
-  //     if (eval.isNaN || eval.isInfinite) return 'Expression error';
-  //
-  //     // Negative zero fix
-  //     if (eval == -0.0) eval = 0.0;
-  //
-  //     // Output Formatting
-  //     if (eval == eval.toInt()) {
-  //       return eval.toInt().toString();
-  //     }
-  //     return eval.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-  //   } catch (e) {
-  //     // 6. ERROR HANDLING
-  //     // Agar user ne = daba diya hai aur format galat hai, toh properly error dikhao
-  //     if (isFinalCall) {
-  //       return 'Expression error';
-  //     }
-  //     // Type karte waqt error aaye (jaise 5+) toh purana result hold karo
-  //     return result;
-  //   }
-  // }
 
   String _calculateResult(String eq, {bool isFinalCall = false}) {
     if (eq.isEmpty) return '';
-
-    // --- NAYA FIX 1: Trailing Operators Hatana ---
     // Agar user ne '=' dabaya hai aur end mein '+', '-', '×', '÷' chhuta hua hai, toh usko hata do
     if (isFinalCall) {
       eq = eq.replaceAll(RegExp(r'[\+\-×÷\^]+$'), '');
@@ -318,25 +237,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     try {
       String sanitized = eq;
 
-      // --- NAYA FIX 2: Percentage (%) Calculation ---
-      // 500×10% ko 500*(10/100) mein smoothly convert karega
-      sanitized = sanitized.replaceAllMapped(
-          RegExp(r'([0-9.]+)\%'),
-              (Match m) => '(${m[1]}/100)'
-      );
+      sanitized = sanitized.replaceAllMapped(RegExp(r'([0-9.]+)\%'), (Match m) => '(${m[1]}/100)');
       sanitized = sanitized.replaceAll('%', '/100'); // Backup for any remaining %
 
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
-            (Match m) => '${m[1]}*${m[2]}',
+        (Match m) => '${m[1]}*${m[2]}',
       );
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-            (Match m) => '${m[1]}*${m[2]}',
+        (Match m) => '${m[1]}*${m[2]}',
       );
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
-            (Match m) => '${m[1]}*${m[2]}',
+        (Match m) => '${m[1]}*${m[2]}',
       );
       sanitized = sanitized
           .replaceAll('×', '*')
@@ -380,127 +294,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
       return result;
     }
   }
-
-
-
-  // --- Button Press Handler Update ---
-  // void _onKeyPress(String key) {
-  //   if (_isHapticsEnabled) {
-  //     HapticFeedback.selectionClick(); // Halka sa premium vibration
-  //   }
-  //
-  //   if (!_focusNode.hasFocus) {
-  //     FocusScope.of(context).requestFocus(_focusNode);
-  //   }
-  //
-  //   setState(() {
-  //     int cursorPos = _equationController.selection.baseOffset;
-  //     if (cursorPos < 0) cursorPos = _equationController.text.length;
-  //
-  //     // Degree aur Radian mode toggle karna (Iska output turant result me dikhega)
-  //     if (key == 'deg') {
-  //       isDegreeMode = true;
-  //       result = _calculateResult(_equationController.text);
-  //       return;
-  //     } else if (key == 'rad') {
-  //       isDegreeMode = false;
-  //       result = _calculateResult(_equationController.text);
-  //       return;
-  //     } else if (key == 'Inv') {
-  //       return;
-  //     }
-  //
-  //     bool isOperator = ['+', '-', '×', '÷', '%', '^'].contains(key);
-  //     String inputKey = key;
-  //
-  //     if (key == 'AC') {
-  //       _equationController.clear();
-  //       result = '';
-  //       isEvaluated = false;
-  //     } else if (key == 'BACK') {
-  //       if (_equationController.text.isNotEmpty && cursorPos > 0) {
-  //         String text = _equationController.text;
-  //         String newText = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
-  //         _equationController.value = TextEditingValue(
-  //           text: newText,
-  //           selection: TextSelection.collapsed(offset: cursorPos - 1),
-  //         );
-  //         isEvaluated = false;
-  //       }
-  //     } else if (key == '=') {
-  //       if (_equationController.text.isNotEmpty) {
-  //         // NAYA LOGIC: Yahan isFinalCall ko true pass kiya hai
-  //         String finalResult = _calculateResult(_equationController.text, isFinalCall: true);
-  //         if (finalResult.isNotEmpty) {
-  //           result = finalResult;
-  //           isEvaluated = true;
-  //
-  //           if (finalResult != 'Expression error') {
-  //             _saveToHistory(_equationController.text, finalResult);
-  //             //_saveSyncState();
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       if (isEvaluated) {
-  //         if (isOperator) {
-  //           if (result == 'Expression error') {
-  //             _equationController.text = inputKey;
-  //             _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
-  //           } else {
-  //             _equationController.text = result + inputKey;
-  //             _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
-  //           }
-  //         } else {
-  //           _equationController.text = inputKey;
-  //           _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
-  //         }
-  //         isEvaluated = false;
-  //       } else {
-  //         String before = _equationController.text.substring(0, cursorPos);
-  //         String after = _equationController.text.substring(cursorPos);
-  //
-  //         if (isOperator && before.isNotEmpty) {
-  //           String lastChar = before[before.length - 1];
-  //           if (['+', '-', '×', '÷', '%', '^'].contains(lastChar)) {
-  //             if (lastChar == key) {
-  //               return;
-  //             } else {
-  //               String newBefore = before.substring(0, before.length - 1) + inputKey;
-  //               _equationController.value = TextEditingValue(
-  //                 text: newBefore + after,
-  //                 selection: TextSelection.collapsed(offset: newBefore.length),
-  //               );
-  //               result = _calculateResult(_equationController.text);
-  //               return;
-  //             }
-  //           }
-  //         }
-  //
-  //         String newText = before + inputKey + after;
-  //         _equationController.value = TextEditingValue(
-  //           text: newText,
-  //           selection: TextSelection.collapsed(offset: before.length + inputKey.length),
-  //         );
-  //       }
-  //     }
-  //
-  //     // Type karte hi real-time answer calculate karna
-  //     if (key != '=' && key != 'AC') {
-  //       result = _calculateResult(_equationController.text);
-  //     }
-  //   });
-  //
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_scrollController.hasClients && _equationController.selection.baseOffset == _equationController.text.length) {
-  //       _scrollController.animateTo(
-  //         _scrollController.position.maxScrollExtent,
-  //         duration: const Duration(milliseconds: 100),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
 
   void _onKeyPress(String key) {
     if (_isHapticsEnabled) HapticFeedback.selectionClick();
@@ -699,586 +492,710 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
+      value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.bgColor(context),
+        body: SafeArea(
+          child: Column(
+            children: [
+              // 1. HORIZONTAL SLIDER (Full Screen Menu Side-by-Side)
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    // NAYA: Phone ki exact width calculate kar rahe hain
+                    double screenWidth = MediaQuery.of(context).size.width;
 
-    ),
-    child: Scaffold(
-      backgroundColor: AppColors.bgColor(context),
-      body: SafeArea(
-        child: Column(
-          children: [
-
-            // 1. HORIZONTAL SLIDER (Full Screen Menu Side-by-Side)
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  // NAYA: Phone ki exact width calculate kar rahe hain
-                  double screenWidth = MediaQuery
-                      .of(context)
-                      .size
-                      .width;
-
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      // ----------------------------------------------------
-                      // LEFT SIDE: MENU SCREEN (Ab Full Screen Hoga)
-                      // ----------------------------------------------------
-                      // ----------------------------------------------------
-                      // LEFT SIDE: FULL SCREEN MENU
-                      // ----------------------------------------------------
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
-                        curve: Curves.easeOutCubic,
-                        left: _isMenuDragging ? _menuDragOffset - screenWidth : (isMenuOpen ? 0 : -screenWidth),
-                        width: screenWidth,
-                        top: 0,
-                        bottom: 0,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          // --- NAYA: MENU PAR BHI REAL-TIME FINGER TRACKING ---
-                          onHorizontalDragStart: (details) {
-                            setState(() {
-                              _isMenuDragging = true;
-                              // Drag shuru hote hi current position pakad lega
-                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-                            });
-                          },
-                          onHorizontalDragUpdate: (details) {
-                            setState(() {
-                              _menuDragOffset += details.delta.dx;
-                              // Screen se bahar na jaye isliye limits set ki hain
-                              if (_menuDragOffset < 0) _menuDragOffset = 0;
-                              if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
-                            });
-                          },
-                          onHorizontalDragEnd: (details) {
-                            setState(() {
-                              _isMenuDragging = false;
-                              // Speed mein swipe kiya toh direct open/close
-                              if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
-                                isMenuOpen = true;
-                              } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                                isMenuOpen = false;
-                              } else {
-                                // Aadhi screen swipe pe auto-snap
-                                isMenuOpen = _menuDragOffset > (screenWidth / 2);
-                              }
-                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-                            });
-                          },
-                          // ---------------------------------------------------
-                          child: MenuOptions(
-                            onClose: () {
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // ----------------------------------------------------
+                        // LEFT SIDE: MENU SCREEN (Ab Full Screen Hoga)
+                        // ----------------------------------------------------
+                        // ----------------------------------------------------
+                        // LEFT SIDE: FULL SCREEN MENU
+                        // ----------------------------------------------------
+                        AnimatedPositioned(
+                          duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
+                          curve: Curves.easeOutCubic,
+                          left: _isMenuDragging ? _menuDragOffset - screenWidth : (isMenuOpen ? 0 : -screenWidth),
+                          width: screenWidth,
+                          top: 0,
+                          bottom: 0,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            // --- NAYA: MENU PAR BHI REAL-TIME FINGER TRACKING ---
+                            onHorizontalDragStart: (details) {
                               setState(() {
-                                isMenuOpen = false;
-                                _menuDragOffset = 0.0;
+                                _isMenuDragging = true;
+                                // Drag shuru hote hi current position pakad lega
+                                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
                               });
                             },
+                            onHorizontalDragUpdate: (details) {
+                              setState(() {
+                                _menuDragOffset += details.delta.dx;
+                                // Screen se bahar na jaye isliye limits set ki hain
+                                if (_menuDragOffset < 0) _menuDragOffset = 0;
+                                if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
+                              });
+                            },
+                            onHorizontalDragEnd: (details) {
+                              setState(() {
+                                _isMenuDragging = false;
+                                // Speed mein swipe kiya toh direct open/close
+                                if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
+                                  isMenuOpen = true;
+                                } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
+                                  isMenuOpen = false;
+                                } else {
+                                  // Aadhi screen swipe pe auto-snap
+                                  isMenuOpen = _menuDragOffset > (screenWidth / 2);
+                                }
+                                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                              });
+                            },
+                            // ---------------------------------------------------
+                            child: MenuOptions(
+                              onClose: () {
+                                setState(() {
+                                  isMenuOpen = false;
+                                  _menuDragOffset = 0.0;
+                                });
+                              },
+                            ),
                           ),
                         ),
-                      ),
 
-                      // ----------------------------------------------------
-                      // RIGHT SIDE: MAIN CALCULATOR APP
-                      // ----------------------------------------------------
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
-                        curve: Curves.easeOutCubic,
-                        left: _isMenuDragging ? _menuDragOffset : (isMenuOpen ? screenWidth : 0),
-                        right: _isMenuDragging ? -_menuDragOffset : (isMenuOpen ? -screenWidth : 0),
-                        top: 0,
-                        bottom: 0,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          // --- HORIZONTAL FINGER TRACKING ---
-                          onHorizontalDragStart: (details) {
-                            setState(() {
-                              _isMenuDragging = true;
-                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-                            });
-                          },
-                          onHorizontalDragUpdate: (details) {
-                            setState(() {
-                              _menuDragOffset += details.delta.dx;
-                              if (_menuDragOffset < 0) _menuDragOffset = 0;
-                              if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
-                            });
-                          },
-                          onHorizontalDragEnd: (details) {
-                            setState(() {
-                              _isMenuDragging = false;
-                              if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
-                                isMenuOpen = true;
-                              } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                                isMenuOpen = false;
-                              } else {
-                                isMenuOpen = _menuDragOffset > (screenWidth / 2);
-                              }
-                              _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
-                            });
-                          },
-                          // ---------------------------------------------
-                          child: Container(
-                            color: AppColors.bgColor(context), // Background color taki piche ka menu chhip sake
-                            // --- AAPKA PURANA LAYOUT BUILDER (Jisme History Vertical Slide hoti hai) ---
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return TweenAnimationBuilder<double>(
-                                  duration: const Duration(milliseconds: 350),
-                                  curve: Curves.easeOutCubic,
-                                  tween: Tween<double>(end: isScientific ? 200.0 : 300.0),
-                                  builder: (context, topFlex, child) {
-                                    double totalFlex = 700.0;
-                                    double keypadFlex = totalFlex - topFlex;
-                                    double keypadHeight = constraints.maxHeight * (keypadFlex / totalFlex);
+                        // ----------------------------------------------------
+                        // RIGHT SIDE: MAIN CALCULATOR APP
+                        // ----------------------------------------------------
+                        AnimatedPositioned(
+                          duration: Duration(milliseconds: _isMenuDragging ? 0 : 350),
+                          curve: Curves.easeOutCubic,
+                          left: _isMenuDragging ? _menuDragOffset : (isMenuOpen ? screenWidth : 0),
+                          right: _isMenuDragging ? -_menuDragOffset : (isMenuOpen ? -screenWidth : 0),
+                          top: 0,
+                          bottom: 0,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            // --- HORIZONTAL FINGER TRACKING ---
+                            onHorizontalDragStart: (details) {
+                              setState(() {
+                                _isMenuDragging = true;
+                                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                              });
+                            },
+                            onHorizontalDragUpdate: (details) {
+                              setState(() {
+                                _menuDragOffset += details.delta.dx;
+                                if (_menuDragOffset < 0) _menuDragOffset = 0;
+                                if (_menuDragOffset > screenWidth) _menuDragOffset = screenWidth;
+                              });
+                            },
+                            onHorizontalDragEnd: (details) {
+                              setState(() {
+                                _isMenuDragging = false;
+                                if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
+                                  isMenuOpen = true;
+                                } else if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
+                                  isMenuOpen = false;
+                                } else {
+                                  isMenuOpen = _menuDragOffset > (screenWidth / 2);
+                                }
+                                _menuDragOffset = isMenuOpen ? screenWidth : 0.0;
+                              });
+                            },
+                            // ---------------------------------------------
+                            child: Container(
+                              color: AppColors.bgColor(context), // Background color taki piche ka menu chhip sake
+                              // --- AAPKA PURANA LAYOUT BUILDER (Jisme History Vertical Slide hoti hai) ---
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 350),
+                                    curve: Curves.easeOutCubic,
+                                    tween: Tween<double>(end: isScientific ? 200.0 : 300.0),
+                                    builder: (context, topFlex, child) {
+                                      double totalFlex = 700.0;
+                                      double keypadFlex = totalFlex - topFlex;
+                                      double keypadHeight = constraints.maxHeight * (keypadFlex / totalFlex);
 
-                                    return Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        // VERTICAL BACKGROUND: HISTORY PANEL
-                                        AnimatedOpacity(
-                                          duration: Duration(milliseconds: _isDragging ? 0 : 300),
-                                          opacity: _isDragging
-                                              ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
-                                              : (isHistoryOpen ? 1.0 : 0.0),
-                                          child: Builder(
-                                            builder: (context) {
-                                              Map<String, List<Map<String, dynamic>>> groupedHistory = {};
-                                              DateTime now = DateTime.now();
-                                              String todayStr =
-                                                  "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(
-                                                  2, '0')}-${now.year}";
-                                              DateTime yesterday = now.subtract(const Duration(days: 1));
-                                              String yesterdayStr =
-                                                  "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month
-                                                  .toString().padLeft(2, '0')}-${yesterday.year}";
+                                      return Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          // VERTICAL BACKGROUND: HISTORY PANEL
+                                          AnimatedOpacity(
+                                            duration: Duration(milliseconds: _isDragging ? 0 : 300),
+                                            opacity: _isDragging
+                                                ? (_dragOffset / keypadHeight).clamp(0.0, 1.0)
+                                                : (isHistoryOpen ? 1.0 : 0.0),
+                                            child: Builder(
+                                              builder: (context) {
+                                                Map<String, List<Map<String, dynamic>>> groupedHistory = {};
+                                                DateTime now = DateTime.now();
+                                                String todayStr =
+                                                    "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}";
+                                                DateTime yesterday = now.subtract(const Duration(days: 1));
+                                                String yesterdayStr =
+                                                    "${yesterday.day.toString().padLeft(2, '0')}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.year}";
 
-                                              for (String entry in _historyList) {
-                                                Map<String, dynamic> item = jsonDecode(entry);
-                                                String fullDateTime = item['datetime'] ?? '';
-                                                List<String> parts = fullDateTime.split(' ');
-                                                String datePart = parts.isNotEmpty ? parts[0] : '';
-                                                String displayDate = datePart;
-                                                if (datePart == todayStr)
-                                                  displayDate = 'Today';
-                                                else if (datePart == yesterdayStr)
-                                                  displayDate = 'Yesterday';
+                                                for (String entry in _historyList) {
+                                                  Map<String, dynamic> item = jsonDecode(entry);
+                                                  String fullDateTime = item['datetime'] ?? '';
+                                                  List<String> parts = fullDateTime.split(' ');
+                                                  String datePart = parts.isNotEmpty ? parts[0] : '';
+                                                  String displayDate = datePart;
+                                                  if (datePart == todayStr)
+                                                    displayDate = 'Today';
+                                                  else if (datePart == yesterdayStr)
+                                                    displayDate = 'Yesterday';
 
-                                                if (!groupedHistory.containsKey(displayDate))
-                                                  groupedHistory[displayDate] = [];
-                                                groupedHistory[displayDate]!.add(item);
-                                              }
+                                                  if (!groupedHistory.containsKey(displayDate))
+                                                    groupedHistory[displayDate] = [];
+                                                  groupedHistory[displayDate]!.add(item);
+                                                }
 
-                                              return Container(
-                                                height: keypadHeight,
-                                                width: double.infinity,
-                                                padding: const EdgeInsets.all(10.0),
-                                                child: Card(
-                                                  color: AppColors.surfaceColor(context).withOpacity(0.3),
-                                                  elevation: 0,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(24),
-                                                    side: BorderSide(color: AppColors.textColor(context).withOpacity(0.05)),
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(
-                                                          left: 8.0,
-                                                          right: 8.0,
-                                                          top: 4.0,
-                                                          bottom: 2.0,
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                IconButton(
-                                                                  icon: Icon(
-                                                                    Icons.arrow_back_ios_new,
-                                                                    color: AppColors.textColor(context),
-                                                                    size: 20,
-                                                                  ),
-                                                                  onPressed: () =>
-                                                                      setState(() => isHistoryOpen = false),
-                                                                ),
-                                                                const SizedBox(width: 4),
-                                                                 Text(
-                                                                  'History',
-                                                                  style: TextStyle(
-                                                                    color: AppColors.textColor(context),
-                                                                    fontSize: 18,
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            IconButton(
-                                                              icon: Icon(Icons.delete_outline, color: AppColors.orangeColor(context)),
-                                                              onPressed: _showClearHistoryDialog,
-                                                            ),
-                                                          ],
-                                                        ),
+                                                return Container(
+                                                  height: keypadHeight,
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Card(
+                                                    color: AppColors.surfaceColor(context).withOpacity(0.3),
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(24),
+                                                      side: BorderSide(
+                                                        color: AppColors.textColor(context).withOpacity(0.05),
                                                       ),
-                                                      Expanded(
-                                                        child: _historyList.isEmpty
-                                                            ? Center(
-                                                          child: Text(
-                                                            'No History yet',
-                                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 16),
+                                                    ),
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(
+                                                            left: 8.0,
+                                                            right: 8.0,
+                                                            top: 4.0,
+                                                            bottom: 2.0,
                                                           ),
-                                                        )
-                                                            : ListView(
-                                                          padding: const EdgeInsets.symmetric(
-                                                            horizontal: 16,
-                                                            vertical: 0,
-                                                          ),
-                                                          children: groupedHistory.entries.map((entry) {
-                                                            return Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(
-                                                                    bottom: 4.0,
-                                                                    top: 2.0,
-                                                                    left: 4.0,
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  IconButton(
+                                                                    icon: Icon(
+                                                                      Icons.arrow_back_ios_new,
+                                                                      color: AppColors.textColor(context),
+                                                                      size: 20,
+                                                                    ),
+                                                                    onPressed: () =>
+                                                                        setState(() => isHistoryOpen = false),
                                                                   ),
-                                                                  child: Text(
-                                                                    entry.key,
+                                                                  const SizedBox(width: 4),
+                                                                  Text(
+                                                                    'History',
                                                                     style: TextStyle(
-                                                                      color: AppColors.cyanColor(context),
-                                                                      fontSize: 14,
+                                                                      color: AppColors.textColor(context),
+                                                                      fontSize: 18,
+                                                                      fontWeight: FontWeight.bold,
                                                                     ),
                                                                   ),
+                                                                ],
+                                                              ),
+                                                              IconButton(
+                                                                icon: Icon(
+                                                                  Icons.delete_outline,
+                                                                  color: AppColors.orangeColor(context),
                                                                 ),
-                                                                ...entry.value.map((item) {
-                                                                  String fullDateTime = item['datetime'] ?? '';
-                                                                  String timePart = fullDateTime.contains(' ')
-                                                                      ? fullDateTime.split(' ')[1]
-                                                                      : '';
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                                                                      setState(() {
-                                                                        // 1. History se equation text controller mein daalo
-                                                                        _equationController.text = item['equation'] ?? '';
+                                                                onPressed: _showClearHistoryDialog,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: _historyList.isEmpty
+                                                              ? Center(
+                                                                  child: Text(
+                                                                    'No History yet',
+                                                                    style: TextStyle(
+                                                                      color: AppColors.textGrey(context),
+                                                                      fontSize: 16,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              : ListView(
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                    horizontal: 16,
+                                                                    vertical: 0,
+                                                                  ),
+                                                                  children: groupedHistory.entries.map((entry) {
+                                                                    return Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                            bottom: 4.0,
+                                                                            top: 2.0,
+                                                                            left: 4.0,
+                                                                          ),
+                                                                          child: Text(
+                                                                            entry.key,
+                                                                            style: TextStyle(
+                                                                              color: AppColors.cyanColor(context),
+                                                                              fontSize: 14,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        ...entry.value.map((item) {
+                                                                          String fullDateTime = item['datetime'] ?? '';
+                                                                          String timePart = fullDateTime.contains(' ')
+                                                                              ? fullDateTime.split(' ')[1]
+                                                                              : '';
+                                                                          return GestureDetector(
+                                                                            onTap: () {
+                                                                              if (_isHapticsEnabled)
+                                                                                HapticFeedback.selectionClick();
+                                                                              setState(() {
+                                                                                // 1. History se equation text controller mein daalo
+                                                                                _equationController.text =
+                                                                                    item['equation'] ?? '';
 
-                                                                        // 2. Cursor ko ekdum end par set karo
-                                                                        _equationController.selection = TextSelection.collapsed(
-                                                                            offset: _equationController.text.length);
+                                                                                // 2. Cursor ko ekdum end par set karo
+                                                                                _equationController.selection =
+                                                                                    TextSelection.collapsed(
+                                                                                      offset: _equationController
+                                                                                          .text
+                                                                                          .length,
+                                                                                    );
 
-                                                                        // 3. Result update karo
-                                                                        result = item['result'] ?? '';
+                                                                                // 3. Result update karo
+                                                                                result = item['result'] ?? '';
 
-                                                                        // 4. Status flags update karo
-                                                                        isEvaluated = true;
-                                                                        //isHistoryOpen = false;
-                                                                      });
-                                                                    },
-                                                                    child: Container(
-                                                                      width: double.infinity,
-                                                                      margin: const EdgeInsets.only(bottom: 12),
-                                                                      padding: const EdgeInsets.symmetric(
-                                                                        horizontal: 12,
-                                                                        vertical: 5,
-                                                                      ),
-                                                                      decoration: BoxDecoration(
-                                                                        color: AppColors.bgColor(context).withOpacity(0.5),
-                                                                        borderRadius: BorderRadius.circular(16),
-                                                                      ),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          Align(
-                                                                            alignment: Alignment.centerLeft,
-                                                                            child: Text(
-                                                                              timePart,
-                                                                              style: TextStyle(
-                                                                                color: AppColors.textGrey(context).withOpacity(0.8),
-                                                                                fontSize: 11,
+                                                                                // 4. Status flags update karo
+                                                                                isEvaluated = true;
+                                                                                //isHistoryOpen = false;
+                                                                              });
+                                                                            },
+                                                                            child: Container(
+                                                                              width: double.infinity,
+                                                                              margin: const EdgeInsets.only(bottom: 12),
+                                                                              padding: const EdgeInsets.symmetric(
+                                                                                horizontal: 12,
+                                                                                vertical: 5,
+                                                                              ),
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.bgColor(
+                                                                                  context,
+                                                                                ).withOpacity(0.5),
+                                                                                borderRadius: BorderRadius.circular(16),
+                                                                              ),
+                                                                              child: Column(
+                                                                                crossAxisAlignment:
+                                                                                    CrossAxisAlignment.end,
+                                                                                children: [
+                                                                                  Align(
+                                                                                    alignment: Alignment.centerLeft,
+                                                                                    child: Text(
+                                                                                      timePart,
+                                                                                      style: TextStyle(
+                                                                                        color: AppColors.textGrey(
+                                                                                          context,
+                                                                                        ).withOpacity(0.8),
+                                                                                        fontSize: 11,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Text(
+                                                                                    item['equation'] ?? '',
+                                                                                    style: TextStyle(
+                                                                                      color: AppColors.textGrey(
+                                                                                        context,
+                                                                                      ),
+                                                                                      fontSize: 16,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Text(
+                                                                                    item['result'] ?? '',
+                                                                                    style: TextStyle(
+                                                                                      color: AppColors.textColor(
+                                                                                        context,
+                                                                                      ),
+                                                                                      fontSize: 20,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          Text(
-                                                                            item['equation'] ?? '',
-                                                                            style: TextStyle(
-                                                                              color: AppColors.textGrey(context),
-                                                                              fontSize: 16,
-                                                                            ),
-                                                                          ),
-                                                                          Text(
-                                                                            item['result'] ?? '',
-                                                                            style: TextStyle(
-                                                                              color: AppColors.textColor(context),
-                                                                              fontSize: 20,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }).toList(),
-                                                              ],
-                                                            );
-                                                          }).toList(),
+                                                                          );
+                                                                        }).toList(),
+                                                                      ],
+                                                                    );
+                                                                  }).toList(),
+                                                                ),
                                                         ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
-                                                        child: Text(
-                                                          'Swipe for options',
-                                                          style: TextStyle(
-                                                            color: AppColors.textGrey(context).withOpacity(0.4),
-                                                            fontSize: 12,
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(bottom: 10.0, top: 8.0),
+                                                          child: Text(
+                                                            'Swipe for options',
+                                                            style: TextStyle(
+                                                              color: AppColors.textGrey(context).withOpacity(0.4),
+                                                              fontSize: 12,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
 
-                                        // VERTICAL FOREGROUND: CALCULATOR (Slides Down)
-                                        AnimatedPositioned(
-                                          duration: Duration(milliseconds: _isDragging ? 0 : 350),
-                                          curve: Curves.easeOutCubic,
-                                          top: _isDragging ? _dragOffset : (isHistoryOpen ? keypadHeight : 0),
-                                          bottom: _isDragging ? -_dragOffset : (isHistoryOpen ? -keypadHeight : 0),
-                                          left: 0,
-                                          right: 0,
-                                          child: Column(
-                                            children: [
-                                              _buildTopBar(),
-                                              Expanded(
-                                                flex: topFlex.toInt(),
-                                                child: GestureDetector(
-                                                  behavior: HitTestBehavior.opaque,
-                                                  onVerticalDragStart: (details) {
-                                                    setState(() {
-                                                      _isDragging = true;
-                                                      _dragOffset = isHistoryOpen ? keypadHeight : 0.0;
-                                                    });
-                                                  },
-                                                  onVerticalDragUpdate: (details) {
-                                                    setState(() {
-                                                      _dragOffset += details.delta.dy;
-                                                      if (_dragOffset < 0) _dragOffset = 0;
-                                                      if (_dragOffset > keypadHeight) _dragOffset = keypadHeight;
-                                                    });
-                                                  },
-                                                  onVerticalDragEnd: (details) {
-                                                    setState(() {
-                                                      _isDragging = false;
-                                                      if (details.primaryVelocity != null &&
-                                                          details.primaryVelocity! > 300)
-                                                        isHistoryOpen = true;
-                                                      else if (details.primaryVelocity != null &&
-                                                          details.primaryVelocity! < -300)
-                                                        isHistoryOpen = false;
-                                                      else
-                                                        isHistoryOpen = _dragOffset > (keypadHeight / 2);
-                                                    });
-                                                  },
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: Card(
-                                                      color: AppColors.surfaceColor(context).withOpacity(0.3),
-                                                      elevation: 0,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(24),
-                                                        side: BorderSide(color: Colors.white.withOpacity(0.05)),
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(
-                                                          horizontal: 20.0,
-                                                          vertical: 16.0,
+                                          // VERTICAL FOREGROUND: CALCULATOR (Slides Down)
+                                          AnimatedPositioned(
+                                            duration: Duration(milliseconds: _isDragging ? 0 : 350),
+                                            curve: Curves.easeOutCubic,
+                                            top: _isDragging ? _dragOffset : (isHistoryOpen ? keypadHeight : 0),
+                                            bottom: _isDragging ? -_dragOffset : (isHistoryOpen ? -keypadHeight : 0),
+                                            left: 0,
+                                            right: 0,
+                                            child: Column(
+                                              children: [
+                                                _buildTopBar(),
+                                                Expanded(
+                                                  flex: topFlex.toInt(),
+                                                  child: GestureDetector(
+                                                    behavior: HitTestBehavior.opaque,
+                                                    onVerticalDragStart: (details) {
+                                                      setState(() {
+                                                        _isDragging = true;
+                                                        _dragOffset = isHistoryOpen ? keypadHeight : 0.0;
+                                                      });
+                                                    },
+                                                    onVerticalDragUpdate: (details) {
+                                                      setState(() {
+                                                        _dragOffset += details.delta.dy;
+                                                        if (_dragOffset < 0) _dragOffset = 0;
+                                                        if (_dragOffset > keypadHeight) _dragOffset = keypadHeight;
+                                                      });
+                                                    },
+                                                    onVerticalDragEnd: (details) {
+                                                      setState(() {
+                                                        _isDragging = false;
+                                                        if (details.primaryVelocity != null &&
+                                                            details.primaryVelocity! > 300)
+                                                          isHistoryOpen = true;
+                                                        else if (details.primaryVelocity != null &&
+                                                            details.primaryVelocity! < -300)
+                                                          isHistoryOpen = false;
+                                                        else
+                                                          isHistoryOpen = _dragOffset > (keypadHeight / 2);
+                                                      });
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(10.0),
+                                                      child: Card(
+                                                        color: AppColors.surfaceColor(context).withOpacity(0.3),
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(24),
+                                                          side: BorderSide(color: Colors.white.withOpacity(0.05)),
                                                         ),
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                                          children: [
-                                                            // --- NAYA: TOP LEFT CORNER MEIN COPY BUTTON ---
-                                                            Align(
-                                                              alignment: Alignment.topLeft,
-                                                              child: GestureDetector(
-                                                                onTap: () {
-                                                                  if (_equationController.text.isNotEmpty) {
-                                                                    if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 20.0,
+                                                            vertical: 16.0,
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: [
+                                                              // --- NAYA: TOP LEFT CORNER MEIN COPY BUTTON ---
+                                                              Align(
+                                                                alignment: Alignment.topLeft,
+                                                                child: GestureDetector(
+                                                                  onTap: () {
+                                                                    if (_equationController.text.isNotEmpty) {
+                                                                      if (_isHapticsEnabled)
+                                                                        HapticFeedback.selectionClick();
 
-                                                                    // Equation aur Result ko copy karne ke liye combine karo
-                                                                    String copyText = _equationController.text;
-                                                                    if (result.isNotEmpty && result != 'Expression error') {
-                                                                      copyText += " = $result";
+                                                                      // Equation aur Result ko copy karne ke liye combine karo
+                                                                      String copyText = _equationController.text;
+                                                                      if (result.isNotEmpty &&
+                                                                          result != 'Expression error') {
+                                                                        copyText += " = $result";
+                                                                      }
+
+                                                                      // Clipboard mein save karo
+                                                                      Clipboard.setData(ClipboardData(text: copyText));
+
+                                                                      // Custom Toast dikhao
+                                                                      showCustomToast(context, 'Calculation copied');
                                                                     }
-
-                                                                    // Clipboard mein save karo
-                                                                    Clipboard.setData(ClipboardData(text: copyText));
-
-                                                                    // Custom Toast dikhao
-                                                                    showCustomToast(context, 'Calculation copied');
-                                                                  }
-                                                                },
-                                                                child: Container(
-                                                                  padding: const EdgeInsets.only(bottom: 8.0, right: 16.0),
-                                                                  child: Icon(
-                                                                    Icons.copy_all_rounded,
-                                                                    color: AppColors.textGrey(context),
-                                                                    size: 22,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Align(
-                                                                alignment: Alignment.bottomRight,
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: TweenAnimationBuilder<double>(
-                                                                        duration: const Duration(milliseconds: 250),
-                                                                        curve: Curves.easeOutCubic,
-                                                                        tween: Tween<double>(
-                                                                          end: _getDynamicFontSize(),
-                                                                        ),
-                                                                        builder: (context, animatedSize, child) {
-                                                                          return TextField(
-                                                                            controller: _equationController,
-                                                                            focusNode: _focusNode,
-                                                                            scrollController: _scrollController,
-                                                                            readOnly: true,
-                                                                            showCursor: !isEvaluated,
-                                                                            cursorColor: AppColors.cyanColor(context),
-                                                                            cursorWidth: 3,
-                                                                            cursorHeight: animatedSize + 4,
-                                                                            textAlign: TextAlign.right,
-                                                                            maxLines: 1,
-                                                                            minLines: 1,
-                                                                            style: TextStyle(
-                                                                              color: AppColors.textColor(context),
-                                                                              fontSize: animatedSize,
-                                                                            ),
-                                                                            decoration: const InputDecoration(
-                                                                              border: InputBorder.none,
-                                                                              isDense: true,
-                                                                              contentPadding: EdgeInsets.zero,
-                                                                            ),
-                                                                            onTap: () =>
-                                                                                FocusScope.of(
-                                                                                  context,
-                                                                                ).requestFocus(_focusNode),
-                                                                          );
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            if (result.isNotEmpty)
-                                                              FittedBox(
-                                                                fit: BoxFit.scaleDown,
-                                                                alignment: Alignment.centerRight,
-                                                                child: TweenAnimationBuilder<double>(
-                                                                  duration: const Duration(milliseconds: 250),
-                                                                  curve: Curves.easeOutCubic,
-                                                                  tween: Tween<double>(
-                                                                    end: isEvaluated
-                                                                        ? (isScientific ? 46.0 : 64.0)
-                                                                        : (isScientific ? 24.0 : 32.0),
-                                                                  ),
-                                                                  builder: (context, animatedResultSize, child) {
-                                                                    return Text(
-                                                                      result,
-                                                                      style: TextStyle(
-                                                                        fontSize: animatedResultSize,
-                                                                        fontWeight: isEvaluated
-                                                                            ? FontWeight.w300
-                                                                            : FontWeight.normal,
-                                                                        color: isEvaluated
-                                                                            ? AppColors.textColor(context)
-                                                                            : AppColors.textColor(context).withOpacity(0.8),
-                                                                      ),
-                                                                    );
                                                                   },
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.only(
+                                                                      bottom: 8.0,
+                                                                      right: 16.0,
+                                                                    ),
+                                                                    child: Icon(
+                                                                      Icons.copy_all_rounded,
+                                                                      color: AppColors.textGrey(context),
+                                                                      size: 22,
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
-                                                          ],
+                                                              Expanded(
+                                                                child: Align(
+                                                                  alignment: Alignment.bottomRight,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: TweenAnimationBuilder<double>(
+                                                                          duration: const Duration(milliseconds: 250),
+                                                                          curve: Curves.easeOutCubic,
+                                                                          tween: Tween<double>(
+                                                                            end: _getDynamicFontSize(),
+                                                                          ),
+                                                                          builder: (context, animatedSize, child) {
+                                                                            return TextField(
+                                                                              controller: _equationController,
+                                                                              focusNode: _focusNode,
+                                                                              scrollController: _scrollController,
+                                                                              readOnly: true,
+                                                                              showCursor: !isEvaluated,
+                                                                              cursorColor: AppColors.cyanColor(context),
+                                                                              cursorWidth: 3,
+                                                                              cursorHeight: animatedSize + 4,
+                                                                              textAlign: TextAlign.right,
+                                                                              maxLines: 1,
+                                                                              minLines: 1,
+                                                                              style: TextStyle(
+                                                                                color: AppColors.textColor(context),
+                                                                                fontSize: animatedSize,
+                                                                              ),
+                                                                              decoration: const InputDecoration(
+                                                                                border: InputBorder.none,
+                                                                                isDense: true,
+                                                                                contentPadding: EdgeInsets.zero,
+                                                                              ),
+                                                                              onTap: () => FocusScope.of(
+                                                                                context,
+                                                                              ).requestFocus(_focusNode),
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              if (result.isNotEmpty)
+                                                                FittedBox(
+                                                                  fit: BoxFit.scaleDown,
+                                                                  alignment: Alignment.centerRight,
+                                                                  child: TweenAnimationBuilder<double>(
+                                                                    duration: const Duration(milliseconds: 250),
+                                                                    curve: Curves.easeOutCubic,
+                                                                    tween: Tween<double>(
+                                                                      end: isEvaluated
+                                                                          ? (isScientific ? 46.0 : 64.0)
+                                                                          : (isScientific ? 24.0 : 32.0),
+                                                                    ),
+                                                                    builder: (context, animatedResultSize, child) {
+                                                                      return Text(
+                                                                        result,
+                                                                        style: TextStyle(
+                                                                          fontSize: animatedResultSize,
+                                                                          fontWeight: isEvaluated
+                                                                              ? FontWeight.w300
+                                                                              : FontWeight.normal,
+                                                                          color: isEvaluated
+                                                                              ? AppColors.textColor(context)
+                                                                              : AppColors.textColor(
+                                                                                  context,
+                                                                                ).withOpacity(0.8),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
 
-                                              // KEYPAD AREA
-                                              Expanded(
-                                                flex: keypadFlex.toInt(),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      if (isScientific) ...[
+                                                // KEYPAD AREA
+                                                Expanded(
+                                                  flex: keypadFlex.toInt(),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 8.0,
+                                                    ),
+                                                    child: Column(
+                                                      children: [
+                                                        if (isScientific) ...[
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                CalculatorButton(
+                                                                  text: 'log10',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('log10('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'sin',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('sin('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'cos',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('cos('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'tan',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('tan('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'ln',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('ln('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'deg',
+                                                                  textColor: AppColors.cyanColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('deg'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                CalculatorButton(
+                                                                  text: 'log2',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('log2('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'x²',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('²'),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: '(',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('('),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: ')',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress(')'),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'rad',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('rad'),
+                                                                ),
+                                                                CalculatorButton(
+                                                                  text: 'Inv',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('Inv'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
                                                         Expanded(
                                                           child: Row(
                                                             children: [
+                                                              if (isScientific)
+                                                                CalculatorButton(
+                                                                  text: 'x!',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('!'),
+                                                                ),
                                                               CalculatorButton(
-                                                                text: 'log10',
-                                                                textColor: AppColors.textColor(context),
+                                                                text: 'AC',
+                                                                textColor: Colors.orangeAccent,
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('log10('),
+                                                                onTap: () => _onKeyPress('AC'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: 'sin',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('sin('),
-                                                              ),
-                                                              CalculatorButton(
-                                                                text: 'cos',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('cos('),
-                                                              ),
-                                                              CalculatorButton(
-                                                                text: 'tan',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('tan('),
-                                                              ),
-                                                              CalculatorButton(
-                                                                text: 'ln',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('ln('),
-                                                              ),
-                                                              CalculatorButton(
-                                                                text: 'deg',
+                                                                text: '%',
                                                                 textColor: AppColors.cyanColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
                                                                 fontSize: 18,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('deg'),
+                                                                onTap: () => _onKeyPress('%'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                icon: Icons.backspace_outlined,
+                                                                textColor: AppColors.cyanColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('BACK'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '÷',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.operatorBgColor(context),
+                                                                fontSize: 30,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('÷'),
                                                               ),
                                                             ],
                                                           ),
@@ -1286,328 +1203,228 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                         Expanded(
                                                           child: Row(
                                                             children: [
+                                                              if (isScientific)
+                                                                CalculatorButton(
+                                                                  text: 'xʸ',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('^'),
+                                                                ),
                                                               CalculatorButton(
-                                                                text: 'log2',
+                                                                text: '7',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('log2('),
+                                                                onTap: () => _onKeyPress('7'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: 'x²',
+                                                                text: '8',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('²'),
+                                                                onTap: () => _onKeyPress('8'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: '(',
+                                                                text: '9',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('('),
+                                                                onTap: () => _onKeyPress('9'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: ')',
+                                                                text: '×',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.operatorBgColor(context),
+                                                                fontSize: 30,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('×'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Row(
+                                                            children: [
+                                                              if (isScientific)
+                                                                CalculatorButton(
+                                                                  text: '√x',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('√'),
+                                                                ),
+                                                              CalculatorButton(
+                                                                text: '4',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress(')'),
+                                                                onTap: () => _onKeyPress('4'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: 'rad',
+                                                                text: '5',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('rad'),
+                                                                onTap: () => _onKeyPress('5'),
                                                               ),
                                                               CalculatorButton(
-                                                                text: 'Inv',
+                                                                text: '6',
                                                                 textColor: AppColors.textColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
+                                                                fontSize: 25,
                                                                 buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('Inv'),
+                                                                onTap: () => _onKeyPress('6'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '−',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.operatorBgColor(context),
+                                                                fontSize: 30,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('-'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Row(
+                                                            children: [
+                                                              if (isScientific)
+                                                                CalculatorButton(
+                                                                  text: 'π',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('π'),
+                                                                ),
+                                                              CalculatorButton(
+                                                                text: '1',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('1'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '2',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('2'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '3',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('3'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '+',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.operatorBgColor(context),
+                                                                fontSize: 30,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('+'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Row(
+                                                            children: [
+                                                              if (isScientific)
+                                                                CalculatorButton(
+                                                                  text: 'e',
+                                                                  textColor: AppColors.textColor(context),
+                                                                  bgColor: AppColors.surfaceColor(context),
+                                                                  fontSize: 18,
+                                                                  buttonShape: _buttonShape,
+                                                                  onTap: () => _onKeyPress('e'),
+                                                                ),
+                                                              CalculatorButton(
+                                                                text: '00',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('00'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '0',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('0'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '.',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.surfaceColor(context),
+                                                                fontSize: 25,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('.'),
+                                                              ),
+                                                              CalculatorButton(
+                                                                text: '=',
+                                                                textColor: AppColors.textColor(context),
+                                                                bgColor: AppColors.orangeColor(context),
+                                                                fontSize: 30,
+                                                                buttonShape: _buttonShape,
+                                                                onTap: () => _onKeyPress('='),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
                                                       ],
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            if (isScientific)
-                                                              CalculatorButton(
-                                                                text: 'x!',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('!'),
-                                                              ),
-                                                            CalculatorButton(
-                                                              text: 'AC',
-                                                              textColor: Colors.orangeAccent,
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('AC'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '%',
-                                                              textColor: AppColors.cyanColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 18,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('%'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              icon: Icons.backspace_outlined,
-                                                              textColor: AppColors.cyanColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('BACK'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '÷',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.operatorBgColor(context),
-                                                              fontSize: 30,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('÷'),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            if (isScientific)
-                                                              CalculatorButton(
-                                                                text: 'xʸ',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('^'),
-                                                              ),
-                                                            CalculatorButton(
-                                                              text: '7',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('7'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '8',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('8'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '9',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('9'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '×',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.operatorBgColor(context),
-                                                              fontSize: 30,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('×'),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            if (isScientific)
-                                                              CalculatorButton(
-                                                                text: '√x',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('√'),
-                                                              ),
-                                                            CalculatorButton(
-                                                              text: '4',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('4'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '5',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('5'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '6',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('6'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '−',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.operatorBgColor(context),
-                                                              fontSize: 30,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('-'),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            if (isScientific)
-                                                              CalculatorButton(
-                                                                text: 'π',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('π'),
-                                                              ),
-                                                            CalculatorButton(
-                                                              text: '1',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('1'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '2',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('2'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '3',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('3'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '+',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.operatorBgColor(context),
-                                                              fontSize: 30,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('+'),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            if (isScientific)
-                                                              CalculatorButton(
-                                                                text: 'e',
-                                                                textColor: AppColors.textColor(context),
-                                                                bgColor: AppColors.surfaceColor(context),
-                                                                fontSize: 18,
-                                                                buttonShape: _buttonShape,
-                                                                onTap: () => _onKeyPress('e'),
-                                                              ),
-                                                            CalculatorButton(
-                                                              text: '00',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('00'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '0',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('0'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '.',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.surfaceColor(context),
-                                                              fontSize: 25,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('.'),
-                                                            ),
-                                                            CalculatorButton(
-                                                              text: '=',
-                                                              textColor: AppColors.textColor(context),
-                                                              bgColor: AppColors.orangeColor(context),
-                                                              fontSize: 30,
-                                                              buttonShape: _buttonShape,
-                                                              onTap: () => _onKeyPress('='),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ); // NAYA: Stack ka return yahan close hoga
-                }, // NAYA: Builder ka function yahan close hoga
-              ), // Builder close
-            ), // Expanded close
+                      ],
+                    ); // NAYA: Stack ka return yahan close hoga
+                  }, // NAYA: Builder ka function yahan close hoga
+                ), // Builder close
+              ), // Expanded close
 
-            _isLoaded && _bannerAd != null
-                ? Container(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              alignment: Alignment.center,
-              child: AdWidget(ad: _bannerAd!),
-            )
-                : const SizedBox(
-              width: double.infinity,
-              height: 50, // Jab tak ad load na ho, khali space
-            ),
-          ],
+              _isLoaded && _bannerAd != null
+                  ? Container(
+                      width: _bannerAd!.size.width.toDouble(),
+                      height: _bannerAd!.size.height.toDouble(),
+                      alignment: Alignment.center,
+                      child: AdWidget(ad: _bannerAd!),
+                    )
+                  : const SizedBox(
+                      width: double.infinity,
+                      height: 50, // Jab tak ad load na ho, khali space
+                    ),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -1622,7 +1439,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
               ActionButton(
                 icon: Icons.menu,
                 contentColor: isMenuOpen ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                bgColor: isMenuOpen ? AppColors.cyanColor(context).withOpacity(0.1) : AppColors.surfaceColor(context).withOpacity(0.5),
+                bgColor: isMenuOpen
+                    ? AppColors.cyanColor(context).withOpacity(0.1)
+                    : AppColors.surfaceColor(context).withOpacity(0.5),
                 onTap: () {
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact(); // Halka sa premium vibration
@@ -1630,10 +1449,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                   setState(() {
                     isMenuOpen = !isMenuOpen;
                     // NAYA: Pura screen width lega
-                    _menuDragOffset = isMenuOpen ? MediaQuery
-                        .of(context)
-                        .size
-                        .width : 0.0;
+                    _menuDragOffset = isMenuOpen ? MediaQuery.of(context).size.width : 0.0;
                   });
                 },
               ),
@@ -1679,7 +1495,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                       'type': 'sync_to_mini',
                       'eq': _equationController.text,
                       'res': result,
-                      'eval': isEvaluated
+                      'eval': isEvaluated,
                     };
                     await FlutterOverlayWindow.shareData(jsonEncode(data));
 
@@ -1705,7 +1521,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 icon: Icons.functions_rounded,
                 contentColor: isScientific ? const Color(0xFF003640) : AppColors.textGrey(context),
                 bgColor: isScientific ? AppColors.cyanColor(context) : AppColors.surfaceColor(context).withOpacity(0.5),
-                boxShadow: isScientific ? [BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.5), blurRadius: 15)] : [],
+                boxShadow: isScientific
+                    ? [BoxShadow(color: AppColors.cyanColor(context).withOpacity(0.5), blurRadius: 15)]
+                    : [],
                 onTap: () {
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact(); // Halka sa premium vibration
@@ -1721,7 +1539,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 icon: Icons.history,
                 // Agar open hai toh cyan color dikhega, warna grey
                 contentColor: isHistoryOpen ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                bgColor: isHistoryOpen ? AppColors.cyanColor(context).withOpacity(0.1) : AppColors.surfaceColor(context).withOpacity(0.5),
+                bgColor: isHistoryOpen
+                    ? AppColors.cyanColor(context).withOpacity(0.1)
+                    : AppColors.surfaceColor(context).withOpacity(0.5),
                 onTap: () async {
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact(); // Halka sa premium vibration
@@ -1745,21 +1565,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 //   }
                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
                 // },
-                onTap: () async { // NAYA: async lagaya
+                onTap: () async {
+                  // NAYA: async lagaya
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact();
                   }
 
                   // NAYA: await lagaya taaki settings band hone ka wait kare
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SettingsPage())
-                  );
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
 
                   // NAYA: Settings se wapas aate hi turant naya theme load karo
                   _loadSettings();
                 },
-
               ),
             ],
           ),
