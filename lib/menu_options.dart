@@ -26,9 +26,8 @@ import 'screens/data_transfer_converter_view.dart';
 import 'screens/energy_conversion_view.dart';
 import 'screens/force_converter_view.dart';
 import 'screens/length_conversion_view.dart';
-import 'screens/numeric_base_converter_view.dart'; // NAYA: Aapke custom ActionButton ko import kiya
+import 'screens/numeric_base_converter_view.dart';
 
-// 1. NAYA: StatelessWidget se StatefulWidget me convert kiya taaki scroll track kar sakein
 class MenuOptions extends StatefulWidget {
   final VoidCallback onClose;
 
@@ -39,29 +38,11 @@ class MenuOptions extends StatefulWidget {
 }
 
 class _MenuOptionsState extends State<MenuOptions> {
-  // Main screen wale same theme colors yahan define kiye
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
-  // bool get isDark => appThemeNotifier.value == 'dark';
-  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
-  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
-  // Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
-  // Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
-  // Color get redColor => const Color(0xFFFFB4AB);
-  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
-  // Color get white => isDark ? Colors.white : Colors.black87;
-
-  // NAYA: Expand/Collapse track karne ke liye variables
   bool _isUnitExpanded = true;
   bool _isOtherExpanded = true;
 
   String? _currentActiveView;
 
-  // 2. NAYA: Scroll tracking ke liye variables
   late ScrollController _scrollController;
   bool _showTopSearch = false;
   bool _isHapticsEnabled = true;
@@ -72,7 +53,6 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   List<Map<String, dynamic>> _favoriteTools = [];
 
-  // NAYA: SharedPreferences se real-time data load karne ka function
   Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> favList = prefs.getStringList('favorite_tools') ?? [];
@@ -86,29 +66,161 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   final List<Map<String, dynamic>> _allTools = [
     // --- UNIT CONVERTERS CATEGORY ---
-    {'id': 'acceleration', 'title': 'Acceleration', 'sub': 'm/s², g, ft/s²...', 'img': 'assets/images/acceleration.png', 'category': 'unit_converter'},
-    {'id': 'angle', 'title': 'Angle', 'sub': 'Degree, Radian, Gradian...', 'img': 'assets/images/angle.png', 'category': 'unit_converter'},
-    {'id': 'area', 'title': 'Area', 'sub': 'Square meters, acres, hectares...', 'img': 'assets/images/area.png', 'category': 'unit_converter'},
-    {'id': 'data storage', 'title': 'Data Storage', 'sub': 'Bytes, MB, GB, TB, PB...', 'img': 'assets/images/data_storage.png', 'category': 'unit_converter'},
-    {'id': 'data_transfer', 'title': 'Data Transfer', 'sub': 'Mbps, MB/s, GB/s...', 'img': 'assets/images/data_transfer.png', 'category': 'unit_converter'},
-    {'id': 'energy', 'title': 'Energy', 'sub': 'Joules, calories, kWh...', 'img': 'assets/images/energy.png', 'category': 'unit_converter'},
-    {'id': 'force', 'title': 'Force', 'sub': 'Newton, Dyne, Pound-force...', 'img': 'assets/images/force.png', 'category': 'unit_converter'},
-    {'id': 'length', 'title': 'Length', 'sub': 'Meters, inches, feet & more', 'img': 'assets/images/length.png', 'category': 'unit_converter'},
-    {'id': 'numeric_base', 'title': 'Numeric Base', 'sub': 'Binary, Octal, Decimal, Hex...', 'img': 'assets/images/numeric_base.png', 'category': 'unit_converter'},
-    {'id': 'power', 'title': 'Power', 'sub': 'Watts, kilowatts, horsepower...', 'img': 'assets/images/power.png', 'category': 'unit_converter'},
-    {'id': 'pressure', 'title': 'Pressure', 'sub': 'Pascal, bar, psi, atm...', 'img': 'assets/images/pressure.png', 'category': 'unit_converter'},
-    {'id': 'roman_numerals', 'title': 'Roman Numerals', 'sub': 'I, V, X, L, C, M...', 'img': 'assets/images/roman_numerals.png', 'category': 'unit_converter'},
-    {'id': 'shoe_size', 'title': 'Shoe Size', 'sub': 'US, UK, EU, CM...', 'img': 'assets/images/shoe_size.png', 'category': 'unit_converter'},
-    {'id': 'speed', 'title': 'Speed', 'sub': 'km/h, mph, knots & more', 'img': 'assets/images/speed.png', 'category': 'unit_converter'},
-    {'id': 'temperature', 'title': 'Temperature', 'sub': 'Celsius, Fahrenheit, Kelvin', 'img': 'assets/images/temperature.png', 'category': 'unit_converter'},
-    {'id': 'time', 'title': 'Time', 'sub': 'Second, Minute, Hour, Day...', 'img': 'assets/images/time.png', 'category': 'unit_converter'},
-    {'id': 'torque', 'title': 'Torque', 'sub': 'N·m, lb·ft, kgf·m...', 'img': 'assets/images/torque.png', 'category': 'unit_converter'},
-    {'id': 'volume', 'title': 'Volume', 'sub': 'Liters, gallons, cubic meters...', 'img': 'assets/images/volume.png', 'category': 'unit_converter'},
-    {'id': 'volumetric_flow', 'title': 'Volumetric Flow', 'sub': 'm³/s, L/min, gal/h...', 'img': 'assets/images/volumetric_flow.png', 'category': 'unit_converter'},
-    {'id': 'weight', 'title': 'Weight & Mass', 'sub': 'Kilograms, pounds, ounces...', 'img': 'assets/images/weight.png', 'category': 'unit_converter'},
+    {
+      'id': 'acceleration',
+      'title': 'Acceleration',
+      'sub': 'm/s², g, ft/s²...',
+      'img': 'assets/images/acceleration.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'angle',
+      'title': 'Angle',
+      'sub': 'Degree, Radian, Gradian...',
+      'img': 'assets/images/angle.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'area',
+      'title': 'Area',
+      'sub': 'Square meters, acres, hectares...',
+      'img': 'assets/images/area.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'data storage',
+      'title': 'Data Storage',
+      'sub': 'Bytes, MB, GB, TB, PB...',
+      'img': 'assets/images/data_storage.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'data_transfer',
+      'title': 'Data Transfer',
+      'sub': 'Mbps, MB/s, GB/s...',
+      'img': 'assets/images/data_transfer.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'energy',
+      'title': 'Energy',
+      'sub': 'Joules, calories, kWh...',
+      'img': 'assets/images/energy.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'force',
+      'title': 'Force',
+      'sub': 'Newton, Dyne, Pound-force...',
+      'img': 'assets/images/force.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'length',
+      'title': 'Length',
+      'sub': 'Meters, inches, feet & more',
+      'img': 'assets/images/length.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'numeric_base',
+      'title': 'Numeric Base',
+      'sub': 'Binary, Octal, Decimal, Hex...',
+      'img': 'assets/images/numeric_base.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'power',
+      'title': 'Power',
+      'sub': 'Watts, kilowatts, horsepower...',
+      'img': 'assets/images/power.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'pressure',
+      'title': 'Pressure',
+      'sub': 'Pascal, bar, psi, atm...',
+      'img': 'assets/images/pressure.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'roman_numerals',
+      'title': 'Roman Numerals',
+      'sub': 'I, V, X, L, C, M...',
+      'img': 'assets/images/roman_numerals.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'shoe_size',
+      'title': 'Shoe Size',
+      'sub': 'US, UK, EU, CM...',
+      'img': 'assets/images/shoe_size.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'speed',
+      'title': 'Speed',
+      'sub': 'km/h, mph, knots & more',
+      'img': 'assets/images/speed.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'temperature',
+      'title': 'Temperature',
+      'sub': 'Celsius, Fahrenheit, Kelvin',
+      'img': 'assets/images/temperature.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'time',
+      'title': 'Time',
+      'sub': 'Second, Minute, Hour, Day...',
+      'img': 'assets/images/time.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'torque',
+      'title': 'Torque',
+      'sub': 'N·m, lb·ft, kgf·m...',
+      'img': 'assets/images/torque.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'volume',
+      'title': 'Volume',
+      'sub': 'Liters, gallons, cubic meters...',
+      'img': 'assets/images/volume.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'volumetric_flow',
+      'title': 'Volumetric Flow',
+      'sub': 'm³/s, L/min, gal/h...',
+      'img': 'assets/images/volumetric_flow.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'weight',
+      'title': 'Weight & Mass',
+      'sub': 'Kilograms, pounds, ounces...',
+      'img': 'assets/images/weight.png',
+      'category': 'unit_converter',
+    },
     // --- OTHER TOOLS CATEGORY ---
-    {'id': 'discount', 'title': 'Discount', 'sub': 'Calculate discounts', 'img': 'assets/images/percentage-discount-symbol.png', 'category': 'other_tools'},
-    {'id': 'emi', 'title': 'EMI Calculator', 'sub': 'Loan & Mortgage', 'img': 'assets/images/percentage-discount-symbol.png', 'category': 'other_tools'},
+    {
+      'id': 'a',
+      'title': 'Coming Soon',
+      'sub': 'Coming Soon',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'other_tools',
+    },
+    {
+      'id': 'b',
+      'title': 'Coming Soon',
+      'sub': 'Coming Soon',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'other_tools',
+    },
   ];
 
   @override
@@ -118,20 +230,6 @@ class _MenuOptionsState extends State<MenuOptions> {
     _loadHapticsSetting();
     _initScrollController();
     _loadFavorites();
-    // NAYA: Scroll Listener - Check karta hai ki kitna scroll hua hai
-    // _scrollController.addListener(() {
-    //   if (_scrollController.offset > 80 && !_showTopSearch) {
-    //     // Agar 80px se zyada scroll ho gaya toh top search button dikhao
-    //     setState(() {
-    //       _showTopSearch = true;
-    //     });
-    //   } else if (_scrollController.offset <= 80 && _showTopSearch) {
-    //     // Upar aane par wapas hide kar do
-    //     setState(() {
-    //       _showTopSearch = false;
-    //     });
-    //   }
-    // });
   }
 
   @override
@@ -217,122 +315,49 @@ class _MenuOptionsState extends State<MenuOptions> {
   Widget _getActiveViewWidget() {
     switch (_currentActiveView) {
       case 'length':
-        return LengthConverterView(
-          key: const ValueKey('Length'),
-          //onBack: () => setState(() => _currentActiveView = null),
-        onBack: _closeView);
+        return LengthConverterView(key: const ValueKey('Length'), onBack: _closeView);
 
       case 'weight':
-        return WeightMassConverterView(
-          key: const ValueKey('Weight'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return WeightMassConverterView(key: const ValueKey('Weight'), onBack: _closeView);
       case 'area':
-        return AreaConverterView(
-            key: const ValueKey('Area'),
-        //     onBack: () => setState(() => _currentActiveView = null)
-        // );
-            onBack: _closeView);
+        return AreaConverterView(key: const ValueKey('Area'), onBack: _closeView);
       case 'volume':
         return VolumeConverterView(
           key: const ValueKey('Volume'),
           onBack: () => setState(() => _currentActiveView = null),
         );
       case 'temperature':
-        return TemperatureConverterView(
-          key: const ValueKey('Temp'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return TemperatureConverterView(key: const ValueKey('Temp'), onBack: _closeView);
       case 'speed':
-        return SpeedConverterView(
-          key: const ValueKey('Speed'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return SpeedConverterView(key: const ValueKey('Speed'), onBack: _closeView);
       case 'pressure':
-        return PressureConverterView(
-          key: const ValueKey('Pressure'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return PressureConverterView(key: const ValueKey('Pressure'), onBack: _closeView);
       case 'energy':
-        return EnergyConverterView(
-          key: const ValueKey('Energy'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return EnergyConverterView(key: const ValueKey('Energy'), onBack: _closeView);
       case 'power':
-        return PowerConverterView(
-          key: const ValueKey('Power'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return PowerConverterView(key: const ValueKey('Power'), onBack: _closeView);
       case 'data storage':
-        return DataStorageConverterView(
-          key: const ValueKey('Data'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return DataStorageConverterView(key: const ValueKey('Data'), onBack: _closeView);
       case 'acceleration':
-        return AccelerationConverterView(
-          key: const ValueKey('Acceleration'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return AccelerationConverterView(key: const ValueKey('Acceleration'), onBack: _closeView);
       case 'angle':
-        return AngleConverterView(
-          key: const ValueKey('Angle'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return AngleConverterView(key: const ValueKey('Angle'), onBack: _closeView);
       case 'data_transfer':
-        return DataTransferConverterView(
-          key: const ValueKey('Data Transfer'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return DataTransferConverterView(key: const ValueKey('Data Transfer'), onBack: _closeView);
       case 'force':
-        return ForceConverterView(
-          key: const ValueKey('Force'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return ForceConverterView(key: const ValueKey('Force'), onBack: _closeView);
       case 'roman_numerals':
-        return RomanNumeralsConverterView(
-          key: const ValueKey('Roman Numerals'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return RomanNumeralsConverterView(key: const ValueKey('Roman Numerals'), onBack: _closeView);
       case 'torque':
-        return TorqueConverterView(
-          key: const ValueKey('Torque'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return TorqueConverterView(key: const ValueKey('Torque'), onBack: _closeView);
       case 'volumetric_flow':
-        return VolumetricFlowConverterView(
-          key: const ValueKey('Volumetric Flow'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return VolumetricFlowConverterView(key: const ValueKey('Volumetric Flow'), onBack: _closeView);
       case 'time':
-        return TimeConverterView(key: const ValueKey('Time'),
-            //onBack: () => setState(() => _currentActiveView = null));
-            onBack: _closeView);
+        return TimeConverterView(key: const ValueKey('Time'), onBack: _closeView);
       case 'numeric_base':
-        return NumericBaseConverterView(
-          key: const ValueKey('Numeric Base'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return NumericBaseConverterView(key: const ValueKey('Numeric Base'), onBack: _closeView);
       case 'shoe_size':
-        return ShoeSizeConverterView(
-          key: const ValueKey('Shoe Size'),
-        //   onBack: () => setState(() => _currentActiveView = null),
-        // );
-            onBack: _closeView);
+        return ShoeSizeConverterView(key: const ValueKey('Shoe Size'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
@@ -341,16 +366,12 @@ class _MenuOptionsState extends State<MenuOptions> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false, // false ka matlab hai app default tarike se close (pop) nahi hoga
+      canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
-        // didPop true hone ka matlab hai system ne forcefully pop kar diya hai
         if (didPop) return;
-
         if (_currentActiveView != null) {
-          // 1. Agar koi converter page khula hai, toh usko band karke Menu dikhao
           _closeView();
         } else {
-          // 2. Agar pehle se Main Menu par hain, toh Menu ko band karke Calculator par jao
           widget.onClose();
         }
       },
@@ -358,13 +379,11 @@ class _MenuOptionsState extends State<MenuOptions> {
         width: double.infinity,
         color: AppColors.bgColor(context),
         child: SafeArea(
-          // NAYA: Smooth transition animation ke liye AnimatedSwitcher
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             switchInCurve: Curves.easeInOutCubic,
             switchOutCurve: Curves.easeInOutCubic,
             transitionBuilder: (child, animation) {
-              // Halka sa slide aur fade animation
               return SlideTransition(
                 position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(animation),
                 child: FadeTransition(opacity: animation, child: child),
@@ -379,7 +398,7 @@ class _MenuOptionsState extends State<MenuOptions> {
 
   Widget _buildMainMenu() {
     return Column(
-      key: const ValueKey('MainMenuView'), // NAYA: AnimatedSwitcher ke liye Key zaroori hai
+      key: const ValueKey('MainMenuView'),
       children: [
         // --- 1. TOP BAR ---
         Padding(
@@ -398,14 +417,21 @@ class _MenuOptionsState extends State<MenuOptions> {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Text('Tools & Converters', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Tools & Converters',
+                  style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               if (_showTopSearch) ...[
                 ActionButton(
                   icon: Icons.search_rounded,
                   contentColor: AppColors.textGrey(context),
                   bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
-                  onTap: () => _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
+                  onTap: () => _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  ),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -449,8 +475,20 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Unit Converters', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isUnitExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: AppColors.cyanColor(context), size: 24),
+                          Text(
+                            'Unit Converters',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isUnitExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
                         ],
                       ),
                     ),
@@ -461,22 +499,24 @@ class _MenuOptionsState extends State<MenuOptions> {
                     curve: Curves.easeInOutCubic,
                     child: _isUnitExpanded
                         ? Container(
-                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      // NAYA: Ye line automatically aapki _allTools list se buttons banayegi
-                      child: Column(
-                        children: _allTools.where((tool) => tool['category'] == 'unit_converter').map((tool) {
-                          return _buildMenuItem(
-                            tool['img'], tool['title'], tool['sub'],
-                            onTap: () => _openView(tool['id']),
-                          );
-                        }).toList(),
-                      ),
-                    )
+                            padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceColor(context).withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                            ),
+                            // NAYA: Ye line automatically aapki _allTools list se buttons banayegi
+                            child: Column(
+                              children: _allTools.where((tool) => tool['category'] == 'unit_converter').map((tool) {
+                                return _buildMenuItem(
+                                  tool['img'],
+                                  tool['title'],
+                                  tool['sub'],
+                                  onTap: () => _openView(tool['id']),
+                                );
+                              }).toList(),
+                            ),
+                          )
                         : const SizedBox.shrink(),
                   ),
 
@@ -491,8 +531,20 @@ class _MenuOptionsState extends State<MenuOptions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Other Tools', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                          Icon(_isOtherExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded, color: AppColors.cyanColor(context), size: 24),
+                          Text(
+                            'Other Tools',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isOtherExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
                         ],
                       ),
                     ),
@@ -503,51 +555,66 @@ class _MenuOptionsState extends State<MenuOptions> {
                     curve: Curves.easeInOutCubic,
                     child: _isOtherExpanded
                         ? Container(
-                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      // NAYA: Ye line "Other Tools" category se automatically banayegi
-                      child: Column(
-                        children: _allTools.where((tool) => tool['category'] == 'other_tools').map((tool) {
-                          return _buildMenuItem(
-                            tool['img'], tool['title'], tool['sub'],
-                            onTap: () => _openView(tool['id']),
-                          );
-                        }).toList(),
-                      ),
-                    )
+                            padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceColor(context).withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                            ),
+                            // NAYA: Ye line "Other Tools" category se automatically banayegi
+                            child: Column(
+                              children: _allTools.where((tool) => tool['category'] == 'other_tools').map((tool) {
+                                return _buildMenuItem(
+                                  tool['img'],
+                                  tool['title'],
+                                  tool['sub'],
+                                  onTap: () => _openView(tool['id']),
+                                );
+                              }).toList(),
+                            ),
+                          )
                         : const SizedBox.shrink(),
                   ),
                 ]
-
                 // --- SEARCH LOGIC: Agar search box mein type kiya gaya hai, toh filtered result dikhao ---
                 else ...[
-                  ..._allTools.where((tool) {
-                    final titleMatch = tool['title'].toString().toLowerCase().contains(_searchQuery);
-                    final subMatch = tool['sub'].toString().toLowerCase().contains(_searchQuery);
-                    return titleMatch || subMatch;
-                  }).map((tool) {
-                    return _buildMenuItem(
-                      tool['img'], tool['title'], tool['sub'],
-                      onTap: () {
-                        FocusScope.of(context).unfocus(); // Click hone par keyboard chupa do
-                        _openView(tool['id']);
-                      },
-                    );
-                  }).toList(),
+                  ..._allTools
+                      .where((tool) {
+                        final titleMatch = tool['title'].toString().toLowerCase().contains(_searchQuery);
+                        final subMatch = tool['sub'].toString().toLowerCase().contains(_searchQuery);
+                        return titleMatch || subMatch;
+                      })
+                      .map((tool) {
+                        return _buildMenuItem(
+                          tool['img'],
+                          tool['title'],
+                          tool['sub'],
+                          onTap: () {
+                            FocusScope.of(context).unfocus(); // Click hone par keyboard chupa do
+                            _openView(tool['id']);
+                          },
+                        );
+                      })
+                      .toList(),
 
                   // Agar search galat ho aur list khali ho jaye
-                  if (_allTools.where((t) => t['title'].toString().toLowerCase().contains(_searchQuery) || t['sub'].toString().toLowerCase().contains(_searchQuery)).isEmpty)
+                  if (_allTools
+                      .where(
+                        (t) =>
+                            t['title'].toString().toLowerCase().contains(_searchQuery) ||
+                            t['sub'].toString().toLowerCase().contains(_searchQuery),
+                      )
+                      .isEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 40.0),
                       child: Center(
-                        child: Text("No tools found for '$_searchQuery'", style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.7), fontSize: 16)),
+                        child: Text(
+                          "No tools found for '$_searchQuery'",
+                          style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.7), fontSize: 16),
+                        ),
                       ),
                     ),
-                ]
+                ],
               ],
             ),
           ),
@@ -565,7 +632,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: TextField(
-        controller: _searchController, // NAYA: Controller yahan attach kiya
+        controller: _searchController,
+        // NAYA: Controller yahan attach kiya
         onChanged: (value) {
           setState(() {
             _searchQuery = value.toLowerCase();
@@ -579,49 +647,28 @@ class _MenuOptionsState extends State<MenuOptions> {
           prefixIcon: Icon(Icons.search_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
 
           // NAYA: 'X' Clear Button Logic
-            suffixIcon: _searchQuery.isNotEmpty
-                ? IconButton(
-              icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
-              tooltip: 'Clear search', // NAYA: Tooltip add kar diya hai
-              onPressed: () { // FIX: onTap ki jagah onPressed aayega
-                setState(() {
-                  _searchController.clear(); // Text field ko visually empty karega
-                  _searchQuery = ""; // Backend query reset karega
-                  FocusScope.of(context).unfocus(); // Keyboard chupa dega
-                });
-              },
-            )
-                : null, // Agar search khali hai toh koi icon mat dikhao
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.close_rounded, color: AppColors.textGrey(context).withOpacity(0.7)),
+                  tooltip: 'Clear search', // NAYA: Tooltip add kar diya hai
+                  onPressed: () {
+                    // FIX: onTap ki jagah onPressed aayega
+                    setState(() {
+                      _searchController.clear(); // Text field ko visually empty karega
+                      _searchQuery = ""; // Backend query reset karega
+                      FocusScope.of(context).unfocus(); // Keyboard chupa dega
+                    });
+                  },
+                )
+              : null,
 
+          // Agar search khali hai toh koi icon mat dikhao
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),
       ),
     );
   }
-
-  // Widget _buildFavouriteCard() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-  //     decoration: BoxDecoration(
-  //       color: surfaceColor.withOpacity(0.4),
-  //       borderRadius: BorderRadius.circular(16),
-  //       border: Border.all(color: Colors.white.withOpacity(0.05)),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         const Icon(Icons.star_rounded, color: Colors.orangeAccent, size: 24),
-  //         const SizedBox(width: 16),
-  //         const Text(
-  //           'Favourite',
-  //           style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-  //         ),
-  //         const Spacer(),
-  //         Icon(Icons.arrow_forward_ios_rounded, color: textGrey.withOpacity(0.3), size: 16),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildFavouriteCard() {
     // Agar koi favorite nahi hai, toh card ko hide rakho
@@ -645,9 +692,14 @@ class _MenuOptionsState extends State<MenuOptions> {
             children: [
               const Icon(Icons.star_rounded, color: Colors.amberAccent, size: 20),
               const SizedBox(width: 8),
-               Text(
+              Text(
                 'Favorites',
-                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.0),
+                style: TextStyle(
+                  color: AppColors.textColor(context),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                ),
               ),
             ],
           ),
@@ -655,8 +707,10 @@ class _MenuOptionsState extends State<MenuOptions> {
 
           // Grid Section (4 items per row)
           GridView.builder(
-            shrinkWrap: true, // Scrollable column ke andar error se bachane ke liye
-            physics: const NeverScrollableScrollPhysics(), // Scroll parent handle karega
+            shrinkWrap: true,
+            // Scrollable column ke andar error se bachane ke liye
+            physics: const NeverScrollableScrollPhysics(),
+            // Scroll parent handle karega
             itemCount: _favoriteTools.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4, // 1 Row mein 4 items
@@ -761,5 +815,4 @@ class _MenuOptionsState extends State<MenuOptions> {
       ),
     );
   }
-
 }
