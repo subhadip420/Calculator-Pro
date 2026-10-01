@@ -520,28 +520,36 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: 'Rate Us',
                       subtitle: 'Love Calculator Pro?',
                       iconColor: Colors.blue,
+                      // onTap: () {
+                      //   if (_isHapticsEnabled) {
+                      //     HapticFeedback.lightImpact(); // Halka sa premium vibration
+                      //   }
+                      //   // "Coming Soon" Dialog
+                      //   showDialog(
+                      //     context: context,
+                      //     builder: (BuildContext context) {
+                      //       return CustomDialog(
+                      //         title: 'Coming Soon!',
+                      //         subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                      //         isSingleButton: true,
+                      //         primaryButtonText: 'Okay',
+                      //         onPrimaryPressed: () {
+                      //           if (_isHapticsEnabled) {
+                      //             HapticFeedback.selectionClick(); // Halka sa premium vibration
+                      //           }
+                      //           Navigator.of(context).pop();
+                      //         },
+                      //       );
+                      //     },
+                      //   );
+                      // },
                       onTap: () {
                         if (_isHapticsEnabled) {
                           HapticFeedback.lightImpact(); // Halka sa premium vibration
                         }
-                        // "Coming Soon" Dialog
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomDialog(
-                              title: 'Coming Soon!',
-                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                              isSingleButton: true,
-                              primaryButtonText: 'Okay',
-                              onPrimaryPressed: () {
-                                if (_isHapticsEnabled) {
-                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
-                                }
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                        );
+
+                        // NAYA FIX: Dialog ki jagah direct Play Store open hoga
+                        _rateApp();
                       },
                     ),
 
@@ -626,7 +634,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildSettingsItem(
                       icon: Icons.info_outline_rounded,
                       title: 'About',
-                      subtitle: 'Version 1.0.0',
+                      subtitle: 'Version 1.0.2',
                       iconColor: textGrey,
                       onTap: () {
                         if (_isHapticsEnabled) {
@@ -638,7 +646,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           builder: (BuildContext context) {
                             return CustomDialog(
                               title: 'Calculator Pro',
-                              subtitle: 'Version 1.0.0\n\nA premium calculator and multi-tool designed for seamless daily use.',
+                              subtitle: 'Version 1.0.2\n\nA premium calculator and multi-tool designed for seamless daily use.',
                               isSingleButton: true, // Aapki requirement: Single button
                               primaryButtonText: 'Got it',
                               onPrimaryPressed: () {
@@ -678,6 +686,18 @@ class _SettingsPageState extends State<SettingsPage> {
       ));
     } catch (e) {
       debugPrint("Share error: $e");
+    }
+  }
+
+  Future<void> _rateApp() async {
+    // Calculator Pro ka Play Store link
+    final Uri playStoreUri = Uri.parse('https://play.google.com/store/apps/details?id=com.sptechstudios.calculator_pro');
+
+    try {
+      // externalApplication mode se direct Play Store app open hoga (browser nahi)
+      await launchUrl(playStoreUri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Could not launch Play Store: $e");
     }
   }
 
