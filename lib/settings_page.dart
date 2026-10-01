@@ -1,6 +1,7 @@
 import 'package:calculator_pro/privacy_policy_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPreferences import kiya
 import 'package:url_launcher/url_launcher.dart';
 import 'custom_action_button.dart';
@@ -480,28 +481,37 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: 'Share App',
                       subtitle: 'Share Calculator Pro with friends',
                       iconColor: Colors.blueAccent, // Share ke liye blue color
+                      // onTap: () {
+                      //   if (_isHapticsEnabled) {
+                      //     HapticFeedback.lightImpact(); // Halka sa premium vibration
+                      //   }
+                      //   // "Coming Soon" Dialog
+                      //   showDialog(
+                      //     context: context,
+                      //     builder: (BuildContext context) {
+                      //       return CustomDialog(
+                      //         title: 'Coming Soon!',
+                      //         subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
+                      //         isSingleButton: true,
+                      //         primaryButtonText: 'Okay',
+                      //         onPrimaryPressed: () {
+                      //           if (_isHapticsEnabled) {
+                      //             HapticFeedback.selectionClick(); // Halka sa premium vibration
+                      //           }
+                      //           Navigator.of(context).pop();
+                      //         },
+                      //       );
+                      //     },
+                      //   );
+                      // },
                       onTap: () {
+                        // Haptic feedback (Vibration)
                         if (_isHapticsEnabled) {
-                          HapticFeedback.lightImpact(); // Halka sa premium vibration
+                          HapticFeedback.lightImpact();
                         }
-                        // "Coming Soon" Dialog
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomDialog(
-                              title: 'Coming Soon!',
-                              subtitle: 'We are working hard to bring this awesome feature in the next update. Stay tuned!',
-                              isSingleButton: true,
-                              primaryButtonText: 'Okay',
-                              onPrimaryPressed: () {
-                                if (_isHapticsEnabled) {
-                                  HapticFeedback.selectionClick(); // Halka sa premium vibration
-                                }
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                        );
+
+                        // NAYA FIX: Dialog ki jagah direct share function call hoga
+                        _shareApp();
                       },
                     ),
 
@@ -650,6 +660,25 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _shareApp() async {
+    // Calculator Pro ka Play Store link
+    const String playStoreLink = "https://play.google.com/store/apps/details?id=com.sptechstudios.calculator_pro";
+
+    const String shareMessage =
+        "Hey! Check out Calculator Pro by SP Tech Studios.\n\n"
+        "Download it here: $playStoreLink";
+
+    try {
+      // PDF Scanner Pro ki tarah same package ka use kar rahe hain
+      await SharePlus.instance.share(ShareParams(
+        text: shareMessage,
+        subject: "Download Calculator Pro",
+      ));
+    } catch (e) {
+      debugPrint("Share error: $e");
+    }
   }
 
   // Settings ke Item ka Design (Ab Card View me hai)
