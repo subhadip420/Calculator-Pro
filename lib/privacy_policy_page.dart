@@ -104,7 +104,7 @@ class PrivacyPolicyPage extends StatelessWidget {
             style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
           ),
           const SizedBox(height: 10),
-          Text(content, style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 15, height: 1.6)),
+          Text(content, style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15, height: 1.6)),
         ],
       ),
     );
@@ -124,7 +124,7 @@ class PrivacyPolicyPage extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:',
-            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 15, height: 1.6),
+            style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15, height: 1.6),
           ),
           const SizedBox(height: 8),
 
@@ -170,7 +170,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           'For complete details, including Terms & Conditions and Third-Party links, please read our full policy online:',
-          style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 15, height: 1.6),
+          style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15, height: 1.6),
         ),
         const SizedBox(height: 12),
         // Clickable Blue Text
