@@ -587,7 +587,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     //   return _buildMiniCalculator();
     // }
 
-    return Scaffold(
+    //return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // 1. Low opacity wala shade permanently remove!
+
+        // 2. Dark mode me safed (light) icons, Light mode me kaale (dark) icons
+        statusBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
+
+    // (Optional) Niche ke navigation bar ka color bhi set kar sakte hain
+    // systemNavigationBarColor: AppColors.bgColor(context),
+    // systemNavigationBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
+    ),
+    child: Scaffold(
       backgroundColor: AppColors.bgColor(context),
       body: SafeArea(
         child: Column(
@@ -1488,6 +1500,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           ],
         ),
       ),
+    ),
     );
   }
 
