@@ -226,17 +226,6 @@ class _ConversionCardState extends State<ConversionCard> {
     final double unitFontSize = isVeryShort ? 12.0 : (isShort ? 14.0 : 16.0);
     final double iconSize = isVeryShort ? 16.0 : (isShort ? 18.0 : 20.0);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Theme Colors
-    //final Color surfaceColor = const Color(0xFF1E2638);
-    //final Color cyanColor = const Color(0xFF4CD7F6);
-    //final Color textGrey = const Color(0xFFDBC2AD);
-    // final Color surfaceColor = isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-    // final Color cyanColor = isDark ? Colors.cyanAccent : Colors.cyan;
-    // final Color textGrey = isDark ? const Color(0xFFDBC2AD) : const Color(0xFF757575);
-    // final Color textColor = isDark ? Colors.white : Colors.black87;
-
-    // Dynamic text size logic
     double dynamicFontSize = widget.controller.text.length > 11 ? longTextFontSize : baseFontSize;
 
     return GestureDetector(
@@ -249,10 +238,11 @@ class _ConversionCardState extends State<ConversionCard> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: vPadding),
         decoration: BoxDecoration(
-          color: widget.isActive ? AppColors.surfaceColor(context).withOpacity(0.9) : AppColors.surfaceColor(context).withOpacity(0.7),
-          borderRadius: BorderRadius.circular(isVeryShort ? 16 : 24), // Border radius bhi shrink kiya
+          color: widget.isActive
+              ? AppColors.surfaceColor(context).withOpacity(0.9)
+              : AppColors.surfaceColor(context).withOpacity(0.7),
+          borderRadius: BorderRadius.circular(isVeryShort ? 16 : 24),
           border: Border.all(
-            //color: widget.isActive ? cyanColor : Colors.black12.withOpacity(0.05),
             color: widget.isActive
                 ? AppColors.cyanColor(context)
                 : (AppColors.isDark(context) ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05)),
