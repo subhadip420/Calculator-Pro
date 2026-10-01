@@ -105,13 +105,178 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
     await prefs.setStringList('calculator_history', history);
   }
 
+  String _calculateResult(String eq, {bool isFinalCall = false}) {
+    if (eq.isEmpty) return '';
+
+    if (isFinalCall) {
+      eq = eq.replaceAll(RegExp(r'[\+\-×÷\^]+$'), '');
+    }
+
+    if (eq.startsWith('^') || eq.startsWith('!') || eq.startsWith('×') || eq.startsWith('÷') || eq.startsWith('%')) {
+      return isFinalCall ? 'Expression error' : '';
+    }
+
+    try {
+      String sanitized = eq;
+
+      // Percentage calculation
+      sanitized = sanitized.replaceAllMapped(
+          RegExp(r'([0-9.]+)\%'),
+              (Match m) => '(${m[1]}/100)'
+      );
+      sanitized = sanitized.replaceAll('%', '/100');
+
+      sanitized = sanitized
+          .replaceAll('×', '*')
+          .replaceAll('÷', '/')
+          .replaceAll('√', 'sqrt(')
+          .replaceAll('²', '^2');
+
+      int openParens = sanitized.split('(').length - 1;
+      int closeParens = sanitized.split(')').length - 1;
+      for (int i = 0; i < (openParens - closeParens); i++) {
+        sanitized += ')';
+      }
+
+      Parser p = Parser();
+      Expression exp = p.parse(sanitized);
+      ContextModel cm = ContextModel();
+      double eval = exp.evaluate(EvaluationType.REAL, cm);
+
+      if (eval.isNaN || eval.isInfinite) return 'Expression error';
+      if (eval == -0.0) eval = 0.0;
+
+      if (eval == eval.toInt()) {
+        return eval.toInt().toString();
+      }
+      return eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+    } catch (e) {
+      if (isFinalCall) return 'Expression error';
+      return result;
+    }
+  }
+
+  // void _onPress(String text) {
+  //   setState(() {
+  //     // 1. Cursor position nikalna (kahan par type ho raha hai)
+  //     int cursorPos = _equationController.selection.baseOffset;
+  //     if (cursorPos < 0) cursorPos = _equationController.text.length;
+  //
+  //     bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
+  //
+  //     if (text == 'AC') {
+  //       _equationController.clear();
+  //       result = "0";
+  //       isEvaluated = false;
+  //     } else if (text == 'BACK') {
+  //       if (_equationController.text.isNotEmpty && cursorPos > 0) {
+  //         // Cursor jahan hai, uske theek pehle wala number/operator delete karo
+  //         String currentText = _equationController.text;
+  //         String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
+  //         _equationController.value = TextEditingValue(
+  //           text: newText,
+  //           selection: TextSelection.collapsed(offset: cursorPos - 1),
+  //         );
+  //         isEvaluated = false;
+  //       }
+  //     } else if (text == '=') {
+  //       if (_equationController.text.isNotEmpty && !isEvaluated) {
+  //         isEvaluated = true; // State change
+  //         if (result != "0" && result != "Expression error") {
+  //           _saveToHistory(_equationController.text, result);
+  //         }
+  //       }
+  //     } else {
+  //       if (isEvaluated) {
+  //         if (isOperator) {
+  //           if (result == 'Expression error') {
+  //             _equationController.text = text;
+  //             _equationController.selection = TextSelection.collapsed(offset: text.length);
+  //           } else {
+  //             _equationController.text = result + text;
+  //             _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
+  //           }
+  //         } else {
+  //           _equationController.text = text;
+  //           _equationController.selection = TextSelection.collapsed(offset: text.length);
+  //         }
+  //         isEvaluated = false;
+  //       } else {
+  //         // --- NAYA: MAIN APP WALA OPERATOR LOGIC ---
+  //         String before = _equationController.text.substring(0, cursorPos);
+  //         String after = _equationController.text.substring(cursorPos);
+  //         bool replaced = false;
+  //
+  //         if (isOperator && before.isNotEmpty) {
+  //           String lastChar = before[before.length - 1];
+  //           if (['+', '-', '×', '÷', '%'].contains(lastChar)) {
+  //             if (lastChar == text) {
+  //               // Agar same operator 2 baar dabaya toh ignore karo
+  //               return;
+  //             } else {
+  //               // Naya operator dabaya toh purane wale ko REPLACE kar do
+  //               String newBefore = before.substring(0, before.length - 1) + text;
+  //               _equationController.value = TextEditingValue(
+  //                 text: newBefore + after,
+  //                 selection: TextSelection.collapsed(offset: newBefore.length),
+  //               );
+  //               replaced = true;
+  //             }
+  //           }
+  //         }
+  //
+  //         // Agar replace nahi hua toh normally text add kar do
+  //         if (!replaced) {
+  //           String newText = before + text + after;
+  //           _equationController.value = TextEditingValue(
+  //             text: newText,
+  //             selection: TextSelection.collapsed(offset: before.length + text.length),
+  //           );
+  //         }
+  //       }
+  //     }
+  //
+  //     // Real-time calculation sirf typing ke time
+  //     if (text != '=' && text != 'AC' && _equationController.text.isNotEmpty) {
+  //       // Validation: Starting mein galat operator ho toh crash roke
+  //       if (!(_equationController.text.startsWith('×') ||
+  //           _equationController.text.startsWith('÷') ||
+  //           _equationController.text.startsWith('%'))) {
+  //         try {
+  //           String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
+  //           Parser p = Parser();
+  //           Expression exp = p.parse(sanitized);
+  //           double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+  //           result = eval == eval.toInt()
+  //               ? eval.toInt().toString()
+  //               : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+  //         } catch (e) {
+  //           // Ignore error while typing
+  //         }
+  //       }
+  //     } else if (_equationController.text.isEmpty) {
+  //       result = "0";
+  //     }
+  //   });
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients) {
+  //       _scrollController.animateTo(
+  //         _scrollController.position.maxScrollExtent,
+  //         duration: const Duration(milliseconds: 100),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
   void _onPress(String text) {
     setState(() {
-      // 1. Cursor position nikalna (kahan par type ho raha hai)
       int cursorPos = _equationController.selection.baseOffset;
       if (cursorPos < 0) cursorPos = _equationController.text.length;
 
-      bool isOperator = ['+', '-', '×', '÷', '%'].contains(text);
+      bool isBasicOperator = ['+', '-', '×', '÷'].contains(text);
+      String inputKey = text;
 
       if (text == 'AC') {
         _equationController.clear();
@@ -119,7 +284,6 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
         isEvaluated = false;
       } else if (text == 'BACK') {
         if (_equationController.text.isNotEmpty && cursorPos > 0) {
-          // Cursor jahan hai, uske theek pehle wala number/operator delete karo
           String currentText = _equationController.text;
           String newText = currentText.substring(0, cursorPos - 1) + currentText.substring(cursorPos);
           _equationController.value = TextEditingValue(
@@ -129,80 +293,72 @@ class _MiniFloatingCalculatorState extends State<MiniFloatingCalculator> {
           isEvaluated = false;
         }
       } else if (text == '=') {
-        if (_equationController.text.isNotEmpty && !isEvaluated) {
-          isEvaluated = true; // State change
-          if (result != "0" && result != "Expression error") {
-            _saveToHistory(_equationController.text, result);
+        if (_equationController.text.isNotEmpty) {
+          String finalResult = _calculateResult(_equationController.text, isFinalCall: true);
+          if (finalResult.isNotEmpty) {
+            result = finalResult;
+            isEvaluated = true;
+            if (finalResult != 'Expression error') {
+              _saveToHistory(_equationController.text, finalResult);
+            }
           }
         }
       } else {
+        // Double Decimal (.) Rokna
+        if (text == '.') {
+          String before = _equationController.text.substring(0, cursorPos);
+          RegExp regex = RegExp(r'[0-9\.]+$');
+          Match? match = regex.firstMatch(before);
+          if (match != null && match.group(0)!.contains('.')) return;
+        }
+
         if (isEvaluated) {
-          if (isOperator) {
+          if (isBasicOperator || text == '%') {
             if (result == 'Expression error') {
-              _equationController.text = text;
-              _equationController.selection = TextSelection.collapsed(offset: text.length);
+              _equationController.text = inputKey;
+              _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
             } else {
-              _equationController.text = result + text;
+              _equationController.text = result + inputKey;
               _equationController.selection = TextSelection.collapsed(offset: _equationController.text.length);
             }
           } else {
-            _equationController.text = text;
-            _equationController.selection = TextSelection.collapsed(offset: text.length);
+            _equationController.text = inputKey;
+            _equationController.selection = TextSelection.collapsed(offset: inputKey.length);
           }
           isEvaluated = false;
         } else {
-          // --- NAYA: MAIN APP WALA OPERATOR LOGIC ---
           String before = _equationController.text.substring(0, cursorPos);
           String after = _equationController.text.substring(cursorPos);
-          bool replaced = false;
 
-          if (isOperator && before.isNotEmpty) {
+          // Operator Replacement Logic
+          if (isBasicOperator && before.isNotEmpty) {
             String lastChar = before[before.length - 1];
-            if (['+', '-', '×', '÷', '%'].contains(lastChar)) {
+            if (['+', '-', '×', '÷'].contains(lastChar)) {
               if (lastChar == text) {
-                // Agar same operator 2 baar dabaya toh ignore karo
                 return;
               } else {
-                // Naya operator dabaya toh purane wale ko REPLACE kar do
-                String newBefore = before.substring(0, before.length - 1) + text;
+                String newBefore = before.substring(0, before.length - 1) + inputKey;
                 _equationController.value = TextEditingValue(
                   text: newBefore + after,
                   selection: TextSelection.collapsed(offset: newBefore.length),
                 );
-                replaced = true;
+                result = _calculateResult(_equationController.text);
+                return;
               }
             }
           }
 
-          // Agar replace nahi hua toh normally text add kar do
-          if (!replaced) {
-            String newText = before + text + after;
-            _equationController.value = TextEditingValue(
-              text: newText,
-              selection: TextSelection.collapsed(offset: before.length + text.length),
-            );
-          }
+          String newText = before + inputKey + after;
+          _equationController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: before.length + inputKey.length),
+          );
         }
       }
 
-      // Real-time calculation sirf typing ke time
+      // Real-time calculation
       if (text != '=' && text != 'AC' && _equationController.text.isNotEmpty) {
-        // Validation: Starting mein galat operator ho toh crash roke
-        if (!(_equationController.text.startsWith('×') ||
-            _equationController.text.startsWith('÷') ||
-            _equationController.text.startsWith('%'))) {
-          try {
-            String sanitized = _equationController.text.replaceAll('×', '*').replaceAll('÷', '/');
-            Parser p = Parser();
-            Expression exp = p.parse(sanitized);
-            double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-            result = eval == eval.toInt()
-                ? eval.toInt().toString()
-                : eval.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
-          } catch (e) {
-            // Ignore error while typing
-          }
-        }
+        result = _calculateResult(_equationController.text);
       } else if (_equationController.text.isEmpty) {
         result = "0";
       }
