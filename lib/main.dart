@@ -20,7 +20,7 @@ import 'menu_options.dart';
 
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
-import 'mini_calculator.dart'; // NAYA IMPORT
+import 'mini_calculator.dart';
 
 final ValueNotifier<String> appThemeNotifier = ValueNotifier('dark');
 
@@ -58,23 +58,8 @@ Future<void> main() async {
 
 class CalculatorProApp extends StatelessWidget {
   const CalculatorProApp({super.key});
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     debugShowCheckedModeBanner: false,
-  //     title: 'Calculator Pro',
-  //     theme: ThemeData(
-  //       brightness: Brightness.dark,
-  //       scaffoldBackgroundColor: const Color(0xFF0E131D),
-  //       fontFamily: 'Inter',
-  //     ),
-  //     home: const CalculatorScreen(),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
-    // NAYA: Ye poore app ko real-time update karega jab bhi theme change hogi
     return ValueListenableBuilder<String>(
       valueListenable: appThemeNotifier,
       builder: (context, currentTheme, child) {
@@ -82,7 +67,6 @@ class CalculatorProApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Calculator Pro',
           theme: ThemeData(
-            // Agar light mode hai toh Brightness.light warna dark
             brightness: currentTheme == 'light' ? Brightness.light : Brightness.dark,
             scaffoldBackgroundColor: currentTheme == 'light' ? const Color(0xFFF5F6FA) : const Color(0xFF0E131D),
             fontFamily: 'Inter',
@@ -101,7 +85,6 @@ class CalculatorScreen extends StatefulWidget {
   State<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
-//class _CalculatorScreenState extends State<CalculatorScreen> {
 class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBindingObserver {
   bool isScientific = false;
   bool isEvaluated = false;
@@ -132,28 +115,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   // Google Test Ad Unit ID (Android ke liye)
   final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
 
-  // Theme Colors
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color orangeColor = const Color(0xFFFF9500);
-  // final Color redColor = const Color(0xFFFFB4AB);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-  // final Color white = Colors.white;
-
-  // bool get isDark => appThemeNotifier.value == 'dark';
-  //
-  // Color get bgColor => isDark ? const Color(0xFF0E131D) : const Color(0xFFE0E6FC);
-  // Color get surfaceColor => isDark ? const Color(0xFF1E2638) : const Color(0xFFFFFFFF);
-  // Color get cyanColor => isDark ? Colors.cyanAccent : Colors.cyan;
-  // Color get orangeColor => const Color(0xFFFF9500); // Orange bhi same
-  // Color get operatorBgColor => isDark ? orangeColor.withOpacity(0.15) : orangeColor.withOpacity(0.3);
-  // Color get redColor => const Color(0xFFFFB4AB);
-  //
-  // // Text colors mode ke hisaab se badlenge
-  // Color get textGrey => isDark ? const Color(0xFFDBC2AD) : const Color(0xFF605D5D);
-  // Color get white => isDark ? Colors.white : Colors.black87;
-
   @override
   void initState() {
     super.initState();
@@ -161,15 +122,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     _loadSyncState();
     _loadHistory();
     _loadAd();
-    //_loadHapticsSetting();
     _loadSettings();
     FlutterOverlayWindow.overlayListener.listen((event) {
-      // if (event == 'haptic') {
-      //   if (_isHapticsEnabled) {
-      //     HapticFeedback.lightImpact();
-      //   }
-      //   return;
-      // }
       if (event == 'openApp') {
         const MethodChannel('com.sptechstudios/app').invokeMethod('openApp');
         FlutterOverlayWindow.closeOverlay();
@@ -233,22 +187,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     }
   }
 
-  // --- Basic Calculation Functions ---
-  double _add(double a, double b) => a + b;
-
-  double _subtract(double a, double b) => a - b;
-
-  double _multiply(double a, double b) => a * b;
-
-  double _divide(double a, double b) => a / b;
-
-  double _modulo(double a, double b) => a % b;
-
-
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
-
-    // YAHAN NAYI LINE ADD KI HAI: Background changes ko sync karne ke liye
     await prefs.reload();
 
     setState(() {
@@ -256,18 +196,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     });
   }
 
-  // Future<void> _loadHapticsSetting() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true; // Default ON
-  //   });
-  // }
-
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-      _buttonShape = prefs.getString('button_shape') ?? 'rounded'; // Shape load kiya
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -301,26 +234,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
     try {
       String sanitized = eq;
-
-      // Rule A: Number ke theek baad Root, Function, Pi, e ya Bracket aaye (Jaise 5√9 -> 5*√9, 5sin -> 5*sin, 5( -> 5*()
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\d)(√|sin|cos|tan|log|ln|π|e|\()'),
             (Match m) => '${m[1]}*${m[2]}',
       );
-
-      // Rule B: Bracket close ya Factorial ke baad kuch aaye (Jaise )5 -> )*5, 5!2 -> 5!*2)
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(\)|!)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
             (Match m) => '${m[1]}*${m[2]}',
       );
-
-      // Rule C: Constants ke beech mein ya baad mein aaye (Jaise πe -> π*e, π5 -> π*5)
       sanitized = sanitized.replaceAllMapped(
         RegExp(r'(π|e)(√|sin|cos|tan|log|ln|π|e|\d|\()'),
             (Match m) => '${m[1]}*${m[2]}',
       );
-
-      // 3. UI SYMBOLS KO MATH FORMAT ME BADALNA
       sanitized = sanitized
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
@@ -333,7 +258,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           .replaceAll('log10(', '(1/2.302585092994046)*ln(')
           .replaceAll('log2(', '(1/0.6931471805599453)*ln(');
 
-      // Degree to Radian conversion
       if (isDegreeMode) {
         sanitized = sanitized
             .replaceAll('sin(', 'sin((3.141592653589793/180)*')
@@ -341,7 +265,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
             .replaceAll('tan(', 'tan((3.141592653589793/180)*');
       }
 
-      // 4. AUTO-CLOSE BRACKETS
       int openParens = sanitized
           .split('(')
           .length - 1;
@@ -352,7 +275,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         sanitized += ')';
       }
 
-      // 5. PARSE AND EVALUATE
       Parser p = Parser();
       Expression exp = p.parse(sanitized);
       ContextModel cm = ContextModel();
@@ -404,7 +326,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         result = _calculateResult(_equationController.text);
         return;
       } else if (key == 'Inv') {
-        // Future feature: Jab aap Inv dabayein to UI me sin ki jagah asin dikhne lage
         return;
       }
 
@@ -455,8 +376,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
           }
           isEvaluated = false;
         } else {
-          // ... (Aapka Duplicate / Replace Operator aur baaki Normal Insertion ka logic yahan bilkul same rahega) ...
-          // Duplicate / Replace Operator Logic
           String before = _equationController.text.substring(0, cursorPos);
           String after = _equationController.text.substring(cursorPos);
 
@@ -518,11 +437,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     }
   }
 
-  // --- NAYA FUNCTION: History Save Karne Ke Liye ---
   Future<void> _saveToHistory(String eq, String res) async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Purani history fetch karein (Agar nahi hai to khali list banayein)
     List<String> history = prefs.getStringList('calculator_history') ?? [];
 
     // Date aur Time format karna (Jaise: 10-09-2026 20:23)
@@ -531,25 +448,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
         "${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year} "
         "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
 
-    // Naya data JSON map mein banayein
     Map<String, String> newEntry = {'equation': eq, 'result': res, 'datetime': formattedDate};
 
-    // Nayi entry ko list ke shuru mein dalein (Latest pehle dikhega)
     history.insert(0, jsonEncode(newEntry));
 
-    // Optional: History ko 50 items tak limit karein taaki storage full na ho
     if (history.length > 50) {
       history = history.sublist(0, 50);
     }
 
-    // Wapas save karein
     await prefs.setStringList('calculator_history', history);
     setState(() {
       _historyList = history;
     });
   }
 
-  // --- NAYA FUNCTION: Clear History Dialog ---
   void _showClearHistoryDialog() {
     showDialog(
       context: context,
@@ -583,28 +495,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
-    // if (isMiniMode) {
-    //   return _buildMiniCalculator();
-    // }
 
-    //return Scaffold(
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // 1. Low opacity wala shade permanently remove!
-
-        // 2. Dark mode me safed (light) icons, Light mode me kaale (dark) icons
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
 
-    // (Optional) Niche ke navigation bar ka color bhi set kar sakte hain
-    // systemNavigationBarColor: AppColors.bgColor(context),
-    // systemNavigationBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
     ),
     child: Scaffold(
       backgroundColor: AppColors.bgColor(context),
       body: SafeArea(
         child: Column(
           children: [
-            // 1. HORIZONTAL SLIDER (Menu Side-by-Side Slide Hoga)
+
             // 1. HORIZONTAL SLIDER (Full Screen Menu Side-by-Side)
             Expanded(
               child: Builder(
