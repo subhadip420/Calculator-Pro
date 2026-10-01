@@ -249,7 +249,7 @@ class _ConversionCardState extends State<ConversionCard> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: vPadding),
         decoration: BoxDecoration(
-          color: widget.isActive ? AppColors.surfaceColor(context).withOpacity(0.6) : AppColors.surfaceColor(context).withOpacity(0.2),
+          color: widget.isActive ? AppColors.surfaceColor(context).withOpacity(0.9) : AppColors.surfaceColor(context).withOpacity(0.7),
           borderRadius: BorderRadius.circular(isVeryShort ? 16 : 24), // Border radius bhi shrink kiya
           border: Border.all(
             //color: widget.isActive ? cyanColor : Colors.black12.withOpacity(0.05),

@@ -750,7 +750,7 @@ class _MenuOptionsState extends State<MenuOptions> {
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.6), fontSize: 13)),
+                    Text(subtitle, style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.9), fontSize: 13)),
                   ],
                 ),
               ),

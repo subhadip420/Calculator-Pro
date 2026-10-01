@@ -17,7 +17,7 @@ class AppColors {
   }
 
   static Color textGrey(BuildContext context) {
-    return isDark(context) ? const Color(0xFFDBC2AD) : const Color(0xFF757575);
+    return isDark(context) ? const Color(0xFFE1CDBB) : const Color(0xFF464545);
   }
 
   static Color textColor(BuildContext context) {
