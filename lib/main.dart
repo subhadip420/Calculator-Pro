@@ -1526,7 +1526,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                     : [],
                 onTap: () {
                   if (_isHapticsEnabled) {
-                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                    HapticFeedback.lightImpact();
                   }
                   setState(() {
                     isScientific = !isScientific;
@@ -1537,20 +1537,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
               const SizedBox(width: 8),
               ActionButton(
                 icon: Icons.history,
-                // Agar open hai toh cyan color dikhega, warna grey
                 contentColor: isHistoryOpen ? AppColors.cyanColor(context) : AppColors.textGrey(context),
                 bgColor: isHistoryOpen
                     ? AppColors.cyanColor(context).withOpacity(0.1)
                     : AppColors.surfaceColor(context).withOpacity(0.5),
                 onTap: () async {
                   if (_isHapticsEnabled) {
-                    HapticFeedback.lightImpact(); // Halka sa premium vibration
+                    HapticFeedback.lightImpact();
                   }
                   if (!isHistoryOpen) {
                     await _loadHistory();
                   }
                   setState(() {
-                    isHistoryOpen = !isHistoryOpen; // NAYA: History Toggle Logic
+                    isHistoryOpen = !isHistoryOpen;
                   });
                 },
               ),
@@ -1559,22 +1558,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                 icon: Icons.settings_outlined,
                 contentColor: AppColors.textGrey(context),
                 bgColor: AppColors.surfaceColor(context).withOpacity(0.5),
-                // onTap: () {
-                //   if (_isHapticsEnabled) {
-                //     HapticFeedback.lightImpact(); // Halka sa premium vibration
-                //   }
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
-                // },
                 onTap: () async {
-                  // NAYA: async lagaya
                   if (_isHapticsEnabled) {
                     HapticFeedback.lightImpact();
                   }
-
-                  // NAYA: await lagaya taaki settings band hone ka wait kare
                   await Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
-
-                  // NAYA: Settings se wapas aate hi turant naya theme load karo
                   _loadSettings();
                 },
               ),
