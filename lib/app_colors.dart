@@ -39,6 +39,18 @@ class AppColors {
   static Color redColor(BuildContext context) {
     return isDark(context) ? Colors.redAccent : Colors.red;
   }
+
+  static Color tealColor(BuildContext context) {
+    return isDark(context) ? Colors.tealAccent : Colors.teal;
+  }
+
+  static Color greenColor(BuildContext context) {
+    return isDark(context) ? Colors.greenAccent : Colors.green;
+  }
+
+  static Color blueColor(BuildContext context) {
+    return isDark(context) ? Colors.blueAccent : Colors.blue;
+  }
   // --- CONSTANT COLORS (Jo har theme mein same rahenge) ---
 
   //static const Color cyanColor = Color(0xFF4CD7F6);
