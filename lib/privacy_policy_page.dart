@@ -6,11 +6,6 @@ import 'custom_action_button.dart';
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
-  // final Color bgColor = const Color(0xFF0E131D);
-  // final Color surfaceColor = const Color(0xFF1E2638);
-  // final Color cyanColor = const Color(0xFF4CD7F6);
-  // final Color textGrey = const Color(0xFFDBC2AD);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +31,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Privacy Policy',
-                      style: TextStyle(color:AppColors.textColor(context), fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -93,7 +88,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   }
 
   // Premium Section Builder (Normal Text ke liye)
-  Widget _buildSection(BuildContext context,String title, String content) {
+  Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 28.0),
       child: Column(
@@ -101,10 +96,18 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(
+              color: AppColors.cyanColor(context),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
           const SizedBox(height: 10),
-          Text(content, style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15, height: 1.6)),
+          Text(
+            content,
+            style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15, height: 1.6),
+          ),
         ],
       ),
     );
@@ -119,7 +122,12 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Text(
             '5. Contact Us',
-            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(
+              color: AppColors.cyanColor(context),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
@@ -165,7 +173,12 @@ class PrivacyPolicyPage extends StatelessWidget {
       children: [
         Text(
           '6. More Information',
-          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          style: TextStyle(
+            color: AppColors.cyanColor(context),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
         const SizedBox(height: 10),
         Text(
