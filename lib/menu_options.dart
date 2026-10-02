@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calculator_pro/screens/currency_converter_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
@@ -85,6 +86,13 @@ class _MenuOptionsState extends State<MenuOptions> {
       'title': 'Area',
       'sub': 'Square meters, acres, hectares...',
       'img': 'assets/images/area.png',
+      'category': 'unit_converter',
+    },
+    {
+      'id': 'currency',
+      'title': 'Currency',
+      'sub': 'USD, EUR, INR, GBP & more',
+      'img': 'assets/images/percentage-discount-symbol.png',
       'category': 'unit_converter',
     },
     {
@@ -358,6 +366,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return NumericBaseConverterView(key: const ValueKey('Numeric Base'), onBack: _closeView);
       case 'shoe_size':
         return ShoeSizeConverterView(key: const ValueKey('Shoe Size'), onBack: _closeView);
+      case 'currency':
+        return CurrencyConverterView(key: const ValueKey('Currency'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
