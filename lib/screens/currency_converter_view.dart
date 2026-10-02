@@ -515,21 +515,24 @@ class _CurrencyConverterViewState extends State<CurrencyConverterView> with Sing
               ),
               const SizedBox(width: 16),
 
-              GestureDetector(
-                onTap: _onRefresh,
-                child: Container(
-                  padding: const EdgeInsets.all(2.0),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceColor(context).withOpacity(0.4),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withOpacity(0.05)),
-                  ),
-                  child: RotationTransition(
-                    turns: _refreshController,
-                    child: Icon(
-                      Icons.refresh_rounded,
-                      color: _isRefreshing ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                      size: 28,
+              Tooltip(
+                message: 'Refresh rates',
+                child: GestureDetector(
+                  onTap: _onRefresh,
+                  child: Container(
+                    padding: const EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceColor(context).withOpacity(0.4),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    ),
+                    child: RotationTransition(
+                      turns: _refreshController,
+                      child: Icon(
+                        Icons.refresh_rounded,
+                        color: _isRefreshing ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                        size: 28,
+                      ),
                     ),
                   ),
                 ),
