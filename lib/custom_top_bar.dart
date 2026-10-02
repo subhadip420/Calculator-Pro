@@ -85,14 +85,18 @@ class _CustomTopBarState extends State<CustomTopBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // --- BACK BUTTON ---
-          ActionButton(
-            icon: Icons.arrow_back_ios_new_rounded,
-            contentColor: textGrey, // Dynamic icon color
-            bgColor: surfaceColor.withOpacity(isDark ? 0.5 : 1.0), // Light mode me white surface clear dikhega
-            onTap: () {
-              if (widget.isHapticsEnabled) HapticFeedback.lightImpact();
-              widget.onBack();
-            },
+          //ActionButton(
+          Tooltip(
+            message: 'Back',
+            child: ActionButton(
+              icon: Icons.arrow_back_ios_new_rounded,
+              contentColor: textGrey, // Dynamic icon color
+              bgColor: surfaceColor.withOpacity(isDark ? 0.5 : 1.0), // Light mode me white surface clear dikhega
+              onTap: () {
+                if (widget.isHapticsEnabled) HapticFeedback.lightImpact();
+                widget.onBack();
+              },
+            ),
           ),
 
           // --- TITLE ---
@@ -107,11 +111,15 @@ class _CustomTopBarState extends State<CustomTopBar> {
           ),
 
           // --- FAVORITE BUTTON ---
-          ActionButton(
-            icon: _isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-            contentColor: _isFavorite ? Colors.amberAccent : textGrey,
-            bgColor: surfaceColor.withOpacity(isDark ? 0.5 : 1.0),
-            onTap: _toggleFavorite,
+          // ActionButton(
+          Tooltip(
+            message: _isFavorite ? 'Remove from favorites' : 'Add to favorites',
+            child: ActionButton(
+              icon: _isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
+              contentColor: _isFavorite ? Colors.amberAccent : textGrey,
+              bgColor: surfaceColor.withOpacity(isDark ? 0.5 : 1.0),
+              onTap: _toggleFavorite,
+            ),
           ),
         ],
       ),
