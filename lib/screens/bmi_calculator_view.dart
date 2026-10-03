@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
+import '../custom_toast.dart';
 import '../custom_top_bar.dart';
 
 class BmiCalculatorView extends StatefulWidget {
@@ -63,6 +66,241 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
     });
   }
 
+// --- BMI CALCULATION LOGIC ---
+  void _calculateBMI() {
+    if (_isHapticsEnabled) HapticFeedback.mediumImpact();
+    FocusScope.of(context).unfocus(); // Hide keyboard
+
+    if (_weightController.text.trim().isEmpty) {
+      showCustomToast(context, 'Please enter your weight');
+      return;
+    }
+
+    double weight = double.tryParse(_weightController.text) ?? 0;
+    if (weight <= 0) {
+      showCustomToast(context, 'Please enter a valid weight');
+      return;
+    }
+
+    double heightInMeters = 0;
+
+    if (heightUnit == 'cm') {
+      if (_heightCmController.text.trim().isEmpty) {
+        showCustomToast(context, 'Please enter your height in cm');
+        return;
+      }
+      double cm = double.tryParse(_heightCmController.text) ?? 0;
+      if (cm <= 0) {
+        showCustomToast(context, 'Please enter a valid height');
+        return;
+      }
+      heightInMeters = cm / 100;
+    } else {
+      if (_heightFtController.text.trim().isEmpty && _heightInController.text.trim().isEmpty) {
+        showCustomToast(context, 'Please enter your height');
+        return;
+      }
+      double ft = double.tryParse(_heightFtController.text) ?? 0;
+      double inches = double.tryParse(_heightInController.text) ?? 0;
+      if (ft <= 0 && inches <= 0) {
+        showCustomToast(context, 'Please enter a valid height');
+        return;
+      }
+      heightInMeters = ((ft * 12) + inches) * 0.0254; // Convert inches to meters
+    }
+
+    // Convert lb to kg if needed
+    if (weightUnit == 'lb') {
+      weight = weight * 0.453592;
+    }
+
+    // Formula: BMI = kg / m^2
+    double bmi = weight / (heightInMeters * heightInMeters);
+
+    _showResultDialog(bmi);
+  }
+
+  // --- SHOW RESULT DIALOG ---
+  void _showResultDialog(double bmi) {
+    String category = '';
+    Color catColor = Colors.green;
+    String message = '';
+
+    // WHO Categories
+    if (bmi < 18.5) {
+      category = 'Underweight';
+      catColor = Colors.blueAccent;
+      message = 'You are underweight. Focus on a nutrient-rich diet.';
+    } else if (bmi >= 18.5 && bmi <= 24.9) {
+      category = 'Normal';
+      catColor = Colors.green;
+      message = 'You are doing great. Keep up the good work!';
+    } else if (bmi >= 25.0 && bmi <= 29.9) {
+      category = 'Overweight';
+      catColor = Colors.orange;
+      message = 'You are slightly overweight. Regular exercise will help.';
+    } else {
+      category = 'Obese';
+      catColor = Colors.redAccent;
+      message = 'You are in the obese category. Focus on diet and exercise.';
+    }
+
+    // Format Strings for Summary
+    String heightStr = heightUnit == 'cm'
+        ? '${_heightCmController.text} cm'
+        : '${_heightFtController.text} ft ${_heightInController.text.isNotEmpty ? _heightInController.text : "0"} in';
+    String weightStr = '${_weightController.text} $weightUnit';
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: AppColors.bgColor(context),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 1. GAUGE & BMI VALUE
+                SizedBox(
+                  height: 160,
+                  width: 250,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      CustomPaint(
+                        size: const Size(250, 150),
+                        painter: BmiGaugePainter(bmi, AppColors.surfaceColor(context).withOpacity(0.5)),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            bmi.toStringAsFixed(1),
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                            ),
+                          ),
+                          Text(
+                            'BMI',
+                            style: TextStyle(
+                              color: AppColors.textColor(context),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // 2. CATEGORY PILL
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: catColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    category,
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // 3. SUMMARY ROW
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildSummaryCol(selectedGender, '', icon: selectedGender == 'Male' ? Icons.man_rounded : Icons.woman_rounded),
+                    _buildSummaryCol('Age', '$selectedAge Yrs'),
+                    _buildSummaryCol('Weight', weightStr),
+                    _buildSummaryCol('Height', heightStr),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // 4. MESSAGE CARD
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceColor(context).withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.health_and_safety_rounded, color: catColor, size: 40),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          message,
+                          style: TextStyle(
+                            color: catColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // 5. CLOSE BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_isHapticsEnabled) HapticFeedback.lightImpact();
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.surfaceColor(context),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSummaryCol(String title, String value, {IconData? icon}) {
+    return Column(
+      children: [
+        Text(title, style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.7), fontSize: 13)),
+        const SizedBox(height: 6),
+        if (icon != null)
+          Icon(icon, color: AppColors.cyanColor(context), size: 28)
+        else
+          Text(value, style: TextStyle(color: AppColors.textColor(context), fontSize: 15, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+
   // --- REUSABLE TOGGLE BUTTON (For Weight & Height Units) ---
   Widget _buildUnitToggle(String option1, String option2, String currentValue, Function(String) onChanged) {
     return Container(
@@ -80,6 +318,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
       ),
     );
   }
+
 
   Widget _buildToggleOption(String text, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
@@ -405,7 +644,8 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_isHapticsEnabled) HapticFeedback.mediumImpact();
-                        // TODO: Calculate BMI Logic Here
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        _calculateBMI();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.cyanColor(context),
@@ -602,4 +842,68 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
       ],
     );
   }
+}
+
+// --- CUSTOM GAUGE PAINTER ---
+class BmiGaugePainter extends CustomPainter {
+  final double bmi;
+  final Color innerColor;
+
+  BmiGaugePainter(this.bmi, this.innerColor);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height);
+    final radius = size.width / 2;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    // Draw inner filled semi-circle
+    final innerPaint = Paint()
+      ..color = innerColor
+      ..style = PaintingStyle.fill;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius * 0.70), math.pi, math.pi, true, innerPaint);
+
+    final strokeWidth = 14.0;
+
+    // Function to draw arc segments
+    void drawSegment(double startVal, double endVal, Color color) {
+      // Mapping BMI 12 to 42 across 180 degrees (pi)
+      double startAngle = math.pi + ((startVal - 12) / 30) * math.pi;
+      double sweepAngle = ((endVal - startVal) / 30) * math.pi;
+
+      final paint = Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round;
+
+      // Minor gap between segments for clean look
+      canvas.drawArc(rect, startAngle, sweepAngle - 0.05, false, paint);
+    }
+
+    // Segments (Underweight, Normal, Overweight, Obese)
+    drawSegment(12, 18.5, Colors.blueAccent);
+    drawSegment(18.5, 25, Colors.green);
+    drawSegment(25, 30, Colors.orange);
+    drawSegment(30, 42, Colors.redAccent);
+
+    // Draw Needle Indicator
+    double needleBmi = bmi.clamp(12.0, 42.0);
+    double needleAngle = math.pi + ((needleBmi - 12) / 30) * math.pi;
+
+    final needleLength = radius * 0.90;
+    final needleEndX = center.dx + needleLength * math.cos(needleAngle);
+    final needleEndY = center.dy + needleLength * math.sin(needleAngle);
+
+    final needlePaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(center, Offset(needleEndX, needleEndY), needlePaint);
+    canvas.drawCircle(center, 6, Paint()..color = Colors.white);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
