@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
+import 'package:calculator_pro/screens/percentage_calculator_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
@@ -43,6 +44,7 @@ class MenuOptions extends StatefulWidget {
 class _MenuOptionsState extends State<MenuOptions> {
   bool _isUnitExpanded = true;
   bool _isHealthExpanded = true;
+  bool _isAlgebraExpanded = true;
   bool _isOtherExpanded = true;
 
   String? _currentActiveView;
@@ -235,6 +237,15 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'health_fitness',
     },
 
+    // --- ALGEBRA CALCULATORS ---
+    {
+      'id': 'percentage',
+      'title': 'Percentage',
+      'sub': 'Quick percentage calculations',
+      'img': 'assets/images/percentage-discount-symbol.png', // Ise baad me proper math icon se replace kar lena
+      'category': 'algebra',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -393,6 +404,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return BmiCalculatorView(key: const ValueKey('BMI'), onBack: _closeView);
       case 'body_fat':
         return BodyFatCalculatorView(key: const ValueKey('BodyFat'), onBack: _closeView);
+      case 'percentage':
+        return PercentageCalculatorView(key: const ValueKey('Percentage'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
@@ -601,6 +614,62 @@ class _MenuOptionsState extends State<MenuOptions> {
                       // NAYA: Ye automatically 'health_fitness' category wale items ko dhund kar show karega
                       child: Column(
                         children: _allTools.where((tool) => tool['category'] == 'health_fitness').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+                  // --- CATEGORY: ALGEBRA ---
+                  const SizedBox(height: 14), // Gap
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isAlgebraExpanded = !_isAlgebraExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Algebra',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isAlgebraExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isAlgebraExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      // NAYA: Ye 'algebra' category wale items ko show karega
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'algebra').map((tool) {
                           return _buildMenuItem(
                             tool['img'],
                             tool['title'],
