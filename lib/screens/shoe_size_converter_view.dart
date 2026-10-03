@@ -576,63 +576,77 @@ class _ShoeSizeConverterViewState extends State<ShoeSizeConverterView> {
           ),
         ),
 
-        // --- CONVERSION LIST ---
         Expanded(
-          child: SingleChildScrollView(
+          child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: Text(
-                    'Common',
-                    style: TextStyle(
-                      color: AppColors.textGrey(context).withOpacity(0.8),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Column(
-                    children: [
-                      // RegionKey bhejna zaroori hai map access ke liye
-                      _buildShoeRow('US', 'United States', 'US', isTop: true),
-                      _buildShoeRow('UK', 'United Kingdom', 'UK'),
-                      _buildShoeRow('EU', 'European Union', 'EU'),
-                      _buildShoeRow('AU', 'Australia', 'AU'),
-                      _buildShoeRow('JP', 'Japan', 'JP', isBottom: true),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false, // Yeh line Expanded ko crash hone se rokegi
+                child: Column(
+                  children: [
+                    // --- CONVERSION LIST ---
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                              child: Text(
+                                'Common',
+                                style: TextStyle(
+                                  color: AppColors.textGrey(context).withOpacity(0.8),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Column(
+                                children: [
+                                  // RegionKey bhejna zaroori hai map access ke liye
+                                  _buildShoeRow('US', 'United States', 'US', isTop: true),
+                                  _buildShoeRow('UK', 'United Kingdom', 'UK'),
+                                  _buildShoeRow('EU', 'European Union', 'EU'),
+                                  _buildShoeRow('AU', 'Australia', 'AU'),
+                                  _buildShoeRow('JP', 'Japan', 'JP', isBottom: true),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: Text(
-                    'Other',
-                    style: TextStyle(
-                      color: AppColors.textGrey(context).withOpacity(0.8),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                              child: Text(
+                                'Other',
+                                style: TextStyle(
+                                  color: AppColors.textGrey(context).withOpacity(0.8),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Column(
+                                children: [
+                                  _buildShoeRow('cm', 'Centimeters', 'cm', isTop: true),
+                                  _buildShoeRow('in', 'Inches', 'in', isBottom: true),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Column(
-                    children: [
-                      _buildShoeRow('cm', 'Centimeters', 'cm', isTop: true),
-                      _buildShoeRow('in', 'Inches', 'in', isBottom: true),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
