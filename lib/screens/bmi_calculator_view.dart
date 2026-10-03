@@ -153,11 +153,16 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
 
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) {
         return Dialog(
           backgroundColor: AppColors.bgColor(context),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(
+              color: AppColors.cyanColor(context).withOpacity(0.9), // Border ka color
+              width: 2, // Border ki motai
+            ),),
           insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -173,7 +178,11 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     children: [
                       CustomPaint(
                         size: const Size(250, 150),
-                        painter: BmiGaugePainter(bmi, AppColors.surfaceColor(context).withOpacity(0.5)),
+                        painter: BmiGaugePainter(
+                          bmi,
+                          AppColors.surfaceColor(context).withOpacity(0.5),
+                          AppColors.textColor(context)
+                        ),
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -271,7 +280,12 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.surfaceColor(context),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                        side: BorderSide(
+                          color: AppColors.cyanColor(context).withOpacity(0.5), // Border ka color
+                          width: 1.5, // Border ki motai
+                        ),),
                       elevation: 0,
                     ),
                     child: Text(
@@ -371,7 +385,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
 
         // Background color
         filled: true,
-        fillColor: AppColors.surfaceColor(context).withOpacity(0.3),
+        fillColor: AppColors.surfaceColor(context).withOpacity(0.8),
         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
 
         // 1. Default (Unfocused) Border
@@ -454,7 +468,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                             decoration: BoxDecoration(
                               color: selectedGender == 'Male'
                                   ? AppColors.cyanColor(context).withOpacity(0.1)
-                                  : AppColors.surfaceColor(context).withOpacity(0.3),
+                                  : AppColors.surfaceColor(context).withOpacity(0.9),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: selectedGender == 'Male'
@@ -492,7 +506,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                             decoration: BoxDecoration(
                               color: selectedGender == 'Female'
                                   ? AppColors.cyanColor(context).withOpacity(0.1)
-                                  : AppColors.surfaceColor(context).withOpacity(0.3),
+                                  : AppColors.surfaceColor(context).withOpacity(0.9),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: selectedGender == 'Female'
@@ -535,7 +549,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceColor(context).withOpacity(0.3), // App ka default card color
+                      color: AppColors.surfaceColor(context).withOpacity(0.7), // App ka default card color
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 1.5),
                     ),
@@ -642,13 +656,22 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_isHapticsEnabled) HapticFeedback.mediumImpact();
+                        // FocusManager.instance.primaryFocus?.unfocus();
+                        // _calculateBMI();
                         FocusManager.instance.primaryFocus?.unfocus();
-                        _calculateBMI();
+
+                        // 2. Thoda wait karo taaki keyboard smoothly poora neeche chala jaye
+                        await Future.delayed(const Duration(milliseconds: 300));
+
+                        // 3. Phir BMI calculate aur Dialog open karo
+                        if (mounted) {
+                          _calculateBMI();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.cyanColor(context),
+                        backgroundColor: AppColors.cyanColor(context).withOpacity(0.9),
                         foregroundColor: const Color(0xFF003640), // Dark text on Cyan button
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                         elevation: 0,
@@ -848,8 +871,8 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
 class BmiGaugePainter extends CustomPainter {
   final double bmi;
   final Color innerColor;
-
-  BmiGaugePainter(this.bmi, this.innerColor);
+  final Color needleColor;
+  BmiGaugePainter(this.bmi, this.innerColor, this.needleColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -896,12 +919,12 @@ class BmiGaugePainter extends CustomPainter {
     final needleEndY = center.dy + needleLength * math.sin(needleAngle);
 
     final needlePaint = Paint()
-      ..color = Colors.white
+      ..color = needleColor
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
 
     canvas.drawLine(center, Offset(needleEndX, needleEndY), needlePaint);
-    canvas.drawCircle(center, 6, Paint()..color = Colors.white);
+    canvas.drawCircle(center, 6, Paint()..color = needleColor);
   }
 
   @override
