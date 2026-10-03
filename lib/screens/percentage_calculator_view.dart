@@ -20,6 +20,10 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
   // Default selection set to 'percent_from_a_to_b'
   String selectedCalcType = 'percent_from_a_to_b';
   bool _showExample = false;
+
+  String _resultVal1 = '--';
+  String _resultVal2 = '--';
+
   // Input Controllers for A and B values
   final TextEditingController _input1Controller = TextEditingController();
   final TextEditingController _input2Controller = TextEditingController();
@@ -28,6 +32,8 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
   void initState() {
     super.initState();
     _loadSettings();
+    _input1Controller.addListener(_performCalculation);
+    _input2Controller.addListener(_performCalculation);
   }
 
   @override
@@ -55,7 +61,65 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
     setState(() {
       selectedCalcType = typeId;
       _showExample = false; // NAYA: Type badalte hi example reset ho jayega
+      _resultVal1 = '--';
+      _resultVal2 = '--';
     });
+  }
+
+  // --- NAYA FUNCTION: Real Calculations ---
+  void _performCalculation() {
+    String text1 = _input1Controller.text.trim();
+    String text2 = _input2Controller.text.trim();
+
+    double? valA = double.tryParse(text1);
+    double? valB = double.tryParse(text2);
+
+    setState(() {
+      if (valA == null || valB == null) {
+        _resultVal1 = '--';
+        _resultVal2 = '--';
+        return;
+      }
+
+      if (selectedCalcType == 'discount') {
+        // Formula: A - (A * B / 100) = Final Value
+        double discountAmount = valA * (valB / 100);
+        double finalValue = valA - discountAmount;
+        _resultVal1 = _formatResult(finalValue);
+        _resultVal2 = _formatResult(discountAmount);
+      } else if (selectedCalcType == 'increase') {
+        // Formula: A + (A * B / 100) = Final Value
+        double increaseAmount = valA * (valB / 100);
+        double finalValue = valA + increaseAmount;
+        _resultVal1 = _formatResult(finalValue);
+        _resultVal2 = _formatResult(increaseAmount);
+      } else if (selectedCalcType == 'percent_from_a_to_b') {
+        // Formula: ((B - A) / A) * 100 = Percentage change
+        if (valA == 0) {
+          _resultVal1 = 'N/A'; // Cannot divide by zero
+        } else {
+          double change = ((valB - valA) / valA) * 100;
+          // Format with sign for clarity (e.g. +20% or -10%)
+          _resultVal1 = (change >= 0 ? '+' : '') + _formatResult(change) + '%';
+        }
+      } else if (selectedCalcType == 'percent_of_a_from_b') {
+        // Formula: (A / B) * 100 = Percentage
+        if (valB == 0) {
+          _resultVal1 = 'N/A';
+        } else {
+          double percent = (valA / valB) * 100;
+          _resultVal1 = _formatResult(percent) + '%';
+        }
+      }
+    });
+  }
+
+  // Helper method: Numbers ko properly format karne ke liye (e.g. 10.0 -> 10, 10.1234 -> 10.12)
+  String _formatResult(double value) {
+    if (value == value.toInt()) {
+      return value.toInt().toString(); // Agar whole number hai, toh decimal hata do
+    }
+    return value.toStringAsFixed(2); // Varna 2 decimal places tak dikhao
   }
 
   // --- HELPER: 2x2 Grid Option Card ---
@@ -193,6 +257,42 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
     String example = ''; // NAYA: Example text store karne ke liye
     List<Widget> resultRows = [];
 
+    // if (selectedCalcType == 'discount') {
+    //   label1 = 'Value'; label2 = 'Discount';
+    //   hint1 = '--'; hint2 = '--'; isPercent2 = true;
+    //   middleSymbol = Text('-', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
+    //   description = 'A reduction of a value by a given percent';
+    //   example = 'Example: A 25% discount on 100 is equal to 75';
+    //   resultRows = [
+    //     _buildResultRow('Final value', '--'),
+    //     _buildResultRow('Discount', '--', isLast: true),
+    //   ];
+    // } else if (selectedCalcType == 'increase') {
+    //   label1 = 'Value'; label2 = 'Increase';
+    //   hint1 = '--'; hint2 = '--'; isPercent2 = true;
+    //   middleSymbol = Text('+', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
+    //   description = 'An increase of a value by a given percent';
+    //   example = 'Example: A 25% increase on 100 is equal to 125';
+    //   resultRows = [
+    //     _buildResultRow('Final value', '--'),
+    //     _buildResultRow('Increase', '--', isLast: true),
+    //   ];
+    // } else if (selectedCalcType == 'percent_from_a_to_b') {
+    //   label1 = 'From'; label2 = 'To';
+    //   hint1 = 'A'; hint2 = 'B';
+    //   middleSymbol = Icon(Icons.arrow_forward_rounded, color: AppColors.textColor(context), size: 28);
+    //   description = 'The percentual change when going from value A to value B';
+    //   example = 'Example: From 25 to 100 there is a 300% increase';
+    //   resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
+    // } else if (selectedCalcType == 'percent_of_a_from_b') {
+    //   label1 = 'Value'; label2 = 'From';
+    //   hint1 = 'A'; hint2 = 'B';
+    //   middleSymbol = Icon(Icons.arrow_back_rounded, color: AppColors.textColor(context), size: 28);
+    //   description = 'The percent of value A from value B';
+    //   example = 'Example: 25 is 25% of 100';
+    //   resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
+    // }
+
     if (selectedCalcType == 'discount') {
       label1 = 'Value'; label2 = 'Discount';
       hint1 = '--'; hint2 = '--'; isPercent2 = true;
@@ -200,8 +300,8 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
       description = 'A reduction of a value by a given percent';
       example = 'Example: A 25% discount on 100 is equal to 75';
       resultRows = [
-        _buildResultRow('Final value', '--'),
-        _buildResultRow('Discount', '--', isLast: true),
+        _buildResultRow('Final value', _resultVal1), // NAYA
+        _buildResultRow('Discount', _resultVal2, isLast: true), // NAYA
       ];
     } else if (selectedCalcType == 'increase') {
       label1 = 'Value'; label2 = 'Increase';
@@ -210,8 +310,8 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
       description = 'An increase of a value by a given percent';
       example = 'Example: A 25% increase on 100 is equal to 125';
       resultRows = [
-        _buildResultRow('Final value', '--'),
-        _buildResultRow('Increase', '--', isLast: true),
+        _buildResultRow('Final value', _resultVal1), // NAYA
+        _buildResultRow('Increase', _resultVal2, isLast: true), // NAYA
       ];
     } else if (selectedCalcType == 'percent_from_a_to_b') {
       label1 = 'From'; label2 = 'To';
@@ -219,14 +319,14 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
       middleSymbol = Icon(Icons.arrow_forward_rounded, color: AppColors.textColor(context), size: 28);
       description = 'The percentual change when going from value A to value B';
       example = 'Example: From 25 to 100 there is a 300% increase';
-      resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
+      resultRows = [_buildResultRow('Percent', _resultVal1, isLast: true)]; // NAYA
     } else if (selectedCalcType == 'percent_of_a_from_b') {
       label1 = 'Value'; label2 = 'From';
       hint1 = 'A'; hint2 = 'B';
       middleSymbol = Icon(Icons.arrow_back_rounded, color: AppColors.textColor(context), size: 28);
       description = 'The percent of value A from value B';
       example = 'Example: 25 is 25% of 100';
-      resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
+      resultRows = [_buildResultRow('Percent', _resultVal1, isLast: true)]; // NAYA
     }
 
     return Column(
@@ -279,7 +379,7 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
             ),
           ],
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 20),
 
         // 3. Result Section
         Text('Result', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
