@@ -392,162 +392,187 @@ class _TimeConverterViewState extends State<TimeConverterView> {
         ),
 
         Expanded(
-          child: SingleChildScrollView(
+          child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-              child: Column(
-                children: [
-                  // --- 1. TOP CARD: Custom Multi-Input ---
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceColor(context).withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: ['d', 'hr', 'm', 's'].contains(activeField)
-                            ? AppColors.cyanColor(context)
-                            : AppColors.textColor(context).withOpacity(0.05),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
-                          child: Text(
-                            'Compound Input',
-                            style: TextStyle(
-                              color: AppColors.textGrey(context),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildTimeBlock('Days', inputDays, 'd'),
-                            Text(
-                              ':',
-                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
-                            ),
-                            _buildTimeBlock('Hours', inputHours, 'hr'),
-                            Text(
-                              ':',
-                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
-                            ),
-                            _buildTimeBlock('Mins', inputMins, 'm'),
-                            Text(
-                              ':',
-                              style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.3), fontSize: 24),
-                            ),
-                            _buildTimeBlock('Secs', inputSecs, 's'),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false, // Layout crash hone se rokega
+                child: Column(
+                  children: [
+                    // Expanded(
+                    Container(
+                      height: screenHeight * 0.35,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+                          child: Column(
+                            children: [
+                              // --- 1. TOP CARD: Custom Multi-Input ---
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceColor(context).withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(
+                                    color: ['d', 'hr', 'm', 's'].contains(activeField)
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textColor(context).withOpacity(0.05),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
+                                      child: Text(
+                                        'Compound Input',
+                                        style: TextStyle(
+                                          color: AppColors.textGrey(context),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _buildTimeBlock('Days', inputDays, 'd'),
+                                        Text(
+                                          ':',
+                                          style: TextStyle(
+                                            color: AppColors.textGrey(context).withOpacity(0.3),
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                        _buildTimeBlock('Hours', inputHours, 'hr'),
+                                        Text(
+                                          ':',
+                                          style: TextStyle(
+                                            color: AppColors.textGrey(context).withOpacity(0.3),
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                        _buildTimeBlock('Mins', inputMins, 'm'),
+                                        Text(
+                                          ':',
+                                          style: TextStyle(
+                                            color: AppColors.textGrey(context).withOpacity(0.3),
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                        _buildTimeBlock('Secs', inputSecs, 's'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
 
-                  const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                  // --- 2. STANDARD CONVERSION CARDS ---
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ConversionCard(
-                            isActive: activeField == 'from',
-                            unitName: fromUnit,
-                            unitSymbol: fromSymbol,
-                            controller: _fromController,
-                            onTap: () => setState(() => activeField = 'from'),
-                            onUnitTap: () => _showUnitPicker(true),
-                          ),
-                          const SizedBox(height: 16),
-                          ConversionCard(
-                            isActive: activeField == 'to',
-                            unitName: toUnit,
-                            unitSymbol: toSymbol,
-                            controller: _toController,
-                            onTap: () => setState(() => activeField = 'to'),
-                            onUnitTap: () => _showUnitPicker(false),
-                          ),
-                        ],
-                      ),
+                              // --- 2. STANDARD CONVERSION CARDS ---
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ConversionCard(
+                                        isActive: activeField == 'from',
+                                        unitName: fromUnit,
+                                        unitSymbol: fromSymbol,
+                                        controller: _fromController,
+                                        onTap: () => setState(() => activeField = 'from'),
+                                        onUnitTap: () => _showUnitPicker(true),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ConversionCard(
+                                        isActive: activeField == 'to',
+                                        unitName: toUnit,
+                                        unitSymbol: toSymbol,
+                                        controller: _toController,
+                                        onTap: () => setState(() => activeField = 'to'),
+                                        onUnitTap: () => _showUnitPicker(false),
+                                      ),
+                                    ],
+                                  ),
 
-                      // --- SWAP BUTTON ---
-                      GestureDetector(
-                        onTap: _swapUnits,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          height: swapBtnSize,
-                          width: swapBtnSize,
-                          decoration: BoxDecoration(
-                            color: AppColors.cyanColor(context),
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.bgColor(context), width: 4),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.cyanColor(context).withOpacity(0.3),
-                                blurRadius: 10,
-                                spreadRadius: 2,
+                                  // --- SWAP BUTTON ---
+                                  GestureDetector(
+                                    onTap: _swapUnits,
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 250),
+                                      height: swapBtnSize,
+                                      width: swapBtnSize,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.cyanColor(context),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: AppColors.bgColor(context), width: 4),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColors.cyanColor(context).withOpacity(0.3),
+                                            blurRadius: 10,
+                                            spreadRadius: 2,
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          child: const Icon(Icons.swap_vert_rounded, color: Color(0xFF003640), size: 26),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+                    ),
 
-        // --- 3. REAL-TIME EQUIVALENCE TEXT ---
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: Container(
-              key: ValueKey<String>(_getEquivalenceText()),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceColor(context).withOpacity(0.4),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.textColor(context).withOpacity(0.05)),
-              ),
-              child: Text(
-                _getEquivalenceText(),
-                style: TextStyle(
-                  color: AppColors.cyanColor(context).withOpacity(0.9),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.5,
+                    // --- 3. REAL-TIME EQUIVALENCE TEXT ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Container(
+                          key: ValueKey<String>(_getEquivalenceText()),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context).withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColors.textColor(context).withOpacity(0.05)),
+                          ),
+                          child: Text(
+                            _getEquivalenceText(),
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context).withOpacity(0.9),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    // --- 4. REUSABLE KEYBOARD ---
+                    ConverterKeyboard(
+                      buttonShape: _buttonShape,
+                      isHapticsEnabled: _isHapticsEnabled,
+                      onKeyPress: _onKeyPress,
+                      onBackspace: _onBackspace,
+                      onClear: _onClear,
+                    ),
+
+                    SizedBox(height: isShortScreen ? 4 : 10),
+                  ],
                 ),
               ),
-            ),
+            ],
           ),
         ),
-
-        const SizedBox(height: 4),
-
-        // --- 4. REUSABLE KEYBOARD ---
-        ConverterKeyboard(
-          buttonShape: _buttonShape,
-          isHapticsEnabled: _isHapticsEnabled,
-          onKeyPress: _onKeyPress,
-          onBackspace: _onBackspace,
-          onClear: _onClear,
-        ),
-
-        SizedBox(height: isShortScreen ? 4 : 10),
       ],
     );
   }
