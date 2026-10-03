@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
@@ -40,6 +41,7 @@ class MenuOptions extends StatefulWidget {
 
 class _MenuOptionsState extends State<MenuOptions> {
   bool _isUnitExpanded = true;
+  bool _isHealthExpanded = true;
   bool _isOtherExpanded = true;
 
   String? _currentActiveView;
@@ -214,7 +216,17 @@ class _MenuOptionsState extends State<MenuOptions> {
       'img': 'assets/images/weight.png',
       'category': 'unit_converter',
     },
-    // --- OTHER TOOLS CATEGORY ---
+
+    /// ---Health & Fitness Calculators ---
+    {
+      'id': 'bmi',
+      'title': 'BMI Calculator',
+      'sub': 'Check your Body Mass Index',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'health_fitness',
+    },
+
+    /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
       'title': 'Coming Soon',
@@ -368,6 +380,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return ShoeSizeConverterView(key: const ValueKey('Shoe Size'), onBack: _closeView);
       case 'currency':
         return CurrencyConverterView(key: const ValueKey('Currency'), onBack: _closeView);
+      case 'bmi':
+        return BmiCalculatorView(key: const ValueKey('BMI'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
@@ -530,8 +544,65 @@ class _MenuOptionsState extends State<MenuOptions> {
                         : const SizedBox.shrink(),
                   ),
 
-                  const SizedBox(height: 14),
 
+
+                  // --- CATEGORY 2: HEALTH & FITNESS ---
+                  const SizedBox(height: 14), // Thoda gap
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isHealthExpanded = !_isHealthExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Health & Fitness',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isHealthExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isHealthExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      // NAYA: Ye automatically 'health_fitness' category wale items ko dhund kar show karega
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'health_fitness').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+                  const SizedBox(height: 14),
                   // --- CATEGORY 2: OTHER TOOLS ---
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
