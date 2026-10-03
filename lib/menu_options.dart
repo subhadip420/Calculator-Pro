@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
+import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
@@ -226,6 +227,14 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'health_fitness',
     },
 
+    {
+      'id': 'body_fat',
+      'title': 'Body Fat %',
+      'sub': 'Estimate your body fat percentage',
+      'img': 'assets/images/percentage-discount-symbol.png', // Ise baad me body fat wale icon se replace kar lena
+      'category': 'health_fitness',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -382,6 +391,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return CurrencyConverterView(key: const ValueKey('Currency'), onBack: _closeView);
       case 'bmi':
         return BmiCalculatorView(key: const ValueKey('BMI'), onBack: _closeView);
+      case 'body_fat':
+        return BodyFatCalculatorView(key: const ValueKey('BodyFat'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
