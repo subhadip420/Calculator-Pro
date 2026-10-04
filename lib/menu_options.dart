@@ -10,6 +10,7 @@ import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/prime_checker_view.dart';
 import 'package:calculator_pro/screens/random_number_generator_view.dart';
+import 'package:calculator_pro/screens/ratio_calculator_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
 import 'package:calculator_pro/settings_page.dart';
 import 'package:calculator_pro/screens/shoe_size_converter_view.dart';
@@ -259,6 +260,14 @@ class _MenuOptionsState extends State<MenuOptions> {
     },
 
     {
+      'id': 'ratio',
+      'title': 'Ratio',
+      'sub': 'Simplify and calculate ratios',
+      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'category': 'algebra',
+    },
+
+    {
       'id': 'gcf_lcm',
       'title': 'GCF & LCM',
       'sub': 'Find greatest common factor & lowest multiple',
@@ -450,6 +459,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return PrimeCheckerView(key: const ValueKey('PrimeChecker'), onBack: _closeView);
       case 'random_number':
         return RandomNumberGeneratorView(key: const ValueKey('RandomNumber'), onBack: _closeView);
+      case 'ratio':
+        return RatioCalculatorView(key: const ValueKey('Ratio'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
