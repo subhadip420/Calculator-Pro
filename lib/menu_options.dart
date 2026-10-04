@@ -9,6 +9,7 @@ import 'package:calculator_pro/screens/percentage_calculator_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/prime_checker_view.dart';
+import 'package:calculator_pro/screens/random_number_generator_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
 import 'package:calculator_pro/settings_page.dart';
 import 'package:calculator_pro/screens/shoe_size_converter_view.dart';
@@ -273,6 +274,14 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'algebra',
     },
 
+    {
+      'id': 'random_number',
+      'title': 'Random Number',
+      'sub': 'Generate random numbers in a range',
+      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'category': 'algebra',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -439,6 +448,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return GcfLcmCalculatorView(key: const ValueKey('GcfLcm'), onBack: _closeView);
       case 'prime_checker':
         return PrimeCheckerView(key: const ValueKey('PrimeChecker'), onBack: _closeView);
+      case 'random_number':
+        return RandomNumberGeneratorView(key: const ValueKey('RandomNumber'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
