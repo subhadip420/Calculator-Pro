@@ -4,6 +4,7 @@ import 'package:calculator_pro/screens/average_calculator_view.dart';
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
+import 'package:calculator_pro/screens/gcf_lcm_calculator_view.dart';
 import 'package:calculator_pro/screens/percentage_calculator_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
@@ -255,6 +256,14 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'algebra',
     },
 
+    {
+      'id': 'gcf_lcm',
+      'title': 'GCF & LCM',
+      'sub': 'Find greatest common factor & lowest multiple',
+      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'category': 'algebra',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -417,6 +426,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return PercentageCalculatorView(key: const ValueKey('Percentage'), onBack: _closeView);
       case 'average':
         return AverageCalculatorView(key: const ValueKey('Average'), onBack: _closeView);
+      case 'gcf_lcm':
+        return GcfLcmCalculatorView(key: const ValueKey('GcfLcm'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
