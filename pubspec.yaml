@@ -90,6 +90,10 @@ flutter:
     - assets/images/time.png
     - assets/images/numeric_base.png
     - assets/images/shoe_size.png
+    - assets/images/bmi.png
+    - assets/images/percentage.png
+    - assets/images/currency.png
+    - assets/images/body_fat.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -414,7 +414,7 @@ class _CurrencyConverterViewState extends State<CurrencyConverterView> with Sing
         CustomTopBar(
           toolId: 'currency',
           title: 'Currency',
-          iconPath: 'assets/images/percentage-discount-symbol.png',
+          iconPath: 'assets/images/currency.png',
           onBack: widget.onBack,
           isHapticsEnabled: _isHapticsEnabled,
         ),

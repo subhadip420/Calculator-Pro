@@ -409,7 +409,7 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
           CustomTopBar(
             toolId: 'percentage',
             title: 'Percentage',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/percentage.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

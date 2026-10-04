@@ -97,7 +97,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'currency',
       'title': 'Currency',
       'sub': 'USD, EUR, INR, GBP & more',
-      'img': 'assets/images/percentage-discount-symbol.png',
+      'img': 'assets/images/currency.png',
       'category': 'unit_converter',
     },
     {
@@ -225,7 +225,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'bmi',
       'title': 'BMI Calculator',
       'sub': 'Check your Body Mass Index',
-      'img': 'assets/images/percentage-discount-symbol.png',
+      'img': 'assets/images/bmi.png',
       'category': 'health_fitness',
     },
 
@@ -233,7 +233,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'body_fat',
       'title': 'Body Fat %',
       'sub': 'Estimate your body fat percentage',
-      'img': 'assets/images/percentage-discount-symbol.png', // Ise baad me body fat wale icon se replace kar lena
+      'img': 'assets/images/body_fat.png', // Ise baad me body fat wale icon se replace kar lena
       'category': 'health_fitness',
     },
 
@@ -242,7 +242,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'percentage',
       'title': 'Percentage',
       'sub': 'Quick percentage calculations',
-      'img': 'assets/images/percentage-discount-symbol.png', // Ise baad me proper math icon se replace kar lena
+      'img': 'assets/images/percentage.png', // Ise baad me proper math icon se replace kar lena
       'category': 'algebra',
     },
 

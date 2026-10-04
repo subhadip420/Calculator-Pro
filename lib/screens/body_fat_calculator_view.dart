@@ -396,7 +396,7 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
           CustomTopBar(
             toolId: 'body_fat',
             title: 'Body Fat Calculator',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/body_fat.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

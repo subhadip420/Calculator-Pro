@@ -415,7 +415,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
           CustomTopBar(
             toolId: 'bmi',
             title: 'BMI Calculator',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/bmi.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),
