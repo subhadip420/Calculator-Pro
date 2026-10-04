@@ -8,6 +8,7 @@ import 'package:calculator_pro/screens/gcf_lcm_calculator_view.dart';
 import 'package:calculator_pro/screens/percentage_calculator_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
+import 'package:calculator_pro/screens/prime_checker_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
 import 'package:calculator_pro/settings_page.dart';
 import 'package:calculator_pro/screens/shoe_size_converter_view.dart';
@@ -264,6 +265,14 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'algebra',
     },
 
+    {
+      'id': 'prime_checker',
+      'title': 'Prime Checker',
+      'sub': 'Check if a number is prime or composite',
+      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'category': 'algebra',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -428,6 +437,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return AverageCalculatorView(key: const ValueKey('Average'), onBack: _closeView);
       case 'gcf_lcm':
         return GcfLcmCalculatorView(key: const ValueKey('GcfLcm'), onBack: _closeView);
+      case 'prime_checker':
+        return PrimeCheckerView(key: const ValueKey('PrimeChecker'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
