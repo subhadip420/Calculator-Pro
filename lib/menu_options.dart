@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calculator_pro/screens/average_calculator_view.dart';
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
@@ -233,7 +234,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'body_fat',
       'title': 'Body Fat %',
       'sub': 'Estimate your body fat percentage',
-      'img': 'assets/images/body_fat.png', // Ise baad me body fat wale icon se replace kar lena
+      'img': 'assets/images/body_fat.png',
       'category': 'health_fitness',
     },
 
@@ -242,7 +243,15 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'percentage',
       'title': 'Percentage',
       'sub': 'Quick percentage calculations',
-      'img': 'assets/images/percentage.png', // Ise baad me proper math icon se replace kar lena
+      'img': 'assets/images/percentage.png',
+      'category': 'algebra',
+    },
+
+    {
+      'id': 'average',
+      'title': 'Average',
+      'sub': 'Calculate mean, median, mode',
+      'img': 'assets/images/percentage-discount-symbol.png', // todo
       'category': 'algebra',
     },
 
@@ -406,6 +415,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return BodyFatCalculatorView(key: const ValueKey('BodyFat'), onBack: _closeView);
       case 'percentage':
         return PercentageCalculatorView(key: const ValueKey('Percentage'), onBack: _closeView);
+      case 'average':
+        return AverageCalculatorView(key: const ValueKey('Average'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
