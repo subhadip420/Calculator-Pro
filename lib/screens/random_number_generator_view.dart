@@ -141,7 +141,8 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
             CustomTopBar(
               toolId: 'random_number',
               title: 'Random Number',
-              iconPath: 'assets/images/random_number.png', // Temporary
+              iconPath: 'assets/images/random_number.png',
+              // Temporary
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),
@@ -154,7 +155,6 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // --- COUNT SECTION ---
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -163,9 +163,19 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Count', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                              Text(
+                                'Count',
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 4),
-                              Text('How many numbers to generate?', style: TextStyle(color: AppColors.textGrey(context), fontSize: 14)),
+                              Text(
+                                'How many numbers to generate?',
+                                style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                              ),
                             ],
                           ),
                         ),
@@ -185,7 +195,14 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('From (Minimum)', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600)),
+                              Text(
+                                'From (Minimum)',
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               const SizedBox(height: 12),
                               _buildInputBox('Min', _fromController),
                             ],
@@ -196,7 +213,14 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('To (Maximum)', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600)),
+                              Text(
+                                'To (Maximum)',
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               const SizedBox(height: 12),
                               _buildInputBox('Max', _toController),
                             ],
@@ -212,7 +236,8 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                       onTap: () {
                         if (_isHapticsEnabled) HapticFeedback.lightImpact();
                         setState(() {
-                          _isUnique = !_isUnique; // Variable name wahi hai, bas iska matlab ab 'Allow Repeat' ho gaya hai
+                          _isUnique =
+                              !_isUnique; // Variable name wahi hai, bas iska matlab ab 'Allow Repeat' ho gaya hai
                         });
                         _generateNumbers(); // Toggle hote hi naya result aaye
                       },
@@ -233,15 +258,17 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                                 children: [
                                   // Title update kar diya taaki checked hone par sense bane
                                   Text(
-                                      'Allow Repeats',
-                                      style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)
+                                    'Allow Repeats',
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   const SizedBox(height: 4),
                                   // Subtitle dynamically updates (Condition ulta kar diya)
                                   Text(
-                                    _isUnique
-                                        ? 'Generated numbers can repeat'
-                                        : 'All generated numbers will be unique',
+                                    _isUnique ? 'Generated numbers can repeat' : 'All generated numbers will be unique',
                                     style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                   ),
                                 ],
@@ -310,7 +337,10 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                     const SizedBox(height: 32),
 
                     // --- RESULT SECTION ---
-                    Text('Result', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Result',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 12),
 
                     Container(
@@ -323,33 +353,33 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
                       ),
                       child: _generatedNumbers.isEmpty
                           ? Center(
-                        child: Text(
-                            'Awaiting valid inputs...',
-                            style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.6), fontSize: 16)
-                        ),
-                      )
-                          : Wrap(
-                        spacing: 12, // Horizontal gap between numbers
-                        runSpacing: 12, // Vertical gap between lines
-                        children: _generatedNumbers.map((num) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceColor(context),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
-                            ),
-                            child: Text(
-                              num.toString(),
-                              style: TextStyle(
-                                color: AppColors.cyanColor(context),
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
+                              child: Text(
+                                'Awaiting valid inputs...',
+                                style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.6), fontSize: 16),
                               ),
+                            )
+                          : Wrap(
+                              spacing: 12, // Horizontal gap between numbers
+                              runSpacing: 12, // Vertical gap between lines
+                              children: _generatedNumbers.map((num) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceColor(context),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                                  ),
+                                  child: Text(
+                                    num.toString(),
+                                    style: TextStyle(
+                                      color: AppColors.cyanColor(context),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
-                      ),
                     ),
 
                     const SizedBox(height: 40),
