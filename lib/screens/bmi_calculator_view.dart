@@ -66,7 +66,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
     });
   }
 
-// --- BMI CALCULATION LOGIC ---
+  // --- BMI CALCULATION LOGIC ---
   void _calculateBMI() {
     if (_isHapticsEnabled) HapticFeedback.mediumImpact();
     FocusScope.of(context).unfocus(); // Hide keyboard
@@ -162,7 +162,8 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
             side: BorderSide(
               color: AppColors.cyanColor(context).withOpacity(0.9), // Border ka color
               width: 2, // Border ki motai
-            ),),
+            ),
+          ),
           insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -181,7 +182,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                         painter: BmiGaugePainter(
                           bmi,
                           AppColors.surfaceColor(context).withOpacity(0.5),
-                          AppColors.textColor(context)
+                          AppColors.textColor(context),
                         ),
                       ),
                       Column(
@@ -216,10 +217,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                 // 2. CATEGORY PILL
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: catColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  decoration: BoxDecoration(color: catColor, borderRadius: BorderRadius.circular(20)),
                   child: Text(
                     category,
                     style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
@@ -232,7 +230,11 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildSummaryCol(selectedGender, '', icon: selectedGender == 'Male' ? Icons.man_rounded : Icons.woman_rounded),
+                    _buildSummaryCol(
+                      selectedGender,
+                      '',
+                      icon: selectedGender == 'Male' ? Icons.man_rounded : Icons.woman_rounded,
+                    ),
                     _buildSummaryCol('Age', '$selectedAge Yrs'),
                     _buildSummaryCol('Weight', weightStr),
                     _buildSummaryCol('Height', heightStr),
@@ -256,11 +258,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                       Expanded(
                         child: Text(
                           message,
-                          style: TextStyle(
-                            color: catColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextStyle(color: catColor, fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ],
@@ -285,7 +283,8 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                         side: BorderSide(
                           color: AppColors.cyanColor(context).withOpacity(0.5), // Border ka color
                           width: 1.5, // Border ki motai
-                        ),),
+                        ),
+                      ),
                       elevation: 0,
                     ),
                     child: Text(
@@ -310,7 +309,10 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
         if (icon != null)
           Icon(icon, color: AppColors.cyanColor(context), size: 28)
         else
-          Text(value, style: TextStyle(color: AppColors.textColor(context), fontSize: 15, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 15, fontWeight: FontWeight.bold),
+          ),
       ],
     );
   }
@@ -332,7 +334,6 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
       ),
     );
   }
-
 
   Widget _buildToggleOption(String text, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
@@ -367,11 +368,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
 
   // --- REUSABLE INPUT FIELD ---
   // --- REUSABLE INPUT FIELD ---
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-  }) {
+  Widget _buildInputField({required TextEditingController controller, required String hint, required IconData icon}) {
     // Outer Container se decoration hata diya hai, ab sab kuch TextField ke andar hoga
     return TextField(
       controller: controller,
@@ -428,30 +425,6 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- 2. BANNER AD PLACEHOLDER ---
-                  // Container(
-                  //   width: double.infinity,
-                  //   padding: const EdgeInsets.all(12),
-                  //   decoration: BoxDecoration(
-                  //     color: AppColors.surfaceColor(context).withOpacity(0.5),
-                  //     borderRadius: BorderRadius.circular(16),
-                  //     border: Border.all(color: Colors.white.withOpacity(0.05)),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(Icons.info_outline_rounded, color: AppColors.cyanColor(context)),
-                  //       const SizedBox(width: 12),
-                  //       Expanded(
-                  //         child: Text(
-                  //           'Smaller meals help prevent overeating and weight gain.',
-                  //           style: TextStyle(color: AppColors.textGrey(context), fontSize: 13),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 24),
-
                   // --- 3. GENDER SELECTION ---
                   Text(
                     'Gender',
@@ -480,14 +453,20 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.man_rounded,
-                                    color: selectedGender == 'Male' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                                    size: 28),
+                                Icon(
+                                  Icons.man_rounded,
+                                  color: selectedGender == 'Male'
+                                      ? AppColors.cyanColor(context)
+                                      : AppColors.textGrey(context),
+                                  size: 28,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Male',
                                   style: TextStyle(
-                                    color: selectedGender == 'Male' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                    color: selectedGender == 'Male'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -518,14 +497,20 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.woman_rounded,
-                                    color: selectedGender == 'Female' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                                    size: 28),
+                                Icon(
+                                  Icons.woman_rounded,
+                                  color: selectedGender == 'Female'
+                                      ? AppColors.cyanColor(context)
+                                      : AppColors.textGrey(context),
+                                  size: 28,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Female',
                                   style: TextStyle(
-                                    color: selectedGender == 'Female' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                    color: selectedGender == 'Female'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -574,7 +559,9 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                                   style: TextStyle(
                                     fontSize: isSelected ? 32 : 18, // Selected number ko thoda aur bada (32) kiya hai
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                    color: isSelected
+                                        ? AppColors.textColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.5),
                                   ),
                                   child: Text(age.toString()),
                                 ),
@@ -583,7 +570,14 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('Years', style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500)),
+                        Text(
+                          'Years',
+                          style: TextStyle(
+                            color: AppColors.textGrey(context),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -595,7 +589,11 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     children: [
                       Text(
                         'Weight',
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       _buildUnitToggle('lb', 'kg', weightUnit, (val) => setState(() => weightUnit = val)),
                     ],
@@ -614,7 +612,11 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     children: [
                       Text(
                         'Height',
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       _buildUnitToggle('ft-in', 'cm', heightUnit, (val) => setState(() => heightUnit = val)),
                     ],
@@ -734,7 +736,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                                   style: TextStyle(color: AppColors.textColor(context), fontSize: 15),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(height: 32),
@@ -773,14 +775,8 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Table(
-                            border: TableBorder.all(
-                              color: AppColors.cyanColor(context).withOpacity(0.5),
-                              width: 1,
-                            ),
-                            columnWidths: const {
-                              0: FlexColumnWidth(1.5),
-                              1: FlexColumnWidth(1),
-                            },
+                            border: TableBorder.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 1),
+                            columnWidths: const {0: FlexColumnWidth(1.5), 1: FlexColumnWidth(1)},
                             children: [
                               // Header Row
                               TableRow(
@@ -832,7 +828,6 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
                     ),
                   ),
                   const SizedBox(height: 40),
-
                 ],
               ),
             ),
@@ -848,10 +843,7 @@ class _BmiCalculatorViewState extends State<BmiCalculatorView> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text(
-            category,
-            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-          ),
+          child: Text(category, style: TextStyle(color: AppColors.textGrey(context), fontSize: 14)),
         ),
         Padding(
           padding: const EdgeInsets.all(12.0),
@@ -872,6 +864,7 @@ class BmiGaugePainter extends CustomPainter {
   final double bmi;
   final Color innerColor;
   final Color needleColor;
+
   BmiGaugePainter(this.bmi, this.innerColor, this.needleColor);
 
   @override
