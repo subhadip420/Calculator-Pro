@@ -226,6 +226,10 @@ class _ConversionCardState extends State<ConversionCard> {
     final double unitFontSize = isVeryShort ? 12.0 : (isShort ? 14.0 : 16.0);
     final double iconSize = isVeryShort ? 16.0 : (isShort ? 18.0 : 20.0);
 
+    final String fullUnitText = '${widget.unitName} (${widget.unitSymbol})';
+    // Agar character count 15 se zyada hai, toh font size 2 point chhota ho jayega
+    final double finalUnitFontSize = fullUnitText.length > 30 ? (unitFontSize - 2.5) : unitFontSize;
+
     double dynamicFontSize = widget.controller.text.length > 11 ? longTextFontSize : baseFontSize;
 
     return GestureDetector(
@@ -254,25 +258,57 @@ class _ConversionCardState extends State<ConversionCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // --- 1st ROW: Unit Name (Symbol) > ---
+            // GestureDetector(
+            //   onTap: widget.onUnitTap,
+            //   behavior: HitTestBehavior.opaque,
+            //   child: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Text(
+            //         '${widget.unitName} (${widget.unitSymbol})',
+            //         style: TextStyle(
+            //           color: widget.isActive ? AppColors.textGrey(context) : AppColors.textGrey(context),
+            //           fontSize: unitFontSize,
+            //           fontWeight: FontWeight.w500,
+            //         ),
+            //       ),
+            //       const SizedBox(width: 4),
+            //       Icon(
+            //         Icons.keyboard_arrow_down_rounded,
+            //         color: widget.isActive ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+            //         size: iconSize,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
+            // --- 1st ROW: Unit Name (Symbol) > ---
             GestureDetector(
               onTap: widget.onUnitTap,
               behavior: HitTestBehavior.opaque,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${widget.unitName} (${widget.unitSymbol})',
-                    style: TextStyle(
-                      color: widget.isActive ? AppColors.textGrey(context) : AppColors.textGrey(context),
-                      fontSize: unitFontSize,
-                      fontWeight: FontWeight.w500,
+                  Flexible(
+                    child: Text(
+                      fullUnitText, // NAYA: Upar wala combined string use kiya
+                      style: TextStyle(
+                        color: widget.isActive ? AppColors.textGrey(context) : AppColors.textGrey(context),
+                        fontSize: finalUnitFontSize, // NAYA FIX: Yahan chhota hua font size aayega
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: widget.isActive ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                    size: iconSize,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: widget.isActive ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                      size: iconSize,
+                    ),
                   ),
                 ],
               ),
