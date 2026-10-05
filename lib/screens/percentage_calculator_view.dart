@@ -141,20 +141,14 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
               : AppColors.surfaceColor(context).withOpacity(0.3),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected
-                ? AppColors.cyanColor(context)
-                : Colors.white.withOpacity(0.05),
+            color: isSelected ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-              size: 22,
-            ),
+            Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -193,7 +187,10 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
@@ -237,8 +234,14 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600)),
-          Text(value, style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -256,47 +259,16 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
     String description = '';
     String example = ''; // NAYA: Example text store karne ke liye
     List<Widget> resultRows = [];
-
-    // if (selectedCalcType == 'discount') {
-    //   label1 = 'Value'; label2 = 'Discount';
-    //   hint1 = '--'; hint2 = '--'; isPercent2 = true;
-    //   middleSymbol = Text('-', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
-    //   description = 'A reduction of a value by a given percent';
-    //   example = 'Example: A 25% discount on 100 is equal to 75';
-    //   resultRows = [
-    //     _buildResultRow('Final value', '--'),
-    //     _buildResultRow('Discount', '--', isLast: true),
-    //   ];
-    // } else if (selectedCalcType == 'increase') {
-    //   label1 = 'Value'; label2 = 'Increase';
-    //   hint1 = '--'; hint2 = '--'; isPercent2 = true;
-    //   middleSymbol = Text('+', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
-    //   description = 'An increase of a value by a given percent';
-    //   example = 'Example: A 25% increase on 100 is equal to 125';
-    //   resultRows = [
-    //     _buildResultRow('Final value', '--'),
-    //     _buildResultRow('Increase', '--', isLast: true),
-    //   ];
-    // } else if (selectedCalcType == 'percent_from_a_to_b') {
-    //   label1 = 'From'; label2 = 'To';
-    //   hint1 = 'A'; hint2 = 'B';
-    //   middleSymbol = Icon(Icons.arrow_forward_rounded, color: AppColors.textColor(context), size: 28);
-    //   description = 'The percentual change when going from value A to value B';
-    //   example = 'Example: From 25 to 100 there is a 300% increase';
-    //   resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
-    // } else if (selectedCalcType == 'percent_of_a_from_b') {
-    //   label1 = 'Value'; label2 = 'From';
-    //   hint1 = 'A'; hint2 = 'B';
-    //   middleSymbol = Icon(Icons.arrow_back_rounded, color: AppColors.textColor(context), size: 28);
-    //   description = 'The percent of value A from value B';
-    //   example = 'Example: 25 is 25% of 100';
-    //   resultRows = [_buildResultRow('Percent', '-- %', isLast: true)];
-    // }
-
     if (selectedCalcType == 'discount') {
-      label1 = 'Value'; label2 = 'Discount';
-      hint1 = '--'; hint2 = '--'; isPercent2 = true;
-      middleSymbol = Text('-', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
+      label1 = 'Value';
+      label2 = 'Discount';
+      hint1 = '--';
+      hint2 = '--';
+      isPercent2 = true;
+      middleSymbol = Text(
+        '-',
+        style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400),
+      );
       description = 'A reduction of a value by a given percent';
       example = 'Example: A 25% discount on 100 is equal to 75';
       resultRows = [
@@ -304,9 +276,15 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
         _buildResultRow('Discount', _resultVal2, isLast: true), // NAYA
       ];
     } else if (selectedCalcType == 'increase') {
-      label1 = 'Value'; label2 = 'Increase';
-      hint1 = '--'; hint2 = '--'; isPercent2 = true;
-      middleSymbol = Text('+', style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400));
+      label1 = 'Value';
+      label2 = 'Increase';
+      hint1 = '--';
+      hint2 = '--';
+      isPercent2 = true;
+      middleSymbol = Text(
+        '+',
+        style: TextStyle(color: AppColors.textColor(context), fontSize: 28, fontWeight: FontWeight.w400),
+      );
       description = 'An increase of a value by a given percent';
       example = 'Example: A 25% increase on 100 is equal to 125';
       resultRows = [
@@ -314,15 +292,19 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
         _buildResultRow('Increase', _resultVal2, isLast: true), // NAYA
       ];
     } else if (selectedCalcType == 'percent_from_a_to_b') {
-      label1 = 'From'; label2 = 'To';
-      hint1 = 'A'; hint2 = 'B';
+      label1 = 'From';
+      label2 = 'To';
+      hint1 = 'A';
+      hint2 = 'B';
       middleSymbol = Icon(Icons.arrow_forward_rounded, color: AppColors.textColor(context), size: 28);
       description = 'The percentual change when going from value A to value B';
       example = 'Example: From 25 to 100 there is a 300% increase';
       resultRows = [_buildResultRow('Percent', _resultVal1, isLast: true)]; // NAYA
     } else if (selectedCalcType == 'percent_of_a_from_b') {
-      label1 = 'Value'; label2 = 'From';
-      hint1 = 'A'; hint2 = 'B';
+      label1 = 'Value';
+      label2 = 'From';
+      hint1 = 'A';
+      hint2 = 'B';
       middleSymbol = Icon(Icons.arrow_back_rounded, color: AppColors.textColor(context), size: 28);
       description = 'The percent of value A from value B';
       example = 'Example: 25 is 25% of 100';
@@ -337,10 +319,7 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             _buildInputCol(label1, _input1Controller, hint: hint1),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16),
-              child: middleSymbol,
-            ),
+            Padding(padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16), child: middleSymbol),
             _buildInputCol(label2, _input2Controller, hint: hint2, isPercent: isPercent2),
           ],
         ),
@@ -358,7 +337,9 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
                 style: TextStyle(
                   color: _showExample ? AppColors.cyanColor(context) : AppColors.textColor(context),
                   fontSize: 14,
-                  fontStyle: _showExample ? FontStyle.italic : FontStyle.normal, // Example ko italic bhi kar diya taaki alag lage
+                  fontStyle: _showExample
+                      ? FontStyle.italic
+                      : FontStyle.normal, // Example ko italic bhi kar diya taaki alag lage
                 ),
               ),
             ),
@@ -373,7 +354,9 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
                 padding: const EdgeInsets.only(left: 10, bottom: 10), // Click area badhane ke liye thodi padding
                 child: Icon(
                   _showExample ? Icons.help_rounded : Icons.help_outline_rounded, // Icon fill/unfill hoga
-                  color: _showExample ? AppColors.cyanColor(context) : AppColors.textGrey(context), // Color bhi change hoga
+                  color: _showExample
+                      ? AppColors.cyanColor(context)
+                      : AppColors.textGrey(context), // Color bhi change hoga
                 ),
               ),
             ),
@@ -382,7 +365,10 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
         const SizedBox(height: 20),
 
         // 3. Result Section
-        Text('Result', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(
+          'Result',
+          style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(20),
@@ -391,9 +377,7 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
-          child: Column(
-            children: resultRows,
-          ),
+          child: Column(children: resultRows),
         ),
       ],
     );
@@ -420,23 +404,54 @@ class _PercentageCalculatorViewState extends State<PercentageCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Calculation Type', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Calculation Type',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   // 2x2 GRID
                   Row(
                     children: [
-                      Expanded(child: _buildOptionCard(id: 'discount', title: 'Discount', formula: 'a - x% = b', icon: Icons.local_offer_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'discount',
+                          title: 'Discount',
+                          formula: 'a - x% = b',
+                          icon: Icons.local_offer_rounded,
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: _buildOptionCard(id: 'increase', title: 'Increase', formula: 'a + x% = b', icon: Icons.trending_up_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'increase',
+                          title: 'Increase',
+                          formula: 'a + x% = b',
+                          icon: Icons.trending_up_rounded,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Expanded(child: _buildOptionCard(id: 'percent_from_a_to_b', title: 'Percent from\nA to B', formula: 'a → b = x%', icon: Icons.arrow_forward_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'percent_from_a_to_b',
+                          title: 'Percent from\nA to B',
+                          formula: 'a → b = x%',
+                          icon: Icons.arrow_forward_rounded,
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: _buildOptionCard(id: 'percent_of_a_from_b', title: 'Percent of A\nfrom B', formula: 'a ← b = x%', icon: Icons.arrow_back_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'percent_of_a_from_b',
+                          title: 'Percent of A\nfrom B',
+                          formula: 'a ← b = x%',
+                          icon: Icons.arrow_back_rounded,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 15),
