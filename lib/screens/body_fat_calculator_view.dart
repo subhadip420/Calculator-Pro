@@ -161,7 +161,6 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
         double logHeight = math.log(heightCm) / math.ln10;
 
         bodyFat = 495 / (1.0324 - 0.19077 * logWaistNeck + 0.15456 * logHeight) - 450;
-
       } else {
         // Female calculation
         if ((waist + hip) <= neck) {
@@ -180,7 +179,6 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
         showCustomToast(context, 'Measurements seem incorrect. Please verify.');
         return;
       }
-
     } catch (e) {
       showCustomToast(context, 'Error calculating Body Fat');
       return;
@@ -196,17 +194,39 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
     Color catColor = Colors.green;
 
     if (selectedGender == 'Male') {
-      if (bodyFat < 6) { category = 'Essential Fat'; catColor = Colors.blueAccent; }
-      else if (bodyFat <= 13) { category = 'Athletes'; catColor = Colors.green; }
-      else if (bodyFat <= 17) { category = 'Fitness'; catColor = Colors.lightGreen; }
-      else if (bodyFat <= 24) { category = 'Average'; catColor = Colors.orange; }
-      else { category = 'Obese'; catColor = Colors.redAccent; }
+      if (bodyFat < 6) {
+        category = 'Essential Fat';
+        catColor = Colors.blueAccent;
+      } else if (bodyFat <= 13) {
+        category = 'Athletes';
+        catColor = Colors.green;
+      } else if (bodyFat <= 17) {
+        category = 'Fitness';
+        catColor = Colors.lightGreen;
+      } else if (bodyFat <= 24) {
+        category = 'Average';
+        catColor = Colors.orange;
+      } else {
+        category = 'Obese';
+        catColor = Colors.redAccent;
+      }
     } else {
-      if (bodyFat < 14) { category = 'Essential Fat'; catColor = Colors.blueAccent; }
-      else if (bodyFat <= 20) { category = 'Athletes'; catColor = Colors.green; }
-      else if (bodyFat <= 24) { category = 'Fitness'; catColor = Colors.lightGreen; }
-      else if (bodyFat <= 31) { category = 'Average'; catColor = Colors.orange; }
-      else { category = 'Obese'; catColor = Colors.redAccent; }
+      if (bodyFat < 14) {
+        category = 'Essential Fat';
+        catColor = Colors.blueAccent;
+      } else if (bodyFat <= 20) {
+        category = 'Athletes';
+        catColor = Colors.green;
+      } else if (bodyFat <= 24) {
+        category = 'Fitness';
+        catColor = Colors.lightGreen;
+      } else if (bodyFat <= 31) {
+        category = 'Average';
+        catColor = Colors.orange;
+      } else {
+        category = 'Obese';
+        catColor = Colors.redAccent;
+      }
     }
 
     showDialog(
@@ -215,12 +235,13 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
       builder: (context) {
         return Dialog(
           backgroundColor: AppColors.bgColor(context),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24),
-              side: BorderSide(
-              color: AppColors.cyanColor(context).withOpacity(0.9,), // Theme ke hisaab se color
-          width: 2, // Border ki motai
-        ),
-        ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(
+              color: AppColors.cyanColor(context).withOpacity(0.9), // Theme ke hisaab se color
+              width: 2, // Border ki motai
+            ),
+          ),
           insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -235,11 +256,7 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                 const SizedBox(height: 20),
                 Text(
                   '${bodyFat.toStringAsFixed(1)}%',
-                  style: TextStyle(
-                    color: AppColors.cyanColor(context),
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: AppColors.cyanColor(context), fontSize: 48, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 Container(
@@ -267,7 +284,10 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                       ),
                       elevation: 0,
                     ),
-                    child: Text('Close', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ],
@@ -308,7 +328,9 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
           color: isSelected ? AppColors.bgColor(context) : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? AppColors.cyanColor(context) : Colors.transparent, width: 1.5),
-          boxShadow: isSelected ? [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, spreadRadius: 1)] : [],
+          boxShadow: isSelected
+              ? [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, spreadRadius: 1)]
+              : [],
         ),
         child: Text(
           text,
@@ -322,32 +344,12 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
     );
   }
 
-  // Widget _buildInputField({required TextEditingController controller, required String hint, required IconData icon}) {
-  //   return TextField(
-  //     controller: controller,
-  //     keyboardType: TextInputType.number,
-  //     style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.w600),
-  //     cursorColor: AppColors.cyanColor(context),
-  //     decoration: InputDecoration(
-  //       hintText: hint,
-  //       hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.4), fontSize: 16),
-  //       prefixIcon: Icon(icon, color: AppColors.cyanColor(context).withOpacity(0.7)),
-  //       filled: true,
-  //       fillColor: AppColors.surfaceColor(context).withOpacity(0.3),
-  //       contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-  //       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: AppColors.textGrey(context).withOpacity(0.2))),
-  //       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: AppColors.cyanColor(context), width: 1.5)),
-  //     ),
-  //   );
-  // }
-
   Widget _buildInputField({
     required TextEditingController controller,
     required String hint,
     IconData? icon,
     String? prefixLabel,
   }) {
-
     // NAYA LOGIC: Check karega ki Icon dikhana hai ya Text Label
     Widget? prefixWidget;
     if (prefixLabel != null) {
@@ -357,11 +359,7 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
         padding: const EdgeInsets.only(left: 20),
         child: Text(
           prefixLabel,
-          style: TextStyle(
-            color: AppColors.textColor(context),
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
         ),
       );
     } else if (icon != null) {
@@ -376,12 +374,19 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.4), fontSize: 16),
-        prefixIcon: prefixWidget, // Yahan dynamic widget set ho jayega
+        prefixIcon: prefixWidget,
+        // Yahan dynamic widget set ho jayega
         filled: true,
         fillColor: AppColors.surfaceColor(context).withOpacity(0.9),
         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: AppColors.textGrey(context).withOpacity(0.2))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: AppColors.cyanColor(context), width: 1.5)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.textGrey(context).withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.cyanColor(context), width: 1.5),
+        ),
       ),
     );
   }
@@ -408,7 +413,10 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Gender
-                  Text('Gender', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Gender',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 5),
                   Row(
                     children: [
@@ -418,16 +426,38 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
-                              color: selectedGender == 'Male' ? AppColors.cyanColor(context).withOpacity(0.1) : AppColors.surfaceColor(context).withOpacity(0.8),
+                              color: selectedGender == 'Male'
+                                  ? AppColors.cyanColor(context).withOpacity(0.1)
+                                  : AppColors.surfaceColor(context).withOpacity(0.8),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: selectedGender == 'Male' ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05), width: selectedGender == 'Male' ? 2 : 1),
+                              border: Border.all(
+                                color: selectedGender == 'Male'
+                                    ? AppColors.cyanColor(context)
+                                    : Colors.white.withOpacity(0.05),
+                                width: selectedGender == 'Male' ? 2 : 1,
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.man_rounded, color: selectedGender == 'Male' ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 28),
+                                Icon(
+                                  Icons.man_rounded,
+                                  color: selectedGender == 'Male'
+                                      ? AppColors.cyanColor(context)
+                                      : AppColors.textGrey(context),
+                                  size: 28,
+                                ),
                                 const SizedBox(width: 8),
-                                Text('Male', style: TextStyle(color: selectedGender == 'Male' ? AppColors.cyanColor(context) : AppColors.textGrey(context), fontSize: 16, fontWeight: FontWeight.w600)),
+                                Text(
+                                  'Male',
+                                  style: TextStyle(
+                                    color: selectedGender == 'Male'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -440,16 +470,38 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
-                              color: selectedGender == 'Female' ? AppColors.cyanColor(context).withOpacity(0.1) : AppColors.surfaceColor(context).withOpacity(0.8),
+                              color: selectedGender == 'Female'
+                                  ? AppColors.cyanColor(context).withOpacity(0.1)
+                                  : AppColors.surfaceColor(context).withOpacity(0.8),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: selectedGender == 'Female' ? AppColors.cyanColor(context) : Colors.white.withOpacity(0.05), width: selectedGender == 'Female' ? 2 : 1),
+                              border: Border.all(
+                                color: selectedGender == 'Female'
+                                    ? AppColors.cyanColor(context)
+                                    : Colors.white.withOpacity(0.05),
+                                width: selectedGender == 'Female' ? 2 : 1,
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.woman_rounded, color: selectedGender == 'Female' ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 28),
+                                Icon(
+                                  Icons.woman_rounded,
+                                  color: selectedGender == 'Female'
+                                      ? AppColors.cyanColor(context)
+                                      : AppColors.textGrey(context),
+                                  size: 28,
+                                ),
                                 const SizedBox(width: 8),
-                                Text('Female', style: TextStyle(color: selectedGender == 'Female' ? AppColors.cyanColor(context) : AppColors.textGrey(context), fontSize: 16, fontWeight: FontWeight.w600)),
+                                Text(
+                                  'Female',
+                                  style: TextStyle(
+                                    color: selectedGender == 'Female'
+                                        ? AppColors.cyanColor(context)
+                                        : AppColors.textGrey(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -460,7 +512,10 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                   const SizedBox(height: 16),
 
                   // Age
-                  Text('Age', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Age',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 5),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 5),
@@ -489,7 +544,9 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                                   style: TextStyle(
                                     fontSize: isSelected ? 32 : 18,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? AppColors.textColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+                                    color: isSelected
+                                        ? AppColors.textColor(context)
+                                        : AppColors.textGrey(context).withOpacity(0.5),
                                   ),
                                   child: Text('${index + 1}'),
                                 ),
@@ -498,7 +555,14 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('Years', style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500)),
+                        Text(
+                          'Years',
+                          style: TextStyle(
+                            color: AppColors.textGrey(context),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -508,18 +572,36 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Weight', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        'Weight',
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       _buildUnitToggle('lb', 'kg', weightUnit, (val) => setState(() => weightUnit = val)),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _buildInputField(controller: _weightController, hint: 'Enter weight', icon: Icons.monitor_weight_outlined),
+                  _buildInputField(
+                    controller: _weightController,
+                    hint: 'Enter weight',
+                    icon: Icons.monitor_weight_outlined,
+                  ),
                   const SizedBox(height: 16),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Height', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        'Height',
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       _buildUnitToggle('ft-in', 'cm', heightUnit, (val) => setState(() => heightUnit = val)),
                     ],
                   ),
@@ -527,20 +609,43 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                   if (heightUnit == 'ft-in')
                     Row(
                       children: [
-                        Expanded(child: _buildInputField(controller: _heightFtController, hint: 'Feet', icon: Icons.height_rounded)),
+                        Expanded(
+                          child: _buildInputField(
+                            controller: _heightFtController,
+                            hint: 'Feet',
+                            icon: Icons.height_rounded,
+                          ),
+                        ),
                         const SizedBox(width: 16),
-                        Expanded(child: _buildInputField(controller: _heightInController, hint: 'Inches', icon: Icons.straighten_rounded)),
+                        Expanded(
+                          child: _buildInputField(
+                            controller: _heightInController,
+                            hint: 'Inches',
+                            icon: Icons.straighten_rounded,
+                          ),
+                        ),
                       ],
                     )
                   else
-                    _buildInputField(controller: _heightCmController, hint: 'Enter height in cm', icon: Icons.height_rounded),
+                    _buildInputField(
+                      controller: _heightCmController,
+                      hint: 'Enter height in cm',
+                      icon: Icons.height_rounded,
+                    ),
                   const SizedBox(height: 24),
 
                   // Body Measurements
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Measurements', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        'Measurements',
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       _buildUnitToggle('in', 'cm', measureUnit, (val) => setState(() => measureUnit = val)),
                     ],
                   ),
@@ -581,7 +686,10 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                         elevation: 0,
                       ),
-                      child: const Text('Calculate Body Fat', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                      child: const Text(
+                        'Calculate Body Fat',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -633,7 +741,11 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                         const SizedBox(height: 8),
                         Text(
                           'For Men:',
-                          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: AppColors.cyanColor(context),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           '495 / (1.0324 - 0.19077 * log10(waist - neck) + 0.15456 * log10(height)) - 450',
@@ -642,7 +754,11 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                         const SizedBox(height: 8),
                         Text(
                           'For Women:',
-                          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: AppColors.cyanColor(context),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           '495 / (1.29579 - 0.35004 * log10(waist + hip - neck) + 0.22100 * log10(height)) - 450',
@@ -665,15 +781,8 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Table(
-                            border: TableBorder.all(
-                              color: AppColors.cyanColor(context).withOpacity(0.5),
-                              width: 1,
-                            ),
-                            columnWidths: const {
-                              0: FlexColumnWidth(1.5),
-                              1: FlexColumnWidth(1),
-                              2: FlexColumnWidth(1),
-                            },
+                            border: TableBorder.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 1),
+                            columnWidths: const {0: FlexColumnWidth(1.5), 1: FlexColumnWidth(1), 2: FlexColumnWidth(1)},
                             children: [
                               // Header Row
                               TableRow(
@@ -684,19 +793,40 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Center(
-                                      child: Text('Category', style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold, fontSize: 14)),
+                                      child: Text(
+                                        'Category',
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Center(
-                                      child: Text('Men', style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold, fontSize: 14)),
+                                      child: Text(
+                                        'Men',
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Center(
-                                      child: Text('Women', style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold, fontSize: 14)),
+                                      child: Text(
+                                        'Women',
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -713,7 +843,8 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40), // Bottom padding
+                  const SizedBox(height: 40),
+                  // Bottom padding
                 ],
               ),
             ),
@@ -729,10 +860,7 @@ class _BodyFatCalculatorViewState extends State<BodyFatCalculatorView> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text(
-            category,
-            style: TextStyle(color: AppColors.textGrey(context), fontSize: 13),
-          ),
+          child: Text(category, style: TextStyle(color: AppColors.textGrey(context), fontSize: 13)),
         ),
         Padding(
           padding: const EdgeInsets.all(12.0),
