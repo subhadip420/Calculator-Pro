@@ -173,7 +173,7 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
           CustomTopBar(
             toolId: 'average',
             title: 'Average Calculator',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/average.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

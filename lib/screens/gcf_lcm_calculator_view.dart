@@ -171,7 +171,7 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
           CustomTopBar(
             toolId: 'gcf_lcm',
             title: 'GCF & LCM',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/gcf_and_lcm.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

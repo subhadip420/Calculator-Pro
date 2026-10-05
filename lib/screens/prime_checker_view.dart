@@ -193,7 +193,7 @@ class _PrimeCheckerViewState extends State<PrimeCheckerView> {
             CustomTopBar(
               toolId: 'prime_checker',
               title: 'Prime Checker',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/prime.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

@@ -141,7 +141,7 @@ class _RandomNumberGeneratorViewState extends State<RandomNumberGeneratorView> {
             CustomTopBar(
               toolId: 'random_number',
               title: 'Random Number',
-              iconPath: 'assets/images/percentage-discount-symbol.png', // Temporary
+              iconPath: 'assets/images/random_number.png', // Temporary
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

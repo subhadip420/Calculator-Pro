@@ -255,7 +255,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'average',
       'title': 'Average',
       'sub': 'Calculate mean, median, mode',
-      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'img': 'assets/images/average.png',
       'category': 'algebra',
     },
 
@@ -263,7 +263,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'ratio',
       'title': 'Ratio',
       'sub': 'Simplify and calculate ratios',
-      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'img': 'assets/images/ratio.png',
       'category': 'algebra',
     },
 
@@ -271,7 +271,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'gcf_lcm',
       'title': 'GCF & LCM',
       'sub': 'Find greatest common factor & lowest multiple',
-      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'img': 'assets/images/gcf_and_lcm.png',
       'category': 'algebra',
     },
 
@@ -279,7 +279,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'prime_checker',
       'title': 'Prime Checker',
       'sub': 'Check if a number is prime or composite',
-      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'img': 'assets/images/prime.png',
       'category': 'algebra',
     },
 
@@ -287,7 +287,7 @@ class _MenuOptionsState extends State<MenuOptions> {
       'id': 'random_number',
       'title': 'Random Number',
       'sub': 'Generate random numbers in a range',
-      'img': 'assets/images/percentage-discount-symbol.png', // todo
+      'img': 'assets/images/random_number.png',
       'category': 'algebra',
     },
 

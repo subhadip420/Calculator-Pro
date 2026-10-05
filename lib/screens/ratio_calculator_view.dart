@@ -319,7 +319,7 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
           CustomTopBar(
             toolId: 'ratio',
             title: 'Ratio Calculator',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/ratio.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),
