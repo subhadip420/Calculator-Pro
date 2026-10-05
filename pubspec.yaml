@@ -94,6 +94,11 @@ flutter:
     - assets/images/percentage.png
     - assets/images/currency.png
     - assets/images/body_fat.png
+    - assets/images/ratio.png
+    - assets/images/gcf_and_lcm.png
+    - assets/images/random_number.png
+    - assets/images/average.png
+    - assets/images/prime.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
