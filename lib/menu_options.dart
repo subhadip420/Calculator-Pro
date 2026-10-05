@@ -50,6 +50,9 @@ class _MenuOptionsState extends State<MenuOptions> {
   bool _isUnitExpanded = true;
   bool _isHealthExpanded = true;
   bool _isAlgebraExpanded = true;
+  bool _isFinancialExpanded = true;
+  bool _isDateTimeExpanded = true;
+  bool _isGeometryExpanded = true;
   bool _isOtherExpanded = true;
 
   String? _currentActiveView;
@@ -725,6 +728,177 @@ class _MenuOptionsState extends State<MenuOptions> {
                       // NAYA: Ye 'algebra' category wale items ko show karega
                       child: Column(
                         children: _allTools.where((tool) => tool['category'] == 'algebra').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+                  // ==========================================
+                  // 1. FINANCIAL CATEGORY
+                  // ==========================================
+                  const SizedBox(height: 14), // Categories ke beech ka gap
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isFinancialExpanded = !_isFinancialExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Financial',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isFinancialExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isFinancialExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'financial').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+// ==========================================
+// 2. DATE AND TIME CATEGORY
+// ==========================================
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isDateTimeExpanded = !_isDateTimeExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Date and Time',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isDateTimeExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isDateTimeExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'date_time').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+// ==========================================
+// 3. GEOMETRY CATEGORY
+// ==========================================
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isGeometryExpanded = !_isGeometryExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Geometry',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isGeometryExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isGeometryExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'geometry').map((tool) {
                           return _buildMenuItem(
                             tool['img'],
                             tool['title'],
