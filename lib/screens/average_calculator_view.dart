@@ -155,8 +155,14 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600)),
-          Text(value, style: TextStyle(color: AppColors.cyanColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -186,9 +192,11 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // Label
-                  Text('Values', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Values',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   // --- 3, 4, 5, 6. DYNAMIC GRID FOR INPUTS (With Max Height & Delete Button) ---
@@ -205,8 +213,10 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
                         maxHeight: 240, // Max height set kar di. Isse zyada hote hi scroll chalu hoga
                       ),
                       child: GridView.builder(
-                        shrinkWrap: true, // Items kam honge toh ye chhota rahega
-                        physics: const BouncingScrollPhysics(), // Max height cross karne par sub-scroll chalu
+                        shrinkWrap: true,
+                        // Items kam honge toh ye chhota rahega
+                        physics: const BouncingScrollPhysics(),
+                        // Max height cross karne par sub-scroll chalu
                         padding: const EdgeInsets.only(top: 4, bottom: 4),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -223,13 +233,21 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
                                 controller: _controllers[index],
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 cursorColor: AppColors.cyanColor(context),
                                 decoration: InputDecoration(
                                   hintText: 'No. ${index + 1}',
-                                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.4), fontSize: 16),
+                                  hintStyle: TextStyle(
+                                    color: AppColors.textGrey(context).withOpacity(0.4),
+                                    fontSize: 16,
+                                  ),
                                   filled: true,
-                                  fillColor: AppColors.surfaceColor(context).withOpacity(0.9), // Darker inner box
+                                  fillColor: AppColors.surfaceColor(context).withOpacity(0.9),
+                                  // Darker inner box
                                   contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -256,11 +274,7 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
                                         color: AppColors.bgColor(context).withOpacity(0.9), // Background ke sath match
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Icon(
-                                        Icons.close_rounded,
-                                        size: 16,
-                                        color: AppColors.textGrey(context),
-                                      ),
+                                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textGrey(context)),
                                     ),
                                   ),
                                 ),
@@ -307,7 +321,10 @@ class _AverageCalculatorViewState extends State<AverageCalculatorView> {
                   const SizedBox(height: 32),
 
                   // --- 9, 10, 11, 12. RESULTS SECTION ---
-                  Text('Results', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Results',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   Container(
