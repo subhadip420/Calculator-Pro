@@ -48,7 +48,8 @@ class _CurrencyConverterViewState extends State<CurrencyConverterView> with Sing
   RewardedAd? _rewardedAd;
   bool _isAdLoaded = false;
 
-  final String _rewardedAdUnitId = 'ca-app-pub-3940256099942544/5224354917'; // Test ID
+  //final String _rewardedAdUnitId = 'ca-app-pub-3940256099942544/5224354917';
+  final String _rewardedAdUnitId = 'ca-app-pub-5454466291921987/7034491178';
 
   final Map<String, double> currencyRates = {
     'usd': 1.0,
