@@ -34,6 +34,7 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
     }
     return value.toStringAsFixed(2);
   }
+
   int _gcd(int a, int b) {
     while (b != 0) {
       int t = b;
@@ -70,8 +71,6 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
       });
     }
   }
-
-
 
   // --- LOGIC: Option Select ---
   void _onMethodSelect(String method) {
@@ -177,20 +176,14 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
               : AppColors.surfaceColor(context).withOpacity(0.6),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected
-                ? AppColors.cyanColor(context)
-                : AppColors.textGrey(context).withOpacity(0.2),
+            color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-              size: 22,
-            ),
+            Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -224,18 +217,29 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
   }
 
   // --- HELPER: Naya Widget 2 Input Boxes ke liye beech mein colon (:) ke sath ---
-  Widget _buildRatioRow(String label, String hint1, String hint2, TextEditingController c1, TextEditingController c2, {bool isReadOnly = false}) {
+  Widget _buildRatioRow(
+    String label,
+    String hint1,
+    String hint2,
+    TextEditingController c1,
+    TextEditingController c2, {
+    bool isReadOnly = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: c1,
-                readOnly: isReadOnly, // --- NAYA FIX ---
+                readOnly: isReadOnly,
+                // --- NAYA FIX ---
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 24, fontWeight: FontWeight.bold),
@@ -262,8 +266,8 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                  ':',
-                  style: TextStyle(color: AppColors.textGrey(context), fontSize: 28, fontWeight: FontWeight.bold)
+                ':',
+                style: TextStyle(color: AppColors.textGrey(context), fontSize: 28, fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -330,14 +334,31 @@ class _RatioCalculatorViewState extends State<RatioCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Method', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Method',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   Row(
                     children: [
-                      Expanded(child: _buildOptionCard(id: 'reduction', title: 'Reduction', formula: 'a/b → x/y', icon: Icons.compress_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'reduction',
+                          title: 'Reduction',
+                          formula: 'a/b → x/y',
+                          icon: Icons.compress_rounded,
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: _buildOptionCard(id: 'deduction', title: 'Deduction', formula: 'x/y → a/b', icon: Icons.expand_rounded)),
+                      Expanded(
+                        child: _buildOptionCard(
+                          id: 'deduction',
+                          title: 'Deduction',
+                          formula: 'x/y → a/b',
+                          icon: Icons.expand_rounded,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
