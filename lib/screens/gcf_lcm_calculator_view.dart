@@ -82,7 +82,8 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
     // Saare input fields se valid INTEGERS nikalna (GCF/LCM sirf whole numbers pe kaam karta hai)
     for (var controller in _controllers) {
       int? val = int.tryParse(controller.text.trim());
-      if (val != null && val > 0) { // 0 ya negative numbers ko skip karo
+      if (val != null && val > 0) {
+        // 0 ya negative numbers ko skip karo
         numbers.add(val);
       }
     }
@@ -147,14 +148,27 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  label,
+                  style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 4),
-                Text(subLabel, style: TextStyle(color: AppColors.textGrey(context).withOpacity(0.8), fontSize: 13, fontWeight: FontWeight.w500)),
+                Text(
+                  subLabel,
+                  style: TextStyle(
+                    color: AppColors.textGrey(context).withOpacity(0.8),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
           ),
           // Right Side: Calculated Value
-          Text(value, style: TextStyle(color: AppColors.cyanColor(context), fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 24, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -184,9 +198,11 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // Label
-                  Text('Values', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Values',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   // --- 3, 4, 5, 6. DYNAMIC GRID FOR INPUTS ---
@@ -218,15 +234,24 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
                               // Main Input Field
                               TextField(
                                 controller: _controllers[index],
-                                keyboardType: TextInputType.number, // GCF/LCM sirf integer pe hoga
+                                keyboardType: TextInputType.number,
+                                // GCF/LCM sirf integer pe hoga
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 cursorColor: AppColors.cyanColor(context),
                                 decoration: InputDecoration(
                                   hintText: 'No. ${index + 1}',
-                                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.4), fontSize: 16),
+                                  hintStyle: TextStyle(
+                                    color: AppColors.textGrey(context).withOpacity(0.4),
+                                    fontSize: 16,
+                                  ),
                                   filled: true,
-                                  fillColor: AppColors.surfaceColor(context).withOpacity(0.9), // Darker inner box
+                                  fillColor: AppColors.surfaceColor(context).withOpacity(0.9),
+                                  // Darker inner box
                                   contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -253,11 +278,7 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
                                         color: AppColors.bgColor(context).withOpacity(0.9),
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Icon(
-                                        Icons.close_rounded,
-                                        size: 16,
-                                        color: AppColors.textGrey(context),
-                                      ),
+                                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textGrey(context)),
                                     ),
                                   ),
                                 ),
@@ -301,7 +322,10 @@ class _GcfLcmCalculatorViewState extends State<GcfLcmCalculatorView> {
                   const SizedBox(height: 20),
 
                   // --- 9. RESULTS SECTION ---
-                  Text('Results', style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Results',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
 
                   Container(
