@@ -1,17 +1,28 @@
 import 'dart:convert';
 
+import 'package:calculator_pro/screens/age_calculator_view.dart';
+import 'package:calculator_pro/screens/age_difference_view.dart';
 import 'package:calculator_pro/screens/average_calculator_view.dart';
+import 'package:calculator_pro/screens/birthday_countdown_view.dart';
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
+import 'package:calculator_pro/screens/bodies_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
+import 'package:calculator_pro/screens/date_add_subtract_view.dart';
+import 'package:calculator_pro/screens/emi_calculator_view.dart';
+import 'package:calculator_pro/screens/fd_calculator_view.dart';
 import 'package:calculator_pro/screens/gcf_lcm_calculator_view.dart';
+import 'package:calculator_pro/screens/interest_calculator_view.dart';
 import 'package:calculator_pro/screens/percentage_calculator_view.dart';
 import 'package:calculator_pro/screens/power_conversion_view.dart';
 import 'package:calculator_pro/screens/pressure_conversion_view.dart';
 import 'package:calculator_pro/screens/prime_checker_view.dart';
 import 'package:calculator_pro/screens/random_number_generator_view.dart';
 import 'package:calculator_pro/screens/ratio_calculator_view.dart';
+import 'package:calculator_pro/screens/rd_calculator_view.dart';
 import 'package:calculator_pro/screens/roman_numerals_converter_view.dart';
+import 'package:calculator_pro/screens/shapes_view.dart';
+import 'package:calculator_pro/screens/sip_calculator_view.dart';
 import 'package:calculator_pro/settings_page.dart';
 import 'package:calculator_pro/screens/shoe_size_converter_view.dart';
 import 'package:calculator_pro/screens/speed_conversion_view.dart';
@@ -294,6 +305,95 @@ class _MenuOptionsState extends State<MenuOptions> {
       'category': 'algebra',
     },
 
+    // ==========================================
+    // --- GEOMETRY CALCULATORS ---
+    // ==========================================
+    {
+      'id': 'shapes',
+      'title': 'Shapes',
+      'sub': 'Calculate area and perimeter of 2D shapes',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'geometry',
+    },
+    {
+      'id': 'bodies',
+      'title': 'Bodies',
+      'sub': 'Calculate volume and surface area of 3D bodies',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'geometry',
+    },
+
+    // ==========================================
+    // --- FINANCIAL CALCULATORS ---
+    // ==========================================
+    {
+      'id': 'emi',
+      'title': 'EMI Calculator',
+      'sub': 'Equated Monthly Installment for loans',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'sip',
+      'title': 'SIP Calculator',
+      'sub': 'Systematic Investment Plan returns',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'fd',
+      'title': 'FD Calculator',
+      'sub': 'Fixed Deposit maturity and interest',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'rd',
+      'title': 'RD Calculator',
+      'sub': 'Recurring Deposit investment returns',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'interest',
+      'title': 'Interest Calculator',
+      'sub': 'Simple and Compound interest calculations',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+
+    // ==========================================
+    // --- DATE AND TIME CALCULATORS ---
+    // ==========================================
+    {
+      'id': 'age',
+      'title': 'Age Calculator',
+      'sub': 'Calculate your exact age in years, months & days',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'age_difference',
+      'title': 'Age Difference',
+      'sub': 'Find the exact time difference between two dates',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'date_add_subtract',
+      'title': 'Add & Subtract',
+      'sub': 'Add or subtract time from a specific date',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'birthday_countdown',
+      'title': 'Birthday Countdown',
+      'sub': 'Track days remaining until your next birthday',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+
     /// --- OTHER TOOLS CATEGORY ---
     {
       'id': 'a',
@@ -464,6 +564,28 @@ class _MenuOptionsState extends State<MenuOptions> {
         return RandomNumberGeneratorView(key: const ValueKey('RandomNumber'), onBack: _closeView);
       case 'ratio':
         return RatioCalculatorView(key: const ValueKey('Ratio'), onBack: _closeView);
+      case 'shapes':
+        return ShapesView(key: const ValueKey('Shapes'), onBack: _closeView);
+      case 'bodies':
+        return BodiesView(key: const ValueKey('Bodies'), onBack: _closeView);
+      case 'emi':
+        return EmiCalculatorView(key: const ValueKey('EMI'), onBack: _closeView);
+      case 'sip':
+        return SipCalculatorView(key: const ValueKey('SIP'), onBack: _closeView);
+      case 'interest':
+        return InterestCalculatorView(key: const ValueKey('Interest'), onBack: _closeView);
+      case 'rd':
+        return RdCalculatorView(key: const ValueKey('RD'), onBack: _closeView);
+      case 'fd':
+        return FdCalculatorView(key: const ValueKey('FD'), onBack: _closeView);
+      case 'age':
+        return AgeCalculatorView(key: const ValueKey('Age'), onBack: _closeView);
+      case 'birthday_countdown':
+        return BirthdayCountdownView(key: const ValueKey('Birthday'), onBack: _closeView);
+      case 'date_add_subtract':
+        return DateAddSubtractView(key: const ValueKey('DateAddSubtract'), onBack: _closeView);
+      case 'age_difference':
+        return AgeDifferenceView(key: const ValueKey('AgeDifference'), onBack: _closeView);
       default:
         return _buildMainMenu();
     }
