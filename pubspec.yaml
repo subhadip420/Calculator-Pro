@@ -21,6 +21,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #version: 1.0.2+3
 version: 1.0.3+4
 
+
 environment:
   sdk: ^3.11.5
 
@@ -137,11 +138,14 @@ flutter_icons:
   ios: true
 
   # Purane Android aur iOS ke liye normal icon
-  image_path: "assets/Images/icon.png"
+  #image_path: "assets/Images/icon.png"
+  image_path: "assets/Images/app_icon.png"
 
   # --- ADAPTIVE ICON (Naye Android Phones Ke Liye) ---
   # Background mein aapka dark app color rahega
-  adaptive_icon_background: "#0E131D"
+  #adaptive_icon_background: "#0E131D"
+  adaptive_icon_background: "#0F203C"
 
   # Foreground mein aapka transparent icon aayega
-  adaptive_icon_foreground: "assets/Images/icon.png"
+  #adaptive_icon_foreground: "assets/Images/icon.png"
+  adaptive_icon_foreground: "assets/Images/app_icon.png"
