@@ -112,8 +112,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   String _buttonShape = 'rounded';
 
   // Google Test Ad Unit ID (Android ke liye)
-  //final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111'; //todo
-  final String _adUnitId = 'ca-app-pub-5454466291921987/7034491178';
+  //final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111';.
+  final String _adUnitId = 'ca-app-pub-5454466291921987/8140576367';
 
   @override
   void initState() {
