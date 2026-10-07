@@ -308,91 +308,91 @@ class _MenuOptionsState extends State<MenuOptions> {
     // ==========================================
     // --- GEOMETRY CALCULATORS ---
     // ==========================================
-    // {
-    //   'id': 'shapes',
-    //   'title': 'Shapes',
-    //   'sub': 'Calculate area and perimeter of 2D shapes',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'geometry',
-    // },
-    // {
-    //   'id': 'bodies',
-    //   'title': 'Bodies',
-    //   'sub': 'Calculate volume and surface area of 3D bodies',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'geometry',
-    // },
-    //
-    // // ==========================================
-    // // --- FINANCIAL CALCULATORS ---
-    // // ==========================================
-    // {
-    //   'id': 'emi',
-    //   'title': 'EMI Calculator',
-    //   'sub': 'Equated Monthly Installment for loans',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'financial',
-    // },
-    // {
-    //   'id': 'sip',
-    //   'title': 'SIP Calculator',
-    //   'sub': 'Systematic Investment Plan returns',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'financial',
-    // },
-    // {
-    //   'id': 'fd',
-    //   'title': 'FD Calculator',
-    //   'sub': 'Fixed Deposit maturity and interest',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'financial',
-    // },
-    // {
-    //   'id': 'rd',
-    //   'title': 'RD Calculator',
-    //   'sub': 'Recurring Deposit investment returns',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'financial',
-    // },
-    // {
-    //   'id': 'interest',
-    //   'title': 'Interest Calculator',
-    //   'sub': 'Simple and Compound interest calculations',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'financial',
-    // },
-    //
-    // // ==========================================
-    // // --- DATE AND TIME CALCULATORS ---
-    // // ==========================================
-    // {
-    //   'id': 'age',
-    //   'title': 'Age Calculator',
-    //   'sub': 'Calculate your exact age in years, months & days',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'date_time',
-    // },
-    // {
-    //   'id': 'age_difference',
-    //   'title': 'Age Difference',
-    //   'sub': 'Find the exact time difference between two dates',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'date_time',
-    // },
-    // {
-    //   'id': 'date_add_subtract',
-    //   'title': 'Add & Subtract',
-    //   'sub': 'Add or subtract time from a specific date',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'date_time',
-    // },
-    // {
-    //   'id': 'birthday_countdown',
-    //   'title': 'Birthday Countdown',
-    //   'sub': 'Track days remaining until your next birthday',
-    //   'img': 'assets/images/percentage-discount-symbol.png',
-    //   'category': 'date_time',
-    // },
+    {
+      'id': 'shapes',
+      'title': 'Shapes',
+      'sub': 'Calculate area and perimeter of 2D shapes',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'geometry',
+    },
+    {
+      'id': 'bodies',
+      'title': 'Bodies',
+      'sub': 'Calculate volume and surface area of 3D bodies',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'geometry',
+    },
+
+    // ==========================================
+    // --- FINANCIAL CALCULATORS ---
+    // ==========================================
+    {
+      'id': 'emi',
+      'title': 'EMI Calculator',
+      'sub': 'Equated Monthly Installment for loans',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'sip',
+      'title': 'SIP Calculator',
+      'sub': 'Systematic Investment Plan returns',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'fd',
+      'title': 'FD Calculator',
+      'sub': 'Fixed Deposit maturity and interest',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'rd',
+      'title': 'RD Calculator',
+      'sub': 'Recurring Deposit investment returns',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+    {
+      'id': 'interest',
+      'title': 'Interest Calculator',
+      'sub': 'Simple and Compound interest calculations',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'financial',
+    },
+
+    // ==========================================
+    // --- DATE AND TIME CALCULATORS ---
+    // ==========================================
+    {
+      'id': 'age',
+      'title': 'Age Calculator',
+      'sub': 'Calculate your exact age in years, months & days',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'age_difference',
+      'title': 'Age Difference',
+      'sub': 'Find the exact time difference between two dates',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'date_add_subtract',
+      'title': 'Add & Subtract',
+      'sub': 'Add or subtract time from a specific date',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
+    {
+      'id': 'birthday_countdown',
+      'title': 'Birthday Countdown',
+      'sub': 'Track days remaining until your next birthday',
+      'img': 'assets/images/percentage-discount-symbol.png',
+      'category': 'date_time',
+    },
 
     /// --- OTHER TOOLS CATEGORY ---
     {
@@ -865,173 +865,173 @@ class _MenuOptionsState extends State<MenuOptions> {
                   // ==========================================
                   // 1. FINANCIAL CATEGORY
                   // ==========================================
-//                   const SizedBox(height: 14), // Categories ke beech ka gap
-//
-//                   GestureDetector(
-//                     behavior: HitTestBehavior.opaque,
-//                     onTap: () => setState(() => _isFinancialExpanded = !_isFinancialExpanded),
-//                     child: Padding(
-//                       padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Text(
-//                             'Financial',
-//                             style: TextStyle(
-//                               color: AppColors.cyanColor(context),
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                               letterSpacing: 1.2,
-//                             ),
-//                           ),
-//                           Icon(
-//                             _isFinancialExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
-//                             color: AppColors.cyanColor(context),
-//                             size: 24,
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//
-//                   AnimatedSize(
-//                     duration: const Duration(milliseconds: 300),
-//                     curve: Curves.easeInOutCubic,
-//                     child: _isFinancialExpanded
-//                         ? Container(
-//                       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-//                       decoration: BoxDecoration(
-//                         color: AppColors.surfaceColor(context).withOpacity(0.2),
-//                         borderRadius: BorderRadius.circular(24),
-//                         border: Border.all(color: Colors.white.withOpacity(0.05)),
-//                       ),
-//                       child: Column(
-//                         children: _allTools.where((tool) => tool['category'] == 'financial').map((tool) {
-//                           return _buildMenuItem(
-//                             tool['img'],
-//                             tool['title'],
-//                             tool['sub'],
-//                             onTap: () => _openView(tool['id']),
-//                           );
-//                         }).toList(),
-//                       ),
-//                     )
-//                         : const SizedBox.shrink(),
-//                   ),
-//
-// // ==========================================
-// // 2. DATE AND TIME CATEGORY
-// // ==========================================
-//                   const SizedBox(height: 14),
-//
-//                   GestureDetector(
-//                     behavior: HitTestBehavior.opaque,
-//                     onTap: () => setState(() => _isDateTimeExpanded = !_isDateTimeExpanded),
-//                     child: Padding(
-//                       padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Text(
-//                             'Date and Time',
-//                             style: TextStyle(
-//                               color: AppColors.cyanColor(context),
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                               letterSpacing: 1.2,
-//                             ),
-//                           ),
-//                           Icon(
-//                             _isDateTimeExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
-//                             color: AppColors.cyanColor(context),
-//                             size: 24,
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//
-//                   AnimatedSize(
-//                     duration: const Duration(milliseconds: 300),
-//                     curve: Curves.easeInOutCubic,
-//                     child: _isDateTimeExpanded
-//                         ? Container(
-//                       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-//                       decoration: BoxDecoration(
-//                         color: AppColors.surfaceColor(context).withOpacity(0.2),
-//                         borderRadius: BorderRadius.circular(24),
-//                         border: Border.all(color: Colors.white.withOpacity(0.05)),
-//                       ),
-//                       child: Column(
-//                         children: _allTools.where((tool) => tool['category'] == 'date_time').map((tool) {
-//                           return _buildMenuItem(
-//                             tool['img'],
-//                             tool['title'],
-//                             tool['sub'],
-//                             onTap: () => _openView(tool['id']),
-//                           );
-//                         }).toList(),
-//                       ),
-//                     )
-//                         : const SizedBox.shrink(),
-//                   ),
-//
-// // ==========================================
-// // 3. GEOMETRY CATEGORY
-// // ==========================================
-//                   const SizedBox(height: 14),
-//
-//                   GestureDetector(
-//                     behavior: HitTestBehavior.opaque,
-//                     onTap: () => setState(() => _isGeometryExpanded = !_isGeometryExpanded),
-//                     child: Padding(
-//                       padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Text(
-//                             'Geometry',
-//                             style: TextStyle(
-//                               color: AppColors.cyanColor(context),
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                               letterSpacing: 1.2,
-//                             ),
-//                           ),
-//                           Icon(
-//                             _isGeometryExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
-//                             color: AppColors.cyanColor(context),
-//                             size: 24,
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//
-//                   AnimatedSize(
-//                     duration: const Duration(milliseconds: 300),
-//                     curve: Curves.easeInOutCubic,
-//                     child: _isGeometryExpanded
-//                         ? Container(
-//                       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
-//                       decoration: BoxDecoration(
-//                         color: AppColors.surfaceColor(context).withOpacity(0.2),
-//                         borderRadius: BorderRadius.circular(24),
-//                         border: Border.all(color: Colors.white.withOpacity(0.05)),
-//                       ),
-//                       child: Column(
-//                         children: _allTools.where((tool) => tool['category'] == 'geometry').map((tool) {
-//                           return _buildMenuItem(
-//                             tool['img'],
-//                             tool['title'],
-//                             tool['sub'],
-//                             onTap: () => _openView(tool['id']),
-//                           );
-//                         }).toList(),
-//                       ),
-//                     )
-//                         : const SizedBox.shrink(),
-//                   ),
+                  const SizedBox(height: 14), // Categories ke beech ka gap
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isFinancialExpanded = !_isFinancialExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Financial',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isFinancialExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isFinancialExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'financial').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+// ==========================================
+// 2. DATE AND TIME CATEGORY
+// ==========================================
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isDateTimeExpanded = !_isDateTimeExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Date and Time',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isDateTimeExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isDateTimeExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'date_time').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
+
+// ==========================================
+// 3. GEOMETRY CATEGORY
+// ==========================================
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => setState(() => _isGeometryExpanded = !_isGeometryExpanded),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0, bottom: 10.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Geometry',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Icon(
+                            _isGeometryExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            color: AppColors.cyanColor(context),
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutCubic,
+                    child: _isGeometryExpanded
+                        ? Container(
+                      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: _allTools.where((tool) => tool['category'] == 'geometry').map((tool) {
+                          return _buildMenuItem(
+                            tool['img'],
+                            tool['title'],
+                            tool['sub'],
+                            onTap: () => _openView(tool['id']),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : const SizedBox.shrink(),
+                  ),
 
                   const SizedBox(height: 14),
                   // --- CATEGORY 2: OTHER TOOLS ---
