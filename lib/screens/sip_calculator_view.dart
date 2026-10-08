@@ -218,7 +218,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -226,7 +226,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       'Method',
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 5),
 
                     // --- 2 OPTIONS CARD (Side by Side) ---
                     Row(
@@ -249,7 +249,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ],
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
 
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
@@ -333,7 +333,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
 
                     CustomRulerSliderCard(
                       title: 'Investment Amount',
@@ -353,7 +353,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 15), // Gap
+                    const SizedBox(height: 10), // Gap
                     // --- NAYA: INTEREST RATE SLIDER ---
                     PercentageSliderCard(
                       title: 'Interest Rate', // Ya 'Interest Rate'
@@ -365,7 +365,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
 
                     // --- NAYA: TENURE / DURATION CARD ---
                     Container(
@@ -478,25 +478,25 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                               results['required']!,
                               isHighlighted: true,
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                             ),
                             _buildResultRow('Total Investment', results['invested']!),
-                            const SizedBox(height: 12),
-                            _buildResultRow('Total Interest', results['returns']!, valueColor: Colors.greenAccent),
+                            const SizedBox(height: 6),
+                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.textColor(context)),
                           ]
                           // Agar INVESTED AMOUNT mode hai, toh standard layout dikhayenge
                           else ...[
                             _buildResultRow('Total Investment', results['invested']!),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                             ),
-                            _buildResultRow('Total Interest', results['returns']!, valueColor: Colors.greenAccent),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.textColor(context)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                             ),
                             _buildResultRow('Maturity Amount', results['total']!, isHighlighted: true),
                           ],
