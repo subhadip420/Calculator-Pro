@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../app_colors.dart';
 
 class CustomRulerSliderCard extends StatefulWidget {
@@ -9,6 +10,7 @@ class CustomRulerSliderCard extends StatefulWidget {
   final double min;
   final double max;
   final ValueChanged<double> onChanged;
+  final bool isHapticsEnabled;
 
   const CustomRulerSliderCard({
     super.key,
@@ -19,6 +21,7 @@ class CustomRulerSliderCard extends StatefulWidget {
     required this.min,
     required this.max,
     required this.onChanged,
+    this.isHapticsEnabled = true,
   });
 
   @override
@@ -60,9 +63,9 @@ class _CustomRulerSliderCardState extends State<CustomRulerSliderCard> {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 12, left: 16, right: 16),
       decoration: BoxDecoration(
-        color: AppColors.surfaceColor(context).withOpacity(0.3),
+        color: AppColors.surfaceColor(context).withOpacity(0.6),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +106,7 @@ class _CustomRulerSliderCardState extends State<CustomRulerSliderCard> {
                 decoration: BoxDecoration(
                   color: AppColors.bgColor(context).withOpacity(0.5),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color:  AppColors.cyanColor(context).withOpacity(0.5)),
                 ),
                 child: Row(
                   children: [
@@ -166,6 +169,7 @@ class _CustomRulerSliderCardState extends State<CustomRulerSliderCard> {
             min: widget.min,
             max: widget.max,
             onChanged: widget.onChanged,
+            isHapticsEnabled: widget.isHapticsEnabled,
           ),
         ],
       ),
@@ -179,12 +183,14 @@ class _InnerRulerSlider extends StatefulWidget {
   final double min;
   final double max;
   final ValueChanged<double> onChanged;
+  final bool isHapticsEnabled;
 
   const _InnerRulerSlider({
     required this.currentValue,
     required this.min,
     required this.max,
     required this.onChanged,
+    required this.isHapticsEnabled,
   });
 
   @override
@@ -196,10 +202,12 @@ class _InnerRulerSliderState extends State<_InnerRulerSlider> {
   final double _tickSpacing = 7.0;
   final int _valuePerTick = 1000;
   bool _isUserScrolling = false;
+  late double _lastHapticValue;
 
   @override
   void initState() {
     super.initState();
+    _lastHapticValue = widget.currentValue;
     double initialOffset = (widget.currentValue - widget.min) / _valuePerTick * _tickSpacing;
     _scrollController = ScrollController(initialScrollOffset: initialOffset);
   }
@@ -248,6 +256,14 @@ class _InnerRulerSliderState extends State<_InnerRulerSlider> {
                     double exactValue = (offset / _tickSpacing) * _valuePerTick + widget.min;
                     double roundedValue = (exactValue / _valuePerTick).round() * _valuePerTick.toDouble();
                     roundedValue = roundedValue.clamp(widget.min, widget.max);
+
+                    if (roundedValue != _lastHapticValue) {
+                      if (widget.isHapticsEnabled) {
+                        HapticFeedback.selectionClick(); // Sirf tab chalega jab setting ON hogi
+                      }
+                      _lastHapticValue = roundedValue;
+                    }
+
                     widget.onChanged(roundedValue);
                   } else if (scrollNotification is ScrollEndNotification) {
                     _isUserScrolling = false;
@@ -297,8 +313,8 @@ class _InnerRulerSliderState extends State<_InnerRulerSlider> {
                                 maxHeight: 20,
                                 child: Text(
                                   value == 0 ? '0' : '${(value / 1000).toInt()},000',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context),
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -313,7 +329,7 @@ class _InnerRulerSliderState extends State<_InnerRulerSlider> {
                           Container(
                             width: 2,
                             height: isMajor ? 24 : 12,
-                            color: isMajor ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(0.2),
+                            color: isMajor ? AppColors.textColor(context).withOpacity(0.5) : AppColors.textColor(context).withOpacity(0.2),
                           ),
                         ],
                       ),

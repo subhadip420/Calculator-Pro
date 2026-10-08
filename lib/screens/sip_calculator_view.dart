@@ -172,7 +172,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       decoration: BoxDecoration(
                         color: AppColors.surfaceColor(context).withOpacity(0.3),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
                       ),
                       child: Row(
                         children: [
@@ -385,6 +385,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       currentValue: _amountValue,
                       min: 0,
                       max: 1000000,
+                      isHapticsEnabled: _isHapticsEnabled,
                       onChanged: (val) {
                         setState(() {
                           _amountValue = val;
