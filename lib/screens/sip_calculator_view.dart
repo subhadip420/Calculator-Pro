@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +36,12 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   final TextEditingController _tenureController = TextEditingController(text: '10');
   double _tenureValue = 10.0;
 
+  // Result Variables
+  // bool _showResult = false;
+  // double _totalInvestment = 0;
+  // double _estimatedReturns = 0;
+  // double _totalValue = 0;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +66,51 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
     _amountController.dispose();
     _tenureController.dispose();
     super.dispose();
+  }
+
+  // --- REAL-TIME MATH LOGIC ---
+  Map<String, double> _getCalculatedValues() {
+    double p = _amountValue; // Invested Amount ya Goal Amount
+    double r = _interestRateValue;
+    double t = _tenureValue;
+
+    if (p == 0 || t == 0) return {'invested': 0, 'returns': 0, 'total': p, 'required': 0};
+
+    double invested = 0;
+    double total = 0;
+    double requiredAmt = 0;
+
+    if (_selectedMode == 'invested_amount') {
+      // 1. Know Invested Amount -> Find Total
+      if (_investmentType == 'sip') {
+        double i = (r / 100) / 12; // Monthly rate
+        double n = t * 12; // Total months
+        invested = p * n;
+        total = (r == 0) ? invested : p * ((pow(1 + i, n) - 1) / i) * (1 + i);
+      } else {
+        // Lumpsum
+        invested = p;
+        total = (r == 0) ? invested : p * pow(1 + (r / 100), t);
+      }
+    } else {
+      // 2. Know Goal Amount -> Find Required Investment
+      total = p; // Jo amount input kiya wo Target hai
+      if (_investmentType == 'sip') {
+        double i = (r / 100) / 12;
+        double n = t * 12;
+        requiredAmt = (r == 0) ? (total / n) : (total * i) / (((pow(1 + i, n) - 1)) * (1 + i));
+        invested = requiredAmt * n;
+      } else {
+        // Lumpsum
+        requiredAmt = (r == 0) ? total : total / pow(1 + (r / 100), t);
+        invested = requiredAmt;
+      }
+    }
+
+    double returns = total - invested;
+    if (returns < 0) returns = 0; // Floating point safety
+
+    return {'invested': invested, 'returns': returns, 'total': total, 'required': requiredAmt};
   }
 
   Future<void> _loadSettings() async {
@@ -117,8 +170,34 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
     );
   }
 
+  // --- HELPER TO BUILD RESULT ROWS ---
+  Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
+            fontSize: isHighlighted ? 18 : 15,
+            fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          '₹${value.toInt()}', // Comma formatting aap apne hisaab se baad mein add kar sakte hain
+          style: TextStyle(
+            color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
+            fontSize: isHighlighted ? 22 : 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final results = _getCalculatedValues();
     return Scaffold(
       backgroundColor: Colors.transparent,
       // NAYA: GestureDetector bahar click karne pe keyboard hide karne ke liye
@@ -256,136 +335,12 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
 
                     const SizedBox(height: 15),
 
-                    // --- NAYA: AMOUNT INPUT CARD W/ SCROLLABLE RULER ---
-                    // Container(
-                    //   padding: const EdgeInsets.only(top: 14, bottom: 12, left: 16, right: 16),
-                    //   decoration: BoxDecoration(
-                    //     color: AppColors.surfaceColor(context).withOpacity(0.3),
-                    //     borderRadius: BorderRadius.circular(20),
-                    //     border: Border.all(color: Colors.white.withOpacity(0.05)),
-                    //   ),
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       // Top Row: Heading/Subtitle aur Input Box
-                    //       Row(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           Expanded(
-                    //             child: Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Text(
-                    //                   'Investment Amount',
-                    //                   style: TextStyle(
-                    //                     color: AppColors.textColor(context),
-                    //                     fontSize: 14,
-                    //                     fontWeight: FontWeight.bold,
-                    //                   ),
-                    //                 ),
-                    //                 const SizedBox(height: 4),
-                    //                 Text(
-                    //                   _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
-                    //                   style: TextStyle(
-                    //                     color: AppColors.textGrey(context),
-                    //                     fontSize: 12,
-                    //                     fontWeight: FontWeight.w500,
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //
-                    //           // Right: Input Box with ₹ Icon
-                    //           Container(
-                    //             width: 140,
-                    //             height: 45,
-                    //             decoration: BoxDecoration(
-                    //               color: AppColors.bgColor(context).withOpacity(0.5),
-                    //               borderRadius: BorderRadius.circular(12),
-                    //               border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    //             ),
-                    //             child: Row(
-                    //               children: [
-                    //                 Expanded(
-                    //                   child: TextField(
-                    //                     controller: _amountController,
-                    //                     keyboardType: TextInputType.number,
-                    //                     textAlign: TextAlign.center,
-                    //                     style: TextStyle(
-                    //                       color: AppColors.textColor(context),
-                    //                       fontSize: 16,
-                    //                       fontWeight: FontWeight.bold,
-                    //                     ),
-                    //                     cursorColor: AppColors.cyanColor(context),
-                    //                     decoration: const InputDecoration(
-                    //                       border: InputBorder.none,
-                    //                       contentPadding: EdgeInsets.zero,
-                    //                       isDense: true,
-                    //                     ),
-                    //                     onChanged: (val) {
-                    //                       double? newVal = double.tryParse(val.replaceAll(',', ''));
-                    //                       if (newVal != null && newVal >= 0 && newVal != _amountValue) {
-                    //                         setState(() => _amountValue = newVal);
-                    //                       }
-                    //                     },
-                    //                   ),
-                    //                 ),
-                    //
-                    //                 // Purple ₹ Symbol Box
-                    //                 Container(
-                    //                   width: 44,
-                    //                   decoration: BoxDecoration(
-                    //                     color: AppColors.cyanColor(context).withOpacity(0.1), // Dark purple background image jaisa
-                    //                     borderRadius: const BorderRadius.only(
-                    //                       topRight: Radius.circular(11),
-                    //                       bottomRight: Radius.circular(11),
-                    //                     ),
-                    //                   ),
-                    //                   alignment: Alignment.center,
-                    //                   child: Text(
-                    //                     '₹',
-                    //                     style: TextStyle(
-                    //                       color: AppColors.cyanColor(context).withOpacity(0.9), // Light purple icon
-                    //                       fontSize: 18,
-                    //                       fontWeight: FontWeight.bold,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //
-                    //       const SizedBox(height: 7),
-                    //
-                    //       // --- CUSTOM SCROLLABLE RULER ---
-                    //       CustomRulerSlider(
-                    //         currentValue: _amountValue,
-                    //         min: 0,
-                    //         max: 1000000, // 10 Lakhs tak
-                    //         onChanged: (val) {
-                    //           if (_amountValue != val) {
-                    //             setState(() {
-                    //               _amountValue = val;
-                    //               // Cursor position maintain karne ka logic
-                    //               String formattedVal = val.toInt().toString();
-                    //               _amountController.value = TextEditingValue(
-                    //                 text: formattedVal,
-                    //                 selection: TextSelection.collapsed(offset: formattedVal.length),
-                    //               );
-                    //             });
-                    //           }
-                    //         },
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
                     CustomRulerSliderCard(
                       title: 'Investment Amount',
-                      subtitle: _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
+                      //subtitle: _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
+                      subtitle: _selectedMode == 'invested_amount'
+                          ? (_investmentType == 'sip' ? 'Monthly Amount' : 'Lumpsum Amount')
+                          : 'Goal Amount',
                       symbol: '₹',
                       currentValue: _amountValue,
                       min: 0,
@@ -399,7 +354,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                     ),
 
                     const SizedBox(height: 15), // Gap
-
                     // --- NAYA: INTEREST RATE SLIDER ---
                     PercentageSliderCard(
                       title: 'Interest Rate', // Ya 'Interest Rate'
@@ -492,33 +446,61 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 10),
 
-                    // --- NAYA: CALCULATE BUTTON ---
-                    GestureDetector(
-                      onTap: () {
-                        if (_isHapticsEnabled) HapticFeedback.heavyImpact();
-                        // Yahan par calculation ka logic aayega
-                        FocusScope.of(context).unfocus(); // Keyboard hide karne ke liye
-                        print("Calculate pressed! Amount: $_amountValue, Rate: $_interestRateValue, Tenure: $_tenureValue");
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        decoration: BoxDecoration(
-                          color: AppColors.cyanColor(context), // Image jaisa exact purple background
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Calculate',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
+                    // --- REAL-TIME RESULT CARD ---
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.cyanColor(context).withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 1.5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              'Calculation Result',
+                              style: TextStyle(
+                                color: AppColors.cyanColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 10),
+
+                          // Agar GOAL AMOUNT mode hai, toh pehle Required amount dikhayenge
+                          if (_selectedMode == 'goal_amount') ...[
+                            _buildResultRow(
+                              'Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}',
+                              results['required']!,
+                              isHighlighted: true,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            ),
+                            _buildResultRow('Total Investment', results['invested']!),
+                            const SizedBox(height: 12),
+                            _buildResultRow('Total Interest', results['returns']!, valueColor: Colors.greenAccent),
+                          ]
+                          // Agar INVESTED AMOUNT mode hai, toh standard layout dikhayenge
+                          else ...[
+                            _buildResultRow('Total Investment', results['invested']!),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            ),
+                            _buildResultRow('Total Interest', results['returns']!, valueColor: Colors.greenAccent),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Divider(color: Colors.white10, thickness: 1, height: 1),
+                            ),
+                            _buildResultRow('Maturity Amount', results['total']!, isHighlighted: true),
+                          ],
+                        ],
                       ),
                     ),
 
