@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
 import '../custom_top_bar.dart';
-import '../widgets/custom_ruler_slider.dart';
+import '../widgets/custom_ruler_slider_card.dart';
 import '../widgets/percentage_slider_card.dart';
 
 class SipCalculatorView extends StatefulWidget {
@@ -252,130 +252,144 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                     const SizedBox(height: 15),
 
                     // --- NAYA: AMOUNT INPUT CARD W/ SCROLLABLE RULER ---
-                    Container(
-                      padding: const EdgeInsets.only(top: 14, bottom: 12, left: 16, right: 16),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Top Row: Heading/Subtitle aur Input Box
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Investment Amount',
-                                      style: TextStyle(
-                                        color: AppColors.textColor(context),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
-                                      style: TextStyle(
-                                        color: AppColors.textGrey(context),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                    // Container(
+                    //   padding: const EdgeInsets.only(top: 14, bottom: 12, left: 16, right: 16),
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.surfaceColor(context).withOpacity(0.3),
+                    //     borderRadius: BorderRadius.circular(20),
+                    //     border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    //   ),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       // Top Row: Heading/Subtitle aur Input Box
+                    //       Row(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Expanded(
+                    //             child: Column(
+                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //               children: [
+                    //                 Text(
+                    //                   'Investment Amount',
+                    //                   style: TextStyle(
+                    //                     color: AppColors.textColor(context),
+                    //                     fontSize: 14,
+                    //                     fontWeight: FontWeight.bold,
+                    //                   ),
+                    //                 ),
+                    //                 const SizedBox(height: 4),
+                    //                 Text(
+                    //                   _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
+                    //                   style: TextStyle(
+                    //                     color: AppColors.textGrey(context),
+                    //                     fontSize: 12,
+                    //                     fontWeight: FontWeight.w500,
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //
+                    //           // Right: Input Box with ₹ Icon
+                    //           Container(
+                    //             width: 140,
+                    //             height: 45,
+                    //             decoration: BoxDecoration(
+                    //               color: AppColors.bgColor(context).withOpacity(0.5),
+                    //               borderRadius: BorderRadius.circular(12),
+                    //               border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    //             ),
+                    //             child: Row(
+                    //               children: [
+                    //                 Expanded(
+                    //                   child: TextField(
+                    //                     controller: _amountController,
+                    //                     keyboardType: TextInputType.number,
+                    //                     textAlign: TextAlign.center,
+                    //                     style: TextStyle(
+                    //                       color: AppColors.textColor(context),
+                    //                       fontSize: 16,
+                    //                       fontWeight: FontWeight.bold,
+                    //                     ),
+                    //                     cursorColor: AppColors.cyanColor(context),
+                    //                     decoration: const InputDecoration(
+                    //                       border: InputBorder.none,
+                    //                       contentPadding: EdgeInsets.zero,
+                    //                       isDense: true,
+                    //                     ),
+                    //                     onChanged: (val) {
+                    //                       double? newVal = double.tryParse(val.replaceAll(',', ''));
+                    //                       if (newVal != null && newVal >= 0 && newVal != _amountValue) {
+                    //                         setState(() => _amountValue = newVal);
+                    //                       }
+                    //                     },
+                    //                   ),
+                    //                 ),
+                    //
+                    //                 // Purple ₹ Symbol Box
+                    //                 Container(
+                    //                   width: 44,
+                    //                   decoration: BoxDecoration(
+                    //                     color: AppColors.cyanColor(context).withOpacity(0.1), // Dark purple background image jaisa
+                    //                     borderRadius: const BorderRadius.only(
+                    //                       topRight: Radius.circular(11),
+                    //                       bottomRight: Radius.circular(11),
+                    //                     ),
+                    //                   ),
+                    //                   alignment: Alignment.center,
+                    //                   child: Text(
+                    //                     '₹',
+                    //                     style: TextStyle(
+                    //                       color: AppColors.cyanColor(context).withOpacity(0.9), // Light purple icon
+                    //                       fontSize: 18,
+                    //                       fontWeight: FontWeight.bold,
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //
+                    //       const SizedBox(height: 7),
+                    //
+                    //       // --- CUSTOM SCROLLABLE RULER ---
+                    //       CustomRulerSlider(
+                    //         currentValue: _amountValue,
+                    //         min: 0,
+                    //         max: 1000000, // 10 Lakhs tak
+                    //         onChanged: (val) {
+                    //           if (_amountValue != val) {
+                    //             setState(() {
+                    //               _amountValue = val;
+                    //               // Cursor position maintain karne ka logic
+                    //               String formattedVal = val.toInt().toString();
+                    //               _amountController.value = TextEditingValue(
+                    //                 text: formattedVal,
+                    //                 selection: TextSelection.collapsed(offset: formattedVal.length),
+                    //               );
+                    //             });
+                    //           }
+                    //         },
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
-                              // Right: Input Box with ₹ Icon
-                              Container(
-                                width: 140,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  color: AppColors.bgColor(context).withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.white.withOpacity(0.1)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _amountController,
-                                        keyboardType: TextInputType.number,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: AppColors.textColor(context),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        cursorColor: AppColors.cyanColor(context),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                        ),
-                                        onChanged: (val) {
-                                          double? newVal = double.tryParse(val.replaceAll(',', ''));
-                                          if (newVal != null && newVal >= 0 && newVal != _amountValue) {
-                                            setState(() => _amountValue = newVal);
-                                          }
-                                        },
-                                      ),
-                                    ),
-
-                                    // Purple ₹ Symbol Box
-                                    Container(
-                                      width: 44,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.cyanColor(context).withOpacity(0.1), // Dark purple background image jaisa
-                                        borderRadius: const BorderRadius.only(
-                                          topRight: Radius.circular(11),
-                                          bottomRight: Radius.circular(11),
-                                        ),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        '₹',
-                                        style: TextStyle(
-                                          color: AppColors.cyanColor(context).withOpacity(0.9), // Light purple icon
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 7),
-
-                          // --- CUSTOM SCROLLABLE RULER ---
-                          CustomRulerSlider(
-                            currentValue: _amountValue,
-                            min: 0,
-                            max: 1000000, // 10 Lakhs tak
-                            onChanged: (val) {
-                              if (_amountValue != val) {
-                                setState(() {
-                                  _amountValue = val;
-                                  // Cursor position maintain karne ka logic
-                                  String formattedVal = val.toInt().toString();
-                                  _amountController.value = TextEditingValue(
-                                    text: formattedVal,
-                                    selection: TextSelection.collapsed(offset: formattedVal.length),
-                                  );
-                                });
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                    CustomRulerSliderCard(
+                      title: 'Investment Amount',
+                      subtitle: _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
+                      symbol: '₹',
+                      currentValue: _amountValue,
+                      min: 0,
+                      max: 1000000,
+                      onChanged: (val) {
+                        setState(() {
+                          _amountValue = val;
+                        });
+                      },
                     ),
 
                     const SizedBox(height: 15), // Gap
