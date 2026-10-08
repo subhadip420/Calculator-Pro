@@ -30,6 +30,10 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   double _amountValue = 20000;
   double _interestRateValue = 12.0; // Default interest rate
 
+  // Tenure (Years) State
+  final TextEditingController _tenureController = TextEditingController(text: '10');
+  double _tenureValue = 10.0;
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +56,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   @override
   void dispose() {
     _amountController.dispose();
+    _tenureController.dispose();
     super.dispose();
   }
 
@@ -406,7 +411,118 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
+
+                    // --- NAYA: TENURE / DURATION CARD ---
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Tenure/Duration',
+                            style: TextStyle(
+                              color: AppColors.textColor(context),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Container(
+                            width: 140,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: AppColors.bgColor(context).withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5)),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _tenureController,
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    cursorColor: AppColors.cyanColor(context),
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true,
+                                    ),
+                                    onChanged: (val) {
+                                      double? newVal = double.tryParse(val.replaceAll(',', ''));
+                                      if (newVal != null && newVal >= 0) {
+                                        setState(() => _tenureValue = newVal);
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  width: 55, // "Year" text ke liye thoda bada width
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cyanColor(context).withOpacity(0.1),
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(11),
+                                      bottomRight: Radius.circular(11),
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Year',
+                                    style: TextStyle(
+                                      color: AppColors.cyanColor(context).withOpacity(0.9),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // --- NAYA: CALCULATE BUTTON ---
+                    GestureDetector(
+                      onTap: () {
+                        if (_isHapticsEnabled) HapticFeedback.heavyImpact();
+                        // Yahan par calculation ka logic aayega
+                        FocusScope.of(context).unfocus(); // Keyboard hide karne ke liye
+                        print("Calculate pressed! Amount: $_amountValue, Rate: $_interestRateValue, Tenure: $_tenureValue");
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        decoration: BoxDecoration(
+                          color: AppColors.cyanColor(context), // Image jaisa exact purple background
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Calculate',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
