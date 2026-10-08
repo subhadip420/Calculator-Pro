@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../app_colors.dart';
 import '../custom_top_bar.dart';
 import '../widgets/custom_ruler_slider.dart';
+import '../widgets/percentage_slider_card.dart';
 
 class SipCalculatorView extends StatefulWidget {
   final VoidCallback onBack;
@@ -27,6 +28,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
 
   // Slider Value (Start with a default value like 20,000)
   double _amountValue = 20000;
+  double _interestRateValue = 12.0; // Default interest rate
 
   @override
   void initState() {
@@ -374,6 +376,19 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                           ),
                         ],
                       ),
+                    ),
+
+                    const SizedBox(height: 15), // Gap
+
+                    // --- NAYA: INTEREST RATE SLIDER ---
+                    PercentageSliderCard(
+                      title: 'Interest Rate', // Ya 'Interest Rate'
+                      currentValue: _interestRateValue,
+                      onChanged: (val) {
+                        setState(() {
+                          _interestRateValue = val;
+                        });
+                      },
                     ),
 
                     const SizedBox(height: 10),
