@@ -63,9 +63,9 @@ class _PercentageSliderCardState extends State<PercentageSliderCard> {
     return Container(
       padding: const EdgeInsets.only(top: 15, bottom: 15, left: 0, right: 0),
       decoration: BoxDecoration(
-        color: AppColors.surfaceColor(context).withOpacity(0.3),
+        color: AppColors.surfaceColor(context).withOpacity(0.6),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _PercentageSliderCardState extends State<PercentageSliderCard> {
                   decoration: BoxDecoration(
                     color: AppColors.bgColor(context).withOpacity(0.5),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5)),
                   ),
                   child: Row(
                     children: [
@@ -158,7 +158,7 @@ class _PercentageSliderCardState extends State<PercentageSliderCard> {
                           Container(
                             width: 2,
                             height: 6,
-                            color: Colors.white.withOpacity(0.2), // Vertical tick line
+                            color: AppColors.textColor(context).withOpacity(0.5), // Vertical tick line
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -179,10 +179,14 @@ class _PercentageSliderCardState extends State<PercentageSliderCard> {
                   data: SliderTheme.of(context).copyWith(
                     activeTrackColor: AppColors.cyanColor(context),
                     // Purple active track
-                    inactiveTrackColor: Colors.white.withOpacity(0.1),
+                    inactiveTrackColor:  AppColors.textColor(context).withOpacity(0.1),
                     // Grey inactive track
                     trackHeight: 2.0,
-                    thumbShape: const _CircleThumbShape(thumbRadius: 10),
+                    thumbShape: _CircleThumbShape(
+                      thumbRadius: 10,
+                      borderColor: AppColors.cyanColor(context),
+                      thumbColor: AppColors.textGrey(context),
+                    ),
                     // Custom thumb
                     overlayColor: AppColors.cyanColor(context).withOpacity(0.2),
                     overlayShape: const RoundSliderOverlayShape(overlayRadius: 20),
@@ -206,40 +210,45 @@ class _PercentageSliderCardState extends State<PercentageSliderCard> {
   }
 }
 
-// --- CUSTOM THUMB SHAPE (White fill with Purple Border) ---
+// --- CUSTOM THUMB SHAPE (White fill with Dynamic Border) ---
 class _CircleThumbShape extends SliderComponentShape {
   final double thumbRadius;
+  final Color borderColor, thumbColor; // NAYA: Color variable add kiya
 
-  const _CircleThumbShape({this.thumbRadius = 10.0});
+  const _CircleThumbShape({
+    this.thumbRadius = 10.0,
+    required this.borderColor,
+    required this.thumbColor, // NAYA: Constructor mein required kar diya
+  });
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size.fromRadius(thumbRadius);
 
   @override
   void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    required bool isDiscrete,
-    required TextPainter labelPainter,
-    required RenderBox parentBox,
-    required SliderThemeData sliderTheme,
-    required TextDirection textDirection,
-    required double value,
-    required double textScaleFactor,
-    required Size sizeWithOverflow,
-  }) {
+      PaintingContext context,
+      Offset center, {
+        required Animation<double> activationAnimation,
+        required Animation<double> enableAnimation,
+        required bool isDiscrete,
+        required TextPainter labelPainter,
+        required RenderBox parentBox,
+        required SliderThemeData sliderTheme,
+        required TextDirection textDirection,
+        required double value,
+        required double textScaleFactor,
+        required Size sizeWithOverflow,
+      }) {
     final Canvas canvas = context.canvas;
 
     // White inside
     final Paint fillPaint = Paint()
-      ..color = Colors.white
+      ..color = thumbColor
       ..style = PaintingStyle.fill;
 
-    // Purple border
+    // Dynamic border (Pehle fix purple tha, ab dynamic hai)
     final Paint borderPaint = Paint()
-      ..color = const Color(0xFF7C3AED)
+      ..color = borderColor
       ..strokeWidth = 3.5
       ..style = PaintingStyle.stroke;
 
