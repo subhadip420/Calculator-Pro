@@ -298,7 +298,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.3),
+                        color: AppColors.surfaceColor(context).withOpacity(0.6),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
                       ),
@@ -415,7 +415,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.3),
+                        color: AppColors.surfaceColor(context).withOpacity(0.6),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
                       ),
