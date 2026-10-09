@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:calculator_pro/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -215,24 +216,64 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   }
 
   // --- HELPER TO BUILD RESULT ROWS ---
+  // Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Text(
+  //         label,
+  //         style: TextStyle(
+  //           color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
+  //           fontSize: isHighlighted ? 18 : 15,
+  //           fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+  //         ),
+  //       ),
+  //       Text(
+  //         '₹${value.toInt()}', // Comma formatting aap apne hisaab se baad mein add kar sakte hain
+  //         style: TextStyle(
+  //           color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
+  //           fontSize: isHighlighted ? 22 : 16,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // --- HELPER TO BUILD RESULT ROWS ---
   Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
+    String formattedValue = value.toStringAsFixed(0);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
-            fontSize: isHighlighted ? 18 : 15,
-            fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+        // Label ko Expanded mein rakha taaki lamba label hone par wo agli line mein aa jaye
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
+              fontSize: isHighlighted ? 18 : 15,
+              fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
         ),
-        Text(
-          '₹${value.toInt()}', // Comma formatting aap apne hisaab se baad mein add kar sakte hain
-          style: TextStyle(
-            color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
-            fontSize: isHighlighted ? 22 : 16,
-            fontWeight: FontWeight.bold,
+
+        const SizedBox(width: 12), // Text aur amount ke beech safe gap
+
+        // Value ko Flexible aur FittedBox mein rakha taaki bada amount shrink ho jaye par kate nahi
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: Text(
+              '₹$formattedValue',
+              style: TextStyle(
+                color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
+                fontSize: isHighlighted ? 22 : 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ],
@@ -459,13 +500,26 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                                     onChanged: (val) {
                                       double? newVal = double.tryParse(val.replaceAll(',', ''));
                                       if (newVal != null && newVal >= 0) {
-                                        setState(() => _tenureValue = newVal);
+                                        // NAYA: Max 50 Year Condition
+                                        if (newVal > 50) {
+                                          newVal = 50;
+
+                                          _tenureController.value = const TextEditingValue(
+                                            text: '50',
+                                            selection: TextSelection.collapsed(offset: 2),
+                                          );
+
+                                          // --- AAPKA CUSTOM TOAST ---
+                                          // Apne function ka exact naam yahan likh lijiye (eg. showToast)
+                                          showCustomToast(context,'Maximum tenure can be 50 years');
+                                        }
+                                        setState(() => _tenureValue = newVal!);
                                       }
                                     },
                                   ),
                                 ),
                                 Container(
-                                  width: 55, // "Year" text ke liye thoda bada width
+                                  width: 55,
                                   decoration: BoxDecoration(
                                     color: AppColors.cyanColor(context).withOpacity(0.1),
                                     borderRadius: const BorderRadius.only(
