@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:calculator_pro/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
@@ -323,7 +324,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                             icon: Icons.account_balance_wallet_rounded,
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: _buildOptionCard(
                             id: 'goal_amount',
@@ -334,7 +335,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ],
                     ),
 
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
 
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -418,7 +419,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
 
                     CustomRulerSliderCard(
                       title: 'Investment Amount',
@@ -438,7 +439,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 5), // Gap
+                    const SizedBox(height: 8), // Gap
                     // --- NAYA: INTEREST RATE SLIDER ---
                     PercentageSliderCard(
                       title: 'Interest Rate', // Ya 'Interest Rate'
@@ -450,7 +451,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
 
                     // --- NAYA: TENURE / DURATION CARD ---
                     Container(
@@ -544,7 +545,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
 
                     // --- REAL-TIME RESULT CARD ---
                     Container(
@@ -600,6 +601,124 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                           ],
                         ],
                       ),
+                    ),
+
+                    // ... (Aapki aakhiri _buildResultRow line yahan hogi)
+
+                    const SizedBox(height: 15), // Thoda gap
+
+                    // --- NAYA: COPY AUR SHARE BUTTONS ---
+                    Row(
+                      children: [
+                        // 1. COPY BUTTON
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                              // Dynamic label jo SIP, Lumpsum ya Goal mode ke hisaab se change hoga
+                              String inputTypeLabel = _selectedMode == 'invested_amount'
+                                  ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
+                                  : 'Target Goal Amount';
+
+                              // Agar Goal mode hai toh Required Amount bhi text mein add hoga
+                              String requiredText = _selectedMode == 'goal_amount'
+                                  ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
+                                  : "";
+
+                              String copyText = "Investment Calculation Result\n\n"
+                                  "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                  "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
+                                  "$requiredText"
+                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}";
+
+                              Clipboard.setData(ClipboardData(text: copyText));
+
+                              // Yahan apna custom toast call kar lijiye
+                              // showToast('Result Copied!');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceColor(context).withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.textGrey(context)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.copy_rounded, color: AppColors.textGrey(context), size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Copy",
+                                    style: TextStyle(color: AppColors.textColor(context), fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 16), // Dono buttons ke beech gap
+
+                        // 2. SHARE BUTTON
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                              // Share button ke onTap mein:
+                              String inputTypeLabel = _selectedMode == 'invested_amount'
+                                  ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
+                                  : 'Target Goal Amount';
+
+                              String requiredText = _selectedMode == 'goal_amount'
+                                  ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
+                                  : "";
+
+                              String shareText = "Hey! Check my Investment Plan\n\n"
+                                  "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                  "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
+                                  "$requiredText"
+                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}\n\n"
+                                  "Calculated via Calculator Pro!";
+
+                              // Note: Share karne ke liye aapko 'share_plus' package chahiye
+                              // Share.share(shareText);
+                              try {
+                                await SharePlus.instance.share(ShareParams(text: shareText, subject: "Investment Calculation Result"));
+                              } catch (e) {
+                                debugPrint("Share error: $e");
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.share_rounded, color: AppColors.cyanColor(context), size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Share",
+                                    style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 40),
