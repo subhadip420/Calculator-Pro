@@ -130,6 +130,47 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   }
 
   // --- HELPER: Option Card (Side-by-Side) ---
+  // Widget _buildOptionCard({required String id, required String title, required IconData icon}) {
+  //   bool isSelected = _selectedMode == id;
+  //
+  //   return GestureDetector(
+  //     onTap: () => _onModeSelect(id),
+  //     behavior: HitTestBehavior.opaque,
+  //     child: Container(
+  //       //height: 100, // Fixed height taaki dono cards barabar dikhein
+  //       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+  //       decoration: BoxDecoration(
+  //         color: isSelected
+  //             ? AppColors.cyanColor(context).withOpacity(0.1)
+  //             : AppColors.surfaceColor(context).withOpacity(0.6),
+  //         borderRadius: BorderRadius.circular(16),
+  //         border: Border.all(
+  //           color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
+  //           width: isSelected ? 2 : 1,
+  //         ),
+  //       ),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
+  //           const SizedBox(height: 5),
+  //           Text(
+  //             title,
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(
+  //               color: isSelected ? AppColors.cyanColor(context) : AppColors.textColor(context),
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //               height: 1.2,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // --- HELPER: Option Card (Side-by-Side) ---
   Widget _buildOptionCard({required String id, required String title, required IconData icon}) {
     bool isSelected = _selectedMode == id;
 
@@ -137,8 +178,8 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
       onTap: () => _onModeSelect(id),
       behavior: HitTestBehavior.opaque,
       child: Container(
-        //height: 100, // Fixed height taaki dono cards barabar dikhein
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        // Padding thodi adjust ki hai taaki Row layout mein button premium lage
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.cyanColor(context).withOpacity(0.1)
@@ -149,19 +190,22 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
             width: isSelected ? 2 : 1,
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // NAYA: Column ki jagah Row lagaya
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // Content ko center mein rakhega
           children: [
             Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
-            const SizedBox(height: 5),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: isSelected ? AppColors.cyanColor(context) : AppColors.textColor(context),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                height: 1.2,
+            const SizedBox(width: 8), // NAYA: Height ki jagah Width mein gap diya
+            Expanded( // Expanded lagaya taaki lambi text overflow na kare
+              child: Text(
+                title,
+                textAlign: TextAlign.start, // Left align text
+                style: TextStyle(
+                  color: isSelected ? AppColors.cyanColor(context) : AppColors.textColor(context),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ),
           ],
@@ -238,7 +282,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                             icon: Icons.account_balance_wallet_rounded,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 5),
                         Expanded(
                           child: _buildOptionCard(
                             id: 'goal_amount',
@@ -249,10 +293,10 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ],
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceColor(context).withOpacity(0.3),
                         borderRadius: BorderRadius.circular(16),
@@ -333,7 +377,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     CustomRulerSliderCard(
                       title: 'Investment Amount',
@@ -353,7 +397,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 10), // Gap
+                    const SizedBox(height: 5), // Gap
                     // --- NAYA: INTEREST RATE SLIDER ---
                     PercentageSliderCard(
                       title: 'Interest Rate', // Ya 'Interest Rate'
@@ -365,11 +409,11 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     // --- NAYA: TENURE / DURATION CARD ---
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceColor(context).withOpacity(0.3),
                         borderRadius: BorderRadius.circular(20),
@@ -446,15 +490,15 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     // --- REAL-TIME RESULT CARD ---
                     Container(
-                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                       decoration: BoxDecoration(
                         color: AppColors.cyanColor(context).withOpacity(0.05),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 1.5),
+                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 2),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
