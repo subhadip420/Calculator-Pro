@@ -715,7 +715,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                               // Agar cumulative chhe to j compounding frequency dekhase
                               String compoundingText = _fdType == 'cumulative' ? "\nCompounding: $_compoundingFreq" : "";
 
-                              String copyText = "FD Calculation Result 📊\n\n"
+                              String copyText = "FD Calculation Result\n\n"
                                   "FD Type: $fdTypeText\n"
                                   "Customer: $customerTypeText\n"
                                   "Deposit Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
@@ -764,7 +764,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                               String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
                               String compoundingText = _fdType == 'cumulative' ? "\nCompounding: $_compoundingFreq" : "";
 
-                              String shareText = "Hey! Check my FD Calculation 📊\n\n"
+                              String shareText = "Hey! Check my FD Calculation\n\n"
                                   "FD Type: $fdTypeText\n"
                                   "Customer: $customerTypeText\n"
                                   "Deposit Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
