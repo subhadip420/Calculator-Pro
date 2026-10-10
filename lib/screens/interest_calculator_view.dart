@@ -517,7 +517,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                   String typeLabel = _interestType == 'simple' ? 'Simple Interest' : 'Compound Interest';
                                   String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String copyText = "Interest Calculation Result 📊\n\n"
+                                  String copyText = "Interest Calculation Result\n\n"
                                       "Interest Type: $typeLabel\n"
                                       "Principal Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
@@ -560,7 +560,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                   String typeLabel = _interestType == 'simple' ? 'Simple Interest' : 'Compound Interest';
                                   String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String shareText = "Hey! Check my Interest Calculation 📊\n\n"
+                                  String shareText = "Hey! Check my Interest Calculation\n\n"
                                       "Interest Type: $typeLabel\n"
                                       "Principal Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
@@ -624,7 +624,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.cyanColor(context).withOpacity(0.5),
+                                color: AppColors.cyanColor(context).withOpacity(0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, -5),
                               ),

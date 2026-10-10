@@ -514,7 +514,7 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
+                                color: AppColors.cyanColor(context).withOpacity(0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, -5),
                               ),
