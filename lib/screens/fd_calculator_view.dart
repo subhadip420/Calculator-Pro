@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
@@ -31,6 +34,44 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
   final TextEditingController _tenureController = TextEditingController(text: '5');
   double _tenureValue = 5.0;
 
+  // --- REAL-TIME MATH LOGIC FOR FD ---
+  Map<String, double> _getCalculatedValues() {
+    double p = _amountValue;
+    double r = _interestRateValue;
+    // Agar month hai toh 12 se divide karke saal (years) mein convert karenge
+    double t = _tenureUnit == 'year' ? _tenureValue : _tenureValue / 12;
+
+    if (p == 0 || t == 0) return {'invested': p, 'returns': 0, 'total': p};
+
+    double total = 0;
+    double returns = 0;
+
+    if (_fdType == 'simple') {
+      // Simple Interest Logic: (P * R * T) / 100
+      returns = p * (r / 100) * t;
+      total = p + returns;
+    } else {
+      // Cumulative (Compound) Interest Logic
+      int n = 4; // Default Quarterly (Banks mostly use quarterly compounding)
+      if (_compoundingFreq == 'Monthly') n = 12;
+      else if (_compoundingFreq == 'Quarterly') n = 4;
+      else if (_compoundingFreq == 'Semiannually') n = 2;
+      else if (_compoundingFreq == 'Annually') n = 1;
+
+      // Formula: P * (1 + r/n)^(n*t)
+      total = p * pow(1 + (r / 100) / n, n * t);
+      returns = total - p;
+    }
+
+    if (returns < 0) returns = 0;
+
+    return {
+      'invested': p,
+      'returns': returns,
+      'total': total,
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,8 +93,46 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
     }
   }
 
+  // --- HELPER TO BUILD RESULT ROWS ---
+  Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
+    String formattedValue = value.toStringAsFixed(0); // Badi value crash na ho isliye string convert
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
+              fontSize: isHighlighted ? 18 : 15,
+              fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: Text(
+              '₹$formattedValue',
+              style: TextStyle(
+                color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
+                fontSize: isHighlighted ? 22 : 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final results = _getCalculatedValues();
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GestureDetector(
@@ -339,7 +418,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -578,6 +657,190 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                       ),
                       const SizedBox(height: 15),
                     ],
+
+                    // --- REAL-TIME RESULT CARD ---
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.cyanColor(context).withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 2),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              'Calculation Result',
+                              style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          _buildResultRow('Total Investment', results['invested']!),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
+                          ),
+
+                          _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.greenColor(context)),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
+                          ),
+
+                          _buildResultRow('Maturity Amount', results['total']!, isHighlighted: true),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 15), // Result card pachi gap
+
+                    // --- NAYA: COPY AUR SHARE BUTTONS ---
+                    Row(
+                      children: [
+                        // 1. COPY BUTTON
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                              // FD mate dynamic labels
+                              String fdTypeText = _fdType == 'simple' ? 'Simple FD' : 'Cumulative FD';
+                              String customerTypeText = _customerType == 'general' ? 'General' : 'Senior Citizen';
+                              String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+
+                              // Agar cumulative chhe to j compounding frequency dekhase
+                              String compoundingText = _fdType == 'cumulative' ? "\nCompounding: $_compoundingFreq" : "";
+
+                              String copyText = "FD Calculation Result 📊\n\n"
+                                  "FD Type: $fdTypeText\n"
+                                  "Customer: $customerTypeText\n"
+                                  "Deposit Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                  "Duration: $tenureText$compoundingText\n\n"
+                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}";
+
+                              Clipboard.setData(ClipboardData(text: copyText));
+
+                              showCustomToast(context, 'Result Copied!');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceColor(context).withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.textGrey(context)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.copy_rounded, color: AppColors.textGrey(context), size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Copy",
+                                    style: TextStyle(color: AppColors.textColor(context), fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 15), // Dono buttons ke beech gap
+
+                        // 2. SHARE BUTTON
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                              String fdTypeText = _fdType == 'simple' ? 'Simple FD' : 'Cumulative FD';
+                              String customerTypeText = _customerType == 'general' ? 'General' : 'Senior Citizen';
+                              String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+                              String compoundingText = _fdType == 'cumulative' ? "\nCompounding: $_compoundingFreq" : "";
+
+                              String shareText = "Hey! Check my FD Calculation 📊\n\n"
+                                  "FD Type: $fdTypeText\n"
+                                  "Customer: $customerTypeText\n"
+                                  "Deposit Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                  "Duration: $tenureText$compoundingText\n\n"
+                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}\n\n"
+                                  "Calculated via Calculator Pro!";
+
+                              try {
+                                await SharePlus.instance.share(ShareParams(text: shareText, subject: "FD Calculation Result"));
+                              } catch (e) {
+                                debugPrint("Share error: $e");
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.share_rounded, color: AppColors.cyanColor(context), size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Share",
+                                    style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // --- NOTE CARD ---
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceColor(context).withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                      ),
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.5, // Line spacing ke liye
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Note : ',
+                              style: TextStyle(
+                                color: AppColors.orangeColor(context), // Orange/Yellow color note ke title ke liye
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Senior Citizen will be earn 0.25% to 0.75% Extra interest based on government rules & banking rates. FD interest rates are depend on bank. This will give overview & Basic Calculations for FD',
+                              style: TextStyle(
+                                color: AppColors.textColor(context).withOpacity(0.9), // White/Light grey text
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24), // Niche ke liye thoda gap
 
                     const SizedBox(height: 40),
 
