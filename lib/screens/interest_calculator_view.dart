@@ -645,6 +645,43 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                             ),
                           ],
                         ),
+
+                        const SizedBox(height: 15),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context).withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                          ),
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontSize: 13,
+                                height: 1.5, // Line spacing ke liye
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Note : ',
+                                  style: TextStyle(
+                                    color: AppColors.orangeColor(context), // Orange/Yellow color note ke title ke liye
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                  'Based on your input, Interest Calculator will be calculate how much rate of interest will be applicable on loan amount.',
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context).withOpacity(0.9), // White/Light grey text
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
                         const SizedBox(height: 120), // Bottom padding for sticky bar
                       ],
                     ),
