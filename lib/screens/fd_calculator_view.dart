@@ -961,7 +961,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                               BoxShadow(
                                 color: AppColors.cyanColor(context).withOpacity(0.3),
                                 blurRadius: 10,
-                                offset: const Offset(0, -5),
+                                offset: const Offset(0, -2),
                               ),
                             ],
                             border: Border(
