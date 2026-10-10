@@ -21,6 +21,10 @@ class FdCalculatorView extends StatefulWidget {
 }
 
 class _FdCalculatorViewState extends State<FdCalculatorView> {
+
+  final ScrollController _scrollController = ScrollController();
+  bool _showStickyResult = true;
+
   bool _isHapticsEnabled = true;
 
   // State Variables
@@ -76,11 +80,26 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
   void initState() {
     super.initState();
     _loadSettings();
+
+    _scrollController.addListener(() {
+      // Agar user bottom se 250 pixels ke andar hai, toh sticky bar hide kar do
+      if (_scrollController.position.maxScrollExtent > 0 &&
+          _scrollController.offset >= _scrollController.position.maxScrollExtent - 250) {
+        if (_showStickyResult) {
+          setState(() => _showStickyResult = false);
+        }
+      } else {
+        if (!_showStickyResult) {
+          setState(() => _showStickyResult = true);
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _tenureController.dispose(); // Memory leak rokne ke liye zaroori hai
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -149,8 +168,13 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
             ),
 
             // --- MAIN SCROLL VIEW ---
+            // Expanded(
+            //   child: SingleChildScrollView(
             Expanded(
-              child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                SingleChildScrollView(
+                controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
@@ -335,11 +359,16 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                             child: Row(
                               children: [
                                 // Left Radio: General
+                                // Left Radio: General
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
                                       if (_isHapticsEnabled) HapticFeedback.lightImpact();
                                       setState(() {
+                                        // FIX: Agar pehle Senior tha aur ab General kiya, toh 0.5% kam kar do
+                                        if (_customerType == 'senior') {
+                                          _interestRateValue -= 0.5;
+                                        }
                                         _customerType = 'general';
                                       });
                                     },
@@ -353,7 +382,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                                           color: _customerType == 'general'
                                               ? AppColors.cyanColor(context)
                                               : AppColors.textGrey(context),
-                                          size: 20, // Icon size adjust kiya
+                                          size: 20,
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
@@ -379,6 +408,10 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                                     onTap: () {
                                       if (_isHapticsEnabled) HapticFeedback.lightImpact();
                                       setState(() {
+                                        // FIX: Agar pehle General tha aur ab Senior kiya, toh 0.5% badha do
+                                        if (_customerType == 'general') {
+                                          _interestRateValue += 0.5;
+                                        }
                                         _customerType = 'senior';
                                       });
                                     },
@@ -392,7 +425,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                                           color: _customerType == 'senior'
                                               ? AppColors.cyanColor(context)
                                               : AppColors.textGrey(context),
-                                          size: 20, // Icon size adjust kiya
+                                          size: 20,
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
@@ -840,14 +873,85 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24), // Niche ke liye thoda gap
+                     // Niche ke liye thoda gap
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 50),
 
                     // Yahan par hum aage Tenure aur Result Card add karenge...
                   ],
                 ),
               ),
+
+                  // --- NAYA: DYNAMIC STICKY BOTTOM BAR ---
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: AnimatedSlide(
+                      duration: const Duration(milliseconds: 300),
+                      offset: _showStickyResult ? Offset.zero : const Offset(0, 1.2), // Hide hone par niche slide hoga
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _showStickyResult ? 1.0 : 0.0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),// Background color
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 10,
+                                offset: const Offset(0, -5),
+                              ),
+                            ],
+                            border: Border(
+                              top: BorderSide(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                            ),
+                          ),
+                          child: SafeArea(
+                            top: false,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Column(
+                                //   mainAxisSize: MainAxisSize.min,
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                    Text(
+                                      'Maturity Amount',
+                                      style: TextStyle(
+                                        color: AppColors.textColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    // const SizedBox(height: 4),
+                                    Text(
+                                      '₹${results['total']!.toStringAsFixed(0)}', // Real-time calculate value
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                // Optional: Ek chota sa arrow taaki user ko pata chale ki niche aur details hain
+                                // Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context)),
+                            //   ],
+                            // ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             ),
           ],
         ),
