@@ -57,11 +57,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
 
     if (returns < 0) returns = 0;
 
-    return {
-      'invested': p,
-      'returns': returns,
-      'total': total,
-    };
+    return {'invested': p, 'returns': returns, 'total': total};
   }
 
   @override
@@ -167,7 +163,6 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         // --- 1. INTEREST TYPE SELECTOR ---
                         Container(
                           padding: const EdgeInsets.all(16),
@@ -284,7 +279,8 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                           symbol: '₹',
                           currentValue: _amountValue,
                           min: 0,
-                          max: 10000000, // 1 Crore max
+                          max: 10000000,
+                          // 1 Crore max
                           isHapticsEnabled: _isHapticsEnabled,
                           onChanged: (val) {
                             setState(() {
@@ -344,12 +340,25 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                     child: Row(
                                       children: [
                                         Icon(
-                                          _tenureUnit == 'year' ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                                          color: _tenureUnit == 'year' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                          _tenureUnit == 'year'
+                                              ? Icons.radio_button_checked_rounded
+                                              : Icons.radio_button_off_rounded,
+                                          color: _tenureUnit == 'year'
+                                              ? AppColors.cyanColor(context)
+                                              : AppColors.textGrey(context),
                                           size: 20,
                                         ),
                                         const SizedBox(width: 6),
-                                        Text('Year', style: TextStyle(color: _tenureUnit == 'year' ? AppColors.textColor(context) : AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'Year',
+                                          style: TextStyle(
+                                            color: _tenureUnit == 'year'
+                                                ? AppColors.textColor(context)
+                                                : AppColors.textGrey(context),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -366,12 +375,25 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                     child: Row(
                                       children: [
                                         Icon(
-                                          _tenureUnit == 'month' ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                                          color: _tenureUnit == 'month' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                          _tenureUnit == 'month'
+                                              ? Icons.radio_button_checked_rounded
+                                              : Icons.radio_button_off_rounded,
+                                          color: _tenureUnit == 'month'
+                                              ? AppColors.cyanColor(context)
+                                              : AppColors.textGrey(context),
                                           size: 20,
                                         ),
                                         const SizedBox(width: 6),
-                                        Text('Month', style: TextStyle(color: _tenureUnit == 'month' ? AppColors.textColor(context) : AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'Month',
+                                          style: TextStyle(
+                                            color: _tenureUnit == 'month'
+                                                ? AppColors.textColor(context)
+                                                : AppColors.textGrey(context),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -379,18 +401,16 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 12),
-                                child: Divider(color: AppColors.textGrey(context).withOpacity(0.5), thickness: 1, height: 1),
+                                child: Divider(
+                                  color: AppColors.textGrey(context).withOpacity(0.5),
+                                  thickness: 1,
+                                  height: 1,
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    'Duration',
-                                    style: TextStyle(
-                                      color: AppColors.textGrey(context),
-                                      fontSize: 15,
-                                    ),
-                                  ),
+                                  Text('Duration', style: TextStyle(color: AppColors.textGrey(context), fontSize: 15)),
                                   Container(
                                     width: 140,
                                     height: 45,
@@ -430,7 +450,10 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                                     selection: TextSelection.collapsed(offset: limitText.length),
                                                   );
                                                   String timeUnit = _tenureUnit == 'year' ? 'years' : 'months';
-                                                  showCustomToast(context, 'Maximum duration can be $limitText $timeUnit');
+                                                  showCustomToast(
+                                                    context,
+                                                    'Maximum duration can be $limitText $timeUnit',
+                                                  );
                                                 }
                                                 setState(() => _tenureValue = newVal!);
                                               }
@@ -480,7 +503,11 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                               Center(
                                 child: Text(
                                   'Calculation Result',
-                                  style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    color: AppColors.cyanColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -492,7 +519,11 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                 child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                               ),
 
-                              _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.greenColor(context)),
+                              _buildResultRow(
+                                'Total Interest',
+                                results['returns']!,
+                                valueColor: AppColors.greenColor(context),
+                              ),
 
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -514,10 +545,14 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                 onTap: () {
                                   if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
-                                  String typeLabel = _interestType == 'simple' ? 'Simple Interest' : 'Compound Interest';
-                                  String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+                                  String typeLabel = _interestType == 'simple'
+                                      ? 'Simple Interest'
+                                      : 'Compound Interest';
+                                  String tenureText =
+                                      "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String copyText = "Interest Calculation Result\n\n"
+                                  String copyText =
+                                      "Interest Calculation Result\n\n"
                                       "Interest Type: $typeLabel\n"
                                       "Principal Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
@@ -542,7 +577,10 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                       const SizedBox(width: 8),
                                       Text(
                                         "Copy",
-                                        style: TextStyle(color: AppColors.textColor(context), fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -557,10 +595,14 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                 onTap: () async {
                                   if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
-                                  String typeLabel = _interestType == 'simple' ? 'Simple Interest' : 'Compound Interest';
-                                  String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+                                  String typeLabel = _interestType == 'simple'
+                                      ? 'Simple Interest'
+                                      : 'Compound Interest';
+                                  String tenureText =
+                                      "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String shareText = "Hey! Check my Interest Calculation\n\n"
+                                  String shareText =
+                                      "Hey! Check my Interest Calculation\n\n"
                                       "Interest Type: $typeLabel\n"
                                       "Principal Amount: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
@@ -570,7 +612,9 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                       "Calculated via Calculator Pro!";
 
                                   try {
-                                    await SharePlus.instance.share(ShareParams(text: shareText, subject: "Interest Calculation Result"));
+                                    await SharePlus.instance.share(
+                                      ShareParams(text: shareText, subject: "Interest Calculation Result"),
+                                    );
                                   } catch (e) {
                                     debugPrint("Share error: $e");
                                   }
@@ -589,7 +633,10 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                                       const SizedBox(width: 8),
                                       Text(
                                         "Share",
-                                        style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ],
                                   ),
