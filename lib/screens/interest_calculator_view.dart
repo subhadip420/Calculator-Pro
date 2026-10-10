@@ -275,7 +275,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
                         // --- 2. DEPOSIT AMOUNT RULER ---
                         CustomRulerSliderCard(
                           title: 'Deposit Amount',
-                          subtitle: 'Principal / Initial Value',
+                          subtitle: 'Principal',
                           symbol: '₹',
                           currentValue: _amountValue,
                           min: 0,
