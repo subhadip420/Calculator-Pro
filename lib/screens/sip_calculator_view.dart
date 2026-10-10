@@ -21,6 +21,8 @@ class SipCalculatorView extends StatefulWidget {
 }
 
 class _SipCalculatorViewState extends State<SipCalculatorView> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showStickyResult = true;
   bool _isHapticsEnabled = true;
 
   // Default selected option
@@ -61,12 +63,28 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
         });
       }
     });
+
+    // --- NAYA: Scroll Listener ---
+    _scrollController.addListener(() {
+      // Agar user bottom se 250 pixels ke andar hai, toh sticky bar hide kar do
+      if (_scrollController.position.maxScrollExtent > 0 &&
+          _scrollController.offset >= _scrollController.position.maxScrollExtent - 50) {
+        if (_showStickyResult) {
+          setState(() => _showStickyResult = false);
+        }
+      } else {
+        if (!_showStickyResult) {
+          setState(() => _showStickyResult = true);
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _amountController.dispose();
     _tenureController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -301,8 +319,13 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
             ),
 
             // --- MAIN SCROLL VIEW ---
+            // Expanded(
+            //   child: SingleChildScrollView(
             Expanded(
-              child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                SingleChildScrollView(
+                controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Column(
@@ -312,7 +335,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       'Method',
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 10),
 
                     // --- 2 OPTIONS CARD (Side by Side) ---
                     Row(
@@ -335,7 +358,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ],
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 15),
 
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -419,7 +442,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 15),
 
                     CustomRulerSliderCard(
                       title: 'Investment Amount',
@@ -439,7 +462,8 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 8), // Gap
+                    const SizedBox(height: 15), // Gap
+
                     // --- NAYA: INTEREST RATE SLIDER ---
                     PercentageSliderCard(
                       title: 'Interest Rate', // Ya 'Interest Rate'
@@ -451,11 +475,11 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       },
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 15),
 
                     // --- NAYA: TENURE / DURATION CARD ---
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceColor(context).withOpacity(0.6),
                         borderRadius: BorderRadius.circular(20),
@@ -545,7 +569,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 15),
 
                     // --- REAL-TIME RESULT CARD ---
                     Container(
@@ -592,7 +616,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                             ),
-                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.textColor(context)),
+                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.greenColor(context)),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
@@ -662,7 +686,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                           ),
                         ),
 
-                        const SizedBox(width: 16), // Dono buttons ke beech gap
+                        const SizedBox(width: 15), // Dono buttons ke beech gap
 
                         // 2. SHARE BUTTON
                         Expanded(
@@ -721,10 +745,83 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ],
                     ),
 
-                    const SizedBox(height: 40),
+
+
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),
+
+                  // --- NAYA: DYNAMIC STICKY BOTTOM BAR ---
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: AnimatedSlide(
+                      duration: const Duration(milliseconds: 300),
+                      offset: _showStickyResult ? Offset.zero : const Offset(0, 1.2), // Hide hone par niche slide hoga
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _showStickyResult ? 1.0 : 0.0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),// Background color
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 10,
+                                offset: const Offset(0, -5),
+                              ),
+                            ],
+                            border: Border(
+                              top: BorderSide(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                            ),
+                          ),
+                          child: SafeArea(
+                            top: false,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Column(
+                                //   mainAxisSize: MainAxisSize.min,
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                Text(
+                                  'Maturity Amount',
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                // const SizedBox(height: 4),
+                                Text(
+                                  '₹${results['total']!.toStringAsFixed(0)}', // Real-time calculate value
+                                  style: TextStyle(
+                                    color: AppColors.cyanColor(context),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // Optional: Ek chota sa arrow taaki user ko pata chale ki niche aur details hain
+                            // Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context)),
+                            //   ],
+                            // ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             ),
           ],
         ),
