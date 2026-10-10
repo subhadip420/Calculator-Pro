@@ -216,7 +216,8 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
           children: [
             Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
             const SizedBox(width: 8), // NAYA: Height ki jagah Width mein gap diya
-            Expanded( // Expanded lagaya taaki lambi text overflow na kare
+            Expanded(
+              // Expanded lagaya taaki lambi text overflow na kare
               child: Text(
                 title,
                 textAlign: TextAlign.start, // Left align text
@@ -279,7 +280,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
         ),
 
         const SizedBox(width: 12), // Text aur amount ke beech safe gap
-
         // Value ko Flexible aur FittedBox mein rakha taaki bada amount shrink ho jaye par kate nahi
         Flexible(
           child: FittedBox(
@@ -324,433 +324,449 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
             Expanded(
               child: Stack(
                 children: [
-                SingleChildScrollView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Method',
-                      style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // --- 2 OPTIONS CARD (Side by Side) ---
-                    Row(
+                  SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: _buildOptionCard(
-                            id: 'invested_amount',
-                            title: 'Know Invested\nAmount',
-                            icon: Icons.account_balance_wallet_rounded,
+                        Text(
+                          'Method',
+                          style: TextStyle(
+                            color: AppColors.textColor(context),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _buildOptionCard(
-                            id: 'goal_amount',
-                            title: 'Know Goal\nAmount',
-                            icon: Icons.flag_circle_rounded,
-                          ),
-                        ),
-                      ],
-                    ),
+                        const SizedBox(height: 10),
 
-                    const SizedBox(height: 15),
-
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
-                      ),
-                      child: Row(
-                        children: [
-                          // Left Radio: SIP
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                                setState(() => _investmentType = 'sip');
-                              },
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _investmentType == 'sip'
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off_rounded,
-                                    color: _investmentType == 'sip'
-                                        ? AppColors.cyanColor(context)
-                                        : AppColors.textGrey(context),
-                                    size: 22,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'SIP',
-                                    style: TextStyle(
-                                      color: _investmentType == 'sip'
-                                          ? AppColors.textColor(context)
-                                          : AppColors.textGrey(context),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
+                        // --- 2 OPTIONS CARD (Side by Side) ---
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildOptionCard(
+                                id: 'invested_amount',
+                                title: 'Know Invested\nAmount',
+                                icon: Icons.account_balance_wallet_rounded,
                               ),
                             ),
-                          ),
-
-                          // Right Radio: Lumpsum
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                if (_isHapticsEnabled) HapticFeedback.lightImpact();
-                                setState(() => _investmentType = 'lumpsum');
-                              },
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _investmentType == 'lumpsum'
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off_rounded,
-                                    color: _investmentType == 'lumpsum'
-                                        ? AppColors.cyanColor(context)
-                                        : AppColors.textGrey(context),
-                                    size: 22,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'Lumpsum',
-                                    style: TextStyle(
-                                      color: _investmentType == 'lumpsum'
-                                          ? AppColors.textColor(context)
-                                          : AppColors.textGrey(context),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _buildOptionCard(
+                                id: 'goal_amount',
+                                title: 'Know Goal\nAmount',
+                                icon: Icons.flag_circle_rounded,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    CustomRulerSliderCard(
-                      title: 'Investment Amount',
-                      //subtitle: _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
-                      subtitle: _selectedMode == 'invested_amount'
-                          ? (_investmentType == 'sip' ? 'Monthly Amount' : 'Lumpsum Amount')
-                          : 'Goal Amount',
-                      symbol: '₹',
-                      currentValue: _amountValue,
-                      min: 0,
-                      max: 1000000,
-                      isHapticsEnabled: _isHapticsEnabled,
-                      onChanged: (val) {
-                        setState(() {
-                          _amountValue = val;
-                        });
-                      },
-                    ),
-
-                    const SizedBox(height: 15), // Gap
-
-                    // --- NAYA: INTEREST RATE SLIDER ---
-                    PercentageSliderCard(
-                      title: 'Interest Rate', // Ya 'Interest Rate'
-                      currentValue: _interestRateValue,
-                      onChanged: (val) {
-                        setState(() {
-                          _interestRateValue = val;
-                        });
-                      },
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    // --- NAYA: TENURE / DURATION CARD ---
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceColor(context).withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Tenure/Duration',
-                            style: TextStyle(
-                              color: AppColors.textColor(context),
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Container(
-                            width: 140,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: AppColors.bgColor(context).withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5)),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: _tenureController,
-                                    keyboardType: TextInputType.number,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: AppColors.textColor(context),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    cursorColor: AppColors.cyanColor(context),
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true,
-                                    ),
-                                    onChanged: (val) {
-                                      double? newVal = double.tryParse(val.replaceAll(',', ''));
-                                      if (newVal != null && newVal >= 0) {
-                                        // NAYA: Max 50 Year Condition
-                                        if (newVal > 50) {
-                                          newVal = 50;
-
-                                          _tenureController.value = const TextEditingValue(
-                                            text: '50',
-                                            selection: TextSelection.collapsed(offset: 2),
-                                          );
-
-                                          // --- AAPKA CUSTOM TOAST ---
-                                          // Apne function ka exact naam yahan likh lijiye (eg. showToast)
-                                          showCustomToast(context,'Maximum tenure can be 50 years');
-                                        }
-                                        setState(() => _tenureValue = newVal!);
-                                      }
-                                    },
-                                  ),
-                                ),
-                                Container(
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.cyanColor(context).withOpacity(0.1),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(11),
-                                      bottomRight: Radius.circular(11),
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'Year',
-                                    style: TextStyle(
-                                      color: AppColors.cyanColor(context).withOpacity(0.9),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    // --- REAL-TIME RESULT CARD ---
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                      decoration: BoxDecoration(
-                        color: AppColors.cyanColor(context).withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 2),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Text(
-                              'Calculation Result',
-                              style: TextStyle(
-                                color: AppColors.cyanColor(context),
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          // Agar GOAL AMOUNT mode hai, toh pehle Required amount dikhayenge
-                          if (_selectedMode == 'goal_amount') ...[
-                            _buildResultRow(
-                              'Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}',
-                              results['required']!,
-                              isHighlighted: true,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
-                            ),
-                            _buildResultRow('Total Investment', results['invested']!),
-                            const SizedBox(height: 6),
-                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.textColor(context)),
-                          ]
-                          // Agar INVESTED AMOUNT mode hai, toh standard layout dikhayenge
-                          else ...[
-                            _buildResultRow('Total Investment', results['invested']!),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
-                            ),
-                            _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.greenColor(context)),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
-                            ),
-                            _buildResultRow('Maturity Amount', results['total']!, isHighlighted: true),
                           ],
-                        ],
-                      ),
-                    ),
+                        ),
 
-                    // ... (Aapki aakhiri _buildResultRow line yahan hogi)
+                        const SizedBox(height: 15),
 
-                    const SizedBox(height: 15), // Thoda gap
-
-                    // --- NAYA: COPY AUR SHARE BUTTONS ---
-                    Row(
-                      children: [
-                        // 1. COPY BUTTON
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
-
-                              // Dynamic label jo SIP, Lumpsum ya Goal mode ke hisaab se change hoga
-                              String inputTypeLabel = _selectedMode == 'invested_amount'
-                                  ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
-                                  : 'Target Goal Amount';
-
-                              // Agar Goal mode hai toh Required Amount bhi text mein add hoga
-                              String requiredText = _selectedMode == 'goal_amount'
-                                  ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
-                                  : "";
-
-                              String copyText = "Investment Calculation Result\n\n"
-                                  "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
-                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
-                                  "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
-                                  "$requiredText"
-                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
-                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
-                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}";
-
-                              Clipboard.setData(ClipboardData(text: copyText));
-
-                              // Yahan apna custom toast call kar lijiye
-                              // showToast('Result Copied!');
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: AppColors.surfaceColor(context).withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(color: AppColors.textGrey(context)),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.copy_rounded, color: AppColors.textGrey(context), size: 18),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Copy",
-                                    style: TextStyle(color: AppColors.textColor(context), fontWeight: FontWeight.bold),
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context).withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
+                          ),
+                          child: Row(
+                            children: [
+                              // Left Radio: SIP
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (_isHapticsEnabled) HapticFeedback.lightImpact();
+                                    setState(() => _investmentType = 'sip');
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _investmentType == 'sip'
+                                            ? Icons.radio_button_checked_rounded
+                                            : Icons.radio_button_off_rounded,
+                                        color: _investmentType == 'sip'
+                                            ? AppColors.cyanColor(context)
+                                            : AppColors.textGrey(context),
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'SIP',
+                                        style: TextStyle(
+                                          color: _investmentType == 'sip'
+                                              ? AppColors.textColor(context)
+                                              : AppColors.textGrey(context),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+
+                              // Right Radio: Lumpsum
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (_isHapticsEnabled) HapticFeedback.lightImpact();
+                                    setState(() => _investmentType = 'lumpsum');
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _investmentType == 'lumpsum'
+                                            ? Icons.radio_button_checked_rounded
+                                            : Icons.radio_button_off_rounded,
+                                        color: _investmentType == 'lumpsum'
+                                            ? AppColors.cyanColor(context)
+                                            : AppColors.textGrey(context),
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Lumpsum',
+                                        style: TextStyle(
+                                          color: _investmentType == 'lumpsum'
+                                              ? AppColors.textColor(context)
+                                              : AppColors.textGrey(context),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
 
-                        const SizedBox(width: 15), // Dono buttons ke beech gap
+                        const SizedBox(height: 15),
 
-                        // 2. SHARE BUTTON
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                        CustomRulerSliderCard(
+                          title: 'Investment Amount',
+                          //subtitle: _selectedMode == 'invested_amount' ? 'Monthly Amount' : 'Goal Amount',
+                          subtitle: _selectedMode == 'invested_amount'
+                              ? (_investmentType == 'sip' ? 'Monthly Amount' : 'Lumpsum Amount')
+                              : 'Goal Amount',
+                          symbol: '₹',
+                          currentValue: _amountValue,
+                          min: 0,
+                          max: 1000000,
+                          isHapticsEnabled: _isHapticsEnabled,
+                          onChanged: (val) {
+                            setState(() {
+                              _amountValue = val;
+                            });
+                          },
+                        ),
 
-                              // Share button ke onTap mein:
-                              String inputTypeLabel = _selectedMode == 'invested_amount'
-                                  ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
-                                  : 'Target Goal Amount';
+                        const SizedBox(height: 15), // Gap
+                        // --- NAYA: INTEREST RATE SLIDER ---
+                        PercentageSliderCard(
+                          title: 'Interest Rate', // Ya 'Interest Rate'
+                          currentValue: _interestRateValue,
+                          onChanged: (val) {
+                            setState(() {
+                              _interestRateValue = val;
+                            });
+                          },
+                        ),
 
-                              String requiredText = _selectedMode == 'goal_amount'
-                                  ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
-                                  : "";
+                        const SizedBox(height: 15),
 
-                              String shareText = "Hey! Check my Investment Plan\n\n"
-                                  "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
-                                  "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
-                                  "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
-                                  "$requiredText"
-                                  "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
-                                  "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
-                                  "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}\n\n"
-                                  "Calculated via Calculator Pro!";
-
-                              // Note: Share karne ke liye aapko 'share_plus' package chahiye
-                              // Share.share(shareText);
-                              try {
-                                await SharePlus.instance.share(ShareParams(text: shareText, subject: "Investment Calculation Result"));
-                              } catch (e) {
-                                debugPrint("Share error: $e");
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: AppColors.cyanColor(context).withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                        // --- NAYA: TENURE / DURATION CARD ---
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceColor(context).withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.textGrey(context).withOpacity(0.4)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Tenure/Duration',
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.share_rounded, color: AppColors.cyanColor(context), size: 18),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Share",
-                                    style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              Container(
+                                width: 140,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  color: AppColors.bgColor(context).withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _tenureController,
+                                        keyboardType: TextInputType.number,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        cursorColor: AppColors.cyanColor(context),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                        ),
+                                        onChanged: (val) {
+                                          double? newVal = double.tryParse(val.replaceAll(',', ''));
+                                          if (newVal != null && newVal >= 0) {
+                                            // NAYA: Max 50 Year Condition
+                                            if (newVal > 50) {
+                                              newVal = 50;
+
+                                              _tenureController.value = const TextEditingValue(
+                                                text: '50',
+                                                selection: TextSelection.collapsed(offset: 2),
+                                              );
+
+                                              // --- AAPKA CUSTOM TOAST ---
+                                              // Apne function ka exact naam yahan likh lijiye (eg. showToast)
+                                              showCustomToast(context, 'Maximum tenure can be 50 years');
+                                            }
+                                            setState(() => _tenureValue = newVal!);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 55,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.cyanColor(context).withOpacity(0.1),
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(11),
+                                          bottomRight: Radius.circular(11),
+                                        ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Year',
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context).withOpacity(0.9),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
+
+                        const SizedBox(height: 15),
+
+                        // --- REAL-TIME RESULT CARD ---
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          decoration: BoxDecoration(
+                            color: AppColors.cyanColor(context).withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5), width: 2),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'Calculation Result',
+                                  style: TextStyle(
+                                    color: AppColors.cyanColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+
+                              // Agar GOAL AMOUNT mode hai, toh pehle Required amount dikhayenge
+                              if (_selectedMode == 'goal_amount') ...[
+                                _buildResultRow(
+                                  'Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}',
+                                  results['required']!,
+                                  isHighlighted: true,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
+                                ),
+                                _buildResultRow('Total Investment', results['invested']!),
+                                const SizedBox(height: 6),
+                                _buildResultRow(
+                                  'Total Interest',
+                                  results['returns']!,
+                                  valueColor: AppColors.textColor(context),
+                                ),
+                              ]
+                              // Agar INVESTED AMOUNT mode hai, toh standard layout dikhayenge
+                              else ...[
+                                _buildResultRow('Total Investment', results['invested']!),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
+                                ),
+                                _buildResultRow(
+                                  'Total Interest',
+                                  results['returns']!,
+                                  valueColor: AppColors.greenColor(context),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
+                                ),
+                                _buildResultRow('Maturity Amount', results['total']!, isHighlighted: true),
+                              ],
+                            ],
+                          ),
+                        ),
+
+                        // ... (Aapki aakhiri _buildResultRow line yahan hogi)
+                        const SizedBox(height: 15), // Thoda gap
+                        // --- NAYA: COPY AUR SHARE BUTTONS ---
+                        Row(
+                          children: [
+                            // 1. COPY BUTTON
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                                  // Dynamic label jo SIP, Lumpsum ya Goal mode ke hisaab se change hoga
+                                  String inputTypeLabel = _selectedMode == 'invested_amount'
+                                      ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
+                                      : 'Target Goal Amount';
+
+                                  // Agar Goal mode hai toh Required Amount bhi text mein add hoga
+                                  String requiredText = _selectedMode == 'goal_amount'
+                                      ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
+                                      : "";
+
+                                  String copyText =
+                                      "Investment Calculation Result\n\n"
+                                      "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                      "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                      "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
+                                      "$requiredText"
+                                      "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                      "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                      "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}";
+
+                                  Clipboard.setData(ClipboardData(text: copyText));
+
+                                  // Yahan apna custom toast call kar lijiye
+                                  // showToast('Result Copied!');
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceColor(context).withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(color: AppColors.textGrey(context)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.copy_rounded, color: AppColors.textGrey(context), size: 18),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        "Copy",
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 15), // Dono buttons ke beech gap
+                            // 2. SHARE BUTTON
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  if (_isHapticsEnabled) HapticFeedback.selectionClick();
+
+                                  // Share button ke onTap mein:
+                                  String inputTypeLabel = _selectedMode == 'invested_amount'
+                                      ? (_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum Amount')
+                                      : 'Target Goal Amount';
+
+                                  String requiredText = _selectedMode == 'goal_amount'
+                                      ? "Required ${_investmentType == 'sip' ? 'Monthly SIP' : 'Lumpsum'}: ₹${results['required']!.toStringAsFixed(0)}\n"
+                                      : "";
+
+                                  String shareText =
+                                      "Hey! Check my Investment Plan\n\n"
+                                      "$inputTypeLabel: ₹${_amountValue.toStringAsFixed(0)}\n"
+                                      "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
+                                      "Duration: ${_tenureValue.toStringAsFixed(0)} Years\n\n"
+                                      "$requiredText"
+                                      "Total Invested: ₹${results['invested']!.toStringAsFixed(0)}\n"
+                                      "Total Interest: ₹${results['returns']!.toStringAsFixed(0)}\n"
+                                      "Maturity Amount: ₹${results['total']!.toStringAsFixed(0)}\n\n"
+                                      "Calculated via Calculator Pro!";
+
+                                  // Note: Share karne ke liye aapko 'share_plus' package chahiye
+                                  // Share.share(shareText);
+                                  try {
+                                    await SharePlus.instance.share(
+                                      ShareParams(text: shareText, subject: "Investment Calculation Result"),
+                                    );
+                                  } catch (e) {
+                                    debugPrint("Share error: $e");
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cyanColor(context).withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.share_rounded, color: AppColors.cyanColor(context), size: 18),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        "Share",
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 50),
                       ],
                     ),
-
-
-
-                    const SizedBox(height: 50),
-                  ],
-                ),
-              ),
+                  ),
 
                   // --- NAYA: DYNAMIC STICKY BOTTOM BAR ---
                   Positioned(
@@ -770,7 +786,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
-                            ),// Background color
+                            ), // Background color
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.cyanColor(context).withOpacity(0.3),
@@ -820,8 +836,8 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                       ),
                     ),
                   ),
-              ],
-            ),
+                ],
+              ),
             ),
           ],
         ),
