@@ -53,11 +53,7 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
     double returns = maturityAmount - totalInvested;
     if (returns < 0) returns = 0;
 
-    return {
-      'invested': totalInvested,
-      'returns': returns,
-      'total': maturityAmount,
-    };
+    return {'invested': totalInvested, 'returns': returns, 'total': maturityAmount};
   }
 
   @override
@@ -163,7 +159,6 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         // --- RULER SCALE: Monthly Investment ---
                         CustomRulerSliderCard(
                           title: 'Monthly Deposit',
@@ -171,7 +166,8 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                           symbol: '₹',
                           currentValue: _amountValue,
                           min: 0,
-                          max: 1000000, // Max 10 Lakh per month
+                          max: 1000000,
+                          // Max 10 Lakh per month
                           isHapticsEnabled: _isHapticsEnabled,
                           onChanged: (val) {
                             setState(() {
@@ -222,7 +218,8 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                       if (_isHapticsEnabled) HapticFeedback.lightImpact();
                                       setState(() {
                                         _tenureUnit = 'year';
-                                        if (_tenureValue > 10) { // RD usually max 10 years
+                                        if (_tenureValue > 10) {
+                                          // RD usually max 10 years
                                           _tenureValue = 10;
                                           _tenureController.text = '10';
                                         }
@@ -232,12 +229,25 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                     child: Row(
                                       children: [
                                         Icon(
-                                          _tenureUnit == 'year' ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                                          color: _tenureUnit == 'year' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                          _tenureUnit == 'year'
+                                              ? Icons.radio_button_checked_rounded
+                                              : Icons.radio_button_off_rounded,
+                                          color: _tenureUnit == 'year'
+                                              ? AppColors.cyanColor(context)
+                                              : AppColors.textGrey(context),
                                           size: 20,
                                         ),
                                         const SizedBox(width: 6),
-                                        Text('Year', style: TextStyle(color: _tenureUnit == 'year' ? AppColors.textColor(context) : AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'Year',
+                                          style: TextStyle(
+                                            color: _tenureUnit == 'year'
+                                                ? AppColors.textColor(context)
+                                                : AppColors.textGrey(context),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -254,12 +264,25 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                     child: Row(
                                       children: [
                                         Icon(
-                                          _tenureUnit == 'month' ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                                          color: _tenureUnit == 'month' ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                                          _tenureUnit == 'month'
+                                              ? Icons.radio_button_checked_rounded
+                                              : Icons.radio_button_off_rounded,
+                                          color: _tenureUnit == 'month'
+                                              ? AppColors.cyanColor(context)
+                                              : AppColors.textGrey(context),
                                           size: 20,
                                         ),
                                         const SizedBox(width: 6),
-                                        Text('Month', style: TextStyle(color: _tenureUnit == 'month' ? AppColors.textColor(context) : AppColors.textGrey(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'Month',
+                                          style: TextStyle(
+                                            color: _tenureUnit == 'month'
+                                                ? AppColors.textColor(context)
+                                                : AppColors.textGrey(context),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -268,20 +291,18 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
 
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 12),
-                                child: Divider(color: AppColors.textGrey(context).withOpacity(0.5), thickness: 1, height: 1),
+                                child: Divider(
+                                  color: AppColors.textGrey(context).withOpacity(0.5),
+                                  thickness: 1,
+                                  height: 1,
+                                ),
                               ),
 
                               // 2. INPUT FIELD
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    'Duration',
-                                    style: TextStyle(
-                                      color: AppColors.textGrey(context),
-                                      fontSize: 15,
-                                    ),
-                                  ),
+                                  Text('Duration', style: TextStyle(color: AppColors.textGrey(context), fontSize: 15)),
                                   Container(
                                     width: 140,
                                     height: 45,
@@ -322,7 +343,10 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                                     selection: TextSelection.collapsed(offset: limitText.length),
                                                   );
                                                   String timeUnit = _tenureUnit == 'year' ? 'years' : 'months';
-                                                  showCustomToast(context, 'Maximum RD tenure can be $limitText $timeUnit');
+                                                  showCustomToast(
+                                                    context,
+                                                    'Maximum RD tenure can be $limitText $timeUnit',
+                                                  );
                                                 }
                                                 setState(() => _tenureValue = newVal!);
                                               }
@@ -372,7 +396,11 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                               Center(
                                 child: Text(
                                   'Calculation Result',
-                                  style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    color: AppColors.cyanColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -384,7 +412,11 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                 child: Divider(color: AppColors.textGrey(context), thickness: 1, height: 1),
                               ),
 
-                              _buildResultRow('Total Interest', results['returns']!, valueColor: AppColors.greenColor(context)),
+                              _buildResultRow(
+                                'Total Interest',
+                                results['returns']!,
+                                valueColor: AppColors.greenColor(context),
+                              ),
 
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -406,9 +438,11 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                 onTap: () {
                                   if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
-                                  String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+                                  String tenureText =
+                                      "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String copyText = "RD Calculation Result\n\n"
+                                  String copyText =
+                                      "RD Calculation Result\n\n"
                                       "Monthly Deposit: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
                                       "Duration: $tenureText\n\n"
@@ -433,7 +467,10 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                       const SizedBox(width: 8),
                                       Text(
                                         "Copy",
-                                        style: TextStyle(color: AppColors.textColor(context), fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -448,9 +485,11 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                 onTap: () async {
                                   if (_isHapticsEnabled) HapticFeedback.selectionClick();
 
-                                  String tenureText = "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
+                                  String tenureText =
+                                      "${_tenureValue.toStringAsFixed(0)} ${_tenureUnit == 'year' ? 'Years' : 'Months'}";
 
-                                  String shareText = "Hey! Check my RD Plan\n\n"
+                                  String shareText =
+                                      "Hey! Check my RD Plan\n\n"
                                       "Monthly Deposit: ₹${_amountValue.toStringAsFixed(0)}\n"
                                       "Interest Rate: ${_interestRateValue.toStringAsFixed(1)}%\n"
                                       "Duration: $tenureText\n\n"
@@ -460,7 +499,9 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                       "Calculated via Calculator Pro!";
 
                                   try {
-                                    await SharePlus.instance.share(ShareParams(text: shareText, subject: "RD Calculation Result"));
+                                    await SharePlus.instance.share(
+                                      ShareParams(text: shareText, subject: "RD Calculation Result"),
+                                    );
                                   } catch (e) {
                                     debugPrint("Share error: $e");
                                   }
@@ -479,7 +520,10 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
                                       const SizedBox(width: 8),
                                       Text(
                                         "Share",
-                                        style: TextStyle(color: AppColors.cyanColor(context), fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ],
                                   ),
