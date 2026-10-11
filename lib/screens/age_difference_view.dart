@@ -222,7 +222,7 @@ class _AgeDifferenceViewState extends State<AgeDifferenceView> {
 
           Expanded(
             child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
