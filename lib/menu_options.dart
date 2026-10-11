@@ -8,7 +8,7 @@ import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/bodies_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
 import 'package:calculator_pro/screens/currency_converter_view.dart';
-import 'package:calculator_pro/screens/date_add_subtract_view.dart';
+import 'package:calculator_pro/screens/time_add_subtract_view.dart';
 import 'package:calculator_pro/screens/emi_calculator_view.dart';
 import 'package:calculator_pro/screens/fd_calculator_view.dart';
 import 'package:calculator_pro/screens/gcf_lcm_calculator_view.dart';
