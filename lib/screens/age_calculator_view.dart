@@ -332,13 +332,23 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Select Date of Birth',
-                          style: TextStyle(
-                            color: AppColors.textColor(context),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Text left, icon right
+                          children: [
+                            Text(
+                              'Select Date of Birth',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(
+                              Icons.edit_calendar_rounded, // Edit icon added
+                              color: AppColors.cyanColor(context).withOpacity(0.8),
+                              size: 20,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
 
