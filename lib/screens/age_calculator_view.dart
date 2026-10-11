@@ -19,8 +19,10 @@ class AgeCalculatorView extends StatefulWidget {
 
 class _AgeCalculatorViewState extends State<AgeCalculatorView> {
   bool _isHapticsEnabled = true;
+
   // Timer? _timer;
   late Stream<DateTime> _timeStream;
+
   // State Variables (Individual Day, Month, Year)
   late int _day;
   late int _month;
@@ -71,19 +73,36 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
   String _getDaySuffix(int day) {
     if (day >= 11 && day <= 13) return 'th';
     switch (day % 10) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
     }
   }
 
   String _getMonthName(int month) {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
     return months[month - 1];
   }
 
-// --- CUSTOM DIALOG PICKER ---
+  // --- CUSTOM DIALOG PICKER ---
   void _showCustomPicker({
     required String title,
     required int min,
@@ -115,8 +134,8 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        title,
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold)
+                      title,
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -131,11 +150,15 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                            "Done",
-                            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold)
+                          "Done",
+                          style: TextStyle(
+                            color: AppColors.cyanColor(context),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -161,7 +184,11 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                         child: Center(
                           child: Text(
                             (min + index).toString().padLeft(2, '0'),
-                            style: TextStyle(color: AppColors.textColor(context), fontSize: 24, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: AppColors.textColor(context),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       );
@@ -195,19 +222,11 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
             children: [
               Text(
                 value,
-                style: TextStyle(
-                  color: AppColors.cyanColor(context),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
                 label,
-                style: TextStyle(
-                  color: AppColors.textGrey(context),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: AppColors.textGrey(context), fontSize: 11, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -222,8 +241,14 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.textGrey(context), fontSize: 15, fontWeight: FontWeight.w500)),
-          Text(value, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(color: AppColors.textGrey(context), fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -242,9 +267,15 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(value, style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(
+              value,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 2),
-            Text(label, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12, fontWeight: FontWeight.w500)),
+            Text(
+              label,
+              style: TextStyle(color: AppColors.textGrey(context), fontSize: 12, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
       ),
@@ -320,7 +351,6 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // --- DATE OF BIRTH CARD ---
                   Container(
                     padding: const EdgeInsets.all(10),
@@ -356,64 +386,65 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                           children: [
                             // 1. DAY PICKER
                             _buildDateBox(
-                                'Day',
-                                _day.toString().padLeft(2, '0'),
-                                onTap: () {
-                                  _showCustomPicker(
-                                    title: 'Select Day',
-                                    min: 1,
-                                    max: _getDaysInMonth(_year, _month), // Dynamic max days
-                                    initialValue: _day,
-                                    onSelected: (val) => setState(() => _day = val),
-                                  );
-                                }
+                              'Day',
+                              _day.toString().padLeft(2, '0'),
+                              onTap: () {
+                                _showCustomPicker(
+                                  title: 'Select Day',
+                                  min: 1,
+                                  max: _getDaysInMonth(_year, _month),
+                                  // Dynamic max days
+                                  initialValue: _day,
+                                  onSelected: (val) => setState(() => _day = val),
+                                );
+                              },
                             ),
                             const SizedBox(width: 10),
 
                             // 2. MONTH PICKER
                             _buildDateBox(
-                                'Month',
-                                _month.toString().padLeft(2, '0'),
-                                onTap: () {
-                                  _showCustomPicker(
-                                    title: 'Select Month',
-                                    min: 1,
-                                    max: 12,
-                                    initialValue: _month,
-                                    onSelected: (val) {
-                                      setState(() {
-                                        _month = val;
-                                        // Agar month change karne se Day out of bounds ho jaye (eg. 31st Feb)
-                                        int maxDays = _getDaysInMonth(_year, _month);
-                                        if (_day > maxDays) _day = maxDays;
-                                      });
-                                    },
-                                  );
-                                }
+                              'Month',
+                              _month.toString().padLeft(2, '0'),
+                              onTap: () {
+                                _showCustomPicker(
+                                  title: 'Select Month',
+                                  min: 1,
+                                  max: 12,
+                                  initialValue: _month,
+                                  onSelected: (val) {
+                                    setState(() {
+                                      _month = val;
+                                      // Agar month change karne se Day out of bounds ho jaye (eg. 31st Feb)
+                                      int maxDays = _getDaysInMonth(_year, _month);
+                                      if (_day > maxDays) _day = maxDays;
+                                    });
+                                  },
+                                );
+                              },
                             ),
                             const SizedBox(width: 10),
 
                             // 3. YEAR PICKER
                             _buildDateBox(
-                                'Year',
-                                _year.toString(),
-                                isYear: true,
-                                onTap: () {
-                                  _showCustomPicker(
-                                    title: 'Select Year',
-                                    min: 1900,
-                                    max: DateTime.now().year,
-                                    initialValue: _year,
-                                    onSelected: (val) {
-                                      setState(() {
-                                        _year = val;
-                                        // Leap year adjust (Agar 29 Feb tha aur non-leap year select kar liya)
-                                        int maxDays = _getDaysInMonth(_year, _month);
-                                        if (_day > maxDays) _day = maxDays;
-                                      });
-                                    },
-                                  );
-                                }
+                              'Year',
+                              _year.toString(),
+                              isYear: true,
+                              onTap: () {
+                                _showCustomPicker(
+                                  title: 'Select Year',
+                                  min: 1900,
+                                  max: DateTime.now().year,
+                                  initialValue: _year,
+                                  onSelected: (val) {
+                                    setState(() {
+                                      _year = val;
+                                      // Leap year adjust (Agar 29 Feb tha aur non-leap year select kar liya)
+                                      int maxDays = _getDaysInMonth(_year, _month);
+                                      if (_day > maxDays) _day = maxDays;
+                                    });
+                                  },
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -444,8 +475,9 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                       if (days < 0) {
                         months--;
                         int daysInPrevMonth = _getDaysInMonth(
-                            now.month == 1 ? now.year - 1 : now.year,
-                            now.month == 1 ? 12 : now.month - 1);
+                          now.month == 1 ? now.year - 1 : now.year,
+                          now.month == 1 ? 12 : now.month - 1,
+                        );
                         days += daysInPrevMonth;
                       }
                       if (months < 0) {
@@ -474,7 +506,8 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                       int nextBdayMinutes = nextBdayDiff.inMinutes % 60;
                       int nextBdaySeconds = nextBdayDiff.inSeconds % 60;
 
-                      String formattedDob = "${_day.toString().padLeft(2, '0')}${_getDaySuffix(_day)} ${_getMonthName(_month)} $_year";
+                      String formattedDob =
+                          "${_day.toString().padLeft(2, '0')}${_getDaySuffix(_day)} ${_getMonthName(_month)} $_year";
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,9 +532,19 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                                   ),
                                   child: Column(
                                     children: [
-                                      Text('Your Birth date', style: TextStyle(color: AppColors.textGrey(context), fontSize: 14)),
+                                      Text(
+                                        'Your Birth date',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
                                       const SizedBox(height: 6),
-                                      Text(formattedDob, style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
+                                      Text(
+                                        formattedDob,
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -517,11 +560,22 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                                   ),
                                   child: Column(
                                     children: [
-                                      Text('Your Age', style: TextStyle(color: AppColors.textColor(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                      Text(
+                                        'Your Age',
+                                        style: TextStyle(
+                                          color: AppColors.textColor(context),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                       const SizedBox(height: 6),
                                       Text(
                                         '$years Years | $months Months | $days Days',
-                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          color: AppColors.cyanColor(context),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -532,7 +586,14 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                           const SizedBox(height: 10),
 
                           // --- TIME SPENT ON EARTH ---
-                          Text('Time Spent on Earth', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text(
+                            'Time Spent on Earth',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 12),
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -555,7 +616,14 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
                           const SizedBox(height: 10),
 
                           // --- KEEP CALM FOR NEXT BIRTHDAY ---
-                          Text('Keep calm For Next Birthday', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text(
+                            'Keep calm For Next Birthday',
+                            style: TextStyle(
+                              color: AppColors.cyanColor(context),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 12),
                           Container(
                             padding: const EdgeInsets.all(10),
