@@ -106,7 +106,7 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
             decoration: BoxDecoration(
               color: AppColors.surfaceColor(context),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.3)),
+              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.5)),
             ),
             child: Column(
               children: [
@@ -253,51 +253,51 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    DateTime dob = DateTime(_year, _month, _day);
-
-    // Safety check for future dates
-    if (dob.isAfter(now)) {
-      dob = now;
-    }
-
-    // Age Calculation
-    int years = now.year - dob.year;
-    int months = now.month - dob.month;
-    int days = now.day - dob.day;
-
-    if (days < 0) {
-      months--;
-      int daysInPrevMonth = _getDaysInMonth(now.month == 1 ? now.year - 1 : now.year, now.month == 1 ? 12 : now.month - 1);
-      days += daysInPrevMonth;
-    }
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
+    // DateTime now = DateTime.now();
+    // DateTime dob = DateTime(_year, _month, _day);
+    //
+    // // Safety check for future dates
+    // if (dob.isAfter(now)) {
+    //   dob = now;
+    // }
+    //
+    // // Age Calculation
+    // int years = now.year - dob.year;
+    // int months = now.month - dob.month;
+    // int days = now.day - dob.day;
+    //
+    // if (days < 0) {
+    //   months--;
+    //   int daysInPrevMonth = _getDaysInMonth(now.month == 1 ? now.year - 1 : now.year, now.month == 1 ? 12 : now.month - 1);
+    //   days += daysInPrevMonth;
+    // }
+    // if (months < 0) {
+    //   years--;
+    //   months += 12;
+    // }
 
     // Time Spent on Earth Calculations
-    Duration diff = now.difference(dob);
-    int totalMonths = (years * 12) + months;
-    int totalWeeks = diff.inDays ~/ 7;
-    int totalDays = diff.inDays;
-    int totalHours = diff.inHours;
-    int totalMinutes = diff.inMinutes;
-    int totalSeconds = diff.inSeconds;
+    // Duration diff = now.difference(dob);
+    // int totalMonths = (years * 12) + months;
+    // int totalWeeks = diff.inDays ~/ 7;
+    // int totalDays = diff.inDays;
+    // int totalHours = diff.inHours;
+    // int totalMinutes = diff.inMinutes;
+    // int totalSeconds = diff.inSeconds;
 
     // Next Birthday Calculation
-    DateTime nextBirthday = DateTime(now.year, dob.month, dob.day);
-    if (nextBirthday.isBefore(now) || nextBirthday.isAtSameMomentAs(now)) {
-      nextBirthday = DateTime(now.year + 1, dob.month, dob.day);
-    }
-    Duration nextBdayDiff = nextBirthday.difference(now);
+    // DateTime nextBirthday = DateTime(now.year, dob.month, dob.day);
+    // if (nextBirthday.isBefore(now) || nextBirthday.isAtSameMomentAs(now)) {
+    //   nextBirthday = DateTime(now.year + 1, dob.month, dob.day);
+    // }
+    //Duration nextBdayDiff = nextBirthday.difference(now);
 
-    int nextBdayDays = nextBdayDiff.inDays;
-    int nextBdayHours = nextBdayDiff.inHours % 24;
-    int nextBdayMinutes = nextBdayDiff.inMinutes % 60;
-    int nextBdaySeconds = nextBdayDiff.inSeconds % 60;
-
-    String formattedDob = "${_day.toString().padLeft(2, '0')}${_getDaySuffix(_day)} ${_getMonthName(_month)} $_year";
+    // int nextBdayDays = nextBdayDiff.inDays;
+    // int nextBdayHours = nextBdayDiff.inHours % 24;
+    // int nextBdayMinutes = nextBdayDiff.inMinutes % 60;
+    // int nextBdaySeconds = nextBdayDiff.inSeconds % 60;
+    //
+    // String formattedDob = "${_day.toString().padLeft(2, '0')}${_getDaySuffix(_day)} ${_getMonthName(_month)} $_year";
 
     return Scaffold(
       backgroundColor: Colors.transparent,
