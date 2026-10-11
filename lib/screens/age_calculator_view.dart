@@ -19,7 +19,8 @@ class AgeCalculatorView extends StatefulWidget {
 
 class _AgeCalculatorViewState extends State<AgeCalculatorView> {
   bool _isHapticsEnabled = true;
-  Timer? _timer;
+  // Timer? _timer;
+  late Stream<DateTime> _timeStream;
   // State Variables (Individual Day, Month, Year)
   late int _day;
   late int _month;
@@ -36,16 +37,17 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
 
     _loadSettings();
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {});
-    });
+    // _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    //   setState(() {});
+    // });
+    _timeStream = Stream.periodic(const Duration(seconds: 1), (_) => DateTime.now());
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel(); // Memory leak rokne ke liye
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _timer?.cancel(); // Memory leak rokne ke liye
+  //   super.dispose();
+  // }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -312,7 +314,8 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
           // --- MAIN SCROLL VIEW ---
           Expanded(
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
+              //physics: const BouncingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,101 +413,161 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
 
                   const SizedBox(height: 10),
 
-                  // --- AGE RESULT CARDS ---
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceColor(context).withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-                    ),
-                    child: Column(
-                      children: [
-                        // Your Birth date
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            color: AppColors.bgColor(context).withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            children: [
-                              Text('Your Birth date', style: TextStyle(color: AppColors.textGrey(context), fontSize: 14)),
-                              const SizedBox(height: 6),
-                              Text(formattedDob, style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        // Your Age
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                            color: AppColors.cyanColor(context).withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
-                          ),
-                          child: Column(
-                            children: [
-                              Text('Your Age', style: TextStyle(color: AppColors.textColor(context), fontSize: 14, fontWeight: FontWeight.w600)),
-                              const SizedBox(height: 6),
-                              Text(
-                                '$years Years | $months Months | $days Days',
-                                style: TextStyle(color: AppColors.cyanColor(context), fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  // --- NAYA: STREAM BUILDER YAHAN SE SHURU HOGA ---
+                  StreamBuilder<DateTime>(
+                    stream: _timeStream,
+                    builder: (context, snapshot) {
+                      // NAYA: Calculation logic StreamBuilder ke andar aayega
+                      DateTime now = snapshot.data ?? DateTime.now();
+                      DateTime dob = DateTime(_year, _month, _day);
 
-                  // --- TIME SPENT ON EARTH ---
-                  Text('Time Spent on Earth', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)), //[cite: 4]
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceColor(context).withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildInfoRow('Month', totalMonths.toString()),
-                        _buildInfoRow('Week', totalWeeks.toString()),
-                        _buildInfoRow('Days', totalDays.toString()),
-                        _buildInfoRow('Hours', totalHours.toString()),
-                        _buildInfoRow('Minutes', totalMinutes.toString()),
-                        _buildInfoRow('Seconds', totalSeconds.toString()), //[cite: 4]
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                      // Safety check for future dates
+                      if (dob.isAfter(now)) {
+                        dob = now;
+                      }
 
-                  // --- KEEP CALM FOR NEXT BIRTHDAY ---
-                  Text('Keep calm For Next Birthday', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)), //[cite: 4]
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.cyanColor(context).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.4), width: 1.5),
-                    ),
-                    child: Row(
-                      children: [
-                        _buildCountdownBox(nextBdayDays.toString(), 'Days'),
-                        _buildCountdownBox(nextBdayHours.toString(), 'Hours'),
-                        _buildCountdownBox(nextBdayMinutes.toString(), 'Minutes'),
-                        _buildCountdownBox(nextBdaySeconds.toString(), 'Seconds'), //[cite: 4]
-                      ],
-                    ),
+                      // Age Calculation
+                      int years = now.year - dob.year;
+                      int months = now.month - dob.month;
+                      int days = now.day - dob.day;
+
+                      if (days < 0) {
+                        months--;
+                        int daysInPrevMonth = _getDaysInMonth(
+                            now.month == 1 ? now.year - 1 : now.year,
+                            now.month == 1 ? 12 : now.month - 1);
+                        days += daysInPrevMonth;
+                      }
+                      if (months < 0) {
+                        years--;
+                        months += 12;
+                      }
+
+                      // Time Spent on Earth Calculations
+                      Duration diff = now.difference(dob);
+                      int totalMonths = (years * 12) + months;
+                      int totalWeeks = diff.inDays ~/ 7;
+                      int totalDays = diff.inDays;
+                      int totalHours = diff.inHours;
+                      int totalMinutes = diff.inMinutes;
+                      int totalSeconds = diff.inSeconds;
+
+                      // Next Birthday Calculation
+                      DateTime nextBirthday = DateTime(now.year, dob.month, dob.day);
+                      if (nextBirthday.isBefore(now) || nextBirthday.isAtSameMomentAs(now)) {
+                        nextBirthday = DateTime(now.year + 1, dob.month, dob.day);
+                      }
+                      Duration nextBdayDiff = nextBirthday.difference(now);
+
+                      int nextBdayDays = nextBdayDiff.inDays;
+                      int nextBdayHours = nextBdayDiff.inHours % 24;
+                      int nextBdayMinutes = nextBdayDiff.inMinutes % 60;
+                      int nextBdaySeconds = nextBdayDiff.inSeconds % 60;
+
+                      String formattedDob = "${_day.toString().padLeft(2, '0')}${_getDaySuffix(_day)} ${_getMonthName(_month)} $_year";
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // --- AGE RESULT CARDS ---
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceColor(context).withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                            ),
+                            child: Column(
+                              children: [
+                                // Your Birth date
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.bgColor(context).withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text('Your Birth date', style: TextStyle(color: AppColors.textGrey(context), fontSize: 14)),
+                                      const SizedBox(height: 6),
+                                      Text(formattedDob, style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                // Your Age
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cyanColor(context).withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text('Your Age', style: TextStyle(color: AppColors.textColor(context), fontSize: 14, fontWeight: FontWeight.w600)),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        '$years Years | $months Months | $days Days',
+                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          // --- TIME SPENT ON EARTH ---
+                          Text('Time Spent on Earth', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceColor(context).withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                            ),
+                            child: Column(
+                              children: [
+                                _buildInfoRow('Month', totalMonths.toString()),
+                                _buildInfoRow('Week', totalWeeks.toString()),
+                                _buildInfoRow('Days', totalDays.toString()),
+                                _buildInfoRow('Hours', totalHours.toString()),
+                                _buildInfoRow('Minutes', totalMinutes.toString()),
+                                _buildInfoRow('Seconds', totalSeconds.toString()),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          // --- KEEP CALM FOR NEXT BIRTHDAY ---
+                          Text('Keep calm For Next Birthday', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.cyanColor(context).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.4), width: 1.5),
+                            ),
+                            child: Row(
+                              children: [
+                                _buildCountdownBox(nextBdayDays.toString(), 'Days'),
+                                _buildCountdownBox(nextBdayHours.toString(), 'Hours'),
+                                _buildCountdownBox(nextBdayMinutes.toString(), 'Minutes'),
+                                _buildCountdownBox(nextBdaySeconds.toString(), 'Seconds'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
