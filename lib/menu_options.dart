@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:calculator_pro/screens/age_calculator_view.dart';
 import 'package:calculator_pro/screens/age_difference_view.dart';
 import 'package:calculator_pro/screens/average_calculator_view.dart';
-import 'package:calculator_pro/screens/birthday_countdown_view.dart';
+// import 'package:calculator_pro/screens/birthday_countdown_view.dart';
 import 'package:calculator_pro/screens/bmi_calculator_view.dart';
 import 'package:calculator_pro/screens/bodies_view.dart';
 import 'package:calculator_pro/screens/body_fat_calculator_view.dart';
@@ -381,18 +381,18 @@ class _MenuOptionsState extends State<MenuOptions> {
     },
     {
       'id': 'date_add_subtract',
-      'title': 'Add & Subtract',
+      'title': 'Add & Subtract Time',
       'sub': 'Add or subtract time from a specific date',
       'img': 'assets/images/percentage-discount-symbol.png',
       'category': 'date_time',
     },
-    {
-      'id': 'birthday_countdown',
-      'title': 'Birthday Countdown',
-      'sub': 'Track days remaining until your next birthday',
-      'img': 'assets/images/percentage-discount-symbol.png',
-      'category': 'date_time',
-    },
+    // {
+    //   'id': 'birthday_countdown',
+    //   'title': 'Birthday Countdown',
+    //   'sub': 'Track days remaining until your next birthday',
+    //   'img': 'assets/images/percentage-discount-symbol.png',
+    //   'category': 'date_time',
+    // },
 
     /// --- OTHER TOOLS CATEGORY ---
     {
@@ -580,8 +580,8 @@ class _MenuOptionsState extends State<MenuOptions> {
         return FdCalculatorView(key: const ValueKey('FD'), onBack: _closeView);
       case 'age':
         return AgeCalculatorView(key: const ValueKey('Age'), onBack: _closeView);
-      case 'birthday_countdown':
-        return BirthdayCountdownView(key: const ValueKey('Birthday'), onBack: _closeView);
+      // case 'birthday_countdown':
+      //   return BirthdayCountdownView(key: const ValueKey('Birthday'), onBack: _closeView);
       case 'date_add_subtract':
         return DateAddSubtractView(key: const ValueKey('DateAddSubtract'), onBack: _closeView);
       case 'age_difference':
