@@ -612,11 +612,32 @@ class _ShapesViewState extends State<ShapesView> {
                     //   ],
                     // ),
 
+                    // Column(
+                    //   children: [
+                    //     _buildTriInputRow('Side A', _triACtrl),
+                    //     _buildTriInputRow('Side B', _triBCtrl),
+                    //     _buildTriInputRow('Side C', _triCCtrl),
+                    //   ],
+                    // ),
+
+                    // FIX: Naye dynamic function ke sath Triangle ke inputs call kiye
                     Column(
                       children: [
-                        _buildTriInputRow('Side A', _triACtrl),
-                        _buildTriInputRow('Side B', _triBCtrl),
-                        _buildTriInputRow('Side C', _triCCtrl),
+                        _buildFixedInputRow(
+                          title: 'Side A',
+                          ctrl: _triACtrl,
+                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side A', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                        ),
+                        _buildFixedInputRow(
+                          title: 'Side B',
+                          ctrl: _triBCtrl,
+                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side B', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                        ),
+                        _buildFixedInputRow(
+                          title: 'Side C',
+                          ctrl: _triCCtrl,
+                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side C', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                        ),
                       ],
                     ),
 
@@ -1030,7 +1051,70 @@ class _ShapesViewState extends State<ShapesView> {
   // }
 
   // NAYA: Normal Triangle Input Row Builder (Bina dropdown ke, fixed title ke sath)
-  Widget _buildTriInputRow(String title, TextEditingController ctrl) {
+  // Widget _buildTriInputRow(String title, TextEditingController ctrl) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 12),
+  //     child: Row(
+  //       children: [
+  //         // Icon aur Title Box
+  //         Expanded(
+  //           flex: 5,
+  //           child: Container(
+  //             height: 60,
+  //             padding: const EdgeInsets.symmetric(horizontal: 16),
+  //             decoration: BoxDecoration(
+  //               color: AppColors.surfaceColor(context).withOpacity(0.3),
+  //               borderRadius: BorderRadius.circular(12),
+  //               border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+  //             ),
+  //             child: Row(
+  //               children: [
+  //                 SizedBox(
+  //                   width: 24, height: 24,
+  //                   child: CustomPaint(
+  //                     painter: TriInputPainter(highlightType: title, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 16),
+  //                 Text(title, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         const SizedBox(width: 12),
+  //         // TextField Box
+  //         Expanded(
+  //           flex: 4,
+  //           child: Container(
+  //             height: 60,
+  //             alignment: Alignment.center,
+  //             decoration: BoxDecoration(
+  //               color: AppColors.surfaceColor(context).withOpacity(0.3),
+  //               borderRadius: BorderRadius.circular(12),
+  //               border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+  //             ),
+  //             child: TextField(
+  //               controller: ctrl,
+  //               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  //               textAlign: TextAlign.center,
+  //               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+  //               cursorColor: Colors.orangeAccent,
+  //               decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
+  //               onChanged: (_) => setState((){}),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // NAYA & MASTER: Dynamic Fixed Input Row Builder (Bina dropdown ke)
+  Widget _buildFixedInputRow({
+    required String title,
+    required TextEditingController ctrl,
+    required Widget icon, // NAYA: Koi bhi widget (icon/painter) pass kar sakte hain
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -1050,9 +1134,7 @@ class _ShapesViewState extends State<ShapesView> {
                 children: [
                   SizedBox(
                     width: 24, height: 24,
-                    child: CustomPaint(
-                      painter: TriInputPainter(highlightType: title, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
-                    ),
+                    child: icon, // Dynamic icon yahan render hoga
                   ),
                   const SizedBox(width: 16),
                   Text(title, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
