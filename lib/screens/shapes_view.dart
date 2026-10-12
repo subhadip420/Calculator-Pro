@@ -227,6 +227,9 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _rtVal1Ctrl = TextEditingController(text: '');
   final TextEditingController _rtVal2Ctrl = TextEditingController(text: '');
 
+  String _sqType = 'Side'; // Default selection
+  final TextEditingController _sqValCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -236,6 +239,8 @@ class _ShapesViewState extends State<ShapesView> {
     // NAYA: Right Triangle wale controllers dispose karein
     _rtVal1Ctrl.dispose();
     _rtVal2Ctrl.dispose();
+    // NAYA: Square controller dispose karein
+    _sqValCtrl.dispose();
     super.dispose();
   }
 
@@ -361,7 +366,7 @@ class _ShapesViewState extends State<ShapesView> {
       case 'Right triangle':
         return 'Solve a rectangle knowing its two dimensions.';
       case 'Square':
-        return 'Solve a square knowing its side length.';
+        return 'Solve a square knowing its one dimension.';
       case 'Rectangle':
         return 'Solve a rectangle knowing its two dimensions.';
       case 'Circle':
@@ -892,6 +897,84 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
+                  ]else if (currentShape.name == 'Square') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_sqValCtrl.text) ?? 0;
+                        double sqSide = 0, sqArea = 0, sqPerimeter = 0, sqDiagonal = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (val > 0) {
+                          if (_sqType == 'Side') {
+                            sqSide = val;
+                            sqArea = val * val;
+                            sqPerimeter = 4 * val;
+                          } else if (_sqType == 'Area') {
+                            sqArea = val;
+                            sqSide = sqrt(val);
+                            sqPerimeter = 4 * sqSide;
+                          } else if (_sqType == 'Perimeter') {
+                            sqPerimeter = val;
+                            sqSide = val / 4;
+                            sqArea = sqSide * sqSide;
+                          }
+                          sqDiagonal = sqSide * sqrt(2);
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 12),
+
+                            // Sirf 1 input field hogi Square ke liye
+                            _buildSqInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid)
+                                    Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                  else ...[
+                                    _buildResultRow('Area', sqArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', sqPerimeter.toStringAsFixed(2)),
+                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                    _buildResultRow('Side', sqSide.toStringAsFixed(2)),
+                                    _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
+                                  ]
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ],
               ),
@@ -1126,12 +1209,15 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
-  // NAYA: Bottom Sheet for Selection[cite: 5]
-  void _showRtSelectorSheet(int inputIndex) {
+  // NAYA & MASTER: Dynamic Bottom Sheet for ALL Shapes
+  void _showDynamicInputSelectorSheet({
+    required List<String> options,
+    required String currentSelection,
+    required double heightFraction,
+    required Widget Function(String) iconBuilder,
+    required ValueChanged<String> onSelected,
+  }) {
     if (_isHapticsEnabled) HapticFeedback.lightImpact();
-
-    List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
-    String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
 
     showModalBottomSheet(
       context: context,
@@ -1139,7 +1225,7 @@ class _ShapesViewState extends State<ShapesView> {
       isScrollControlled: true,
       builder: (BuildContext sheetContext) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * heightFraction,
           decoration: BoxDecoration(
             color: AppColors.surfaceColor(context),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -1165,6 +1251,7 @@ class _ShapesViewState extends State<ShapesView> {
                 ),
               ),
               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+
               // List Items
               Expanded(
                 child: ListView.builder(
@@ -1174,19 +1261,16 @@ class _ShapesViewState extends State<ShapesView> {
                   itemBuilder: (context, i) {
                     String opt = options[i];
                     bool isSelected = opt == currentSelection;
+
+                    // Logic to split title and subtitle (e.g. "Side A" -> Title: "Side", Subtitle: "A")
                     List<String> parts = opt.split(' ');
                     String mTitle = parts[0];
-                    String sTitle = parts.length > 1 ? parts[1] : '';
+                    String sTitle = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
                     return GestureDetector(
                       onTap: () {
                         if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                        setState(() {
-                          if (inputIndex == 1)
-                            _rtType1 = opt;
-                          else
-                            _rtType2 = opt;
-                        });
+                        onSelected(opt); // Callback to update state
                         Navigator.pop(sheetContext);
                       },
                       child: Container(
@@ -1198,28 +1282,15 @@ class _ShapesViewState extends State<ShapesView> {
                         ),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CustomPaint(
-                                painter: RtInputPainter(
-                                  highlightType: opt,
-                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
-                                ),
-                              ),
-                            ),
+                            // Custom Painter Icon (har shape ka apna hoga)
+                            SizedBox(width: 24, height: 24, child: iconBuilder(opt)),
                             const SizedBox(width: 16),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   mTitle,
-                                  style: TextStyle(
-                                    color: AppColors.textColor(context),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 if (sTitle.isNotEmpty)
                                   Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
@@ -1238,6 +1309,281 @@ class _ShapesViewState extends State<ShapesView> {
       },
     );
   }
+
+  // NAYA: Bottom Sheet for Selection[cite: 5]
+  // void _showRtSelectorSheet(int inputIndex) {
+  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
+  //
+  //   List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
+  //   String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
+  //
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext sheetContext) {
+  //       return Container(
+  //         height: MediaQuery.of(context).size.height * 0.65,
+  //         decoration: BoxDecoration(
+  //           color: AppColors.surfaceColor(context),
+  //           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+  //         ),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             // Header
+  //             Padding(
+  //               padding: const EdgeInsets.all(20),
+  //               child: Row(
+  //                 children: [
+  //                   GestureDetector(
+  //                     onTap: () => Navigator.pop(sheetContext),
+  //                     child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20),
+  //                   ),
+  //                   const SizedBox(width: 12),
+  //                   Text(
+  //                     'Input',
+  //                     style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+  //             // List Items
+  //             Expanded(
+  //               child: ListView.builder(
+  //                 padding: const EdgeInsets.symmetric(vertical: 10),
+  //                 physics: const BouncingScrollPhysics(),
+  //                 itemCount: options.length,
+  //                 itemBuilder: (context, i) {
+  //                   String opt = options[i];
+  //                   bool isSelected = opt == currentSelection;
+  //                   List<String> parts = opt.split(' ');
+  //                   String mTitle = parts[0];
+  //                   String sTitle = parts.length > 1 ? parts[1] : '';
+  //
+  //                   return GestureDetector(
+  //                     onTap: () {
+  //                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //                       setState(() {
+  //                         if (inputIndex == 1)
+  //                           _rtType1 = opt;
+  //                         else
+  //                           _rtType2 = opt;
+  //                       });
+  //                       Navigator.pop(sheetContext);
+  //                     },
+  //                     child: Container(
+  //                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  //                       padding: const EdgeInsets.all(16),
+  //                       decoration: BoxDecoration(
+  //                         color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent,
+  //                         borderRadius: BorderRadius.circular(16),
+  //                       ),
+  //                       child: Row(
+  //                         children: [
+  //                           SizedBox(
+  //                             width: 24,
+  //                             height: 24,
+  //                             child: CustomPaint(
+  //                               painter: RtInputPainter(
+  //                                 highlightType: opt,
+  //                                 baseColor: AppColors.textGrey(context).withOpacity(0.5),
+  //                                 highlightColor: Colors.orangeAccent,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           const SizedBox(width: 16),
+  //                           Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 mTitle,
+  //                                 style: TextStyle(
+  //                                   color: AppColors.textColor(context),
+  //                                   fontSize: 16,
+  //                                   fontWeight: FontWeight.bold,
+  //                                 ),
+  //                               ),
+  //                               if (sTitle.isNotEmpty)
+  //                                 Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
+  //                             ],
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  // NAYA: Right Triangle ka wrapper
+  void _showRtSelectorSheet(int inputIndex) {
+    List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
+    String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
+
+    _showDynamicInputSelectorSheet(
+      options: options,
+      currentSelection: currentSelection,
+      heightFraction: 0.65, // Right triangle mein options zyada hain, isliye bada sheet
+      iconBuilder: (opt) => CustomPaint(
+        painter: RtInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+      ),
+      onSelected: (selectedVal) {
+        setState(() {
+          if (inputIndex == 1) _rtType1 = selectedVal; else _rtType2 = selectedVal;
+        });
+      },
+    );
+  }
+
+  // NAYA: Square ka wrapper
+  void _showSqSelectorSheet() {
+    _showDynamicInputSelectorSheet(
+      options: ['Side', 'Area', 'Perimeter'],
+      currentSelection: _sqType,
+      heightFraction: 0.5, // Square mein kam options hain, isliye chhota sheet
+      iconBuilder: (opt) => CustomPaint(
+        painter: SqInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+      ),
+      onSelected: (selectedVal) {
+        setState(() => _sqType = selectedVal);
+      },
+    );
+  }
+
+  // NAYA: Square Input Row Builder
+  Widget _buildSqInputRow() {
+    return Row(
+      children: [
+        // Dropdown Selector Button
+        Expanded(
+          flex: 5,
+          child: GestureDetector(
+            onTap: () => _showSqSelectorSheet(),
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24, height: 24,
+                    child: CustomPaint(
+                      painter: SqInputPainter(highlightType: _sqType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(child: Text(_sqType, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // TextField
+        Expanded(
+          flex: 4,
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceColor(context).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+            ),
+            child: TextField(
+              controller: _sqValCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+              cursorColor: Colors.orangeAccent,
+              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
+              onChanged: (_) => setState((){}),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // NAYA: Bottom Sheet for Square Selection
+  // void _showSqSelectorSheet() {
+  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
+  //
+  //   List<String> options = ['Side', 'Area', 'Perimeter']; // Same as image[cite: 5]
+  //
+  //   showModalBottomSheet(
+  //       context: context,
+  //       backgroundColor: Colors.transparent,
+  //       isScrollControlled: true,
+  //       builder: (BuildContext sheetContext) {
+  //         return Container(
+  //           height: MediaQuery.of(context).size.height * 0.5, // Thoda chhota sheet kyunki 3 hi options hain
+  //           decoration: BoxDecoration(color: AppColors.surfaceColor(context), borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Padding(
+  //                 padding: const EdgeInsets.all(20),
+  //                 child: Row(
+  //                   children: [
+  //                     GestureDetector(onTap: () => Navigator.pop(sheetContext), child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20)),
+  //                     const SizedBox(width: 12),
+  //                     Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
+  //                   ],
+  //                 ),
+  //               ),
+  //               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+  //               Expanded(
+  //                 child: ListView.builder(
+  //                   padding: const EdgeInsets.symmetric(vertical: 10),
+  //                   physics: const BouncingScrollPhysics(),
+  //                   itemCount: options.length,
+  //                   itemBuilder: (context, i) {
+  //                     String opt = options[i];
+  //                     bool isSelected = opt == _sqType;
+  //
+  //                     return GestureDetector(
+  //                       onTap: () {
+  //                         if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //                         setState(() => _sqType = opt);
+  //                         Navigator.pop(sheetContext);
+  //                       },
+  //                       child: Container(
+  //                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  //                         padding: const EdgeInsets.all(16),
+  //                         decoration: BoxDecoration(color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent, borderRadius: BorderRadius.circular(16)),
+  //                         child: Row(
+  //                           children: [
+  //                             SizedBox(width: 24, height: 24, child: CustomPaint(painter: SqInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent))),
+  //                             const SizedBox(width: 16),
+  //                             Text(opt, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       }
+  //   );
+  // }
+
 }
 
 // NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
@@ -1323,6 +1669,37 @@ class RtInputPainter extends CustomPainter {
         ..color = highlightColor
         ..style = PaintingStyle.fill;
       canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Square ke specifically selected part ko highlight karne ke liye Painter
+class SqInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  SqInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+
+    Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
+
+    if (highlightType == 'Area') {
+      canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga[cite: 5]
+    } else if (highlightType == 'Perimeter') {
+      canvas.drawRect(rect, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5); // Perimeter mein pura border highlight hoga[cite: 5]
+    } else {
+      // Side: Sirf bottom ki line highlight hogi[cite: 5]
+      canvas.drawRect(rect, basePaint);
+      canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
     }
   }
 
