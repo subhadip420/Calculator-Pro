@@ -3031,16 +3031,39 @@ class RtInputPainter extends CustomPainter {
       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
     } else if (highlightType == 'Hypotenuse') {
       canvas.drawLine(pTop, pBottomRight, hlPaint);
+    // } else if (highlightType == 'Angle A') {
+    //   Paint fillHl = Paint()
+    //     ..color = highlightColor
+    //     ..style = PaintingStyle.fill;
+    //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
+    // } else if (highlightType == 'Angle B') {
+    //   Paint fillHl = Paint()
+    //     ..color = highlightColor
+    //     ..style = PaintingStyle.fill;
+    //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+    // }
     } else if (highlightType == 'Angle A') {
       Paint fillHl = Paint()
         ..color = highlightColor
         ..style = PaintingStyle.fill;
-      canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
+
+      // Angle A (Top): Hypotenuse se shuru karke vertical line (90 degree) tak sweep karega
+      double startAngle = atan2(size.height, size.width);
+      double sweepAngle = (pi / 2) - startAngle;
+
+      canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
+
     } else if (highlightType == 'Angle B') {
       Paint fillHl = Paint()
         ..color = highlightColor
         ..style = PaintingStyle.fill;
-      canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+
+      // FIX: startAngle pi (180 degree, Left) rahega.
+      // Par sweepAngle positive hoga taaki arc triangle ke andar (upar) draw ho.
+      double startAngle = pi;
+      double sweepAngle = atan2(size.height, size.width);
+
+      canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), startAngle, sweepAngle, true, fillHl);
     }
   }
 
