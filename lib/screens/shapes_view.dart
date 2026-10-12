@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,6 +169,19 @@ class _ShapesViewState extends State<ShapesView> {
 
   late List<ShapeItem> _shapeList;
 
+  final TextEditingController _triACtrl = TextEditingController(text: '0');
+  final TextEditingController _triBCtrl = TextEditingController(text: '0');
+  final TextEditingController _triCCtrl = TextEditingController(text: '0');
+
+  @override
+  void dispose() {
+    // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
+    _triACtrl.dispose();
+    _triBCtrl.dispose();
+    _triCCtrl.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -326,6 +341,31 @@ class _ShapesViewState extends State<ShapesView> {
   Widget build(BuildContext context) {
     ShapeItem currentShape = _shapeList[_selectedShapeIndex];
 
+    // NAYA: Triangle Logic
+    double a = double.tryParse(_triACtrl.text) ?? 0;
+    double b = double.tryParse(_triBCtrl.text) ?? 0;
+    double c = double.tryParse(_triCCtrl.text) ?? 0;
+
+    // Check if triangle is valid (Sum of two sides must be > third side)
+    bool isValidTriangle = (a + b > c) && (a + c > b) && (b + c > a) && a > 0 && b > 0 && c > 0;
+
+    double area = 0, perimeter = 0, hA = 0, hB = 0, hC = 0, angAB = 0, angBC = 0, angAC = 0;
+
+    if (isValidTriangle && currentShape.name == 'Triangle') {
+      perimeter = a + b + c;
+      double s = perimeter / 2; // Semi-perimeter
+      area = sqrt(s * (s - a) * (s - b) * (s - c)); // Heron's Formula
+
+      hA = (2 * area) / a;
+      hB = (2 * area) / b;
+      hC = (2 * area) / c;
+
+      // Law of Cosines for angles (Convert radian to degree)
+      angAB = acos((a*a + b*b - c*c) / (2*a*b)) * (180 / pi); // Angle between A and B (Angle C)
+      angBC = acos((b*b + c*c - a*a) / (2*b*c)) * (180 / pi); // Angle between B and C (Angle A)
+      angAC = acos((a*a + c*c - b*b) / (2*a*c)) * (180 / pi); // Angle between A and C (Angle B)
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -340,7 +380,7 @@ class _ShapesViewState extends State<ShapesView> {
 
           Expanded(
             child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,16 +448,138 @@ class _ShapesViewState extends State<ShapesView> {
                     ),
                   ),
 
-                  // Aage ka Result/Calculation UI yahan add karenge...
-                  const SizedBox(height: 30),
-                  Center(
-                    child: Text(
-                      'Inputs for ${currentShape.name} will go here...',
-                      style: TextStyle(color: AppColors.textGrey(context)),
+                  const SizedBox(height: 24),
+
+                  // --- DYNAMIC INPUTS SECTION ---
+                  if (currentShape.name == 'Triangle') ...[
+                    Text('Enter Dimensions', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _buildInputField('Side A', _triACtrl),
+                        _buildInputField('Side B', _triBCtrl),
+                        _buildInputField('Side C', _triCCtrl),
+                      ],
                     ),
-                  )
+                    const SizedBox(height: 24),
+
+                    // --- RESULTS SECTION ---
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.cyanColor(context).withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                          const SizedBox(height: 12),
+                          Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                          const SizedBox(height: 12),
+
+                          if (!isValidTriangle)
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text('Invalid Triangle!\nSum of any two sides must be greater than the third side.', textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14)),
+                              ),
+                            )
+                          else ...[
+                            _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
+                            _buildResultRow('Perimeter', perimeter.toStringAsFixed(2)),
+                            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                            _buildResultRow('Angle: AB', '${angAB.toStringAsFixed(2)}°'),
+                            _buildResultRow('Angle: BC', '${angBC.toStringAsFixed(2)}°'),
+                            _buildResultRow('Angle: AC', '${angAC.toStringAsFixed(2)}°'),
+                            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                            _buildResultRow('Height: A', hA.toStringAsFixed(2)),
+                            _buildResultRow('Height: B', hB.toStringAsFixed(2)),
+                            _buildResultRow('Height: C', hC.toStringAsFixed(2)),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // NAYA: Input Field Helper (Title upar, hint 0)
+  Widget _buildInputField(String title, TextEditingController controller) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Column(
+          children: [
+            // Upar Title (Side A, Side B, etc.)
+            Text(
+                title,
+                style: TextStyle(
+                    color: AppColors.textGrey(context),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500
+                )
+            ),
+            const SizedBox(height: 6),
+            // Niche Input Box
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              decoration: BoxDecoration(
+                color: AppColors.bgColor(context).withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.2)),
+              ),
+              child: TextField(
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                cursorColor: AppColors.cyanColor(context),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  hintText: '0', // Hint hamesha 0 dikhega
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // NAYA: Result Row Helper
+  Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+              fontSize: 15,
+              fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
