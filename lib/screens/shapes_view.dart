@@ -246,6 +246,10 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _arcRadiusCtrl = TextEditingController(text: '');
   final TextEditingController _arcAngleCtrl = TextEditingController(text: '');
 
+  // --- Ellipse Input State ---
+  final TextEditingController _ellipRadACtrl = TextEditingController(text: '');
+  final TextEditingController _ellipRadBCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -270,6 +274,9 @@ class _ShapesViewState extends State<ShapesView> {
     // NAYA: Circle Arc controllers dispose karein
     _arcRadiusCtrl.dispose();
     _arcAngleCtrl.dispose();
+    // NAYA: Ellipse controllers dispose karein
+    _ellipRadACtrl.dispose();
+    _ellipRadBCtrl.dispose();
     super.dispose();
   }
 
@@ -1378,6 +1385,90 @@ class _ShapesViewState extends State<ShapesView> {
                             );
                           },
                         ),
+                        // ==========================================
+                        // YAHAN SE ELLIPSE KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Ellipse') ...[
+                        Builder(
+                          builder: (context) {
+                            double a = double.tryParse(_ellipRadACtrl.text) ?? 0; // Radius A
+                            double b = double.tryParse(_ellipRadBCtrl.text) ?? 0; // Radius B
+
+                            double ellipArea = 0, ellipPerimeter = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            if (a > 0 && b > 0) {
+                              // Area = pi * a * b
+                              ellipArea = pi * a * b;
+
+                              // Perimeter (Ramanujan's approximation formula for high accuracy)
+                              ellipPerimeter = pi * (3 * (a + b) - sqrt((3 * a + b) * (a + 3 * b)));
+
+                              isValid = true;
+                            } else {
+                              errorMsg = 'Enter both radii greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // FIXED INPUT ROWS for Ellipse
+                                _buildFixedInputRow(
+                                  title: 'Radius A',
+                                  ctrl: _ellipRadACtrl,
+                                  icon: CustomPaint(painter: EllipInputPainter(highlightType: 'Radius A', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Radius B',
+                                  ctrl: _ellipRadBCtrl,
+                                  icon: CustomPaint(painter: EllipInputPainter(highlightType: 'Radius B', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Radius A', a.toStringAsFixed(2)),
+                                        _buildResultRow('Radius B', b.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                 ],
               ),
@@ -2326,6 +2417,40 @@ class ArcInputPainter extends CustomPainter {
       // Chota arc draw karein angle dikhane ke liye
       Paint fillHl = Paint()..color = highlightColor..style = PaintingStyle.fill;
       canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi/2, pi/2, true, fillHl);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Ellipse ke Radius A (Horizontal) aur Radius B (Vertical) ko highlight karne ke liye Painter
+class EllipInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  EllipInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    double w = size.width;
+    double h = size.height;
+
+    Rect rect = Rect.fromLTWH(0, h * 0.2, w, h * 0.6);
+    Offset center = Offset(w / 2, h / 2);
+
+    // Base Ellipse Draw karein
+    canvas.drawOval(rect, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Radius A') {
+      canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
+    } else if (highlightType == 'Radius B') {
+      canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
     }
   }
 
