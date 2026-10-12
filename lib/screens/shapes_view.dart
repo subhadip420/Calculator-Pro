@@ -239,6 +239,9 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _trapTopCtrl = TextEditingController(text: '');
   final TextEditingController _trapBaseCtrl = TextEditingController(text: '');
 
+  final TextEditingController _rhomLenCtrl = TextEditingController(text: '');
+  final TextEditingController _rhomWidCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -257,6 +260,9 @@ class _ShapesViewState extends State<ShapesView> {
     _trapHeightCtrl.dispose();
     _trapTopCtrl.dispose();
     _trapBaseCtrl.dispose();
+    // NAYA: Rhombus controllers dispose karein
+    _rhomLenCtrl.dispose();
+    _rhomWidCtrl.dispose();
     super.dispose();
   }
 
@@ -1195,6 +1201,88 @@ class _ShapesViewState extends State<ShapesView> {
                             );
                           },
                         ),
+                        // ==========================================
+                        // YAHAN SE RHOMBUS KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Rhombus') ...[
+                        Builder(
+                          builder: (context) {
+                            double d1 = double.tryParse(_rhomLenCtrl.text) ?? 0; // Length (Horizontal Diagonal)
+                            double d2 = double.tryParse(_rhomWidCtrl.text) ?? 0; // Width (Vertical Diagonal)
+
+                            double rhomArea = 0, rhomSide = 0, rhomPerimeter = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            if (d1 > 0 && d2 > 0) {
+                              rhomArea = (d1 * d2) / 2; // Area = (d1 * d2) / 2
+                              // Side = Pythagoras theorem on half-diagonals
+                              rhomSide = sqrt((d1 / 2) * (d1 / 2) + (d2 / 2) * (d2 / 2));
+                              rhomPerimeter = 4 * rhomSide;
+
+                              isValid = true;
+                            } else {
+                              errorMsg = 'Enter length and width greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // FIXED INPUT ROWS for Rhombus
+                                _buildFixedInputRow(
+                                  title: 'Length',
+                                  ctrl: _rhomLenCtrl,
+                                  icon: CustomPaint(painter: RhomInputPainter(highlightType: 'Length', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Width',
+                                  ctrl: _rhomWidCtrl,
+                                  icon: CustomPaint(painter: RhomInputPainter(highlightType: 'Width', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Area', rhomArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                 ],
               ),
@@ -2059,6 +2147,49 @@ class TrapInputPainter extends CustomPainter {
     } else if (highlightType == 'Height') {
       // Beech mein vertical height draw karein
       canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Rhombus ke diagonals (Length/Width) ko highlight karne ke liye Painter
+class RhomInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  RhomInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Rhombus ke 4 points (Diamond shape)
+    Offset pTop = Offset(w / 2, 0);
+    Offset pBottom = Offset(w / 2, h);
+    Offset pLeft = Offset(0, h / 2);
+    Offset pRight = Offset(w, h / 2);
+
+    // Base Rhombus Draw karein
+    Path path = Path()
+      ..moveTo(pTop.dx, pTop.dy)
+      ..lineTo(pRight.dx, pRight.dy)
+      ..lineTo(pBottom.dx, pBottom.dy)
+      ..lineTo(pLeft.dx, pLeft.dy)
+      ..close();
+    canvas.drawPath(path, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Length') {
+      canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
+    } else if (highlightType == 'Width') {
+      canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
     }
   }
 
