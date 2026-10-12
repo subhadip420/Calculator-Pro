@@ -257,6 +257,10 @@ class _ShapesViewState extends State<ShapesView> {
   String _hexType = 'Side'; // Default selection
   final TextEditingController _hexValCtrl = TextEditingController(text: '');
 
+  // --- Circle Input State ---
+  String _circleType = 'Radius'; // Default selection
+  final TextEditingController _circleValCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -288,6 +292,8 @@ class _ShapesViewState extends State<ShapesView> {
     _pentValCtrl.dispose();
     // NAYA: Hexagon controller dispose karein
     _hexValCtrl.dispose();
+    // NAYA: Circle controller dispose karein
+    _circleValCtrl.dispose();
     super.dispose();
   }
 
@@ -2010,6 +2016,89 @@ class _ShapesViewState extends State<ShapesView> {
                             );
                           },
                         ),
+                        // ==========================================
+                        // YAHAN SE CIRCLE KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Circle') ...[
+                        Builder(
+                          builder: (context) {
+                            double val = double.tryParse(_circleValCtrl.text) ?? 0;
+
+                            double circRadius = 0, circDiameter = 0, circArea = 0, circCircumference = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            if (val > 0) {
+                              if (_circleType == 'Radius') {
+                                circRadius = val;
+                              } else if (_circleType == 'Diameter') {
+                                circRadius = val / 2;
+                              } else if (_circleType == 'Area') {
+                                circRadius = sqrt(val / pi);
+                              } else if (_circleType == 'Circumference') {
+                                circRadius = val / (2 * pi);
+                              }
+
+                              // Calculate all based on derived radius
+                              circDiameter = 2 * circRadius;
+                              circArea = pi * circRadius * circRadius;
+                              circCircumference = 2 * pi * circRadius;
+
+                              isValid = true;
+                            } else {
+                              errorMsg = 'Enter a value greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // DROPDOWN INPUT ROW for Circle
+                                _buildCircInputRow(),
+                                const SizedBox(height: 16),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Area', circArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Circumference', circCircumference.toStringAsFixed(2)),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Radius', circRadius.toStringAsFixed(2)),
+                                        _buildResultRow('Diameter', circDiameter.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                 ],
               ),
@@ -2583,6 +2672,85 @@ class _ShapesViewState extends State<ShapesView> {
       ],
     );
   }
+
+  // NAYA: Circle ka bottom sheet wrapper[cite: 7]
+  void _showCircSelectorSheet() {
+    _showDynamicInputSelectorSheet(
+      options: ['Radius', 'Diameter', 'Area', 'Circumference'], // Screenshot wale 4 options[cite: 7]
+      currentSelection: _circleType,
+      heightFraction: 0.55, // 4 options ke liye thoda sa bada sheet
+      iconBuilder: (opt) => CustomPaint(
+        painter: CircInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+      ),
+      onSelected: (selectedVal) {
+        setState(() => _circleType = selectedVal);
+      },
+    );
+  }
+
+  // NAYA: Circle Input Row Builder
+  Widget _buildCircInputRow() {
+    return Row(
+      children: [
+        // Dropdown Selector Button
+        Expanded(
+          flex: 5,
+          child: GestureDetector(
+            onTap: () => _showCircSelectorSheet(),
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24, height: 24,
+                    child: CustomPaint(painter: CircInputPainter(highlightType: _circleType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                      child: Text(
+                        _circleType,
+                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      )
+                  ),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // TextField Box
+        Expanded(
+          flex: 4,
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceColor(context).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+            ),
+            child: TextField(
+              controller: _circleValCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+              cursorColor: Colors.orangeAccent,
+              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
+              onChanged: (_) => setState((){}),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 /// main class
 
@@ -3042,6 +3210,46 @@ class HexInputPainter extends CustomPainter {
       // Side: Sirf bottom-right ki line highlight hogi image ki tarah[cite: 6]
       canvas.drawPath(path, basePaint);
       canvas.drawLine(p3, p4, hlPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Circle ke selected part ko highlight karne ke liye Painter
+class CircInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  CircInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+    Offset center = Offset(w / 2, h / 2);
+    double radius = w / 2;
+
+    // Base Circle Draw karein
+    canvas.drawCircle(center, radius, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Area') {
+      canvas.drawCircle(center, radius, fillPaint); // Area select hone par fill hoga[cite: 7]
+    } else if (highlightType == 'Circumference') {
+      canvas.drawCircle(center, radius, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0); // Pura border[cite: 7]
+    } else if (highlightType == 'Radius') {
+      // Radius: Center se edge tak ek line[cite: 7]
+      canvas.drawLine(center, Offset(w, h / 2), hlPaint);
+    } else if (highlightType == 'Diameter') {
+      // Diameter: Ek edge se dusre edge tak center ke through[cite: 7]
+      canvas.drawLine(Offset(0, h / 2), Offset(w, h / 2), hlPaint);
     }
   }
 
