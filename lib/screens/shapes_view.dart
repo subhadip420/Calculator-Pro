@@ -250,6 +250,9 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _ellipRadACtrl = TextEditingController(text: '');
   final TextEditingController _ellipRadBCtrl = TextEditingController(text: '');
 
+  String _pentType = 'Side'; // Default selection
+  final TextEditingController _pentValCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -277,6 +280,8 @@ class _ShapesViewState extends State<ShapesView> {
     // NAYA: Ellipse controllers dispose karein
     _ellipRadACtrl.dispose();
     _ellipRadBCtrl.dispose();
+    String _pentType = 'Side'; // Default selection
+    final TextEditingController _pentValCtrl = TextEditingController(text: '0');
     super.dispose();
   }
 
@@ -1821,7 +1826,95 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                  ],
+                        // ==========================================
+                        // YAHAN SE PENTAGON KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Pentagon') ...[
+                        Builder(
+                          builder: (context) {
+                            double val = double.tryParse(_pentValCtrl.text) ?? 0;
+
+                            double pentSide = 0, pentArea = 0, pentPerimeter = 0, pentDiagonal = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            // Pentagon mathematical constant for area
+                            double areaMultiplier = 0.25 * sqrt(5 * (5 + 2 * sqrt(5))); // Approx 1.7204774
+
+                            if (val > 0) {
+                              if (_pentType == 'Side') {
+                                pentSide = val;
+                                pentPerimeter = 5 * pentSide;
+                                pentArea = areaMultiplier * pentSide * pentSide;
+                              } else if (_pentType == 'Area') {
+                                pentArea = val;
+                                pentSide = sqrt(pentArea / areaMultiplier);
+                                pentPerimeter = 5 * pentSide;
+                              } else if (_pentType == 'Perimeter') {
+                                pentPerimeter = val;
+                                pentSide = pentPerimeter / 5;
+                                pentArea = areaMultiplier * pentSide * pentSide;
+                              }
+
+                              // Diagonal formula: d = s * (1 + sqrt(5)) / 2
+                              pentDiagonal = pentSide * ((1 + sqrt(5)) / 2);
+
+                              isValid = true;
+                            } else {
+                              errorMsg = 'Enter a value greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // DROPDOWN INPUT ROW for Pentagon
+                                _buildPentInputRow(),
+                                const SizedBox(height: 16),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Area', pentArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Perimeter', pentPerimeter.toStringAsFixed(2)),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Side (Edge)', pentSide.toStringAsFixed(2)),
+                                        _buildResultRow('Diagonal', pentDiagonal.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                 ],
               ),
             ),
@@ -2248,7 +2341,81 @@ class _ShapesViewState extends State<ShapesView> {
       ],
     );
   }
+
+  // NAYA: Pentagon ka bottom sheet wrapper[cite: 5]
+  void _showPentSelectorSheet() {
+    _showDynamicInputSelectorSheet(
+      options: ['Side', 'Area', 'Perimeter'],
+      currentSelection: _pentType,
+      heightFraction: 0.5,
+      iconBuilder: (opt) => CustomPaint(
+        painter: PentInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+      ),
+      onSelected: (selectedVal) {
+        setState(() => _pentType = selectedVal);
+      },
+    );
+  }
+
+  // NAYA: Pentagon Input Row Builder (Square ki tarah same style)
+  Widget _buildPentInputRow() {
+    return Row(
+      children: [
+        // Dropdown Selector Button
+        Expanded(
+          flex: 5,
+          child: GestureDetector(
+            onTap: () => _showPentSelectorSheet(),
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24, height: 24,
+                    child: CustomPaint(painter: PentInputPainter(highlightType: _pentType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(child: Text(_pentType, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // TextField Box
+        Expanded(
+          flex: 4,
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceColor(context).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+            ),
+            child: TextField(
+              controller: _pentValCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+              cursorColor: Colors.orangeAccent,
+              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
+              onChanged: (_) => setState((){}),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+/// main class
 
 // NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
 class TriInputPainter extends CustomPainter {
@@ -2619,6 +2786,49 @@ class EllipInputPainter extends CustomPainter {
       canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
     } else if (highlightType == 'Radius B') {
       canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Pentagon ke selected part ko highlight karne ke liye Painter
+class PentInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  PentInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Pentagon ke 5 points mathematically set kiye gaye hain
+    Offset p1 = Offset(w / 2, 0); // Top
+    Offset p2 = Offset(w, h * 0.38); // Top Right
+    Offset p3 = Offset(w * 0.81, h); // Bottom Right
+    Offset p4 = Offset(w * 0.19, h); // Bottom Left
+    Offset p5 = Offset(0, h * 0.38); // Top Left
+
+    // Base Pentagon Draw karein
+    Path path = Path()..moveTo(p1.dx, p1.dy)..lineTo(p2.dx, p2.dy)..lineTo(p3.dx, p3.dy)..lineTo(p4.dx, p4.dy)..lineTo(p5.dx, p5.dy)..close();
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Area') {
+      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 5]
+    } else if (highlightType == 'Perimeter') {
+      canvas.drawPath(path, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5); // Pura border[cite: 5]
+    } else {
+      // Side: Sirf bottom ki line highlight hogi[cite: 5]
+      canvas.drawPath(path, basePaint);
+      canvas.drawLine(p4, p3, hlPaint);
     }
   }
 
