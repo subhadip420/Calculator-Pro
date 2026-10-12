@@ -558,7 +558,8 @@ class _ShapesViewState extends State<ShapesView> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return SafeArea( // SafeArea add kiya taaki bottom edge se touch na ho
+        return SafeArea(
+          // SafeArea add kiya taaki bottom edge se touch na ho
           child: Container(
             // FIX: Fixed height yahan se hata di gayi hai
             decoration: BoxDecoration(
@@ -591,7 +592,8 @@ class _ShapesViewState extends State<ShapesView> {
                 // Grid View
                 // FIX: Expanded hata diya aur GridView me shrinkWrap: true laga diya
                 GridView.builder(
-                  shrinkWrap: true, // FIX: Apni height khud grid ke hisaab se adjust karega
+                  shrinkWrap: true,
+                  // FIX: Apni height khud grid ke hisaab se adjust karega
                   padding: const EdgeInsets.all(10),
                   physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -624,10 +626,7 @@ class _ShapesViewState extends State<ShapesView> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              height: 45,
-                              child: Center(child: item.iconBuilder),
-                            ),
+                            SizedBox(height: 45, child: Center(child: item.iconBuilder)),
                             const SizedBox(height: 10),
                             Text(
                               item.name,
@@ -641,10 +640,7 @@ class _ShapesViewState extends State<ShapesView> {
                               ),
                             ),
                             const SizedBox(height: 2),
-                            Text(
-                              'Shapes',
-                              style: TextStyle(color: AppColors.textGrey(context), fontSize: 11),
-                            ),
+                            Text('Shapes', style: TextStyle(color: AppColors.textGrey(context), fontSize: 11)),
                           ],
                         ),
                       ),
