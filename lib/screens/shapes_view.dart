@@ -230,6 +230,10 @@ class _ShapesViewState extends State<ShapesView> {
   String _sqType = 'Side'; // Default selection
   final TextEditingController _sqValCtrl = TextEditingController(text: '');
 
+  // --- Rectangle Input State ---
+  final TextEditingController _rectLenCtrl = TextEditingController(text: '');
+  final TextEditingController _rectWidCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -241,6 +245,9 @@ class _ShapesViewState extends State<ShapesView> {
     _rtVal2Ctrl.dispose();
     // NAYA: Square controller dispose karein
     _sqValCtrl.dispose();
+    // NAYA: Rectangle controllers dispose karein
+    _rectLenCtrl.dispose();
+    _rectWidCtrl.dispose();
     super.dispose();
   }
 
@@ -597,7 +604,9 @@ class _ShapesViewState extends State<ShapesView> {
 
                   const SizedBox(height: 24),
 
-                  // --- DYNAMIC INPUTS SECTION ---
+                  /// ==========================================
+                  /// YAHAN SE TRIANGLE KA CODE ADD KAREIN
+                  /// ==========================================
                   if (currentShape.name == 'Triangle') ...[
                     Text(
                       'Enter Dimensions',
@@ -719,7 +728,11 @@ class _ShapesViewState extends State<ShapesView> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                  ] else if (currentShape.name == 'Right triangle') ...[
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE RIGHT TRIANGLE KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Right triangle') ...[
                     // Calculation Logic for Right Triangle
                     Builder(
                       builder: (context) {
@@ -918,7 +931,11 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                  ]else if (currentShape.name == 'Square') ...[
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE SQUARE KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Square') ...[
                     Builder(
                       builder: (context) {
                         double val = double.tryParse(_sqValCtrl.text) ?? 0;
@@ -987,6 +1004,89 @@ class _ShapesViewState extends State<ShapesView> {
                                     Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
                                     _buildResultRow('Side', sqSide.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
+                                  ]
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE RECTANGLE KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Rectangle') ...[
+                    Builder(
+                      builder: (context) {
+                        double l = double.tryParse(_rectLenCtrl.text) ?? 0;
+                        double w = double.tryParse(_rectWidCtrl.text) ?? 0;
+
+                        double rectArea = 0, rectPerimeter = 0, rectDiagonal = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (l > 0 && w > 0) {
+                          rectArea = l * w;
+                          rectPerimeter = 2 * (l + w);
+                          rectDiagonal = sqrt(l * l + w * w);
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter length and width greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 12),
+
+                            // FIXED INPUT ROWS (Dropdown ki jagah fixed boxes)
+                            _buildFixedInputRow(
+                              title: 'Length',
+                              ctrl: _rectLenCtrl,
+                              icon: CustomPaint(painter: RectInputPainter(highlightType: 'Length', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Width',
+                              ctrl: _rectWidCtrl,
+                              icon: CustomPaint(painter: RectInputPainter(highlightType: 'Width', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                            ),
+                            const SizedBox(height: 4),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid)
+                                    Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                  else ...[
+                                    _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
+                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                    _buildResultRow('Length', l.toStringAsFixed(2)),
+                                    _buildResultRow('Width', w.toStringAsFixed(2)),
+                                    _buildResultRow('Diagonal', rectDiagonal.toStringAsFixed(2)),
                                   ]
                                 ],
                               ),
@@ -1782,6 +1882,37 @@ class SqInputPainter extends CustomPainter {
       // Side: Sirf bottom ki line highlight hogi[cite: 5]
       canvas.drawRect(rect, basePaint);
       canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Rectangle ke specifically selected side ko highlight karne ke liye Painter
+class RectInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  RectInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
+    Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
+
+    // Base Rectangle Draw karein
+    canvas.drawRect(rect, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Length') {
+      canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
+    } else if (highlightType == 'Width') {
+      canvas.drawLine(Offset(size.width, rect.top), Offset(size.width, rect.bottom), hlPaint); // Right side wali choti line
     }
   }
 
