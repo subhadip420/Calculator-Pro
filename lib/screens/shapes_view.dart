@@ -1838,268 +1838,402 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                        /// ==========================================
-                        /// YAHAN SE PENTAGON KA CODE ADD KAREIN
-                        /// ==========================================
-                      ] else if (currentShape.name == 'Pentagon') ...[
-                        Builder(
-                          builder: (context) {
-                            double val = double.tryParse(_pentValCtrl.text) ?? 0;
 
-                            double pentSide = 0, pentArea = 0, pentPerimeter = 0, pentDiagonal = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                    /// ==========================================
+                    /// YAHAN SE PENTAGON KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Pentagon') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_pentValCtrl.text) ?? 0;
 
-                            // Pentagon mathematical constant for area
-                            double areaMultiplier = 0.25 * sqrt(5 * (5 + 2 * sqrt(5))); // Approx 1.7204774
+                        double pentSide = 0, pentArea = 0, pentPerimeter = 0, pentDiagonal = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
 
-                            if (val > 0) {
-                              if (_pentType == 'Side') {
-                                pentSide = val;
-                                pentPerimeter = 5 * pentSide;
-                                pentArea = areaMultiplier * pentSide * pentSide;
-                              } else if (_pentType == 'Area') {
-                                pentArea = val;
-                                pentSide = sqrt(pentArea / areaMultiplier);
-                                pentPerimeter = 5 * pentSide;
-                              } else if (_pentType == 'Perimeter') {
-                                pentPerimeter = val;
-                                pentSide = pentPerimeter / 5;
-                                pentArea = areaMultiplier * pentSide * pentSide;
-                              }
+                        // Pentagon mathematical constant for area
+                        double areaMultiplier = 0.25 * sqrt(5 * (5 + 2 * sqrt(5))); // Approx 1.7204774
 
-                              // Diagonal formula: d = s * (1 + sqrt(5)) / 2
-                              pentDiagonal = pentSide * ((1 + sqrt(5)) / 2);
+                        if (val > 0) {
+                          if (_pentType == 'Side') {
+                            pentSide = val;
+                            pentPerimeter = 5 * pentSide;
+                            pentArea = areaMultiplier * pentSide * pentSide;
+                          } else if (_pentType == 'Area') {
+                            pentArea = val;
+                            pentSide = sqrt(pentArea / areaMultiplier);
+                            pentPerimeter = 5 * pentSide;
+                          } else if (_pentType == 'Perimeter') {
+                            pentPerimeter = val;
+                            pentSide = pentPerimeter / 5;
+                            pentArea = areaMultiplier * pentSide * pentSide;
+                          }
 
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter a value greater than 0.';
-                            }
+                          // Diagonal formula: d = s * (1 + sqrt(5)) / 2
+                          pentDiagonal = pentSide * ((1 + sqrt(5)) / 2);
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // DROPDOWN INPUT ROW for Pentagon
+                            _buildPentInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // DROPDOWN INPUT ROW for Pentagon
-                                _buildPentInputRow(),
-                                const SizedBox(height: 16),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
-                                  ],
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
                                 ),
-                                const SizedBox(height: 24),
-
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', pentArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Perimeter', pentPerimeter.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Side (Edge)', pentSide.toStringAsFixed(2)),
-                                        _buildResultRow('Diagonal', pentDiagonal.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                        /// ==========================================
-                        /// YAHAN SE HEXAGON KA CODE ADD KAREIN
-                        /// ==========================================
-                      ] else if (currentShape.name == 'Hexagon') ...[
-                        Builder(
-                          builder: (context) {
-                            double val = double.tryParse(_hexValCtrl.text) ?? 0;
+                            ),
+                            const SizedBox(height: 24),
 
-                            double hexSide = 0, hexArea = 0, hexPerimeter = 0, hexLongDiag = 0, hexShortDiag = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                            // Hexagon area formula constant: (3 * sqrt(3)) / 2
-                            double areaMultiplier = 1.5 * sqrt(3);
-
-                            if (val > 0) {
-                              if (_hexType == 'Side') {
-                                hexSide = val;
-                                hexPerimeter = 6 * hexSide;
-                                hexArea = areaMultiplier * hexSide * hexSide;
-                              } else if (_hexType == 'Area') {
-                                hexArea = val;
-                                hexSide = sqrt(hexArea / areaMultiplier);
-                                hexPerimeter = 6 * hexSide;
-                              } else if (_hexType == 'Perimeter') {
-                                hexPerimeter = val;
-                                hexSide = hexPerimeter / 6;
-                                hexArea = areaMultiplier * hexSide * hexSide;
-                              }
-
-                              // Diagonals
-                              hexLongDiag = 2 * hexSide; // Point to opposite point
-                              hexShortDiag = hexSide * sqrt(3); // Flat side to flat side
-
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter a value greater than 0.';
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // DROPDOWN INPUT ROW for Hexagon
-                                _buildHexInputRow(),
-                                const SizedBox(height: 16),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', pentArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', pentPerimeter.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Side (Edge)', pentSide.toStringAsFixed(2)),
+                                    _buildResultRow('Diagonal', pentDiagonal.toStringAsFixed(2)),
                                   ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+
+                    /// ==========================================
+                    /// YAHAN SE HEXAGON KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Hexagon') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_hexValCtrl.text) ?? 0;
+
+                        double hexSide = 0, hexArea = 0, hexPerimeter = 0, hexLongDiag = 0, hexShortDiag = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        // Hexagon area formula constant: (3 * sqrt(3)) / 2
+                        double areaMultiplier = 1.5 * sqrt(3);
+
+                        if (val > 0) {
+                          if (_hexType == 'Side') {
+                            hexSide = val;
+                            hexPerimeter = 6 * hexSide;
+                            hexArea = areaMultiplier * hexSide * hexSide;
+                          } else if (_hexType == 'Area') {
+                            hexArea = val;
+                            hexSide = sqrt(hexArea / areaMultiplier);
+                            hexPerimeter = 6 * hexSide;
+                          } else if (_hexType == 'Perimeter') {
+                            hexPerimeter = val;
+                            hexSide = hexPerimeter / 6;
+                            hexArea = areaMultiplier * hexSide * hexSide;
+                          }
+
+                          // Diagonals
+                          hexLongDiag = 2 * hexSide; // Point to opposite point
+                          hexShortDiag = hexSide * sqrt(3); // Flat side to flat side
+
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // DROPDOWN INPUT ROW for Hexagon
+                            _buildHexInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
                                 ),
-                                const SizedBox(height: 24),
-
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', hexArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Perimeter', hexPerimeter.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Side (Edge)', hexSide.toStringAsFixed(2)),
-                                        _buildResultRow('Long Diagonal', hexLongDiag.toStringAsFixed(2)),
-                                        _buildResultRow('Short Diagonal', hexShortDiag.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                        // ==========================================
-                        // YAHAN SE CIRCLE KA CODE ADD KAREIN
-                        // ==========================================
-                      ] else if (currentShape.name == 'Circle') ...[
-                        Builder(
-                          builder: (context) {
-                            double val = double.tryParse(_circleValCtrl.text) ?? 0;
+                            ),
+                            const SizedBox(height: 24),
 
-                            double circRadius = 0, circDiameter = 0, circArea = 0, circCircumference = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                            if (val > 0) {
-                              if (_circleType == 'Radius') {
-                                circRadius = val;
-                              } else if (_circleType == 'Diameter') {
-                                circRadius = val / 2;
-                              } else if (_circleType == 'Area') {
-                                circRadius = sqrt(val / pi);
-                              } else if (_circleType == 'Circumference') {
-                                circRadius = val / (2 * pi);
-                              }
-
-                              // Calculate all based on derived radius
-                              circDiameter = 2 * circRadius;
-                              circArea = pi * circRadius * circRadius;
-                              circCircumference = 2 * pi * circRadius;
-
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter a value greater than 0.';
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // DROPDOWN INPUT ROW for Circle
-                                _buildCircInputRow(),
-                                const SizedBox(height: 16),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', hexArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', hexPerimeter.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Side (Edge)', hexSide.toStringAsFixed(2)),
+                                    _buildResultRow('Long Diagonal', hexLongDiag.toStringAsFixed(2)),
+                                    _buildResultRow('Short Diagonal', hexShortDiag.toStringAsFixed(2)),
                                   ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                    // ==========================================
+                    // YAHAN SE CIRCLE KA CODE ADD KAREIN
+                    // ==========================================
+                  ] else if (currentShape.name == 'Circle') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_circleValCtrl.text) ?? 0;
+
+                        double circRadius = 0, circDiameter = 0, circArea = 0, circCircumference = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (val > 0) {
+                          if (_circleType == 'Radius') {
+                            circRadius = val;
+                          } else if (_circleType == 'Diameter') {
+                            circRadius = val / 2;
+                          } else if (_circleType == 'Area') {
+                            circRadius = sqrt(val / pi);
+                          } else if (_circleType == 'Circumference') {
+                            circRadius = val / (2 * pi);
+                          }
+
+                          // Calculate all based on derived radius
+                          circDiameter = 2 * circRadius;
+                          circArea = pi * circRadius * circRadius;
+                          circCircumference = 2 * pi * circRadius;
+
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // DROPDOWN INPUT ROW for Circle
+                            _buildCircInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
                                 ),
-                                const SizedBox(height: 24),
-
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', circArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Circumference', circCircumference.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Radius', circRadius.toStringAsFixed(2)),
-                                        _buildResultRow('Diameter', circDiameter.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                      ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', circArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Circumference', circCircumference.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Radius', circRadius.toStringAsFixed(2)),
+                                    _buildResultRow('Diameter', circDiameter.toStringAsFixed(2)),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -2534,7 +2668,11 @@ class _ShapesViewState extends State<ShapesView> {
       currentSelection: _pentType,
       heightFraction: 0.5,
       iconBuilder: (opt) => CustomPaint(
-        painter: PentInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+        painter: PentInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: Colors.orangeAccent,
+        ),
       ),
       onSelected: (selectedVal) {
         setState(() => _pentType = selectedVal);
@@ -2562,11 +2700,23 @@ class _ShapesViewState extends State<ShapesView> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 24, height: 24,
-                    child: CustomPaint(painter: PentInputPainter(highlightType: _pentType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                    width: 24,
+                    height: 24,
+                    child: CustomPaint(
+                      painter: PentInputPainter(
+                        highlightType: _pentType,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: Colors.orangeAccent,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(child: Text(_pentType, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                  Expanded(
+                    child: Text(
+                      _pentType,
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
                 ],
               ),
@@ -2591,8 +2741,12 @@ class _ShapesViewState extends State<ShapesView> {
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               cursorColor: Colors.orangeAccent,
-              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-              onChanged: (_) => setState((){}),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
             ),
           ),
         ),
@@ -2607,7 +2761,11 @@ class _ShapesViewState extends State<ShapesView> {
       currentSelection: _hexType,
       heightFraction: 0.5,
       iconBuilder: (opt) => CustomPaint(
-        painter: HexInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+        painter: HexInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: Colors.orangeAccent,
+        ),
       ),
       onSelected: (selectedVal) {
         setState(() => _hexType = selectedVal);
@@ -2635,11 +2793,23 @@ class _ShapesViewState extends State<ShapesView> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 24, height: 24,
-                    child: CustomPaint(painter: HexInputPainter(highlightType: _hexType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                    width: 24,
+                    height: 24,
+                    child: CustomPaint(
+                      painter: HexInputPainter(
+                        highlightType: _hexType,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: Colors.orangeAccent,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(child: Text(_hexType, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                  Expanded(
+                    child: Text(
+                      _hexType,
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
                 ],
               ),
@@ -2664,8 +2834,12 @@ class _ShapesViewState extends State<ShapesView> {
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               cursorColor: Colors.orangeAccent,
-              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-              onChanged: (_) => setState((){}),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
             ),
           ),
         ),
@@ -2676,11 +2850,17 @@ class _ShapesViewState extends State<ShapesView> {
   // NAYA: Circle ka bottom sheet wrapper[cite: 7]
   void _showCircSelectorSheet() {
     _showDynamicInputSelectorSheet(
-      options: ['Radius', 'Diameter', 'Area', 'Circumference'], // Screenshot wale 4 options[cite: 7]
+      options: ['Radius', 'Diameter', 'Area', 'Circumference'],
+      // Screenshot wale 4 options[cite: 7]
       currentSelection: _circleType,
-      heightFraction: 0.55, // 4 options ke liye thoda sa bada sheet
+      heightFraction: 0.55,
+      // 4 options ke liye thoda sa bada sheet
       iconBuilder: (opt) => CustomPaint(
-        painter: CircInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+        painter: CircInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: Colors.orangeAccent,
+        ),
       ),
       onSelected: (selectedVal) {
         setState(() => _circleType = selectedVal);
@@ -2708,16 +2888,23 @@ class _ShapesViewState extends State<ShapesView> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 24, height: 24,
-                    child: CustomPaint(painter: CircInputPainter(highlightType: _circleType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                    width: 24,
+                    height: 24,
+                    child: CustomPaint(
+                      painter: CircInputPainter(
+                        highlightType: _circleType,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: Colors.orangeAccent,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                      child: Text(
-                        _circleType,
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                      )
+                    child: Text(
+                      _circleType,
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
                 ],
@@ -2743,8 +2930,12 @@ class _ShapesViewState extends State<ShapesView> {
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               cursorColor: Colors.orangeAccent,
-              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-              onChanged: (_) => setState((){}),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
             ),
           ),
         ),
@@ -2752,6 +2943,7 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 }
+
 /// main class
 
 // NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
@@ -3140,9 +3332,17 @@ class PentInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3155,13 +3355,25 @@ class PentInputPainter extends CustomPainter {
     Offset p5 = Offset(0, h * 0.38); // Top Left
 
     // Base Pentagon Draw karein
-    Path path = Path()..moveTo(p1.dx, p1.dy)..lineTo(p2.dx, p2.dy)..lineTo(p3.dx, p3.dy)..lineTo(p4.dx, p4.dy)..lineTo(p5.dx, p5.dy)..close();
+    Path path = Path()
+      ..moveTo(p1.dx, p1.dy)
+      ..lineTo(p2.dx, p2.dy)
+      ..lineTo(p3.dx, p3.dy)
+      ..lineTo(p4.dx, p4.dy)
+      ..lineTo(p5.dx, p5.dy)
+      ..close();
 
     // Selected Part Highlight Karein
     if (highlightType == 'Area') {
       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 5]
     } else if (highlightType == 'Perimeter') {
-      canvas.drawPath(path, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5); // Pura border[cite: 5]
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Pura border[cite: 5]
     } else {
       // Side: Sirf bottom ki line highlight hogi[cite: 5]
       canvas.drawPath(path, basePaint);
@@ -3183,9 +3395,17 @@ class HexInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3199,13 +3419,26 @@ class HexInputPainter extends CustomPainter {
     Offset p6 = Offset(0, h * 0.25); // Top Left
 
     // Base Hexagon Draw karein
-    Path path = Path()..moveTo(p1.dx, p1.dy)..lineTo(p2.dx, p2.dy)..lineTo(p3.dx, p3.dy)..lineTo(p4.dx, p4.dy)..lineTo(p5.dx, p5.dy)..lineTo(p6.dx, p6.dy)..close();
+    Path path = Path()
+      ..moveTo(p1.dx, p1.dy)
+      ..lineTo(p2.dx, p2.dy)
+      ..lineTo(p3.dx, p3.dy)
+      ..lineTo(p4.dx, p4.dy)
+      ..lineTo(p5.dx, p5.dy)
+      ..lineTo(p6.dx, p6.dy)
+      ..close();
 
     // Selected Part Highlight Karein
     if (highlightType == 'Area') {
       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 6]
     } else if (highlightType == 'Perimeter') {
-      canvas.drawPath(path, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5); // Pura border highlight hoga[cite: 6]
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Pura border highlight hoga[cite: 6]
     } else {
       // Side: Sirf bottom-right ki line highlight hogi image ki tarah[cite: 6]
       canvas.drawPath(path, basePaint);
@@ -3227,9 +3460,17 @@ class CircInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3243,7 +3484,14 @@ class CircInputPainter extends CustomPainter {
     if (highlightType == 'Area') {
       canvas.drawCircle(center, radius, fillPaint); // Area select hone par fill hoga[cite: 7]
     } else if (highlightType == 'Circumference') {
-      canvas.drawCircle(center, radius, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0); // Pura border[cite: 7]
+      canvas.drawCircle(
+        center,
+        radius,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0,
+      ); // Pura border[cite: 7]
     } else if (highlightType == 'Radius') {
       // Radius: Center se edge tak ek line[cite: 7]
       canvas.drawLine(center, Offset(w, h / 2), hlPaint);
