@@ -968,7 +968,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1101,7 +1104,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1239,7 +1245,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1394,7 +1403,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1533,7 +1545,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1677,7 +1692,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1818,7 +1836,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -1951,7 +1972,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -2085,7 +2109,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -2108,6 +2135,7 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
+
                     /// ==========================================
                     /// YAHAN SE CIRCLE KA CODE ADD KAREIN
                     /// ==========================================
@@ -2213,7 +2241,10 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -2357,7 +2388,7 @@ class _ShapesViewState extends State<ShapesView> {
       children: [
         // Dropdown Selector Button
         Expanded(
-          flex: 5,
+          flex: 6,
           child: GestureDetector(
             onTap: () => _showRtSelectorSheet(index),
             child: Container(
@@ -2409,7 +2440,7 @@ class _ShapesViewState extends State<ShapesView> {
         const SizedBox(width: 12),
         // TextField
         Expanded(
-          flex: 4,
+          flex: 3,
           child: Container(
             height: 60,
             alignment: Alignment.center,
@@ -2470,7 +2501,7 @@ class _ShapesViewState extends State<ShapesView> {
                       onTap: () => Navigator.pop(sheetContext),
                       child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 15),
                     Text(
                       'Input',
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
@@ -2560,10 +2591,11 @@ class _ShapesViewState extends State<ShapesView> {
       ),
       onSelected: (selectedVal) {
         setState(() {
-          if (inputIndex == 1)
+          if (inputIndex == 1) {
             _rtType1 = selectedVal;
-          else
+          } else {
             _rtType2 = selectedVal;
+          }
         });
       },
     );
@@ -2876,7 +2908,7 @@ class _ShapesViewState extends State<ShapesView> {
       children: [
         // Dropdown Selector Button
         Expanded(
-          flex: 5,
+          flex: 4,
           child: GestureDetector(
             onTap: () => _showCircSelectorSheet(),
             child: Container(
@@ -2900,7 +2932,7 @@ class _ShapesViewState extends State<ShapesView> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 15),
                   Expanded(
                     child: Text(
                       _circleType,
@@ -2914,10 +2946,10 @@ class _ShapesViewState extends State<ShapesView> {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         // TextField Box
         Expanded(
-          flex: 4,
+          flex: 2,
           child: Container(
             height: 60,
             alignment: Alignment.center,
@@ -3031,17 +3063,17 @@ class RtInputPainter extends CustomPainter {
       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
     } else if (highlightType == 'Hypotenuse') {
       canvas.drawLine(pTop, pBottomRight, hlPaint);
-    // } else if (highlightType == 'Angle A') {
-    //   Paint fillHl = Paint()
-    //     ..color = highlightColor
-    //     ..style = PaintingStyle.fill;
-    //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
-    // } else if (highlightType == 'Angle B') {
-    //   Paint fillHl = Paint()
-    //     ..color = highlightColor
-    //     ..style = PaintingStyle.fill;
-    //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
-    // }
+      // } else if (highlightType == 'Angle A') {
+      //   Paint fillHl = Paint()
+      //     ..color = highlightColor
+      //     ..style = PaintingStyle.fill;
+      //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
+      // } else if (highlightType == 'Angle B') {
+      //   Paint fillHl = Paint()
+      //     ..color = highlightColor
+      //     ..style = PaintingStyle.fill;
+      //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+      // }
     } else if (highlightType == 'Angle A') {
       Paint fillHl = Paint()
         ..color = highlightColor
@@ -3052,7 +3084,6 @@ class RtInputPainter extends CustomPainter {
       double sweepAngle = (pi / 2) - startAngle;
 
       canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
-
     } else if (highlightType == 'Angle B') {
       Paint fillHl = Paint()
         ..color = highlightColor
