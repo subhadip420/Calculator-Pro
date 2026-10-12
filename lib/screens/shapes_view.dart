@@ -10,10 +10,15 @@ import '../custom_top_bar.dart';
 // --- CUSTOM PAINTERS FOR SHAPES (Bina image asset ke draw karne ke liye) ---
 class TrianglePainter extends CustomPainter {
   final Color color;
+
   TrianglePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(size.width / 2, 0)
       ..lineTo(size.width, size.height)
@@ -21,16 +26,22 @@ class TrianglePainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class RightTrianglePainter extends CustomPainter {
   final Color color;
+
   RightTrianglePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(0, 0)
       ..lineTo(0, size.height)
@@ -38,16 +49,22 @@ class RightTrianglePainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class TrapezoidPainter extends CustomPainter {
   final Color color;
+
   TrapezoidPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(size.width * 0.2, 0)
       ..lineTo(size.width * 0.8, 0)
@@ -56,16 +73,22 @@ class TrapezoidPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class RhombusPainter extends CustomPainter {
   final Color color;
+
   RhombusPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(size.width / 2, 0)
       ..lineTo(size.width, size.height / 2)
@@ -74,16 +97,22 @@ class RhombusPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class PentagonPainter extends CustomPainter {
   final Color color;
+
   PentagonPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(size.width / 2, 0)
       ..lineTo(size.width, size.height * 0.4)
@@ -93,16 +122,22 @@ class PentagonPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class HexagonPainter extends CustomPainter {
   final Color color;
+
   HexagonPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(size.width * 0.25, 0)
       ..lineTo(size.width * 0.75, 0)
@@ -113,16 +148,22 @@ class HexagonPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class CircleArcPainter extends CustomPainter {
   final Color color;
+
   CircleArcPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     Path path = Path()
       ..moveTo(0, 0)
       ..lineTo(0, size.height)
@@ -130,18 +171,25 @@ class CircleArcPainter extends CustomPainter {
       ..arcToPoint(const Offset(0, 0), radius: Radius.circular(size.width), clockwise: false);
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class EllipsePainter extends CustomPainter {
   final Color color;
+
   EllipsePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.5;
+    Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     canvas.drawOval(Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5), paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
@@ -169,9 +217,15 @@ class _ShapesViewState extends State<ShapesView> {
 
   late List<ShapeItem> _shapeList;
 
-  final TextEditingController _triACtrl = TextEditingController(text: '0');
-  final TextEditingController _triBCtrl = TextEditingController(text: '0');
-  final TextEditingController _triCCtrl = TextEditingController(text: '0');
+  final TextEditingController _triACtrl = TextEditingController(text: '');
+  final TextEditingController _triBCtrl = TextEditingController(text: '');
+  final TextEditingController _triCCtrl = TextEditingController(text: '');
+
+  // --- Right Triangle Input State ---
+  String _rtType1 = 'Side A'; // Default selection 1
+  String _rtType2 = 'Side B'; // Default selection 2
+  final TextEditingController _rtVal1Ctrl = TextEditingController(text: '');
+  final TextEditingController _rtVal2Ctrl = TextEditingController(text: '');
 
   @override
   void dispose() {
@@ -179,6 +233,9 @@ class _ShapesViewState extends State<ShapesView> {
     _triACtrl.dispose();
     _triBCtrl.dispose();
     _triCCtrl.dispose();
+    // NAYA: Right Triangle wale controllers dispose karein
+    _rtVal1Ctrl.dispose();
+    _rtVal2Ctrl.dispose();
     super.dispose();
   }
 
@@ -200,25 +257,109 @@ class _ShapesViewState extends State<ShapesView> {
     double s = 32.0; // Standard icon size
 
     _shapeList = [
-      ShapeItem('Triangle', CustomPaint(size: Size(s, s), painter: TrianglePainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Right triangle', CustomPaint(size: Size(s, s), painter: RightTrianglePainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Square', Container(width: s, height: s, decoration: BoxDecoration(border: Border.all(color: iconColor, width: 2.5)))), //[cite: 2]
-      ShapeItem('Rectangle', Container(width: s + 10, height: s - 10, decoration: BoxDecoration(border: Border.all(color: iconColor, width: 2.5)))), //[cite: 2]
-      ShapeItem('Trapezoid', CustomPaint(size: Size(s, s), painter: TrapezoidPainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Rhombus', CustomPaint(size: Size(s, s), painter: RhombusPainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Pentagon', CustomPaint(size: Size(s, s), painter: PentagonPainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Hexagon', CustomPaint(size: Size(s, s), painter: HexagonPainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Circle', Container(width: s, height: s, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: iconColor, width: 2.5)))), //[cite: 2]
-      ShapeItem('Circle arc', CustomPaint(size: Size(s, s), painter: CircleArcPainter(color: iconColor))), //[cite: 2]
-      ShapeItem('Ellipse', CustomPaint(size: Size(s + 10, s), painter: EllipsePainter(color: iconColor))), //[cite: 2]
+      ShapeItem(
+        'Triangle',
+        CustomPaint(
+          size: Size(s, s),
+          painter: TrianglePainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Right triangle',
+        CustomPaint(
+          size: Size(s, s),
+          painter: RightTrianglePainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Square',
+        Container(
+          width: s,
+          height: s,
+          decoration: BoxDecoration(border: Border.all(color: iconColor, width: 2.5)),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Rectangle',
+        Container(
+          width: s + 10,
+          height: s - 10,
+          decoration: BoxDecoration(border: Border.all(color: iconColor, width: 2.5)),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Trapezoid',
+        CustomPaint(
+          size: Size(s, s),
+          painter: TrapezoidPainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Rhombus',
+        CustomPaint(
+          size: Size(s, s),
+          painter: RhombusPainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Pentagon',
+        CustomPaint(
+          size: Size(s, s),
+          painter: PentagonPainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Hexagon',
+        CustomPaint(
+          size: Size(s, s),
+          painter: HexagonPainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Circle',
+        Container(
+          width: s,
+          height: s,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: iconColor, width: 2.5),
+          ),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Circle arc',
+        CustomPaint(
+          size: Size(s, s),
+          painter: CircleArcPainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
+      ShapeItem(
+        'Ellipse',
+        CustomPaint(
+          size: Size(s + 10, s),
+          painter: EllipsePainter(color: iconColor),
+        ),
+      ),
+      //[cite: 2]
     ];
   }
 
   String _getShapeHintMessage(String shapeName) {
     switch (shapeName) {
       case 'Triangle':
-      case 'Right triangle':
         return 'Solve a triangle knowing its sides.';
+      case 'Right triangle':
+        return 'Solve a rectangle knowing its two dimensions.';
       case 'Square':
         return 'Solve a square knowing its side length.';
       case 'Rectangle':
@@ -230,7 +371,7 @@ class _ShapesViewState extends State<ShapesView> {
       case 'Rhombus':
         return 'Solve a rhombus knowing its diagonals.';
       default:
-      // Agar koi case match nahi hota, toh ye default message dikhega
+        // Agar koi case match nahi hota, toh ye default message dikhega
         return 'Solve a ${shapeName.toLowerCase()} knowing its parameters';
     }
   }
@@ -276,11 +417,7 @@ class _ShapesViewState extends State<ShapesView> {
               // Header
               Text(
                 'Select Shape',
-                style: TextStyle(
-                  color: AppColors.textColor(context),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
@@ -339,10 +476,7 @@ class _ShapesViewState extends State<ShapesView> {
                             const SizedBox(height: 2),
                             Text(
                               'Shapes', // Subtitle text as per screenshot[cite: 2]
-                              style: TextStyle(
-                                color: AppColors.textGrey(context),
-                                fontSize: 11,
-                              ),
+                              style: TextStyle(color: AppColors.textGrey(context), fontSize: 11),
                             ),
                           ],
                         ),
@@ -382,9 +516,9 @@ class _ShapesViewState extends State<ShapesView> {
       hC = (2 * area) / c;
 
       // Law of Cosines for angles (Convert radian to degree)
-      angAB = acos((a*a + b*b - c*c) / (2*a*b)) * (180 / pi); // Angle between A and B (Angle C)
-      angBC = acos((b*b + c*c - a*a) / (2*b*c)) * (180 / pi); // Angle between B and C (Angle A)
-      angAC = acos((a*a + c*c - b*b) / (2*a*c)) * (180 / pi); // Angle between A and C (Angle B)
+      angAB = acos((a * a + b * b - c * c) / (2 * a * b)) * (180 / pi); // Angle between A and B (Angle C)
+      angBC = acos((b * b + c * c - a * a) / (2 * b * c)) * (180 / pi); // Angle between B and C (Angle A)
+      angAC = acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / pi); // Angle between A and C (Angle B)
     }
 
     return Scaffold(
@@ -406,15 +540,10 @@ class _ShapesViewState extends State<ShapesView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // --- TITLE ---
                   Text(
                     'Select Shape',
-                    style: TextStyle(
-                      color: AppColors.textColor(context),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
 
@@ -453,17 +582,9 @@ class _ShapesViewState extends State<ShapesView> {
                           ),
 
                           // Right Side: Divider + Dropdown Icon
-                          Container(
-                            height: 30,
-                            width: 1,
-                            color: AppColors.textGrey(context).withOpacity(0.4),
-                          ),
+                          Container(height: 30, width: 1, color: AppColors.textGrey(context).withOpacity(0.4)),
                           const SizedBox(width: 12),
-                          Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: AppColors.textGrey(context),
-                            size: 28,
-                          ),
+                          Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 28),
                         ],
                       ),
                     ),
@@ -473,7 +594,10 @@ class _ShapesViewState extends State<ShapesView> {
 
                   // --- DYNAMIC INPUTS SECTION ---
                   if (currentShape.name == 'Triangle') ...[
-                    Text('Enter Dimensions', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Enter Dimensions',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -489,20 +613,13 @@ class _ShapesViewState extends State<ShapesView> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.subdirectory_arrow_right_rounded,
-                          color: AppColors.textGrey(context),
-                          size: 24,
-                        ),
+                        Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             // FIX: Ternary condition hata kar naya helper function laga diya
                             _getShapeHintMessage(currentShape.name),
-                            style: TextStyle(
-                              color: AppColors.textColor(context).withOpacity(0.9),
-                              fontSize: 15,
-                            ),
+                            style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
                           ),
                         ),
                       ],
@@ -521,7 +638,16 @@ class _ShapesViewState extends State<ShapesView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                          Center(
+                            child: Text(
+                              'Calculation Result',
+                              style: TextStyle(
+                                color: AppColors.cyanColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 12),
                           Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                           const SizedBox(height: 12),
@@ -530,17 +656,27 @@ class _ShapesViewState extends State<ShapesView> {
                             Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Text('Invalid Triangle!\nSum of any two sides must be greater than the third side.', textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14)),
+                                child: Text(
+                                  'Invalid Triangle!\nSum of any two sides must be greater than the third side.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                ),
                               ),
                             )
                           else ...[
                             _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
                             _buildResultRow('Perimeter', perimeter.toStringAsFixed(2)),
-                            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                            ),
                             _buildResultRow('Angle: AB', '${angAB.toStringAsFixed(2)}°'),
                             _buildResultRow('Angle: BC', '${angBC.toStringAsFixed(2)}°'),
                             _buildResultRow('Angle: AC', '${angAC.toStringAsFixed(2)}°'),
-                            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                            ),
                             _buildResultRow('Height: A', hA.toStringAsFixed(2)),
                             _buildResultRow('Height: B', hB.toStringAsFixed(2)),
                             _buildResultRow('Height: C', hC.toStringAsFixed(2)),
@@ -549,6 +685,205 @@ class _ShapesViewState extends State<ShapesView> {
                       ),
                     ),
                     const SizedBox(height: 40),
+                  ] else if (currentShape.name == 'Right triangle') ...[
+                    // Calculation Logic for Right Triangle
+                    Builder(
+                      builder: (context) {
+                        double v1 = double.tryParse(_rtVal1Ctrl.text) ?? 0;
+                        double v2 = double.tryParse(_rtVal2Ctrl.text) ?? 0;
+
+                        double rtArea = 0, rtPerimeter = 0, rtA = 0, rtB = 0, rtC = 0, rtAngA = 0, rtAngB = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (v1 > 0 && v2 > 0) {
+                          if (_rtType1 == _rtType2) {
+                            errorMsg = 'Please select two different dimensions.';
+                          } else if ((_rtType1.contains('Angle') && _rtType2.contains('Angle'))) {
+                            errorMsg = 'Cannot solve a triangle with only angles.';
+                          } else {
+                            double? a, b, c, angA, angB;
+
+                            // FIX: Andar function hatakar direct assign kiya
+                            if (_rtType1 == 'Side A') a = v1;
+                            else if (_rtType1 == 'Side B') b = v1;
+                            else if (_rtType1 == 'Hypotenuse') c = v1;
+                            else if (_rtType1 == 'Angle A') angA = v1;
+                            else if (_rtType1 == 'Angle B') angB = v1;
+
+                            if (_rtType2 == 'Side A') a = v2;
+                            else if (_rtType2 == 'Side B') b = v2;
+                            else if (_rtType2 == 'Hypotenuse') c = v2;
+                            else if (_rtType2 == 'Angle A') angA = v2;
+                            else if (_rtType2 == 'Angle B') angB = v2;
+
+                            try {
+                              // FIX: Sabhi math calculations mein strict null checks (!) lagaye
+                              if (a != null && b != null) {
+                                c = sqrt(a! * a! + b! * b!);
+                                angA = atan(a! / b!) * 180 / pi;
+                                angB = 90 - angA!;
+                              } else if (a != null && c != null) {
+                                if (c! <= a!) throw Exception('Hypotenuse must be > Side A.');
+                                b = sqrt(c! * c! - a! * a!);
+                                angA = asin(a! / c!) * 180 / pi;
+                                angB = 90 - angA!;
+                              } else if (b != null && c != null) {
+                                if (c! <= b!) throw Exception('Hypotenuse must be > Side B.');
+                                a = sqrt(c! * c! - b! * b!);
+                                angA = acos(b! / c!) * 180 / pi;
+                                angB = 90 - angA!;
+                              } else if (a != null && angA != null) {
+                                if (angA! >= 90) throw Exception('Angle must be < 90.');
+                                b = a! / tan(angA! * pi / 180);
+                                c = a! / sin(angA! * pi / 180);
+                                angB = 90 - angA!;
+                              } else if (a != null && angB != null) {
+                                if (angB! >= 90) throw Exception('Angle must be < 90.');
+                                b = a! * tan(angB! * pi / 180);
+                                c = a! / cos(angB! * pi / 180);
+                                angA = 90 - angB!;
+                              } else if (b != null && angA != null) {
+                                if (angA! >= 90) throw Exception('Angle must be < 90.');
+                                a = b! * tan(angA! * pi / 180);
+                                c = b! / cos(angA! * pi / 180);
+                                angB = 90 - angA!;
+                              } else if (b != null && angB != null) {
+                                if (angB! >= 90) throw Exception('Angle must be < 90.');
+                                a = b! / tan(angB! * pi / 180);
+                                c = b! / sin(angB! * pi / 180);
+                                angA = 90 - angB!;
+                              } else if (c != null && angA != null) {
+                                if (angA! >= 90) throw Exception('Angle must be < 90.');
+                                a = c! * sin(angA! * pi / 180);
+                                b = c! * cos(angA! * pi / 180);
+                                angB = 90 - angA!;
+                              } else if (c != null && angB != null) {
+                                if (angB! >= 90) throw Exception('Angle must be < 90.');
+                                a = c! * cos(angB! * pi / 180);
+                                b = c! * sin(angB! * pi / 180);
+                                angA = 90 - angB!;
+                              }
+
+                              if (a != null && b != null && c != null && angA != null && angB != null && a! > 0 && b! > 0 && c! > 0) {
+                                rtA = a!;
+                                rtB = b!;
+                                rtC = c!;
+                                rtAngA = angA!;
+                                rtAngB = angB!;
+                                rtArea = 0.5 * a! * b!;
+                                rtPerimeter = a! + b! + c!;
+                                isValid = true;
+                              }
+                            } catch (e) {
+                              errorMsg = e.toString().replaceAll('Exception: ', '');
+                            }
+                          }
+                        } else {
+                          errorMsg = 'Enter values to calculate.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            _buildRtInputRow(1),
+                            const SizedBox(height: 12),
+                            _buildRtInputRow(2),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', rtArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', rtPerimeter.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Side A', rtA.toStringAsFixed(2)),
+                                    _buildResultRow('Side B', rtB.toStringAsFixed(2)),
+                                    _buildResultRow('Hypotenuse', rtC.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Angle A', '${rtAngA.toStringAsFixed(2)}°'),
+                                    _buildResultRow('Angle B', '${rtAngB.toStringAsFixed(2)}°'),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ],
               ),
@@ -568,12 +903,8 @@ class _ShapesViewState extends State<ShapesView> {
           children: [
             // Upar Title (Side A, Side B, etc.)
             Text(
-                title,
-                style: TextStyle(
-                    color: AppColors.textGrey(context),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500
-                )
+              title,
+              style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 6),
             // Niche Input Box
@@ -594,7 +925,8 @@ class _ShapesViewState extends State<ShapesView> {
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
-                  hintText: '0', // Hint hamesha 0 dikhega
+                  hintText: '--',
+                  // Hint hamesha 0 dikhega
                   hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
                 ),
                 onChanged: (_) => setState(() {}),
@@ -633,4 +965,265 @@ class _ShapesViewState extends State<ShapesView> {
       ),
     );
   }
+
+  // NAYA: Right Triangle Input Row Builder[cite: 4]
+  Widget _buildRtInputRow(int index) {
+    String type = index == 1 ? _rtType1 : _rtType2;
+    TextEditingController ctrl = index == 1 ? _rtVal1Ctrl : _rtVal2Ctrl;
+
+    List<String> parts = type.split(' ');
+    String mainTitle = parts[0];
+    String subTitle = parts.length > 1 ? parts[1] : '';
+
+    return Row(
+      children: [
+        // Dropdown Selector Button
+        Expanded(
+          flex: 5,
+          child: GestureDetector(
+            onTap: () => _showRtSelectorSheet(index),
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CustomPaint(
+                      painter: RtInputPainter(
+                        highlightType: type,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: Colors.orangeAccent,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          mainTitle,
+                          style: TextStyle(
+                            color: AppColors.textColor(context),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (subTitle.isNotEmpty)
+                          Text(subTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // TextField
+        Expanded(
+          flex: 4,
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceColor(context).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+            ),
+            child: TextField(
+              controller: ctrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+              cursorColor: Colors.orangeAccent,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // NAYA: Bottom Sheet for Selection[cite: 5]
+  void _showRtSelectorSheet(int inputIndex) {
+    if (_isHapticsEnabled) HapticFeedback.lightImpact();
+
+    List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
+    String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.65,
+          decoration: BoxDecoration(
+            color: AppColors.surfaceColor(context),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(sheetContext),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Input',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+              // List Items
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: options.length,
+                  itemBuilder: (context, i) {
+                    String opt = options[i];
+                    bool isSelected = opt == currentSelection;
+                    List<String> parts = opt.split(' ');
+                    String mTitle = parts[0];
+                    String sTitle = parts.length > 1 ? parts[1] : '';
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                        setState(() {
+                          if (inputIndex == 1)
+                            _rtType1 = opt;
+                          else
+                            _rtType2 = opt;
+                        });
+                        Navigator.pop(sheetContext);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CustomPaint(
+                                painter: RtInputPainter(
+                                  highlightType: opt,
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  mTitle,
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (sTitle.isNotEmpty)
+                                  Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// NAYA: Right Triangle ke specifically selected part ko highlight karne ke liye Painter
+class RtInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  RtInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+
+    Offset pTop = const Offset(0, 0); // Angle A
+    Offset pBottomLeft = Offset(0, size.height); // 90 degree
+    Offset pBottomRight = Offset(size.width, size.height); // Angle B
+
+    // Base Triangle Draw karein
+    Path path = Path()
+      ..moveTo(pTop.dx, pTop.dy)
+      ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+      ..lineTo(pBottomRight.dx, pBottomRight.dy)
+      ..close();
+    canvas.drawPath(path, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Side A') {
+      canvas.drawLine(pTop, pBottomLeft, hlPaint);
+    } else if (highlightType == 'Side B') {
+      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
+    } else if (highlightType == 'Hypotenuse') {
+      canvas.drawLine(pTop, pBottomRight, hlPaint);
+    } else if (highlightType == 'Angle A') {
+      Paint fillHl = Paint()
+        ..color = highlightColor
+        ..style = PaintingStyle.fill;
+      canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
+    } else if (highlightType == 'Angle B') {
+      Paint fillHl = Paint()
+        ..color = highlightColor
+        ..style = PaintingStyle.fill;
+      canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
