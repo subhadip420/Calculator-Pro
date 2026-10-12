@@ -214,6 +214,27 @@ class _ShapesViewState extends State<ShapesView> {
     ];
   }
 
+  String _getShapeHintMessage(String shapeName) {
+    switch (shapeName) {
+      case 'Triangle':
+      case 'Right triangle':
+        return 'Solve a triangle knowing its sides.';
+      case 'Square':
+        return 'Solve a square knowing its side length.';
+      case 'Rectangle':
+        return 'Solve a rectangle knowing its two dimensions.';
+      case 'Circle':
+        return 'Solve a circle knowing its radius.';
+      case 'Trapezoid':
+        return 'Solve a trapezoid knowing its bases and height.';
+      case 'Rhombus':
+        return 'Solve a rhombus knowing its diagonals.';
+      default:
+      // Agar koi case match nahi hota, toh ye default message dikhega
+        return 'Solve a ${shapeName.toLowerCase()} knowing its parameters';
+    }
+  }
+
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
@@ -461,6 +482,32 @@ class _ShapesViewState extends State<ShapesView> {
                         _buildInputField('Side C', _triCCtrl),
                       ],
                     ),
+
+                    const SizedBox(height: 12),
+
+                    // --- NAYA: DYNAMIC INFO BANNER ---
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.subdirectory_arrow_right_rounded,
+                          color: AppColors.textGrey(context),
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            // FIX: Ternary condition hata kar naya helper function laga diya
+                            _getShapeHintMessage(currentShape.name),
+                            style: TextStyle(
+                              color: AppColors.textColor(context).withOpacity(0.9),
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
                     const SizedBox(height: 24),
 
                     // --- RESULTS SECTION ---
