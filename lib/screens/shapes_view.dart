@@ -668,7 +668,7 @@ class _ShapesViewState extends State<ShapesView> {
                             painter: TriInputPainter(
                               highlightType: 'Side A',
                               baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                              highlightColor: Colors.orangeAccent,
+                              highlightColor: AppColors.orangeColor(context),
                             ),
                           ),
                         ),
@@ -679,7 +679,7 @@ class _ShapesViewState extends State<ShapesView> {
                             painter: TriInputPainter(
                               highlightType: 'Side B',
                               baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                              highlightColor: Colors.orangeAccent,
+                              highlightColor: AppColors.orangeColor(context),
                             ),
                           ),
                         ),
@@ -690,7 +690,7 @@ class _ShapesViewState extends State<ShapesView> {
                             painter: TriInputPainter(
                               highlightType: 'Side C',
                               baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                              highlightColor: Colors.orangeAccent,
+                              highlightColor: AppColors.orangeColor(context),
                             ),
                           ),
                         ),
@@ -749,7 +749,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 child: Text(
                                   'Invalid Triangle!\nSum of any two sides must be greater than the third side.',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                  style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                 ),
                               ),
                             )
@@ -799,27 +799,29 @@ class _ShapesViewState extends State<ShapesView> {
                             double? a, b, c, angA, angB;
 
                             // FIX: Andar function hatakar direct assign kiya
-                            if (_rtType1 == 'Side A')
+                            if (_rtType1 == 'Side A') {
                               a = v1;
-                            else if (_rtType1 == 'Side B')
+                            } else if (_rtType1 == 'Side B') {
                               b = v1;
-                            else if (_rtType1 == 'Hypotenuse')
+                            } else if (_rtType1 == 'Hypotenuse') {
                               c = v1;
-                            else if (_rtType1 == 'Angle A')
+                            } else if (_rtType1 == 'Angle A') {
                               angA = v1;
-                            else if (_rtType1 == 'Angle B')
+                            } else if (_rtType1 == 'Angle B') {
                               angB = v1;
+                            }
 
-                            if (_rtType2 == 'Side A')
+                            if (_rtType2 == 'Side A') {
                               a = v2;
-                            else if (_rtType2 == 'Side B')
+                            } else if (_rtType2 == 'Side B') {
                               b = v2;
-                            else if (_rtType2 == 'Hypotenuse')
+                            } else if (_rtType2 == 'Hypotenuse') {
                               c = v2;
-                            else if (_rtType2 == 'Angle A')
+                            } else if (_rtType2 == 'Angle A') {
                               angA = v2;
-                            else if (_rtType2 == 'Angle B')
+                            } else if (_rtType2 == 'Angle B') {
                               angB = v2;
+                            }
 
                             try {
                               // Dart khud samajh gaya ki yahan value null nahi hai (Flow Analysis)
@@ -966,7 +968,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1099,7 +1101,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1165,7 +1167,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: RectInputPainter(
                                   highlightType: 'Length',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1176,7 +1178,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: RectInputPainter(
                                   highlightType: 'Width',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1237,7 +1239,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1309,7 +1311,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: TrapInputPainter(
                                   highlightType: 'Height',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1320,7 +1322,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: TrapInputPainter(
                                   highlightType: 'Top',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1331,7 +1333,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: TrapInputPainter(
                                   highlightType: 'Base',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1392,7 +1394,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1459,7 +1461,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: RhomInputPainter(
                                   highlightType: 'Length',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1470,7 +1472,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: RhomInputPainter(
                                   highlightType: 'Width',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1531,7 +1533,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1603,7 +1605,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: ArcInputPainter(
                                   highlightType: 'Radius',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1614,7 +1616,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: ArcInputPainter(
                                   highlightType: 'Angle',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1675,7 +1677,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1744,7 +1746,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: EllipInputPainter(
                                   highlightType: 'Radius A',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1755,7 +1757,7 @@ class _ShapesViewState extends State<ShapesView> {
                                 painter: EllipInputPainter(
                                   highlightType: 'Radius B',
                                   baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                  highlightColor: Colors.orangeAccent,
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
                             ),
@@ -1816,7 +1818,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -1949,7 +1951,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -2083,7 +2085,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -2106,9 +2108,9 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                    // ==========================================
-                    // YAHAN SE CIRCLE KA CODE ADD KAREIN
-                    // ==========================================
+                    /// ==========================================
+                    /// YAHAN SE CIRCLE KA CODE ADD KAREIN
+                    /// ==========================================
                   ] else if (currentShape.name == 'Circle') ...[
                     Builder(
                       builder: (context) {
@@ -2211,7 +2213,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         child: Text(
                                           errorMsg,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
                                         ),
                                       ),
                                     )
@@ -2299,7 +2301,7 @@ class _ShapesViewState extends State<ShapesView> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-                cursorColor: Colors.orangeAccent,
+                cursorColor: AppColors.orangeColor(context),
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: '--',
@@ -2375,7 +2377,7 @@ class _ShapesViewState extends State<ShapesView> {
                       painter: RtInputPainter(
                         highlightType: type,
                         baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: Colors.orangeAccent,
+                        highlightColor: AppColors.orangeColor(context),
                       ),
                     ),
                   ),
@@ -2421,7 +2423,7 @@ class _ShapesViewState extends State<ShapesView> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: Colors.orangeAccent,
+              cursorColor: AppColors.orangeColor(context),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: '--',
@@ -2553,7 +2555,7 @@ class _ShapesViewState extends State<ShapesView> {
         painter: RtInputPainter(
           highlightType: opt,
           baseColor: AppColors.textGrey(context).withOpacity(0.5),
-          highlightColor: Colors.orangeAccent,
+          highlightColor: AppColors.orangeColor(context),
         ),
       ),
       onSelected: (selectedVal) {
@@ -2578,7 +2580,7 @@ class _ShapesViewState extends State<ShapesView> {
         painter: SqInputPainter(
           highlightType: opt,
           baseColor: AppColors.textGrey(context).withOpacity(0.5),
-          highlightColor: Colors.orangeAccent,
+          highlightColor: AppColors.orangeColor(context),
         ),
       ),
       onSelected: (selectedVal) {
@@ -2613,7 +2615,7 @@ class _ShapesViewState extends State<ShapesView> {
                       painter: SqInputPainter(
                         highlightType: _sqType,
                         baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: Colors.orangeAccent,
+                        highlightColor: AppColors.orangeColor(context),
                       ),
                     ),
                   ),
@@ -2647,7 +2649,7 @@ class _ShapesViewState extends State<ShapesView> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: Colors.orangeAccent,
+              cursorColor: AppColors.orangeColor(context),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: '--',
@@ -2671,7 +2673,7 @@ class _ShapesViewState extends State<ShapesView> {
         painter: PentInputPainter(
           highlightType: opt,
           baseColor: AppColors.textGrey(context).withOpacity(0.5),
-          highlightColor: Colors.orangeAccent,
+          highlightColor: AppColors.orangeColor(context),
         ),
       ),
       onSelected: (selectedVal) {
@@ -2706,7 +2708,7 @@ class _ShapesViewState extends State<ShapesView> {
                       painter: PentInputPainter(
                         highlightType: _pentType,
                         baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: Colors.orangeAccent,
+                        highlightColor: AppColors.orangeColor(context),
                       ),
                     ),
                   ),
@@ -2740,7 +2742,7 @@ class _ShapesViewState extends State<ShapesView> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: Colors.orangeAccent,
+              cursorColor: AppColors.orangeColor(context),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: '--',
@@ -2764,7 +2766,7 @@ class _ShapesViewState extends State<ShapesView> {
         painter: HexInputPainter(
           highlightType: opt,
           baseColor: AppColors.textGrey(context).withOpacity(0.5),
-          highlightColor: Colors.orangeAccent,
+          highlightColor: AppColors.orangeColor(context),
         ),
       ),
       onSelected: (selectedVal) {
@@ -2799,7 +2801,7 @@ class _ShapesViewState extends State<ShapesView> {
                       painter: HexInputPainter(
                         highlightType: _hexType,
                         baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: Colors.orangeAccent,
+                        highlightColor: AppColors.orangeColor(context),
                       ),
                     ),
                   ),
@@ -2833,7 +2835,7 @@ class _ShapesViewState extends State<ShapesView> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: Colors.orangeAccent,
+              cursorColor: AppColors.orangeColor(context),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: '--',
@@ -2859,7 +2861,7 @@ class _ShapesViewState extends State<ShapesView> {
         painter: CircInputPainter(
           highlightType: opt,
           baseColor: AppColors.textGrey(context).withOpacity(0.5),
-          highlightColor: Colors.orangeAccent,
+          highlightColor: AppColors.orangeColor(context),
         ),
       ),
       onSelected: (selectedVal) {
@@ -2894,7 +2896,7 @@ class _ShapesViewState extends State<ShapesView> {
                       painter: CircInputPainter(
                         highlightType: _circleType,
                         baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: Colors.orangeAccent,
+                        highlightColor: AppColors.orangeColor(context),
                       ),
                     ),
                   ),
@@ -2929,7 +2931,7 @@ class _ShapesViewState extends State<ShapesView> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: Colors.orangeAccent,
+              cursorColor: AppColors.orangeColor(context),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: '--',
