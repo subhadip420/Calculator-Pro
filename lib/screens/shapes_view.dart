@@ -642,39 +642,40 @@ class _ShapesViewState extends State<ShapesView> {
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    // Row(
-                    //   children: [
-                    //     _buildInputField('Side A', _triACtrl),
-                    //     _buildInputField('Side B', _triBCtrl),
-                    //     _buildInputField('Side C', _triCCtrl),
-                    //   ],
-                    // ),
-
-                    // Column(
-                    //   children: [
-                    //     _buildTriInputRow('Side A', _triACtrl),
-                    //     _buildTriInputRow('Side B', _triBCtrl),
-                    //     _buildTriInputRow('Side C', _triCCtrl),
-                    //   ],
-                    // ),
-
-                    // FIX: Naye dynamic function ke sath Triangle ke inputs call kiye
                     Column(
                       children: [
                         _buildFixedInputRow(
                           title: 'Side A',
                           ctrl: _triACtrl,
-                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side A', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                          icon: CustomPaint(
+                            painter: TriInputPainter(
+                              highlightType: 'Side A',
+                              baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                              highlightColor: Colors.orangeAccent,
+                            ),
+                          ),
                         ),
                         _buildFixedInputRow(
                           title: 'Side B',
                           ctrl: _triBCtrl,
-                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side B', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                          icon: CustomPaint(
+                            painter: TriInputPainter(
+                              highlightType: 'Side B',
+                              baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                              highlightColor: Colors.orangeAccent,
+                            ),
+                          ),
                         ),
                         _buildFixedInputRow(
                           title: 'Side C',
                           ctrl: _triCCtrl,
-                          icon: CustomPaint(painter: TriInputPainter(highlightType: 'Side C', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                          icon: CustomPaint(
+                            painter: TriInputPainter(
+                              highlightType: 'Side C',
+                              baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                              highlightColor: Colors.orangeAccent,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -781,17 +782,27 @@ class _ShapesViewState extends State<ShapesView> {
                             double? a, b, c, angA, angB;
 
                             // FIX: Andar function hatakar direct assign kiya
-                            if (_rtType1 == 'Side A') a = v1;
-                            else if (_rtType1 == 'Side B') b = v1;
-                            else if (_rtType1 == 'Hypotenuse') c = v1;
-                            else if (_rtType1 == 'Angle A') angA = v1;
-                            else if (_rtType1 == 'Angle B') angB = v1;
+                            if (_rtType1 == 'Side A')
+                              a = v1;
+                            else if (_rtType1 == 'Side B')
+                              b = v1;
+                            else if (_rtType1 == 'Hypotenuse')
+                              c = v1;
+                            else if (_rtType1 == 'Angle A')
+                              angA = v1;
+                            else if (_rtType1 == 'Angle B')
+                              angB = v1;
 
-                            if (_rtType2 == 'Side A') a = v2;
-                            else if (_rtType2 == 'Side B') b = v2;
-                            else if (_rtType2 == 'Hypotenuse') c = v2;
-                            else if (_rtType2 == 'Angle A') angA = v2;
-                            else if (_rtType2 == 'Angle B') angB = v2;
+                            if (_rtType2 == 'Side A')
+                              a = v2;
+                            else if (_rtType2 == 'Side B')
+                              b = v2;
+                            else if (_rtType2 == 'Hypotenuse')
+                              c = v2;
+                            else if (_rtType2 == 'Angle A')
+                              angA = v2;
+                            else if (_rtType2 == 'Angle B')
+                              angB = v2;
 
                             try {
                               // Dart khud samajh gaya ki yahan value null nahi hai (Flow Analysis)
@@ -841,7 +852,14 @@ class _ShapesViewState extends State<ShapesView> {
                                 angA = 90 - angB;
                               }
 
-                              if (a != null && b != null && c != null && angA != null && angB != null && a > 0 && b > 0 && c > 0) {
+                              if (a != null &&
+                                  b != null &&
+                                  c != null &&
+                                  angA != null &&
+                                  angB != null &&
+                                  a > 0 &&
+                                  b > 0 &&
+                                  c > 0) {
                                 rtA = a;
                                 rtB = b;
                                 rtC = c;
@@ -995,7 +1013,14 @@ class _ShapesViewState extends State<ShapesView> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const SizedBox(height: 12),
 
                             // Sirf 1 input field hogi Square ke liye
@@ -1006,9 +1031,21 @@ class _ShapesViewState extends State<ShapesView> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
                                 const SizedBox(width: 12),
-                                Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 24),
@@ -1016,24 +1053,49 @@ class _ShapesViewState extends State<ShapesView> {
                             // Result Container
                             Container(
                               padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(height: 12),
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
                                   if (!isValid)
-                                    Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
                                   else ...[
                                     _buildResultRow('Area', sqArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', sqPerimeter.toStringAsFixed(2)),
-                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
                                     _buildResultRow('Side', sqSide.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
-                                  ]
+                                  ],
                                 ],
                               ),
                             ),
@@ -1068,19 +1130,38 @@ class _ShapesViewState extends State<ShapesView> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const SizedBox(height: 12),
 
                             // FIXED INPUT ROWS (Dropdown ki jagah fixed boxes)
                             _buildFixedInputRow(
                               title: 'Length',
                               ctrl: _rectLenCtrl,
-                              icon: CustomPaint(painter: RectInputPainter(highlightType: 'Length', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                              icon: CustomPaint(
+                                painter: RectInputPainter(
+                                  highlightType: 'Length',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
                             ),
                             _buildFixedInputRow(
                               title: 'Width',
                               ctrl: _rectWidCtrl,
-                              icon: CustomPaint(painter: RectInputPainter(highlightType: 'Width', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                              icon: CustomPaint(
+                                painter: RectInputPainter(
+                                  highlightType: 'Width',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 4),
 
@@ -1088,9 +1169,21 @@ class _ShapesViewState extends State<ShapesView> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
                                 const SizedBox(width: 12),
-                                Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 24),
@@ -1098,25 +1191,50 @@ class _ShapesViewState extends State<ShapesView> {
                             // Result Container
                             Container(
                               padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(height: 12),
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
                                   if (!isValid)
-                                    Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
                                   else ...[
                                     _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
-                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
                                     _buildResultRow('Length', l.toStringAsFixed(2)),
                                     _buildResultRow('Width', w.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', rectDiagonal.toStringAsFixed(2)),
-                                  ]
+                                  ],
                                 ],
                               ),
                             ),
@@ -1125,351 +1243,585 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                        // ==========================================
-                        // YAHAN SE TRAPEZOID KA CODE ADD KAREIN
-                        // ==========================================
-                      ] else if (currentShape.name == 'Trapezoid') ...[
-                        Builder(
-                          builder: (context) {
-                            double h = double.tryParse(_trapHeightCtrl.text) ?? 0;
-                            double top = double.tryParse(_trapTopCtrl.text) ?? 0;
-                            double base = double.tryParse(_trapBaseCtrl.text) ?? 0;
 
-                            double trapArea = 0, trapMedian = 0, trapIsoLeg = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                    /// ==========================================
+                    /// YAHAN SE TRAPEZOID KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Trapezoid') ...[
+                    Builder(
+                      builder: (context) {
+                        double h = double.tryParse(_trapHeightCtrl.text) ?? 0;
+                        double top = double.tryParse(_trapTopCtrl.text) ?? 0;
+                        double base = double.tryParse(_trapBaseCtrl.text) ?? 0;
 
-                            if (h > 0 && top > 0 && base > 0) {
-                              trapArea = ((top + base) / 2) * h;
-                              trapMedian = (top + base) / 2;
+                        double trapArea = 0, trapMedian = 0, trapIsoLeg = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
 
-                              // Agar Isosceles Trapezoid maane toh Leg ki lambai
-                              double baseDiff = (base - top).abs() / 2;
-                              trapIsoLeg = sqrt((h * h) + (baseDiff * baseDiff));
+                        if (h > 0 && top > 0 && base > 0) {
+                          trapArea = ((top + base) / 2) * h;
+                          trapMedian = (top + base) / 2;
 
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter height, top, and base greater than 0.';
-                            }
+                          // Agar Isosceles Trapezoid maane toh Leg ki lambai
+                          double baseDiff = (base - top).abs() / 2;
+                          trapIsoLeg = sqrt((h * h) + (baseDiff * baseDiff));
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter height, top, and base greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // FIXED INPUT ROWS for Trapezoid
+                            _buildFixedInputRow(
+                              title: 'Height',
+                              ctrl: _trapHeightCtrl,
+                              icon: CustomPaint(
+                                painter: TrapInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Top',
+                              ctrl: _trapTopCtrl,
+                              icon: CustomPaint(
+                                painter: TrapInputPainter(
+                                  highlightType: 'Top',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Base',
+                              ctrl: _trapBaseCtrl,
+                              icon: CustomPaint(
+                                painter: TrapInputPainter(
+                                  highlightType: 'Base',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // FIXED INPUT ROWS for Trapezoid
-                                _buildFixedInputRow(
-                                  title: 'Height',
-                                  ctrl: _trapHeightCtrl,
-                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Height', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
                                 ),
-                                _buildFixedInputRow(
-                                  title: 'Top',
-                                  ctrl: _trapTopCtrl,
-                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Top', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                _buildFixedInputRow(
-                                  title: 'Base',
-                                  ctrl: _trapBaseCtrl,
-                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Base', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                const SizedBox(height: 4),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
-                                  ],
-                                ),
-                                const SizedBox(height: 24),
-
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
-                                        _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                        // ==========================================
-                        // YAHAN SE RHOMBUS KA CODE ADD KAREIN
-                        // ==========================================
-                      ] else if (currentShape.name == 'Rhombus') ...[
-                        Builder(
-                          builder: (context) {
-                            double d1 = double.tryParse(_rhomLenCtrl.text) ?? 0; // Length (Horizontal Diagonal)
-                            double d2 = double.tryParse(_rhomWidCtrl.text) ?? 0; // Width (Vertical Diagonal)
+                            ),
+                            const SizedBox(height: 24),
 
-                            double rhomArea = 0, rhomSide = 0, rhomPerimeter = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                            if (d1 > 0 && d2 > 0) {
-                              rhomArea = (d1 * d2) / 2; // Area = (d1 * d2) / 2
-                              // Side = Pythagoras theorem on half-diagonals
-                              rhomSide = sqrt((d1 / 2) * (d1 / 2) + (d2 / 2) * (d2 / 2));
-                              rhomPerimeter = 4 * rhomSide;
-
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter length and width greater than 0.';
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // FIXED INPUT ROWS for Rhombus
-                                _buildFixedInputRow(
-                                  title: 'Length',
-                                  ctrl: _rhomLenCtrl,
-                                  icon: CustomPaint(painter: RhomInputPainter(highlightType: 'Length', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                _buildFixedInputRow(
-                                  title: 'Width',
-                                  ctrl: _rhomWidCtrl,
-                                  icon: CustomPaint(painter: RhomInputPainter(highlightType: 'Width', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                const SizedBox(height: 4),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
+                                    _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
                                   ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+
+                    /// ==========================================
+                    /// YAHAN SE RHOMBUS KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Rhombus') ...[
+                    Builder(
+                      builder: (context) {
+                        double d1 = double.tryParse(_rhomLenCtrl.text) ?? 0; // Length (Horizontal Diagonal)
+                        double d2 = double.tryParse(_rhomWidCtrl.text) ?? 0; // Width (Vertical Diagonal)
+
+                        double rhomArea = 0, rhomSide = 0, rhomPerimeter = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (d1 > 0 && d2 > 0) {
+                          rhomArea = (d1 * d2) / 2; // Area = (d1 * d2) / 2
+                          // Side = Pythagoras theorem on half-diagonals
+                          rhomSide = sqrt((d1 / 2) * (d1 / 2) + (d2 / 2) * (d2 / 2));
+                          rhomPerimeter = 4 * rhomSide;
+
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter length and width greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // FIXED INPUT ROWS for Rhombus
+                            _buildFixedInputRow(
+                              title: 'Length',
+                              ctrl: _rhomLenCtrl,
+                              icon: CustomPaint(
+                                painter: RhomInputPainter(
+                                  highlightType: 'Length',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
                                 ),
-                                const SizedBox(height: 24),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Width',
+                              ctrl: _rhomWidCtrl,
+                              icon: CustomPaint(
+                                painter: RhomInputPainter(
+                                  highlightType: 'Width',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
 
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', rhomArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                        // ==========================================
-                        // YAHAN SE CIRCLE ARC KA CODE ADD KAREIN
-                        // ==========================================
-                      ] else if (currentShape.name == 'Circle arc') ...[
-                        Builder(
-                          builder: (context) {
-                            double radius = double.tryParse(_arcRadiusCtrl.text) ?? 0;
-                            double angle = double.tryParse(_arcAngleCtrl.text) ?? 0;
+                            ),
+                            const SizedBox(height: 24),
 
-                            double arcLength = 0, sectorArea = 0, chordLength = 0, perimeter = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                            if (radius > 0 && angle > 0) {
-                              if (angle <= 360) {
-                                // Calculations
-                                arcLength = 2 * pi * radius * (angle / 360);
-                                sectorArea = pi * radius * radius * (angle / 360);
-                                chordLength = 2 * radius * sin((angle / 2) * (pi / 180));
-                                perimeter = arcLength + (2 * radius);
-
-                                isValid = true;
-                              } else {
-                                errorMsg = 'Angle must be between 1 and 360 degrees.';
-                              }
-                            } else {
-                              errorMsg = 'Enter radius and angle greater than 0.';
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // FIXED INPUT ROWS for Circle Arc
-                                _buildFixedInputRow(
-                                  title: 'Radius',
-                                  ctrl: _arcRadiusCtrl,
-                                  icon: CustomPaint(painter: ArcInputPainter(highlightType: 'Radius', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                _buildFixedInputRow(
-                                  title: 'Angle',
-                                  ctrl: _arcAngleCtrl,
-                                  icon: CustomPaint(painter: ArcInputPainter(highlightType: 'Angle', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                const SizedBox(height: 4),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', rhomArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
                                   ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+
+                    /// ==========================================
+                    /// YAHAN SE CIRCLE ARC KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Circle arc') ...[
+                    Builder(
+                      builder: (context) {
+                        double radius = double.tryParse(_arcRadiusCtrl.text) ?? 0;
+                        double angle = double.tryParse(_arcAngleCtrl.text) ?? 0;
+
+                        double arcLength = 0, sectorArea = 0, chordLength = 0, perimeter = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (radius > 0 && angle > 0) {
+                          if (angle <= 360) {
+                            // Calculations
+                            arcLength = 2 * pi * radius * (angle / 360);
+                            sectorArea = pi * radius * radius * (angle / 360);
+                            chordLength = 2 * radius * sin((angle / 2) * (pi / 180));
+                            perimeter = arcLength + (2 * radius);
+
+                            isValid = true;
+                          } else {
+                            errorMsg = 'Angle must be between 1 and 360 degrees.';
+                          }
+                        } else {
+                          errorMsg = 'Enter radius and angle greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // FIXED INPUT ROWS for Circle Arc
+                            _buildFixedInputRow(
+                              title: 'Radius',
+                              ctrl: _arcRadiusCtrl,
+                              icon: CustomPaint(
+                                painter: ArcInputPainter(
+                                  highlightType: 'Radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
                                 ),
-                                const SizedBox(height: 24),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Angle',
+                              ctrl: _arcAngleCtrl,
+                              icon: CustomPaint(
+                                painter: ArcInputPainter(
+                                  highlightType: 'Angle',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
 
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Sector Area', sectorArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Arc Length', arcLength.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Chord Length', chordLength.toStringAsFixed(2)),
-                                        _buildResultRow('Sector Perimeter', perimeter.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                        // ==========================================
-                        // YAHAN SE ELLIPSE KA CODE ADD KAREIN
-                        // ==========================================
-                      ] else if (currentShape.name == 'Ellipse') ...[
-                        Builder(
-                          builder: (context) {
-                            double a = double.tryParse(_ellipRadACtrl.text) ?? 0; // Radius A
-                            double b = double.tryParse(_ellipRadBCtrl.text) ?? 0; // Radius B
+                            ),
+                            const SizedBox(height: 24),
 
-                            double ellipArea = 0, ellipPerimeter = 0;
-                            bool isValid = false;
-                            String errorMsg = '';
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                            if (a > 0 && b > 0) {
-                              // Area = pi * a * b
-                              ellipArea = pi * a * b;
-
-                              // Perimeter (Ramanujan's approximation formula for high accuracy)
-                              ellipPerimeter = pi * (3 * (a + b) - sqrt((3 * a + b) * (a + 3 * b)));
-
-                              isValid = true;
-                            } else {
-                              errorMsg = 'Enter both radii greater than 0.';
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 12),
-
-                                // FIXED INPUT ROWS for Ellipse
-                                _buildFixedInputRow(
-                                  title: 'Radius A',
-                                  ctrl: _ellipRadACtrl,
-                                  icon: CustomPaint(painter: EllipInputPainter(highlightType: 'Radius A', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                _buildFixedInputRow(
-                                  title: 'Radius B',
-                                  ctrl: _ellipRadBCtrl,
-                                  icon: CustomPaint(painter: EllipInputPainter(highlightType: 'Radius B', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
-                                ),
-                                const SizedBox(height: 4),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Sector Area', sectorArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Arc Length', arcLength.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Chord Length', chordLength.toStringAsFixed(2)),
+                                    _buildResultRow('Sector Perimeter', perimeter.toStringAsFixed(2)),
                                   ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+
+                    /// ==========================================
+                    /// YAHAN SE ELLIPSE KA CODE ADD KAREIN
+                    /// ==========================================
+                  ] else if (currentShape.name == 'Ellipse') ...[
+                    Builder(
+                      builder: (context) {
+                        double a = double.tryParse(_ellipRadACtrl.text) ?? 0; // Radius A
+                        double b = double.tryParse(_ellipRadBCtrl.text) ?? 0; // Radius B
+
+                        double ellipArea = 0, ellipPerimeter = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (a > 0 && b > 0) {
+                          // Area = pi * a * b
+                          ellipArea = pi * a * b;
+
+                          // Perimeter (Ramanujan's approximation formula for high accuracy)
+                          ellipPerimeter = pi * (3 * (a + b) - sqrt((3 * a + b) * (a + 3 * b)));
+
+                          isValid = true;
+                        } else {
+                          errorMsg = 'Enter both radii greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // FIXED INPUT ROWS for Ellipse
+                            _buildFixedInputRow(
+                              title: 'Radius A',
+                              ctrl: _ellipRadACtrl,
+                              icon: CustomPaint(
+                                painter: EllipInputPainter(
+                                  highlightType: 'Radius A',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
                                 ),
-                                const SizedBox(height: 24),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Radius B',
+                              ctrl: _ellipRadBCtrl,
+                              icon: CustomPaint(
+                                painter: EllipInputPainter(
+                                  highlightType: 'Radius B',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: Colors.orangeAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
 
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid)
-                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
-                                      else ...[
-                                        _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
-                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
-                                        _buildResultRow('Radius A', a.toStringAsFixed(2)),
-                                        _buildResultRow('Radius B', b.toStringAsFixed(2)),
-                                      ]
-                                    ],
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getShapeHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                      ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+                                    _buildResultRow('Radius A', a.toStringAsFixed(2)),
+                                    _buildResultRow('Radius B', b.toStringAsFixed(2)),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1478,110 +1830,8 @@ class _ShapesViewState extends State<ShapesView> {
       ),
     );
   }
+
   /// end main build
-
-  // NAYA: Input Field Helper (Title upar, hint 0)
-  // Widget _buildInputField(String title, TextEditingController controller) {
-  //   return Expanded(
-  //     child: Padding(
-  //       padding: const EdgeInsets.symmetric(horizontal: 4),
-  //       child: Column(
-  //         children: [
-  //           // Upar Title (Side A, Side B, etc.)
-  //           Text(
-  //             title,
-  //             style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500),
-  //           ),
-  //           const SizedBox(height: 6),
-  //           // Niche Input Box
-  //           Container(
-  //             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-  //             decoration: BoxDecoration(
-  //               color: AppColors.bgColor(context).withOpacity(0.5),
-  //               borderRadius: BorderRadius.circular(12),
-  //               border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.2)),
-  //             ),
-  //             child: TextField(
-  //               controller: controller,
-  //               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-  //               textAlign: TextAlign.center,
-  //               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-  //               cursorColor: AppColors.cyanColor(context),
-  //               decoration: InputDecoration(
-  //                 border: InputBorder.none,
-  //                 isDense: true,
-  //                 contentPadding: EdgeInsets.zero,
-  //                 hintText: '--',
-  //                 // Hint hamesha 0 dikhega
-  //                 hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
-  //               ),
-  //               onChanged: (_) => setState(() {}),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // NAYA: Normal Triangle Input Row Builder (Bina dropdown ke, fixed title ke sath)
-  // Widget _buildTriInputRow(String title, TextEditingController ctrl) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(bottom: 12),
-  //     child: Row(
-  //       children: [
-  //         // Icon aur Title Box
-  //         Expanded(
-  //           flex: 5,
-  //           child: Container(
-  //             height: 60,
-  //             padding: const EdgeInsets.symmetric(horizontal: 16),
-  //             decoration: BoxDecoration(
-  //               color: AppColors.surfaceColor(context).withOpacity(0.3),
-  //               borderRadius: BorderRadius.circular(12),
-  //               border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-  //             ),
-  //             child: Row(
-  //               children: [
-  //                 SizedBox(
-  //                   width: 24, height: 24,
-  //                   child: CustomPaint(
-  //                     painter: TriInputPainter(highlightType: title, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
-  //                   ),
-  //                 ),
-  //                 const SizedBox(width: 16),
-  //                 Text(title, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(width: 12),
-  //         // TextField Box
-  //         Expanded(
-  //           flex: 4,
-  //           child: Container(
-  //             height: 60,
-  //             alignment: Alignment.center,
-  //             decoration: BoxDecoration(
-  //               color: AppColors.surfaceColor(context).withOpacity(0.3),
-  //               borderRadius: BorderRadius.circular(12),
-  //               border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-  //             ),
-  //             child: TextField(
-  //               controller: ctrl,
-  //               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-  //               textAlign: TextAlign.center,
-  //               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-  //               cursorColor: Colors.orangeAccent,
-  //               decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-  //               onChanged: (_) => setState((){}),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   // NAYA & MASTER: Dynamic Fixed Input Row Builder (Bina dropdown ke)
   Widget _buildFixedInputRow({
@@ -1607,11 +1857,15 @@ class _ShapesViewState extends State<ShapesView> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 24, height: 24,
+                    width: 24,
+                    height: 24,
                     child: icon, // Dynamic icon yahan render hoga
                   ),
                   const SizedBox(width: 16),
-                  Text(title, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    title,
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),
@@ -1634,8 +1888,12 @@ class _ShapesViewState extends State<ShapesView> {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
                 cursorColor: Colors.orangeAccent,
-                decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-                onChanged: (_) => setState((){}),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '--',
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+                ),
+                onChanged: (_) => setState(() {}),
               ),
             ),
           ),
@@ -1846,7 +2104,11 @@ class _ShapesViewState extends State<ShapesView> {
                               children: [
                                 Text(
                                   mTitle,
-                                  style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 if (sTitle.isNotEmpty)
                                   Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
@@ -1866,120 +2128,6 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
-  // NAYA: Bottom Sheet for Selection[cite: 5]
-  // void _showRtSelectorSheet(int inputIndex) {
-  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
-  //
-  //   List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
-  //   String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
-  //
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     isScrollControlled: true,
-  //     builder: (BuildContext sheetContext) {
-  //       return Container(
-  //         height: MediaQuery.of(context).size.height * 0.65,
-  //         decoration: BoxDecoration(
-  //           color: AppColors.surfaceColor(context),
-  //           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-  //         ),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             // Header
-  //             Padding(
-  //               padding: const EdgeInsets.all(20),
-  //               child: Row(
-  //                 children: [
-  //                   GestureDetector(
-  //                     onTap: () => Navigator.pop(sheetContext),
-  //                     child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20),
-  //                   ),
-  //                   const SizedBox(width: 12),
-  //                   Text(
-  //                     'Input',
-  //                     style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //             Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-  //             // List Items
-  //             Expanded(
-  //               child: ListView.builder(
-  //                 padding: const EdgeInsets.symmetric(vertical: 10),
-  //                 physics: const BouncingScrollPhysics(),
-  //                 itemCount: options.length,
-  //                 itemBuilder: (context, i) {
-  //                   String opt = options[i];
-  //                   bool isSelected = opt == currentSelection;
-  //                   List<String> parts = opt.split(' ');
-  //                   String mTitle = parts[0];
-  //                   String sTitle = parts.length > 1 ? parts[1] : '';
-  //
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //                       setState(() {
-  //                         if (inputIndex == 1)
-  //                           _rtType1 = opt;
-  //                         else
-  //                           _rtType2 = opt;
-  //                       });
-  //                       Navigator.pop(sheetContext);
-  //                     },
-  //                     child: Container(
-  //                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-  //                       padding: const EdgeInsets.all(16),
-  //                       decoration: BoxDecoration(
-  //                         color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent,
-  //                         borderRadius: BorderRadius.circular(16),
-  //                       ),
-  //                       child: Row(
-  //                         children: [
-  //                           SizedBox(
-  //                             width: 24,
-  //                             height: 24,
-  //                             child: CustomPaint(
-  //                               painter: RtInputPainter(
-  //                                 highlightType: opt,
-  //                                 baseColor: AppColors.textGrey(context).withOpacity(0.5),
-  //                                 highlightColor: Colors.orangeAccent,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           const SizedBox(width: 16),
-  //                           Column(
-  //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                             children: [
-  //                               Text(
-  //                                 mTitle,
-  //                                 style: TextStyle(
-  //                                   color: AppColors.textColor(context),
-  //                                   fontSize: 16,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                               ),
-  //                               if (sTitle.isNotEmpty)
-  //                                 Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
-  //                             ],
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // NAYA: Right Triangle ka wrapper
   void _showRtSelectorSheet(int inputIndex) {
     List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
     String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
@@ -1987,13 +2135,21 @@ class _ShapesViewState extends State<ShapesView> {
     _showDynamicInputSelectorSheet(
       options: options,
       currentSelection: currentSelection,
-      heightFraction: 0.65, // Right triangle mein options zyada hain, isliye bada sheet
+      heightFraction: 0.65,
+      // Right triangle mein options zyada hain, isliye bada sheet
       iconBuilder: (opt) => CustomPaint(
-        painter: RtInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+        painter: RtInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: Colors.orangeAccent,
+        ),
       ),
       onSelected: (selectedVal) {
         setState(() {
-          if (inputIndex == 1) _rtType1 = selectedVal; else _rtType2 = selectedVal;
+          if (inputIndex == 1)
+            _rtType1 = selectedVal;
+          else
+            _rtType2 = selectedVal;
         });
       },
     );
@@ -2004,9 +2160,14 @@ class _ShapesViewState extends State<ShapesView> {
     _showDynamicInputSelectorSheet(
       options: ['Side', 'Area', 'Perimeter'],
       currentSelection: _sqType,
-      heightFraction: 0.5, // Square mein kam options hain, isliye chhota sheet
+      heightFraction: 0.5,
+      // Square mein kam options hain, isliye chhota sheet
       iconBuilder: (opt) => CustomPaint(
-        painter: SqInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+        painter: SqInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: Colors.orangeAccent,
+        ),
       ),
       onSelected: (selectedVal) {
         setState(() => _sqType = selectedVal);
@@ -2034,13 +2195,23 @@ class _ShapesViewState extends State<ShapesView> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 24, height: 24,
+                    width: 24,
+                    height: 24,
                     child: CustomPaint(
-                      painter: SqInputPainter(highlightType: _sqType, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+                      painter: SqInputPainter(
+                        highlightType: _sqType,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: Colors.orangeAccent,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(child: Text(_sqType, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                  Expanded(
+                    child: Text(
+                      _sqType,
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
                 ],
               ),
@@ -2065,81 +2236,18 @@ class _ShapesViewState extends State<ShapesView> {
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               cursorColor: Colors.orangeAccent,
-              decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
-              onChanged: (_) => setState((){}),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
             ),
           ),
         ),
       ],
     );
   }
-
-  // NAYA: Bottom Sheet for Square Selection
-  // void _showSqSelectorSheet() {
-  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
-  //
-  //   List<String> options = ['Side', 'Area', 'Perimeter']; // Same as image[cite: 5]
-  //
-  //   showModalBottomSheet(
-  //       context: context,
-  //       backgroundColor: Colors.transparent,
-  //       isScrollControlled: true,
-  //       builder: (BuildContext sheetContext) {
-  //         return Container(
-  //           height: MediaQuery.of(context).size.height * 0.5, // Thoda chhota sheet kyunki 3 hi options hain
-  //           decoration: BoxDecoration(color: AppColors.surfaceColor(context), borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Padding(
-  //                 padding: const EdgeInsets.all(20),
-  //                 child: Row(
-  //                   children: [
-  //                     GestureDetector(onTap: () => Navigator.pop(sheetContext), child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20)),
-  //                     const SizedBox(width: 12),
-  //                     Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold)),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-  //               Expanded(
-  //                 child: ListView.builder(
-  //                   padding: const EdgeInsets.symmetric(vertical: 10),
-  //                   physics: const BouncingScrollPhysics(),
-  //                   itemCount: options.length,
-  //                   itemBuilder: (context, i) {
-  //                     String opt = options[i];
-  //                     bool isSelected = opt == _sqType;
-  //
-  //                     return GestureDetector(
-  //                       onTap: () {
-  //                         if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //                         setState(() => _sqType = opt);
-  //                         Navigator.pop(sheetContext);
-  //                       },
-  //                       child: Container(
-  //                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-  //                         padding: const EdgeInsets.all(16),
-  //                         decoration: BoxDecoration(color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent, borderRadius: BorderRadius.circular(16)),
-  //                         child: Row(
-  //                           children: [
-  //                             SizedBox(width: 24, height: 24, child: CustomPaint(painter: SqInputPainter(highlightType: opt, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent))),
-  //                             const SizedBox(width: 16),
-  //                             Text(opt, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     );
-  //                   },
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       }
-  //   );
-  // }
-
 }
 
 // NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
@@ -2152,15 +2260,25 @@ class TriInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     Offset pTop = Offset(size.width / 2, 0);
     Offset pBottomLeft = Offset(0, size.height);
     Offset pBottomRight = Offset(size.width, size.height);
 
     // Base Triangle Draw karein
-    Path path = Path()..moveTo(pTop.dx, pTop.dy)..lineTo(pBottomLeft.dx, pBottomLeft.dy)..lineTo(pBottomRight.dx, pBottomRight.dy)..close();
+    Path path = Path()
+      ..moveTo(pTop.dx, pTop.dy)
+      ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+      ..lineTo(pBottomRight.dx, pBottomRight.dy)
+      ..close();
     canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
@@ -2242,16 +2360,30 @@ class SqInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
     if (highlightType == 'Area') {
       canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga[cite: 5]
     } else if (highlightType == 'Perimeter') {
-      canvas.drawRect(rect, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5); // Perimeter mein pura border highlight hoga[cite: 5]
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Perimeter mein pura border highlight hoga[cite: 5]
     } else {
       // Side: Sirf bottom ki line highlight hogi[cite: 5]
       canvas.drawRect(rect, basePaint);
@@ -2273,8 +2405,14 @@ class RectInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
     Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
@@ -2286,7 +2424,11 @@ class RectInputPainter extends CustomPainter {
     if (highlightType == 'Length') {
       canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
     } else if (highlightType == 'Width') {
-      canvas.drawLine(Offset(size.width, rect.top), Offset(size.width, rect.bottom), hlPaint); // Right side wali choti line
+      canvas.drawLine(
+        Offset(size.width, rect.top),
+        Offset(size.width, rect.bottom),
+        hlPaint,
+      ); // Right side wali choti line
     }
   }
 
@@ -2304,8 +2446,14 @@ class TrapInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     double w = size.width;
     double h = size.height;
@@ -2350,8 +2498,14 @@ class RhomInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     double w = size.width;
     double h = size.height;
@@ -2393,8 +2547,14 @@ class ArcInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     double w = size.width;
     double h = size.height;
@@ -2415,8 +2575,10 @@ class ArcInputPainter extends CustomPainter {
       canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
     } else if (highlightType == 'Angle') {
       // Chota arc draw karein angle dikhane ke liye
-      Paint fillHl = Paint()..color = highlightColor..style = PaintingStyle.fill;
-      canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi/2, pi/2, true, fillHl);
+      Paint fillHl = Paint()
+        ..color = highlightColor
+        ..style = PaintingStyle.fill;
+      canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
     }
   }
 
@@ -2434,8 +2596,14 @@ class EllipInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
 
     double w = size.width;
     double h = size.height;
