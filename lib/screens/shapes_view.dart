@@ -234,6 +234,11 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _rectLenCtrl = TextEditingController(text: '');
   final TextEditingController _rectWidCtrl = TextEditingController(text: '');
 
+  // --- Trapezoid Input State ---
+  final TextEditingController _trapHeightCtrl = TextEditingController(text: '');
+  final TextEditingController _trapTopCtrl = TextEditingController(text: '');
+  final TextEditingController _trapBaseCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -248,6 +253,10 @@ class _ShapesViewState extends State<ShapesView> {
     // NAYA: Rectangle controllers dispose karein
     _rectLenCtrl.dispose();
     _rectWidCtrl.dispose();
+    // NAYA: Trapezoid controllers dispose karein
+    _trapHeightCtrl.dispose();
+    _trapTopCtrl.dispose();
+    _trapBaseCtrl.dispose();
     super.dispose();
   }
 
@@ -1096,7 +1105,97 @@ class _ShapesViewState extends State<ShapesView> {
                         );
                       },
                     ),
-                  ],
+                        // ==========================================
+                        // YAHAN SE TRAPEZOID KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Trapezoid') ...[
+                        Builder(
+                          builder: (context) {
+                            double h = double.tryParse(_trapHeightCtrl.text) ?? 0;
+                            double top = double.tryParse(_trapTopCtrl.text) ?? 0;
+                            double base = double.tryParse(_trapBaseCtrl.text) ?? 0;
+
+                            double trapArea = 0, trapMedian = 0, trapIsoLeg = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            if (h > 0 && top > 0 && base > 0) {
+                              trapArea = ((top + base) / 2) * h;
+                              trapMedian = (top + base) / 2;
+
+                              // Agar Isosceles Trapezoid maane toh Leg ki lambai
+                              double baseDiff = (base - top).abs() / 2;
+                              trapIsoLeg = sqrt((h * h) + (baseDiff * baseDiff));
+
+                              isValid = true;
+                            } else {
+                              errorMsg = 'Enter height, top, and base greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // FIXED INPUT ROWS for Trapezoid
+                                _buildFixedInputRow(
+                                  title: 'Height',
+                                  ctrl: _trapHeightCtrl,
+                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Height', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Top',
+                                  ctrl: _trapTopCtrl,
+                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Top', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Base',
+                                  ctrl: _trapBaseCtrl,
+                                  icon: CustomPaint(painter: TrapInputPainter(highlightType: 'Base', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
+                                        _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                 ],
               ),
             ),
@@ -1105,6 +1204,7 @@ class _ShapesViewState extends State<ShapesView> {
       ),
     );
   }
+  /// end main build
 
   // NAYA: Input Field Helper (Title upar, hint 0)
   // Widget _buildInputField(String title, TextEditingController controller) {
@@ -1913,6 +2013,52 @@ class RectInputPainter extends CustomPainter {
       canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
     } else if (highlightType == 'Width') {
       canvas.drawLine(Offset(size.width, rect.top), Offset(size.width, rect.bottom), hlPaint); // Right side wali choti line
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Trapezoid ke selected part ko highlight karne ke liye Painter
+class TrapInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  TrapInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Trapezoid ke 4 points
+    Offset pTopLeft = Offset(w * 0.25, h * 0.25);
+    Offset pTopRight = Offset(w * 0.75, h * 0.25);
+    Offset pBottomLeft = Offset(0, h * 0.85);
+    Offset pBottomRight = Offset(w, h * 0.85);
+
+    // Base Trapezoid Draw karein
+    Path path = Path()
+      ..moveTo(pTopLeft.dx, pTopLeft.dy)
+      ..lineTo(pTopRight.dx, pTopRight.dy)
+      ..lineTo(pBottomRight.dx, pBottomRight.dy)
+      ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+      ..close();
+    canvas.drawPath(path, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Top') {
+      canvas.drawLine(pTopLeft, pTopRight, hlPaint); // Upar ki line
+    } else if (highlightType == 'Base') {
+      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Niche ki line
+    } else if (highlightType == 'Height') {
+      // Beech mein vertical height draw karein
+      canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
     }
   }
 
