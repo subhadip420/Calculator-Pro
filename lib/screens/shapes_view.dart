@@ -594,13 +594,13 @@ class _ShapesViewState extends State<ShapesView> {
                 GridView.builder(
                   shrinkWrap: true,
                   // FIX: Apni height khud grid ke hisaab se adjust karega
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    childAspectRatio: 0.85,
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
+                    childAspectRatio: 1,
                   ),
                   itemCount: _shapeList.length,
                   itemBuilder: (context, index) {
@@ -627,7 +627,7 @@ class _ShapesViewState extends State<ShapesView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(height: 45, child: Center(child: item.iconBuilder)),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             Text(
                               item.name,
                               textAlign: TextAlign.center,
@@ -647,7 +647,7 @@ class _ShapesViewState extends State<ShapesView> {
                     );
                   },
                 ),
-                const SizedBox(height: 16), // Bottom mein thodi extra space
+                const SizedBox(height: 10), // Bottom mein thodi extra space
               ],
             ),
           ),
