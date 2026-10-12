@@ -599,11 +599,19 @@ class _ShapesViewState extends State<ShapesView> {
                       style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    Row(
+                    // Row(
+                    //   children: [
+                    //     _buildInputField('Side A', _triACtrl),
+                    //     _buildInputField('Side B', _triBCtrl),
+                    //     _buildInputField('Side C', _triCCtrl),
+                    //   ],
+                    // ),
+
+                    Column(
                       children: [
-                        _buildInputField('Side A', _triACtrl),
-                        _buildInputField('Side B', _triBCtrl),
-                        _buildInputField('Side C', _triCCtrl),
+                        _buildTriInputRow('Side A', _triACtrl),
+                        _buildTriInputRow('Side B', _triBCtrl),
+                        _buildTriInputRow('Side C', _triCCtrl),
                       ],
                     ),
 
@@ -718,61 +726,61 @@ class _ShapesViewState extends State<ShapesView> {
                             else if (_rtType2 == 'Angle B') angB = v2;
 
                             try {
-                              // FIX: Sabhi math calculations mein strict null checks (!) lagaye
+                              // Dart khud samajh gaya ki yahan value null nahi hai (Flow Analysis)
                               if (a != null && b != null) {
-                                c = sqrt(a! * a! + b! * b!);
-                                angA = atan(a! / b!) * 180 / pi;
-                                angB = 90 - angA!;
+                                c = sqrt(a * a + b * b);
+                                angA = atan(a / b) * 180 / pi;
+                                angB = 90 - angA;
                               } else if (a != null && c != null) {
-                                if (c! <= a!) throw Exception('Hypotenuse must be > Side A.');
-                                b = sqrt(c! * c! - a! * a!);
-                                angA = asin(a! / c!) * 180 / pi;
-                                angB = 90 - angA!;
+                                if (c <= a) throw Exception('Hypotenuse must be > Side A.');
+                                b = sqrt(c * c - a * a);
+                                angA = asin(a / c) * 180 / pi;
+                                angB = 90 - angA;
                               } else if (b != null && c != null) {
-                                if (c! <= b!) throw Exception('Hypotenuse must be > Side B.');
-                                a = sqrt(c! * c! - b! * b!);
-                                angA = acos(b! / c!) * 180 / pi;
-                                angB = 90 - angA!;
+                                if (c <= b) throw Exception('Hypotenuse must be > Side B.');
+                                a = sqrt(c * c - b * b);
+                                angA = acos(b / c) * 180 / pi;
+                                angB = 90 - angA;
                               } else if (a != null && angA != null) {
-                                if (angA! >= 90) throw Exception('Angle must be < 90.');
-                                b = a! / tan(angA! * pi / 180);
-                                c = a! / sin(angA! * pi / 180);
-                                angB = 90 - angA!;
+                                if (angA >= 90) throw Exception('Angle must be < 90.');
+                                b = a / tan(angA * pi / 180);
+                                c = a / sin(angA * pi / 180);
+                                angB = 90 - angA;
                               } else if (a != null && angB != null) {
-                                if (angB! >= 90) throw Exception('Angle must be < 90.');
-                                b = a! * tan(angB! * pi / 180);
-                                c = a! / cos(angB! * pi / 180);
-                                angA = 90 - angB!;
+                                if (angB >= 90) throw Exception('Angle must be < 90.');
+                                b = a * tan(angB * pi / 180);
+                                c = a / cos(angB * pi / 180);
+                                angA = 90 - angB;
                               } else if (b != null && angA != null) {
-                                if (angA! >= 90) throw Exception('Angle must be < 90.');
-                                a = b! * tan(angA! * pi / 180);
-                                c = b! / cos(angA! * pi / 180);
-                                angB = 90 - angA!;
+                                if (angA >= 90) throw Exception('Angle must be < 90.');
+                                a = b * tan(angA * pi / 180);
+                                c = b / cos(angA * pi / 180);
+                                angB = 90 - angA;
                               } else if (b != null && angB != null) {
-                                if (angB! >= 90) throw Exception('Angle must be < 90.');
-                                a = b! / tan(angB! * pi / 180);
-                                c = b! / sin(angB! * pi / 180);
-                                angA = 90 - angB!;
+                                if (angB >= 90) throw Exception('Angle must be < 90.');
+                                a = b / tan(angB * pi / 180);
+                                c = b / sin(angB * pi / 180);
+                                angA = 90 - angB;
                               } else if (c != null && angA != null) {
-                                if (angA! >= 90) throw Exception('Angle must be < 90.');
-                                a = c! * sin(angA! * pi / 180);
-                                b = c! * cos(angA! * pi / 180);
-                                angB = 90 - angA!;
+                                if (angA >= 90) throw Exception('Angle must be < 90.');
+                                a = c * sin(angA * pi / 180);
+                                b = c * cos(angA * pi / 180);
+                                angB = 90 - angA;
                               } else if (c != null && angB != null) {
-                                if (angB! >= 90) throw Exception('Angle must be < 90.');
-                                a = c! * cos(angB! * pi / 180);
-                                b = c! * sin(angB! * pi / 180);
-                                angA = 90 - angB!;
+                                if (angB >= 90) throw Exception('Angle must be < 90.');
+                                a = c * cos(angB * pi / 180);
+                                b = c * sin(angB * pi / 180);
+                                angA = 90 - angB;
                               }
 
-                              if (a != null && b != null && c != null && angA != null && angB != null && a! > 0 && b! > 0 && c! > 0) {
-                                rtA = a!;
-                                rtB = b!;
-                                rtC = c!;
-                                rtAngA = angA!;
-                                rtAngB = angB!;
-                                rtArea = 0.5 * a! * b!;
-                                rtPerimeter = a! + b! + c!;
+                              if (a != null && b != null && c != null && angA != null && angB != null && a > 0 && b > 0 && c > 0) {
+                                rtA = a;
+                                rtB = b;
+                                rtC = c;
+                                rtAngA = angA;
+                                rtAngB = angB;
+                                rtArea = 0.5 * a * b;
+                                rtPerimeter = a + b + c;
                                 isValid = true;
                               }
                             } catch (e) {
@@ -895,45 +903,104 @@ class _ShapesViewState extends State<ShapesView> {
   }
 
   // NAYA: Input Field Helper (Title upar, hint 0)
-  Widget _buildInputField(String title, TextEditingController controller) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Column(
-          children: [
-            // Upar Title (Side A, Side B, etc.)
-            Text(
-              title,
-              style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 6),
-            // Niche Input Box
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+  // Widget _buildInputField(String title, TextEditingController controller) {
+  //   return Expanded(
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 4),
+  //       child: Column(
+  //         children: [
+  //           // Upar Title (Side A, Side B, etc.)
+  //           Text(
+  //             title,
+  //             style: TextStyle(color: AppColors.textGrey(context), fontSize: 13, fontWeight: FontWeight.w500),
+  //           ),
+  //           const SizedBox(height: 6),
+  //           // Niche Input Box
+  //           Container(
+  //             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+  //             decoration: BoxDecoration(
+  //               color: AppColors.bgColor(context).withOpacity(0.5),
+  //               borderRadius: BorderRadius.circular(12),
+  //               border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.2)),
+  //             ),
+  //             child: TextField(
+  //               controller: controller,
+  //               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  //               textAlign: TextAlign.center,
+  //               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+  //               cursorColor: AppColors.cyanColor(context),
+  //               decoration: InputDecoration(
+  //                 border: InputBorder.none,
+  //                 isDense: true,
+  //                 contentPadding: EdgeInsets.zero,
+  //                 hintText: '--',
+  //                 // Hint hamesha 0 dikhega
+  //                 hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+  //               ),
+  //               onChanged: (_) => setState(() {}),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // NAYA: Normal Triangle Input Row Builder (Bina dropdown ke, fixed title ke sath)
+  Widget _buildTriInputRow(String title, TextEditingController ctrl) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          // Icon aur Title Box
+          Expanded(
+            flex: 5,
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.bgColor(context).withOpacity(0.5),
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.2)),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24, height: 24,
+                    child: CustomPaint(
+                      painter: TriInputPainter(highlightType: title, baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(title, style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // TextField Box
+          Expanded(
+            flex: 4,
+            child: Container(
+              height: 60,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
               ),
               child: TextField(
-                controller: controller,
+                controller: ctrl,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-                cursorColor: AppColors.cyanColor(context),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                  hintText: '--',
-                  // Hint hamesha 0 dikhega
-                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
-                ),
-                onChanged: (_) => setState(() {}),
+                cursorColor: Colors.orangeAccent,
+                decoration: InputDecoration(border: InputBorder.none, hintText: '--', hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5))),
+                onChanged: (_) => setState((){}),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1171,6 +1238,41 @@ class _ShapesViewState extends State<ShapesView> {
       },
     );
   }
+}
+
+// NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
+class TriInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  TriInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    Offset pTop = Offset(size.width / 2, 0);
+    Offset pBottomLeft = Offset(0, size.height);
+    Offset pBottomRight = Offset(size.width, size.height);
+
+    // Base Triangle Draw karein
+    Path path = Path()..moveTo(pTop.dx, pTop.dy)..lineTo(pBottomLeft.dx, pBottomLeft.dy)..lineTo(pBottomRight.dx, pBottomRight.dy)..close();
+    canvas.drawPath(path, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Side A') {
+      canvas.drawLine(pTop, pBottomLeft, hlPaint); // Left side
+    } else if (highlightType == 'Side B') {
+      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Bottom side
+    } else if (highlightType == 'Side C') {
+      canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // NAYA: Right Triangle ke specifically selected part ko highlight karne ke liye Painter
