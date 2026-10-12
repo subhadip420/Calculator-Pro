@@ -242,6 +242,10 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _rhomLenCtrl = TextEditingController(text: '');
   final TextEditingController _rhomWidCtrl = TextEditingController(text: '');
 
+  // --- Circle Arc Input State ---
+  final TextEditingController _arcRadiusCtrl = TextEditingController(text: '');
+  final TextEditingController _arcAngleCtrl = TextEditingController(text: '');
+
   @override
   void dispose() {
     // NAYA: Controllers ko dispose zaroor karein memory leak rokne ke liye
@@ -263,6 +267,9 @@ class _ShapesViewState extends State<ShapesView> {
     // NAYA: Rhombus controllers dispose karein
     _rhomLenCtrl.dispose();
     _rhomWidCtrl.dispose();
+    // NAYA: Circle Arc controllers dispose karein
+    _arcRadiusCtrl.dispose();
+    _arcAngleCtrl.dispose();
     super.dispose();
   }
 
@@ -399,7 +406,7 @@ class _ShapesViewState extends State<ShapesView> {
         return 'Solve a rhombus knowing its diagonals.';
       default:
         // Agar koi case match nahi hota, toh ye default message dikhega
-        return 'Solve a ${shapeName.toLowerCase()} knowing its parameters';
+        return 'Solve a ${shapeName.toLowerCase()} knowing its parameters.';
     }
   }
 
@@ -1274,6 +1281,94 @@ class _ShapesViewState extends State<ShapesView> {
                                         _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
                                         Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
                                         _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
+                        // ==========================================
+                        // YAHAN SE CIRCLE ARC KA CODE ADD KAREIN
+                        // ==========================================
+                      ] else if (currentShape.name == 'Circle arc') ...[
+                        Builder(
+                          builder: (context) {
+                            double radius = double.tryParse(_arcRadiusCtrl.text) ?? 0;
+                            double angle = double.tryParse(_arcAngleCtrl.text) ?? 0;
+
+                            double arcLength = 0, sectorArea = 0, chordLength = 0, perimeter = 0;
+                            bool isValid = false;
+                            String errorMsg = '';
+
+                            if (radius > 0 && angle > 0) {
+                              if (angle <= 360) {
+                                // Calculations
+                                arcLength = 2 * pi * radius * (angle / 360);
+                                sectorArea = pi * radius * radius * (angle / 360);
+                                chordLength = 2 * radius * sin((angle / 2) * (pi / 180));
+                                perimeter = arcLength + (2 * radius);
+
+                                isValid = true;
+                              } else {
+                                errorMsg = 'Angle must be between 1 and 360 degrees.';
+                              }
+                            } else {
+                              errorMsg = 'Enter radius and angle greater than 0.';
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Input', style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 12),
+
+                                // FIXED INPUT ROWS for Circle Arc
+                                _buildFixedInputRow(
+                                  title: 'Radius',
+                                  ctrl: _arcRadiusCtrl,
+                                  icon: CustomPaint(painter: ArcInputPainter(highlightType: 'Radius', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Angle',
+                                  ctrl: _arcAngleCtrl,
+                                  icon: CustomPaint(painter: ArcInputPainter(highlightType: 'Angle', baseColor: AppColors.textGrey(context).withOpacity(0.5), highlightColor: Colors.orangeAccent)),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: Text(_getShapeHintMessage(currentShape.name), style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15))),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(color: AppColors.cyanColor(context).withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(child: Text('Calculation Result', style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold))),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid)
+                                        Center(child: Padding(padding: const EdgeInsets.all(16.0), child: Text(errorMsg, textAlign: TextAlign.center, style: TextStyle(color: Colors.redAccent.withOpacity(0.9), fontSize: 14))))
+                                      else ...[
+                                        _buildResultRow('Sector Area', sectorArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Arc Length', arcLength.toStringAsFixed(2)),
+                                        Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1)),
+                                        _buildResultRow('Chord Length', chordLength.toStringAsFixed(2)),
+                                        _buildResultRow('Sector Perimeter', perimeter.toStringAsFixed(2)),
                                       ]
                                     ],
                                   ),
@@ -2190,6 +2285,47 @@ class RhomInputPainter extends CustomPainter {
       canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
     } else if (highlightType == 'Width') {
       canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// NAYA: Circle Arc ke radius aur angle ko highlight karne ke liye Painter
+class ArcInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  ArcInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+
+    double w = size.width;
+    double h = size.height;
+
+    Offset center = Offset(0, h); // Bottom-left as center
+    Rect rect = Rect.fromCircle(center: center, radius: w);
+
+    // Base Arc Sector Draw karein (Quarter circle jaisa)
+    Path path = Path()
+      ..moveTo(center.dx, center.dy)
+      ..lineTo(center.dx, 0)
+      ..arcToPoint(Offset(w, h), radius: Radius.circular(w), clockwise: true)
+      ..close();
+    canvas.drawPath(path, basePaint);
+
+    // Selected Part Highlight Karein
+    if (highlightType == 'Radius') {
+      canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
+    } else if (highlightType == 'Angle') {
+      // Chota arc draw karein angle dikhane ke liye
+      Paint fillHl = Paint()..color = highlightColor..style = PaintingStyle.fill;
+      canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi/2, pi/2, true, fillHl);
     }
   }
 
