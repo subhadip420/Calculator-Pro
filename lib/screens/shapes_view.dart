@@ -443,113 +443,6 @@ class _ShapesViewState extends State<ShapesView> {
     }
   }
 
-  // --- SHOW BOTTOM SHEET GRID ---
-  // void _showShapeSelectorGrid() {
-  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
-  //
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent, // Background transparent rakha taki custom container dikhe
-  //     isScrollControlled: true,
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         height: MediaQuery.of(context).size.height * 0.75, // 75% of screen height
-  //         decoration: BoxDecoration(
-  //           color: AppColors.surfaceColor(context),
-  //           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-  //           border: Border(top: BorderSide(color: AppColors.textGrey(context).withOpacity(0.3))),
-  //         ),
-  //         child: Column(
-  //           children: [
-  //             // Sheet Handle
-  //             Container(
-  //               width: 40,
-  //               height: 4,
-  //               margin: const EdgeInsets.only(top: 10, bottom: 10),
-  //               decoration: BoxDecoration(
-  //                 color: AppColors.textGrey(context).withOpacity(0.5),
-  //                 borderRadius: BorderRadius.circular(10),
-  //               ),
-  //             ),
-  //
-  //             // Header
-  //             Text(
-  //               'Select Shape',
-  //               style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-  //             ),
-  //             const SizedBox(height: 10),
-  //             Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-  //
-  //             // Grid View
-  //             Expanded(
-  //               child: GridView.builder(
-  //                 padding: const EdgeInsets.all(10),
-  //                 physics: const BouncingScrollPhysics(),
-  //                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //                   crossAxisCount: 3, // 3 columns as per screenshot
-  //                   crossAxisSpacing: 5,
-  //                   mainAxisSpacing: 5,
-  //                   childAspectRatio: 0.85, // Adjust for icon + 2 lines of text
-  //                 ),
-  //                 itemCount: _shapeList.length,
-  //                 itemBuilder: (context, index) {
-  //                   bool isSelected = index == _selectedShapeIndex;
-  //                   ShapeItem item = _shapeList[index];
-  //
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //                       setState(() {
-  //                         _selectedShapeIndex = index;
-  //                       });
-  //                       Navigator.pop(context); // Close sheet on selection
-  //                     },
-  //                     child: Container(
-  //                       decoration: BoxDecoration(
-  //                         color: isSelected ? AppColors.cyanColor(context).withOpacity(0.1) : Colors.transparent,
-  //                         borderRadius: BorderRadius.circular(16),
-  //                         border: Border.all(
-  //                           color: isSelected ? AppColors.cyanColor(context).withOpacity(0.5) : Colors.transparent,
-  //                         ),
-  //                       ),
-  //                       child: Column(
-  //                         mainAxisAlignment: MainAxisAlignment.center,
-  //                         children: [
-  //                           SizedBox(
-  //                             height: 45,
-  //                             child: Center(child: item.iconBuilder), // The Custom Painted Icon
-  //                           ),
-  //                           const SizedBox(height: 10),
-  //                           Text(
-  //                             item.name,
-  //                             textAlign: TextAlign.center,
-  //                             maxLines: 1,
-  //                             overflow: TextOverflow.ellipsis,
-  //                             style: TextStyle(
-  //                               color: AppColors.textColor(context),
-  //                               fontSize: 13,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                           const SizedBox(height: 2),
-  //                           Text(
-  //                             'Shapes', // Subtitle text as per screenshot[cite: 2]
-  //                             style: TextStyle(color: AppColors.textGrey(context), fontSize: 11),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   void _showShapeSelectorGrid() {
     if (_isHapticsEnabled) HapticFeedback.lightImpact();
 
@@ -2483,36 +2376,6 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
-  // NAYA: Result Row Helper
-  // Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 6),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Text(
-  //           label,
-  //           style: TextStyle(
-  //             color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-  //             fontSize: 15,
-  //             fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
-  //           ),
-  //         ),
-  //         Text(
-  //           value,
-  //           style: TextStyle(
-  //             color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
-  //             fontSize: 16,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // NAYA: Result Row Helper (Dynamic Icon ke sath)
-  // NAYA: Result Row Helper (Fixed currentShape Error)
   Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
     // FIX: currentShape.name ki jagah _shapeList[_selectedShapeIndex].name use kiya
     String currentShapeName = _shapeList[_selectedShapeIndex].name;
@@ -3155,51 +3018,6 @@ class _ShapesViewState extends State<ShapesView> {
 
 /// main class
 
-// NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
-// class TriInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   TriInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     Offset pTop = Offset(size.width / 2, 0);
-//     Offset pBottomLeft = Offset(0, size.height);
-//     Offset pBottomRight = Offset(size.width, size.height);
-//
-//     // Base Triangle Draw karein
-//     Path path = Path()
-//       ..moveTo(pTop.dx, pTop.dy)
-//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
-//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
-//       ..close();
-//     canvas.drawPath(path, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Side A') {
-//       canvas.drawLine(pTop, pBottomLeft, hlPaint); // Left side
-//     } else if (highlightType == 'Side B') {
-//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Bottom side
-//     } else if (highlightType == 'Side C') {
-//       canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class TriInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3297,83 +3115,6 @@ class TriInputPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// NAYA: Right Triangle ke specifically selected part ko highlight karne ke liye Painter
-// class RtInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   RtInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     Offset pTop = const Offset(0, 0); // Angle A
-//     Offset pBottomLeft = Offset(0, size.height); // 90 degree
-//     Offset pBottomRight = Offset(size.width, size.height); // Angle B
-//
-//     // Base Triangle Draw karein
-//     Path path = Path()
-//       ..moveTo(pTop.dx, pTop.dy)
-//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
-//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
-//       ..close();
-//     canvas.drawPath(path, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Side A') {
-//       canvas.drawLine(pTop, pBottomLeft, hlPaint);
-//     } else if (highlightType == 'Side B') {
-//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
-//     } else if (highlightType == 'Hypotenuse') {
-//       canvas.drawLine(pTop, pBottomRight, hlPaint);
-//       // } else if (highlightType == 'Angle A') {
-//       //   Paint fillHl = Paint()
-//       //     ..color = highlightColor
-//       //     ..style = PaintingStyle.fill;
-//       //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
-//       // } else if (highlightType == 'Angle B') {
-//       //   Paint fillHl = Paint()
-//       //     ..color = highlightColor
-//       //     ..style = PaintingStyle.fill;
-//       //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
-//       // }
-//     } else if (highlightType == 'Angle A') {
-//       Paint fillHl = Paint()
-//         ..color = highlightColor
-//         ..style = PaintingStyle.fill;
-//
-//       // Angle A (Top): Hypotenuse se shuru karke vertical line (90 degree) tak sweep karega
-//       double startAngle = atan2(size.height, size.width);
-//       double sweepAngle = (pi / 2) - startAngle;
-//
-//       canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
-//     } else if (highlightType == 'Angle B') {
-//       Paint fillHl = Paint()
-//         ..color = highlightColor
-//         ..style = PaintingStyle.fill;
-//
-//       // FIX: startAngle pi (180 degree, Left) rahega.
-//       // Par sweepAngle positive hoga taaki arc triangle ke andar (upar) draw ho.
-//       double startAngle = pi;
-//       double sweepAngle = atan2(size.height, size.width);
-//
-//       canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), startAngle, sweepAngle, true, fillHl);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class RtInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3456,51 +3197,6 @@ class RtInputPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// NAYA: Square ke specifically selected part ko highlight karne ke liye Painter
-// class SqInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   SqInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//     Paint fillPaint = Paint()
-//       ..color = highlightColor.withOpacity(0.6)
-//       ..style = PaintingStyle.fill;
-//
-//     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-//
-//     if (highlightType == 'Area') {
-//       canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga[cite: 5]
-//     } else if (highlightType == 'Perimeter') {
-//       canvas.drawRect(
-//         rect,
-//         Paint()
-//           ..color = highlightColor
-//           ..style = PaintingStyle.stroke
-//           ..strokeWidth = 2.5,
-//       ); // Perimeter mein pura border highlight hoga[cite: 5]
-//     } else {
-//       // Side: Sirf bottom ki line highlight hogi[cite: 5]
-//       canvas.drawRect(rect, basePaint);
-//       canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class SqInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3551,47 +3247,6 @@ class SqInputPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-// NAYA: Rectangle ke specifically selected side ko highlight karne ke liye Painter
-// class RectInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   RectInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
-//     Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
-//
-//     // Base Rectangle Draw karein
-//     canvas.drawRect(rect, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Length') {
-//       canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
-//     } else if (highlightType == 'Width') {
-//       canvas.drawLine(
-//         Offset(size.width, rect.top),
-//         Offset(size.width, rect.bottom),
-//         hlPaint,
-//       ); // Right side wali choti line
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
 
 class RectInputPainter extends CustomPainter {
   final String highlightType;
@@ -3644,58 +3299,6 @@ class RectInputPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-// NAYA: Trapezoid ke selected part ko highlight karne ke liye Painter
-// class TrapInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   TrapInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     // Trapezoid ke 4 points
-//     Offset pTopLeft = Offset(w * 0.25, h * 0.25);
-//     Offset pTopRight = Offset(w * 0.75, h * 0.25);
-//     Offset pBottomLeft = Offset(0, h * 0.85);
-//     Offset pBottomRight = Offset(w, h * 0.85);
-//
-//     // Base Trapezoid Draw karein
-//     Path path = Path()
-//       ..moveTo(pTopLeft.dx, pTopLeft.dy)
-//       ..lineTo(pTopRight.dx, pTopRight.dy)
-//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
-//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
-//       ..close();
-//     canvas.drawPath(path, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Top') {
-//       canvas.drawLine(pTopLeft, pTopRight, hlPaint); // Upar ki line
-//     } else if (highlightType == 'Base') {
-//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Niche ki line
-//     } else if (highlightType == 'Height') {
-//       // Beech mein vertical height draw karein
-//       canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
 
 class TrapInputPainter extends CustomPainter {
   final String highlightType;
@@ -3765,55 +3368,6 @@ class TrapInputPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// NAYA: Rhombus ke diagonals (Length/Width) ko highlight karne ke liye Painter
-// class RhomInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   RhomInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     // Rhombus ke 4 points (Diamond shape)
-//     Offset pTop = Offset(w / 2, 0);
-//     Offset pBottom = Offset(w / 2, h);
-//     Offset pLeft = Offset(0, h / 2);
-//     Offset pRight = Offset(w, h / 2);
-//
-//     // Base Rhombus Draw karein
-//     Path path = Path()
-//       ..moveTo(pTop.dx, pTop.dy)
-//       ..lineTo(pRight.dx, pRight.dy)
-//       ..lineTo(pBottom.dx, pBottom.dy)
-//       ..lineTo(pLeft.dx, pLeft.dy)
-//       ..close();
-//     canvas.drawPath(path, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Length') {
-//       canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
-//     } else if (highlightType == 'Width') {
-//       canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class RhomInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3880,55 +3434,6 @@ class RhomInputPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// NAYA: Circle Arc ke radius aur angle ko highlight karne ke liye Painter
-// class ArcInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   ArcInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     Offset center = Offset(0, h); // Bottom-left as center
-//     Rect rect = Rect.fromCircle(center: center, radius: w);
-//
-//     // Base Arc Sector Draw karein (Quarter circle jaisa)
-//     Path path = Path()
-//       ..moveTo(center.dx, center.dy)
-//       ..lineTo(center.dx, 0)
-//       ..arcToPoint(Offset(w, h), radius: Radius.circular(w), clockwise: true)
-//       ..close();
-//     canvas.drawPath(path, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Radius') {
-//       canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
-//     } else if (highlightType == 'Angle') {
-//       // Chota arc draw karein angle dikhane ke liye
-//       Paint fillHl = Paint()
-//         ..color = highlightColor
-//         ..style = PaintingStyle.fill;
-//       canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class ArcInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3993,46 +3498,6 @@ class ArcInputPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// NAYA: Ellipse ke Radius A (Horizontal) aur Radius B (Vertical) ko highlight karne ke liye Painter
-// class EllipInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   EllipInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     Rect rect = Rect.fromLTWH(0, h * 0.2, w, h * 0.6);
-//     Offset center = Offset(w / 2, h / 2);
-//
-//     // Base Ellipse Draw karein
-//     canvas.drawOval(rect, basePaint);
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Radius A') {
-//       canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
-//     } else if (highlightType == 'Radius B') {
-//       canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
-
 class EllipInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -4071,69 +3536,6 @@ class EllipInputPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-// NAYA: Pentagon ke selected part ko highlight karne ke liye Painter
-// class PentInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   PentInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//     Paint fillPaint = Paint()
-//       ..color = highlightColor.withOpacity(0.6)
-//       ..style = PaintingStyle.fill;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     // Pentagon ke 5 points mathematically set kiye gaye hain
-//     Offset p1 = Offset(w / 2, 0); // Top
-//     Offset p2 = Offset(w, h * 0.38); // Top Right
-//     Offset p3 = Offset(w * 0.81, h); // Bottom Right
-//     Offset p4 = Offset(w * 0.19, h); // Bottom Left
-//     Offset p5 = Offset(0, h * 0.38); // Top Left
-//
-//     // Base Pentagon Draw karein
-//     Path path = Path()
-//       ..moveTo(p1.dx, p1.dy)
-//       ..lineTo(p2.dx, p2.dy)
-//       ..lineTo(p3.dx, p3.dy)
-//       ..lineTo(p4.dx, p4.dy)
-//       ..lineTo(p5.dx, p5.dy)
-//       ..close();
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Area') {
-//       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 5]
-//     } else if (highlightType == 'Perimeter') {
-//       canvas.drawPath(
-//         path,
-//         Paint()
-//           ..color = highlightColor
-//           ..style = PaintingStyle.stroke
-//           ..strokeWidth = 2.5,
-//       ); // Pura border[cite: 5]
-//     } else {
-//       // Side: Sirf bottom ki line highlight hogi[cite: 5]
-//       canvas.drawPath(path, basePaint);
-//       canvas.drawLine(p4, p3, hlPaint);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
 
 class PentInputPainter extends CustomPainter {
   final String highlightType;
@@ -4201,71 +3603,6 @@ class PentInputPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-// NAYA: Hexagon ke selected part ko highlight karne ke liye Painter
-// class HexInputPainter extends CustomPainter {
-//   final String highlightType;
-//   final Color baseColor;
-//   final Color highlightColor;
-//
-//   HexInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint basePaint = Paint()
-//       ..color = baseColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2.0;
-//     Paint hlPaint = Paint()
-//       ..color = highlightColor
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3.0;
-//     Paint fillPaint = Paint()
-//       ..color = highlightColor.withOpacity(0.6)
-//       ..style = PaintingStyle.fill;
-//
-//     double w = size.width;
-//     double h = size.height;
-//
-//     // Hexagon ke 6 points
-//     Offset p1 = Offset(w / 2, 0); // Top
-//     Offset p2 = Offset(w, h * 0.25); // Top Right
-//     Offset p3 = Offset(w, h * 0.75); // Bottom Right
-//     Offset p4 = Offset(w / 2, h); // Bottom
-//     Offset p5 = Offset(0, h * 0.75); // Bottom Left
-//     Offset p6 = Offset(0, h * 0.25); // Top Left
-//
-//     // Base Hexagon Draw karein
-//     Path path = Path()
-//       ..moveTo(p1.dx, p1.dy)
-//       ..lineTo(p2.dx, p2.dy)
-//       ..lineTo(p3.dx, p3.dy)
-//       ..lineTo(p4.dx, p4.dy)
-//       ..lineTo(p5.dx, p5.dy)
-//       ..lineTo(p6.dx, p6.dy)
-//       ..close();
-//
-//     // Selected Part Highlight Karein
-//     if (highlightType == 'Area') {
-//       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 6]
-//     } else if (highlightType == 'Perimeter') {
-//       canvas.drawPath(
-//         path,
-//         Paint()
-//           ..color = highlightColor
-//           ..style = PaintingStyle.stroke
-//           ..strokeWidth = 2.5,
-//       ); // Pura border highlight hoga[cite: 6]
-//     } else {
-//       // Side: Sirf bottom-right ki line highlight hogi image ki tarah[cite: 6]
-//       canvas.drawPath(path, basePaint);
-//       canvas.drawLine(p3, p4, hlPaint);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }
 
 class HexInputPainter extends CustomPainter {
   final String highlightType;
