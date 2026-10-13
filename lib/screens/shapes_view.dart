@@ -2453,20 +2453,89 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
+  // NAYA: Result row ke liye dynamic icon generator
+  Widget _getResultIcon(String shapeName, String label, bool isHighlighted) {
+    // Highlighted row (jaise Area) ke liye Cyan color, baaki ke liye thoda halka Grey/Cyan
+    Color hlColor = isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.8);
+    Color baseColor = AppColors.textGrey(context).withOpacity(0.2);
+
+    CustomPainter? painter;
+    switch (shapeName) {
+      case 'Triangle': painter = TriInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Right triangle': painter = RtInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Square': painter = SqInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Rectangle': painter = RectInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Trapezoid': painter = TrapInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Rhombus': painter = RhomInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Circle arc': painter = ArcInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Ellipse': painter = EllipInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Pentagon': painter = PentInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Hexagon': painter = HexInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Circle': painter = CircInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+    }
+
+    if (painter == null) return const SizedBox.shrink();
+
+    return SizedBox(
+      width: 18,
+      height: 18,
+      child: CustomPaint(painter: painter),
+    );
+  }
+
   // NAYA: Result Row Helper
+  // Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 6),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(
+  //           label,
+  //           style: TextStyle(
+  //             color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+  //             fontSize: 15,
+  //             fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
+  //           ),
+  //         ),
+  //         Text(
+  //           value,
+  //           style: TextStyle(
+  //             color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
+  //             fontSize: 16,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // NAYA: Result Row Helper (Dynamic Icon ke sath)
+  // NAYA: Result Row Helper (Fixed currentShape Error)
   Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
+    // FIX: currentShape.name ki jagah _shapeList[_selectedShapeIndex].name use kiya
+    String currentShapeName = _shapeList[_selectedShapeIndex].name;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-              fontSize: 15,
-              fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
-            ),
+          Row(
+            children: [
+              // Yahan dynamic shape icon aayega
+              _getResultIcon(currentShapeName, label, isHighlighted),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                  fontSize: 15,
+                  fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
           Text(
             value,
@@ -3445,6 +3514,45 @@ class ArcInputPainter extends CustomPainter {
 }
 
 // NAYA: Ellipse ke Radius A (Horizontal) aur Radius B (Vertical) ko highlight karne ke liye Painter
+// class EllipInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   EllipInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     Rect rect = Rect.fromLTWH(0, h * 0.2, w, h * 0.6);
+//     Offset center = Offset(w / 2, h / 2);
+//
+//     // Base Ellipse Draw karein
+//     canvas.drawOval(rect, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Radius A') {
+//       canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
+//     } else if (highlightType == 'Radius B') {
+//       canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class EllipInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3454,14 +3562,9 @@ class EllipInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()
-      ..color = baseColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-    Paint hlPaint = Paint()
-      ..color = highlightColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0;
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3469,14 +3572,19 @@ class EllipInputPainter extends CustomPainter {
     Rect rect = Rect.fromLTWH(0, h * 0.2, w, h * 0.6);
     Offset center = Offset(w / 2, h / 2);
 
-    // Base Ellipse Draw karein
-    canvas.drawOval(rect, basePaint);
-
-    // Selected Part Highlight Karein
-    if (highlightType == 'Radius A') {
-      canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
-    } else if (highlightType == 'Radius B') {
-      canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
+    // Selected Part Highlight Karein (Pehle Area/Perimeter check karenge)
+    if (highlightType == 'Area') {
+      canvas.drawOval(rect, fillPaint); // Area ke liye andar fill karega
+    } else if (highlightType.contains('Perimeter')) {
+      canvas.drawOval(rect, hlPaint); // Perimeter ke liye pura border highlight
+    } else {
+      // Agar Radius A ya B hai, toh base oval draw karke sirf line banayenge
+      canvas.drawOval(rect, basePaint);
+      if (highlightType == 'Radius A') {
+        canvas.drawLine(center, Offset(w, h / 2), hlPaint); // Horizontal Radius
+      } else if (highlightType == 'Radius B') {
+        canvas.drawLine(center, Offset(w / 2, h * 0.2), hlPaint); // Vertical Radius
+      }
     }
   }
 
