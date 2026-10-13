@@ -3364,6 +3364,57 @@ class RectInputPainter extends CustomPainter {
 }
 
 // NAYA: Trapezoid ke selected part ko highlight karne ke liye Painter
+// class TrapInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   TrapInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     // Trapezoid ke 4 points
+//     Offset pTopLeft = Offset(w * 0.25, h * 0.25);
+//     Offset pTopRight = Offset(w * 0.75, h * 0.25);
+//     Offset pBottomLeft = Offset(0, h * 0.85);
+//     Offset pBottomRight = Offset(w, h * 0.85);
+//
+//     // Base Trapezoid Draw karein
+//     Path path = Path()
+//       ..moveTo(pTopLeft.dx, pTopLeft.dy)
+//       ..lineTo(pTopRight.dx, pTopRight.dy)
+//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
+//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+//       ..close();
+//     canvas.drawPath(path, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Top') {
+//       canvas.drawLine(pTopLeft, pTopRight, hlPaint); // Upar ki line
+//     } else if (highlightType == 'Base') {
+//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Niche ki line
+//     } else if (highlightType == 'Height') {
+//       // Beech mein vertical height draw karein
+//       canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class TrapInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3381,6 +3432,9 @@ class TrapInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3391,23 +3445,37 @@ class TrapInputPainter extends CustomPainter {
     Offset pBottomLeft = Offset(0, h * 0.85);
     Offset pBottomRight = Offset(w, h * 0.85);
 
-    // Base Trapezoid Draw karein
+    // Base Trapezoid Draw Path
     Path path = Path()
       ..moveTo(pTopLeft.dx, pTopLeft.dy)
       ..lineTo(pTopRight.dx, pTopRight.dy)
       ..lineTo(pBottomRight.dx, pBottomRight.dy)
       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
       ..close();
-    canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
-    if (highlightType == 'Top') {
-      canvas.drawLine(pTopLeft, pTopRight, hlPaint); // Upar ki line
-    } else if (highlightType == 'Base') {
-      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Niche ki line
-    } else if (highlightType == 'Height') {
-      // Beech mein vertical height draw karein
-      canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
+    if (highlightType == 'Area') {
+      canvas.drawPath(path, fillPaint); // Area select hone par shape fill hoga
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawPath(path, basePaint);
+
+      if (highlightType == 'Top') {
+        canvas.drawLine(pTopLeft, pTopRight, hlPaint); // Upar ki line
+      } else if (highlightType == 'Base') {
+        canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Niche ki line
+      } else if (highlightType == 'Height') {
+        // Beech mein vertical height draw karein
+        canvas.drawLine(Offset(w / 2, h * 0.25), Offset(w / 2, h * 0.85), hlPaint);
+      } else if (highlightType == 'Median (Midline)') {
+        // Midline: Left aur Right slants ke center se horizontal line
+        Offset midLeft = Offset(w * 0.125, h * 0.55);
+        Offset midRight = Offset(w * 0.875, h * 0.55);
+        canvas.drawLine(midLeft, midRight, hlPaint);
+      } else if (highlightType == 'Leg (If Isosceles)') {
+        // Isosceles Leg: Right side ki slant line highlight hogi
+        canvas.drawLine(pTopRight, pBottomRight, hlPaint);
+      }
     }
   }
 
