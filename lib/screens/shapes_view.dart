@@ -3416,6 +3416,54 @@ class TrapInputPainter extends CustomPainter {
 }
 
 // NAYA: Rhombus ke diagonals (Length/Width) ko highlight karne ke liye Painter
+// class RhomInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   RhomInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     // Rhombus ke 4 points (Diamond shape)
+//     Offset pTop = Offset(w / 2, 0);
+//     Offset pBottom = Offset(w / 2, h);
+//     Offset pLeft = Offset(0, h / 2);
+//     Offset pRight = Offset(w, h / 2);
+//
+//     // Base Rhombus Draw karein
+//     Path path = Path()
+//       ..moveTo(pTop.dx, pTop.dy)
+//       ..lineTo(pRight.dx, pRight.dy)
+//       ..lineTo(pBottom.dx, pBottom.dy)
+//       ..lineTo(pLeft.dx, pLeft.dy)
+//       ..close();
+//     canvas.drawPath(path, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Length') {
+//       canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
+//     } else if (highlightType == 'Width') {
+//       canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class RhomInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3433,6 +3481,9 @@ class RhomInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
@@ -3443,20 +3494,35 @@ class RhomInputPainter extends CustomPainter {
     Offset pLeft = Offset(0, h / 2);
     Offset pRight = Offset(w, h / 2);
 
-    // Base Rhombus Draw karein
     Path path = Path()
       ..moveTo(pTop.dx, pTop.dy)
       ..lineTo(pRight.dx, pRight.dy)
       ..lineTo(pBottom.dx, pBottom.dy)
       ..lineTo(pLeft.dx, pLeft.dy)
       ..close();
-    canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
-    if (highlightType == 'Length') {
-      canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
-    } else if (highlightType == 'Width') {
-      canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
+    if (highlightType == 'Area') {
+      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga
+    } else if (highlightType == 'Perimeter') {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Pura border highlight hoga
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawPath(path, basePaint);
+
+      if (highlightType == 'Length') {
+        canvas.drawLine(pLeft, pRight, hlPaint); // Horizontal Diagonal
+      } else if (highlightType == 'Width') {
+        canvas.drawLine(pTop, pBottom, hlPaint); // Vertical Diagonal
+      } else if (highlightType == 'Side' || highlightType == 'Side (Edge)') {
+        canvas.drawLine(pTop, pRight, hlPaint); // Top-Right side (Edge) highlight
+      }
     }
   }
 
