@@ -3,11 +3,10 @@ import 'package:flutter/services.dart';
 
 import '../app_colors.dart';
 
-// TODO: Yahan apni AppColors class aur ShapeItem model ko import karna mat bhulna agar alag file me daal rahe ho!
-
 void showShapeSelectorGrid({
   required BuildContext context,
-  required List<dynamic> shapeList, // TODO: 'dynamic' ko apne 'ShapeItem' model name se replace karein
+  required String title, // NAYA: Title dynamic kar diya
+  required List<dynamic> shapeList,
   required int selectedShapeIndex,
   required bool isHapticsEnabled,
   required ValueChanged<int> onShapeSelected,
@@ -42,7 +41,7 @@ void showShapeSelectorGrid({
 
               // Header
               Text(
-                'Select Shape',
+                title, // FIX: Dynamic title aayega yahan
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -67,8 +66,8 @@ void showShapeSelectorGrid({
                   return GestureDetector(
                     onTap: () {
                       if (isHapticsEnabled) HapticFeedback.selectionClick();
-                      onShapeSelected(index); // NAYA: ye callback main screen ko update karega
-                      Navigator.pop(sheetContext); // Sheet close karega
+                      onShapeSelected(index);
+                      Navigator.pop(sheetContext);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -81,7 +80,12 @@ void showShapeSelectorGrid({
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 45, child: Center(child: item.iconBuilder)),
+                          // FIX: CustomPaint ko width aur height dono chahiye hote hain draw hone ke liye!
+                          SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: item.iconBuilder,
+                          ),
                           const SizedBox(height: 5),
                           Text(
                             item.name,
@@ -94,8 +98,6 @@ void showShapeSelectorGrid({
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text('Shapes', style: TextStyle(color: AppColors.textGrey(context), fontSize: 11)),
                         ],
                       ),
                     ),

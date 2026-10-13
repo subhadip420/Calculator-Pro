@@ -618,7 +618,7 @@ class _ShapesViewState extends State<ShapesView> {
                           setState(() {
                             _selectedShapeIndex = newIndex;
                           });
-                        },
+                        }, title: 'Select Shapes',
                       );
                     },
                     behavior: HitTestBehavior.opaque,
@@ -632,10 +632,9 @@ class _ShapesViewState extends State<ShapesView> {
                       child: Row(
                         children: [
                           // Left side: Shape Image/Icon
-                          Container(
+                          SizedBox( // FIX: Container ko SizedBox kar diya aur alignment hata diya
                             width: 40,
                             height: 40,
-                            alignment: Alignment.center,
                             child: currentShape.iconBuilder,
                           ),
                           const SizedBox(width: 16),
