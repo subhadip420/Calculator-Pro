@@ -3323,6 +3323,46 @@ class SqInputPainter extends CustomPainter {
 }
 
 // NAYA: Rectangle ke specifically selected side ko highlight karne ke liye Painter
+// class RectInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   RectInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
+//     Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
+//
+//     // Base Rectangle Draw karein
+//     canvas.drawRect(rect, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Length') {
+//       canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
+//     } else if (highlightType == 'Width') {
+//       canvas.drawLine(
+//         Offset(size.width, rect.top),
+//         Offset(size.width, rect.bottom),
+//         hlPaint,
+//       ); // Right side wali choti line
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class RectInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3340,22 +3380,34 @@ class RectInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
+    Paint fillPaint = Paint() // NAYA: Area fill karne ke liye paint
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
     Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
 
-    // Base Rectangle Draw karein
-    canvas.drawRect(rect, basePaint);
-
     // Selected Part Highlight Karein
-    if (highlightType == 'Length') {
-      canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
-    } else if (highlightType == 'Width') {
-      canvas.drawLine(
-        Offset(size.width, rect.top),
-        Offset(size.width, rect.bottom),
-        hlPaint,
-      ); // Right side wali choti line
+    if (highlightType == 'Area') {
+      canvas.drawRect(rect, fillPaint); // Area select hone par shape fill hoga
+    } else if (highlightType == 'Perimeter') {
+      canvas.drawRect(rect, hlPaint); // Perimeter mein pura border highlight hoga
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawRect(rect, basePaint);
+
+      if (highlightType == 'Length') {
+        canvas.drawLine(Offset(0, rect.bottom), Offset(size.width, rect.bottom), hlPaint); // Niche wali lambi line
+      } else if (highlightType == 'Width') {
+        canvas.drawLine(
+          Offset(size.width, rect.top),
+          Offset(size.width, rect.bottom),
+          hlPaint,
+        ); // Right side wali choti line
+      } else if (highlightType == 'Diagonal') {
+        // NAYA: Diagonal line from top-left to bottom-right
+        canvas.drawLine(Offset(0, rect.top), Offset(size.width, rect.bottom), hlPaint);
+      }
     }
   }
 
