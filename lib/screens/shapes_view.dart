@@ -3720,6 +3720,70 @@ class PentInputPainter extends CustomPainter {
 }
 
 // NAYA: Hexagon ke selected part ko highlight karne ke liye Painter
+// class HexInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   HexInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//     Paint fillPaint = Paint()
+//       ..color = highlightColor.withOpacity(0.6)
+//       ..style = PaintingStyle.fill;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     // Hexagon ke 6 points
+//     Offset p1 = Offset(w / 2, 0); // Top
+//     Offset p2 = Offset(w, h * 0.25); // Top Right
+//     Offset p3 = Offset(w, h * 0.75); // Bottom Right
+//     Offset p4 = Offset(w / 2, h); // Bottom
+//     Offset p5 = Offset(0, h * 0.75); // Bottom Left
+//     Offset p6 = Offset(0, h * 0.25); // Top Left
+//
+//     // Base Hexagon Draw karein
+//     Path path = Path()
+//       ..moveTo(p1.dx, p1.dy)
+//       ..lineTo(p2.dx, p2.dy)
+//       ..lineTo(p3.dx, p3.dy)
+//       ..lineTo(p4.dx, p4.dy)
+//       ..lineTo(p5.dx, p5.dy)
+//       ..lineTo(p6.dx, p6.dy)
+//       ..close();
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Area') {
+//       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 6]
+//     } else if (highlightType == 'Perimeter') {
+//       canvas.drawPath(
+//         path,
+//         Paint()
+//           ..color = highlightColor
+//           ..style = PaintingStyle.stroke
+//           ..strokeWidth = 2.5,
+//       ); // Pura border highlight hoga[cite: 6]
+//     } else {
+//       // Side: Sirf bottom-right ki line highlight hogi image ki tarah[cite: 6]
+//       canvas.drawPath(path, basePaint);
+//       canvas.drawLine(p3, p4, hlPaint);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class HexInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3764,7 +3828,7 @@ class HexInputPainter extends CustomPainter {
 
     // Selected Part Highlight Karein
     if (highlightType == 'Area') {
-      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 6]
+      canvas.drawPath(path, fillPaint); // Area ke liye andar fill hoga[cite: 3]
     } else if (highlightType == 'Perimeter') {
       canvas.drawPath(
         path,
@@ -3772,11 +3836,18 @@ class HexInputPainter extends CustomPainter {
           ..color = highlightColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
-      ); // Pura border highlight hoga[cite: 6]
+      ); // Perimeter ke liye pura border highlight hoga[cite: 3]
     } else {
-      // Side: Sirf bottom-right ki line highlight hogi image ki tarah[cite: 6]
+      // Baaki sabke liye pehle base shape draw hoga
       canvas.drawPath(path, basePaint);
-      canvas.drawLine(p3, p4, hlPaint);
+
+      if (highlightType == 'Side' || highlightType == 'Side (Edge)') {
+        canvas.drawLine(p3, p4, hlPaint); // Bottom-right ki line highlight hogi[cite: 3]
+      } else if (highlightType == 'Long Diagonal') {
+        canvas.drawLine(p1, p4, hlPaint); // Top se Bottom tak straight vertical line
+      } else if (highlightType == 'Short Diagonal') {
+        canvas.drawLine(p6, p2, hlPaint); // Top-Left se Top-Right tak horizontal line
+      }
     }
   }
 
