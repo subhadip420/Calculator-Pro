@@ -3278,6 +3278,50 @@ class RtInputPainter extends CustomPainter {
 }
 
 // NAYA: Square ke specifically selected part ko highlight karne ke liye Painter
+// class SqInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   SqInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//     Paint fillPaint = Paint()
+//       ..color = highlightColor.withOpacity(0.6)
+//       ..style = PaintingStyle.fill;
+//
+//     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
+//
+//     if (highlightType == 'Area') {
+//       canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga[cite: 5]
+//     } else if (highlightType == 'Perimeter') {
+//       canvas.drawRect(
+//         rect,
+//         Paint()
+//           ..color = highlightColor
+//           ..style = PaintingStyle.stroke
+//           ..strokeWidth = 2.5,
+//       ); // Perimeter mein pura border highlight hoga[cite: 5]
+//     } else {
+//       // Side: Sirf bottom ki line highlight hogi[cite: 5]
+//       canvas.drawRect(rect, basePaint);
+//       canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class SqInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3302,7 +3346,7 @@ class SqInputPainter extends CustomPainter {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
     if (highlightType == 'Area') {
-      canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga[cite: 5]
+      canvas.drawRect(rect, fillPaint); // Area select hone par fill hoga
     } else if (highlightType == 'Perimeter') {
       canvas.drawRect(
         rect,
@@ -3310,11 +3354,18 @@ class SqInputPainter extends CustomPainter {
           ..color = highlightColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
-      ); // Perimeter mein pura border highlight hoga[cite: 5]
+      ); // Perimeter mein pura border highlight hoga
     } else {
-      // Side: Sirf bottom ki line highlight hogi[cite: 5]
+      // Baaki sabke liye pehle base shape draw hoga
       canvas.drawRect(rect, basePaint);
-      canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
+
+      if (highlightType == 'Side' || highlightType == 'Side (Edge)') {
+        // Side: Sirf bottom ki line highlight hogi
+        canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), hlPaint);
+      } else if (highlightType == 'Diagonal') {
+        // Diagonal: Top-Left se Bottom-Right tak straight line
+        canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), hlPaint);
+      }
     }
   }
 
