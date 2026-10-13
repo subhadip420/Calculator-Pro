@@ -3657,6 +3657,68 @@ class EllipInputPainter extends CustomPainter {
 }
 
 // NAYA: Pentagon ke selected part ko highlight karne ke liye Painter
+// class PentInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   PentInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//     Paint fillPaint = Paint()
+//       ..color = highlightColor.withOpacity(0.6)
+//       ..style = PaintingStyle.fill;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     // Pentagon ke 5 points mathematically set kiye gaye hain
+//     Offset p1 = Offset(w / 2, 0); // Top
+//     Offset p2 = Offset(w, h * 0.38); // Top Right
+//     Offset p3 = Offset(w * 0.81, h); // Bottom Right
+//     Offset p4 = Offset(w * 0.19, h); // Bottom Left
+//     Offset p5 = Offset(0, h * 0.38); // Top Left
+//
+//     // Base Pentagon Draw karein
+//     Path path = Path()
+//       ..moveTo(p1.dx, p1.dy)
+//       ..lineTo(p2.dx, p2.dy)
+//       ..lineTo(p3.dx, p3.dy)
+//       ..lineTo(p4.dx, p4.dy)
+//       ..lineTo(p5.dx, p5.dy)
+//       ..close();
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Area') {
+//       canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 5]
+//     } else if (highlightType == 'Perimeter') {
+//       canvas.drawPath(
+//         path,
+//         Paint()
+//           ..color = highlightColor
+//           ..style = PaintingStyle.stroke
+//           ..strokeWidth = 2.5,
+//       ); // Pura border[cite: 5]
+//     } else {
+//       // Side: Sirf bottom ki line highlight hogi[cite: 5]
+//       canvas.drawPath(path, basePaint);
+//       canvas.drawLine(p4, p3, hlPaint);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class PentInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3699,7 +3761,7 @@ class PentInputPainter extends CustomPainter {
 
     // Selected Part Highlight Karein
     if (highlightType == 'Area') {
-      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga[cite: 5]
+      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga
     } else if (highlightType == 'Perimeter') {
       canvas.drawPath(
         path,
@@ -3707,11 +3769,16 @@ class PentInputPainter extends CustomPainter {
           ..color = highlightColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
-      ); // Pura border[cite: 5]
+      ); // Pura border
     } else {
-      // Side: Sirf bottom ki line highlight hogi[cite: 5]
+      // Baaki sabke liye pehle base shape draw hoga
       canvas.drawPath(path, basePaint);
-      canvas.drawLine(p4, p3, hlPaint);
+
+      if (highlightType == 'Side' || highlightType == 'Side (Edge)') {
+        canvas.drawLine(p4, p3, hlPaint); // Bottom line highlight
+      } else if (highlightType == 'Diagonal') {
+        canvas.drawLine(p1, p3, hlPaint); // Top se Bottom-Right diagonal highlight
+      }
     }
   }
 
