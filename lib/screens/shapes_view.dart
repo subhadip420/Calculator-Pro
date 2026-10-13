@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
 import '../custom_top_bar.dart';
+import '../widgets/shape_selector_sheet.dart';
 
 // --- CUSTOM PAINTERS FOR SHAPES (Bina image asset ke draw karne ke liye) ---
 class TrianglePainter extends CustomPainter {
@@ -443,111 +444,111 @@ class _ShapesViewState extends State<ShapesView> {
     }
   }
 
-  void _showShapeSelectorGrid() {
-    if (_isHapticsEnabled) HapticFeedback.lightImpact();
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return SafeArea(
-          // SafeArea add kiya taaki bottom edge se touch na ho
-          child: Container(
-            // FIX: Fixed height yahan se hata di gayi hai
-            decoration: BoxDecoration(
-              color: AppColors.surfaceColor(context),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              border: Border(top: BorderSide(color: AppColors.textGrey(context).withOpacity(0.3))),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // FIX: Jitna content utni jagah lega
-              children: [
-                // Sheet Handle
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.textGrey(context).withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-
-                // Header
-                Text(
-                  'Select Shape',
-                  style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-
-                // Grid View
-                // FIX: Expanded hata diya aur GridView me shrinkWrap: true laga diya
-                GridView.builder(
-                  shrinkWrap: true,
-                  // FIX: Apni height khud grid ke hisaab se adjust karega
-                  padding: const EdgeInsets.all(5),
-                  physics: const BouncingScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 2,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: _shapeList.length,
-                  itemBuilder: (context, index) {
-                    bool isSelected = index == _selectedShapeIndex;
-                    ShapeItem item = _shapeList[index];
-
-                    return GestureDetector(
-                      onTap: () {
-                        if (_isHapticsEnabled) HapticFeedback.selectionClick();
-                        setState(() {
-                          _selectedShapeIndex = index;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppColors.cyanColor(context).withOpacity(0.1) : Colors.transparent,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: isSelected ? AppColors.cyanColor(context).withOpacity(0.5) : Colors.transparent,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 45, child: Center(child: item.iconBuilder)),
-                            const SizedBox(height: 5),
-                            Text(
-                              item.name,
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: AppColors.textColor(context),
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text('Shapes', style: TextStyle(color: AppColors.textGrey(context), fontSize: 11)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 10), // Bottom mein thodi extra space
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // void _showShapeSelectorGrid() {
+  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
+  //
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext context) {
+  //       return SafeArea(
+  //         // SafeArea add kiya taaki bottom edge se touch na ho
+  //         child: Container(
+  //           // FIX: Fixed height yahan se hata di gayi hai
+  //           decoration: BoxDecoration(
+  //             color: AppColors.surfaceColor(context),
+  //             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+  //             border: Border(top: BorderSide(color: AppColors.textGrey(context).withOpacity(0.3))),
+  //           ),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min, // FIX: Jitna content utni jagah lega
+  //             children: [
+  //               // Sheet Handle
+  //               Container(
+  //                 width: 40,
+  //                 height: 4,
+  //                 margin: const EdgeInsets.only(top: 10, bottom: 10),
+  //                 decoration: BoxDecoration(
+  //                   color: AppColors.textGrey(context).withOpacity(0.5),
+  //                   borderRadius: BorderRadius.circular(10),
+  //                 ),
+  //               ),
+  //
+  //               // Header
+  //               Text(
+  //                 'Select Shape',
+  //                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+  //
+  //               // Grid View
+  //               // FIX: Expanded hata diya aur GridView me shrinkWrap: true laga diya
+  //               GridView.builder(
+  //                 shrinkWrap: true,
+  //                 // FIX: Apni height khud grid ke hisaab se adjust karega
+  //                 padding: const EdgeInsets.all(5),
+  //                 physics: const BouncingScrollPhysics(),
+  //                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //                   crossAxisCount: 3,
+  //                   crossAxisSpacing: 2,
+  //                   mainAxisSpacing: 2,
+  //                   childAspectRatio: 1,
+  //                 ),
+  //                 itemCount: _shapeList.length,
+  //                 itemBuilder: (context, index) {
+  //                   bool isSelected = index == _selectedShapeIndex;
+  //                   ShapeItem item = _shapeList[index];
+  //
+  //                   return GestureDetector(
+  //                     onTap: () {
+  //                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
+  //                       setState(() {
+  //                         _selectedShapeIndex = index;
+  //                       });
+  //                       Navigator.pop(context);
+  //                     },
+  //                     child: Container(
+  //                       decoration: BoxDecoration(
+  //                         color: isSelected ? AppColors.cyanColor(context).withOpacity(0.1) : Colors.transparent,
+  //                         borderRadius: BorderRadius.circular(16),
+  //                         border: Border.all(
+  //                           color: isSelected ? AppColors.cyanColor(context).withOpacity(0.5) : Colors.transparent,
+  //                         ),
+  //                       ),
+  //                       child: Column(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           SizedBox(height: 45, child: Center(child: item.iconBuilder)),
+  //                           const SizedBox(height: 5),
+  //                           Text(
+  //                             item.name,
+  //                             textAlign: TextAlign.center,
+  //                             maxLines: 1,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(
+  //                               color: AppColors.textColor(context),
+  //                               fontSize: 13,
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                           const SizedBox(height: 2),
+  //                           Text('Shapes', style: TextStyle(color: AppColors.textGrey(context), fontSize: 11)),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //               const SizedBox(height: 10), // Bottom mein thodi extra space
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -606,7 +607,20 @@ class _ShapesViewState extends State<ShapesView> {
 
                   // --- SELECTOR CARD ---
                   GestureDetector(
-                    onTap: _showShapeSelectorGrid,
+                    //onTap: _showShapeSelectorGrid,
+                    onTap: () {
+                      showShapeSelectorGrid(
+                        context: context,
+                        shapeList: _shapeList,
+                        selectedShapeIndex: _selectedShapeIndex,
+                        isHapticsEnabled: _isHapticsEnabled,
+                        onShapeSelected: (int newIndex) {
+                          setState(() {
+                            _selectedShapeIndex = newIndex;
+                          });
+                        },
+                      );
+                    },
                     behavior: HitTestBehavior.opaque,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
