@@ -3465,6 +3465,54 @@ class RhomInputPainter extends CustomPainter {
 }
 
 // NAYA: Circle Arc ke radius aur angle ko highlight karne ke liye Painter
+// class ArcInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   ArcInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     double w = size.width;
+//     double h = size.height;
+//
+//     Offset center = Offset(0, h); // Bottom-left as center
+//     Rect rect = Rect.fromCircle(center: center, radius: w);
+//
+//     // Base Arc Sector Draw karein (Quarter circle jaisa)
+//     Path path = Path()
+//       ..moveTo(center.dx, center.dy)
+//       ..lineTo(center.dx, 0)
+//       ..arcToPoint(Offset(w, h), radius: Radius.circular(w), clockwise: true)
+//       ..close();
+//     canvas.drawPath(path, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Radius') {
+//       canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
+//     } else if (highlightType == 'Angle') {
+//       // Chota arc draw karein angle dikhane ke liye
+//       Paint fillHl = Paint()
+//         ..color = highlightColor
+//         ..style = PaintingStyle.fill;
+//       canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class ArcInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3478,16 +3526,21 @@ class ArcInputPainter extends CustomPainter {
       ..color = baseColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
+
     Paint hlPaint = Paint()
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
 
+    // NAYA: Area fill karne ke liye paint
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
+
     double w = size.width;
     double h = size.height;
 
     Offset center = Offset(0, h); // Bottom-left as center
-    Rect rect = Rect.fromCircle(center: center, radius: w);
 
     // Base Arc Sector Draw karein (Quarter circle jaisa)
     Path path = Path()
@@ -3495,17 +3548,28 @@ class ArcInputPainter extends CustomPainter {
       ..lineTo(center.dx, 0)
       ..arcToPoint(Offset(w, h), radius: Radius.circular(w), clockwise: true)
       ..close();
-    canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
-    if (highlightType == 'Radius') {
-      canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
-    } else if (highlightType == 'Angle') {
-      // Chota arc draw karein angle dikhane ke liye
-      Paint fillHl = Paint()
-        ..color = highlightColor
-        ..style = PaintingStyle.fill;
-      canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
+    if (highlightType == 'Sector Area') {
+      canvas.drawPath(path, fillPaint); // Area mein fill hoga
+    } else if (highlightType == 'Sector Perimeter') {
+      canvas.drawPath(path, hlPaint); // Perimeter mein pura border
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawPath(path, basePaint);
+
+      if (highlightType == 'Radius') {
+        canvas.drawLine(center, Offset(w, h), hlPaint); // Bottom radius line
+      } else if (highlightType == 'Angle') {
+        Paint fillHl = Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.fill;
+        canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
+      } else if (highlightType == 'Arc Length') {
+        canvas.drawArc(Rect.fromCircle(center: center, radius: w), -pi / 2, pi / 2, false, hlPaint); // Sirf curve highlight hoga
+      } else if (highlightType == 'Chord Length') {
+        canvas.drawLine(Offset(0, 0), Offset(w, h), hlPaint); // Top-left se bottom-right straight line
+      }
     }
   }
 
