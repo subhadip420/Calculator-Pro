@@ -3156,6 +3156,50 @@ class _ShapesViewState extends State<ShapesView> {
 /// main class
 
 // NAYA: Normal Triangle ke specifically selected side ko highlight karne ke liye Painter
+// class TriInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   TriInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     Offset pTop = Offset(size.width / 2, 0);
+//     Offset pBottomLeft = Offset(0, size.height);
+//     Offset pBottomRight = Offset(size.width, size.height);
+//
+//     // Base Triangle Draw karein
+//     Path path = Path()
+//       ..moveTo(pTop.dx, pTop.dy)
+//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
+//       ..close();
+//     canvas.drawPath(path, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Side A') {
+//       canvas.drawLine(pTop, pBottomLeft, hlPaint); // Left side
+//     } else if (highlightType == 'Side B') {
+//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Bottom side
+//     } else if (highlightType == 'Side C') {
+//       canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class TriInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3173,26 +3217,79 @@ class TriInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
-    Offset pTop = Offset(size.width / 2, 0);
-    Offset pBottomLeft = Offset(0, size.height);
-    Offset pBottomRight = Offset(size.width, size.height);
+    double w = size.width;
+    double h = size.height;
 
-    // Base Triangle Draw karein
+    Offset pTop = Offset(w / 2, 0);
+    Offset pBottomLeft = Offset(0, h);
+    Offset pBottomRight = Offset(w, h);
+
+    // Base Triangle Draw Path
     Path path = Path()
       ..moveTo(pTop.dx, pTop.dy)
       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
       ..lineTo(pBottomRight.dx, pBottomRight.dy)
       ..close();
-    canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
-    if (highlightType == 'Side A') {
-      canvas.drawLine(pTop, pBottomLeft, hlPaint); // Left side
-    } else if (highlightType == 'Side B') {
-      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Bottom side
-    } else if (highlightType == 'Side C') {
-      canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
+    if (highlightType == 'Area') {
+      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga
+    } else if (highlightType == 'Perimeter' || highlightType == 'Semi-Perimeter') {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Perimeter ke liye pura border highlight hoga
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawPath(path, basePaint);
+
+      Paint fillHl = Paint()
+        ..color = highlightColor
+        ..style = PaintingStyle.fill;
+
+      // SIDES
+      if (highlightType == 'Side A') {
+        canvas.drawLine(pTop, pBottomLeft, hlPaint); // Left side
+      } else if (highlightType == 'Side B') {
+        canvas.drawLine(pBottomLeft, pBottomRight, hlPaint); // Bottom side
+      } else if (highlightType == 'Side C') {
+        canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
+      }
+
+      // ANGLES
+      else if (highlightType == 'Angle: AB') {
+        // Bottom-Left Angle (Side A aur Side B ke beech)
+        double sweep = atan2(h, w / 2);
+        canvas.drawArc(Rect.fromCircle(center: pBottomLeft, radius: 8), 0, -sweep, true, fillHl);
+      } else if (highlightType == 'Angle: BC') {
+        // Bottom-Right Angle (Side B aur Side C ke beech)
+        double sweep = atan2(h, w / 2);
+        canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), pi, sweep, true, fillHl);
+      } else if (highlightType == 'Angle: AC') {
+        // Top Angle (Side A aur Side C ke beech)
+        double start = atan2(h, w / 2);
+        double sweep = pi - (2 * start);
+        canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), start, sweep, true, fillHl);
+      }
+
+      // HEIGHTS (Altitudes)
+      else if (highlightType == 'Height: A') {
+        // Height to Side A (Right Vertex se Left Side par perpendicular)
+        canvas.drawLine(pBottomRight, Offset(w * 0.25, h * 0.5), hlPaint);
+      } else if (highlightType == 'Height: B') {
+        // Height to Side B (Top Vertex se Bottom Side par perpendicular straight line)
+        canvas.drawLine(pTop, Offset(w / 2, h), hlPaint);
+      } else if (highlightType == 'Height: C') {
+        // Height to Side C (Left Vertex se Right Side par perpendicular)
+        canvas.drawLine(pBottomLeft, Offset(w * 0.75, h * 0.5), hlPaint);
+      }
     }
   }
 
