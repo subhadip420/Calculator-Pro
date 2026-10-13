@@ -3201,6 +3201,82 @@ class TriInputPainter extends CustomPainter {
 }
 
 // NAYA: Right Triangle ke specifically selected part ko highlight karne ke liye Painter
+// class RtInputPainter extends CustomPainter {
+//   final String highlightType;
+//   final Color baseColor;
+//   final Color highlightColor;
+//
+//   RtInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint basePaint = Paint()
+//       ..color = baseColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 2.0;
+//     Paint hlPaint = Paint()
+//       ..color = highlightColor
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 3.0;
+//
+//     Offset pTop = const Offset(0, 0); // Angle A
+//     Offset pBottomLeft = Offset(0, size.height); // 90 degree
+//     Offset pBottomRight = Offset(size.width, size.height); // Angle B
+//
+//     // Base Triangle Draw karein
+//     Path path = Path()
+//       ..moveTo(pTop.dx, pTop.dy)
+//       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
+//       ..lineTo(pBottomRight.dx, pBottomRight.dy)
+//       ..close();
+//     canvas.drawPath(path, basePaint);
+//
+//     // Selected Part Highlight Karein
+//     if (highlightType == 'Side A') {
+//       canvas.drawLine(pTop, pBottomLeft, hlPaint);
+//     } else if (highlightType == 'Side B') {
+//       canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
+//     } else if (highlightType == 'Hypotenuse') {
+//       canvas.drawLine(pTop, pBottomRight, hlPaint);
+//       // } else if (highlightType == 'Angle A') {
+//       //   Paint fillHl = Paint()
+//       //     ..color = highlightColor
+//       //     ..style = PaintingStyle.fill;
+//       //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
+//       // } else if (highlightType == 'Angle B') {
+//       //   Paint fillHl = Paint()
+//       //     ..color = highlightColor
+//       //     ..style = PaintingStyle.fill;
+//       //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
+//       // }
+//     } else if (highlightType == 'Angle A') {
+//       Paint fillHl = Paint()
+//         ..color = highlightColor
+//         ..style = PaintingStyle.fill;
+//
+//       // Angle A (Top): Hypotenuse se shuru karke vertical line (90 degree) tak sweep karega
+//       double startAngle = atan2(size.height, size.width);
+//       double sweepAngle = (pi / 2) - startAngle;
+//
+//       canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
+//     } else if (highlightType == 'Angle B') {
+//       Paint fillHl = Paint()
+//         ..color = highlightColor
+//         ..style = PaintingStyle.fill;
+//
+//       // FIX: startAngle pi (180 degree, Left) rahega.
+//       // Par sweepAngle positive hoga taaki arc triangle ke andar (upar) draw ho.
+//       double startAngle = pi;
+//       double sweepAngle = atan2(size.height, size.width);
+//
+//       canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), startAngle, sweepAngle, true, fillHl);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 class RtInputPainter extends CustomPainter {
   final String highlightType;
   final Color baseColor;
@@ -3218,58 +3294,64 @@ class RtInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
+    Paint fillPaint = Paint() // NAYA: Area fill karne ke liye
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     Offset pTop = const Offset(0, 0); // Angle A
     Offset pBottomLeft = Offset(0, size.height); // 90 degree
     Offset pBottomRight = Offset(size.width, size.height); // Angle B
 
-    // Base Triangle Draw karein
+    // Base Triangle Draw Path
     Path path = Path()
       ..moveTo(pTop.dx, pTop.dy)
       ..lineTo(pBottomLeft.dx, pBottomLeft.dy)
       ..lineTo(pBottomRight.dx, pBottomRight.dy)
       ..close();
-    canvas.drawPath(path, basePaint);
 
     // Selected Part Highlight Karein
-    if (highlightType == 'Side A') {
-      canvas.drawLine(pTop, pBottomLeft, hlPaint);
-    } else if (highlightType == 'Side B') {
-      canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
-    } else if (highlightType == 'Hypotenuse') {
-      canvas.drawLine(pTop, pBottomRight, hlPaint);
-      // } else if (highlightType == 'Angle A') {
-      //   Paint fillHl = Paint()
-      //     ..color = highlightColor
-      //     ..style = PaintingStyle.fill;
-      //   canvas.drawArc(Rect.fromCircle(center: pTop, radius: 10), 0, pi / 2, true, fillHl);
-      // } else if (highlightType == 'Angle B') {
-      //   Paint fillHl = Paint()
-      //     ..color = highlightColor
-      //     ..style = PaintingStyle.fill;
-      //   canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 10), pi, -pi / 4, true, fillHl);
-      // }
-    } else if (highlightType == 'Angle A') {
-      Paint fillHl = Paint()
-        ..color = highlightColor
-        ..style = PaintingStyle.fill;
+    if (highlightType == 'Area') {
+      canvas.drawPath(path, fillPaint); // Area select hone par fill hoga
+    } else if (highlightType == 'Perimeter') {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      ); // Perimeter mein pura border highlight hoga
+    } else {
+      // Baaki sabke liye pehle base shape draw hoga
+      canvas.drawPath(path, basePaint);
 
-      // Angle A (Top): Hypotenuse se shuru karke vertical line (90 degree) tak sweep karega
-      double startAngle = atan2(size.height, size.width);
-      double sweepAngle = (pi / 2) - startAngle;
+      if (highlightType == 'Side A') {
+        canvas.drawLine(pTop, pBottomLeft, hlPaint);
+      } else if (highlightType == 'Side B') {
+        canvas.drawLine(pBottomLeft, pBottomRight, hlPaint);
+      } else if (highlightType == 'Hypotenuse') {
+        canvas.drawLine(pTop, pBottomRight, hlPaint);
+      } else if (highlightType == 'Angle A') {
+        Paint fillHl = Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.fill;
 
-      canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
-    } else if (highlightType == 'Angle B') {
-      Paint fillHl = Paint()
-        ..color = highlightColor
-        ..style = PaintingStyle.fill;
+        // Angle A (Top): Hypotenuse se shuru karke vertical line (90 degree) tak sweep karega
+        double startAngle = atan2(size.height, size.width);
+        double sweepAngle = (pi / 2) - startAngle;
 
-      // FIX: startAngle pi (180 degree, Left) rahega.
-      // Par sweepAngle positive hoga taaki arc triangle ke andar (upar) draw ho.
-      double startAngle = pi;
-      double sweepAngle = atan2(size.height, size.width);
+        canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), startAngle, sweepAngle, true, fillHl);
+      } else if (highlightType == 'Angle B') {
+        Paint fillHl = Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.fill;
 
-      canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), startAngle, sweepAngle, true, fillHl);
+        // FIX: startAngle pi (180 degree, Left) rahega.
+        // Par sweepAngle positive hoga taaki arc triangle ke andar (upar) draw ho.
+        double startAngle = pi;
+        double sweepAngle = atan2(size.height, size.width);
+
+        canvas.drawArc(Rect.fromCircle(center: pBottomRight, radius: 8), startAngle, sweepAngle, true, fillHl);
+      }
     }
   }
 
