@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
@@ -26,10 +29,43 @@ class _BodiesViewState extends State<BodiesView> {
   int _selectedShapeIndex = 0;
   List<BodyShapeItem> _shapeList = [];
 
+  String _cubeInputType = 'Side'; // Default input type
+  final TextEditingController _cubeValCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _loadSettings();
+  }
+
+  String _getBodyHintMessage(String shapeName) {
+    switch (shapeName) {
+      case 'Cube':
+        return 'Solve a cube knowing its edge length.';
+      case 'Prism':
+        return 'Solve a prism knowing its base dimensions and height.';
+      case 'Pyramid':
+        return 'Solve a pyramid knowing its base dimensions and height.';
+      case 'Pyramid frustum':
+        return 'Solve a pyramid frustum knowing its base edges and height.';
+      case 'Cone':
+        return 'Solve a cone knowing its base radius and height.';
+      case 'Cone frustum':
+        return 'Solve a cone frustum knowing its base radii and height.';
+      case 'Cylinder':
+        return 'Solve a cylinder knowing its base radius and height.';
+      case 'Sphere':
+        return 'Solve a sphere knowing its radius.';
+      case 'Sphere cap':
+        return 'Solve a sphere cap knowing its radius and height.';
+      case 'Sphere segment':
+        return 'Solve a sphere segment knowing its radii and height.';
+      case 'Ellipsoid':
+        return 'Solve an ellipsoid knowing its semi-axes.';
+      default:
+      // Agar koi future shape add hota hai, toh default message aayega
+        return 'Solve a ${shapeName.toLowerCase()} knowing its parameters.';
+    }
   }
 
   @override
@@ -91,6 +127,13 @@ class _BodiesViewState extends State<BodiesView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
+                  // --- TITLE ---
+                  Text(
+                    'Select Bodies',
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+
                   // --- SELECTOR CARD ---
                   GestureDetector(
                     onTap: () {
@@ -142,21 +185,155 @@ class _BodiesViewState extends State<BodiesView> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 24),
 
-                  Center(
-                    child: Column(
-                      children: [
-                        Icon(Icons.construction_rounded, size: 48, color: AppColors.textGrey(context).withOpacity(0.5)),
-                        const SizedBox(height: 16),
-                        Text(
-                          '${currentShape.name} Inputs & Results\nComing Soon...',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 16),
-                        ),
-                      ],
+                  /// ==========================================
+                  /// YAHAN SE CUBE KA CODE ADD KAREIN
+                  /// ==========================================
+                  if (currentShape.name == 'Cube') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_cubeValCtrl.text) ?? 0;
+                        double side = 0, volume = 0, totalArea = 0, lateralArea = 0, diagFace = 0, diagSpace = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (val > 0) {
+                          // Reverse Engineering the Side (a) based on input type
+                          if (_cubeInputType == 'Side') {
+                            side = val;
+                          } else if (_cubeInputType == 'Total area') {
+                            side = sqrt(val / 6); // Area = 6a² => a = √(Area/6)
+                          } else if (_cubeInputType == 'Lateral area') {
+                            side = sqrt(val / 4); // Lat Area = 4a² => a = √(Area/4)
+                          } else if (_cubeInputType == 'Volume') {
+                            side = pow(val, 1 / 3).toDouble(); // Volume = a³ => a = ∛Volume
+                          }
+
+                          // Jab Side mil gayi, toh baaki sab asani se nikal aayega
+                          volume = pow(side, 3).toDouble();
+                          totalArea = 6 * side * side;
+                          lateralArea = 4 * side * side;
+                          diagFace = side * sqrt(2); // Face diagonal (d)
+                          diagSpace = side * sqrt(3); // Space/Main diagonal (D)
+
+                          isValid = true;
+                        } else if (_cubeValCtrl.text.isNotEmpty) {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Cube ka dynamic input row
+                            _buildCubeInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name), // 3D Hint Method
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && _cubeValCtrl.text.isNotEmpty)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    // Primary Results (Highlighted)
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    // Secondary Results
+                                    _buildResultRow('Side', side.toStringAsFixed(2)),
+                                    _buildResultRow('Face Diagonal', diagFace.toStringAsFixed(2)),
+                                    _buildResultRow('Space Diagonal', diagSpace.toStringAsFixed(2)),
+                                  ] else ...[
+                                    // Jab input khali ho tab placeholder text
+                                    Center(
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                        )
+                                    )
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
                     ),
-                  )
+                  ],// end
                 ],
               ),
             ),
@@ -165,6 +342,356 @@ class _BodiesViewState extends State<BodiesView> {
       ),
     );
   }
+  /// end main build widget
+
+// NAYA & MASTER: Dynamic Fixed Input Row Builder (Bina dropdown ke)
+  Widget _buildFixedInputRow({
+    required String title,
+    required TextEditingController ctrl,
+    required Widget icon, // NAYA: Koi bhi widget (icon/painter) pass kar sakte hain
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          // Icon aur Title Box
+          Expanded(
+            flex: 5,
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: icon, // Dynamic icon yahan render hoga
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    title,
+                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // TextField Box
+          Expanded(
+            flex: 4,
+            child: Container(
+              height: 60,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: TextField(
+                controller: ctrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                cursorColor: AppColors.orangeColor(context),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '--',
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // NAYA: 3D Bodies ke liye Dynamic Bottom Sheet
+  void _showDynamicInputSelectorSheet({
+    required List<String> options,
+    required String currentSelection,
+    required double heightFraction,
+    required Widget Function(String) iconBuilder,
+    required ValueChanged<String> onSelected,
+  }) {
+    if (_isHapticsEnabled) HapticFeedback.lightImpact();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        return Container(
+          height: MediaQuery.of(context).size.height * heightFraction, // FIX: '*' multiply ka sign missing tha
+          decoration: BoxDecoration(
+            color: AppColors.surfaceColor(context),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(sheetContext),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textColor(context), size: 20),
+                    ),
+                    const SizedBox(width: 15),
+                    Text(
+                      'Select Input',
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+
+              // List Items
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: options.length,
+                  itemBuilder: (context, i) {
+                    String opt = options[i];
+                    bool isSelected = opt == currentSelection;
+
+                    // 3D mein split ki utni zarurat nahi, kyunki names mostly 'Radius', 'Height' aise simple honge.
+                    // Par agar "Radius 1", "Radius 2" hue toh yeh logic kaam aa jayega.
+                    List<String> parts = opt.split(' ');
+                    String mTitle = parts[0];
+                    String sTitle = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (_isHapticsEnabled) HapticFeedback.selectionClick();
+                        onSelected(opt);
+                        Navigator.pop(sheetContext);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.textGrey(context).withOpacity(0.15) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            // 3D icon yahan draw hoga
+                            SizedBox(width: 24, height: 24, child: iconBuilder(opt)),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  mTitle,
+                                  style: TextStyle(
+                                    color: AppColors.textColor(context),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (sTitle.isNotEmpty)
+                                  Text(sTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
+                              ],
+                            ),
+                            const Spacer(),
+                            if (isSelected)
+                              Icon(Icons.check_circle_rounded, color: AppColors.cyanColor(context), size: 20),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // NAYA: 3D Bodies ke liye Result Icon Generator
+  Widget _getResultIcon(String shapeName, String label, bool isHighlighted) {
+    // Highlighted row (jaise Volume) ke liye Cyan color, baaki ke liye Grey
+    Color iconColor = isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.8);
+
+    CustomPainter? painter;
+    switch (shapeName) {
+    // _getResultIcon function mein ise update karein:
+      case 'Cube':
+        painter = CubeInputPainter(
+            highlightType: label,
+            baseColor: AppColors.textGrey(context).withOpacity(0.2),
+            highlightColor: iconColor
+        );
+        break;
+      case 'Prism': painter = PrismPainter(color: iconColor); break;
+      case 'Pyramid': painter = PyramidPainter(color: iconColor); break;
+      case 'Pyramid frustum': painter = PyrFrustumPainter(color: iconColor); break;
+      case 'Cone': painter = ConePainter(color: iconColor); break;
+      case 'Cone frustum': painter = ConeFrustumPainter(color: iconColor); break;
+      case 'Cylinder': painter = CylinderPainter(color: iconColor); break;
+      case 'Sphere': painter = SpherePainter(color: iconColor); break;
+      case 'Sphere cap': painter = SphereCapPainter(color: iconColor); break;
+      case 'Sphere segment': painter = SphereSegPainter(color: iconColor); break;
+      case 'Ellipsoid': painter = EllipsoidPainter(color: iconColor); break;
+    }
+
+    if (painter == null) return const SizedBox.shrink();
+
+    return SizedBox(
+      width: 18,
+      height: 18,
+      child: CustomPaint(painter: painter),
+    );
+  }
+
+  Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
+    // FIX: currentShape.name ki jagah _shapeList[_selectedShapeIndex].name use kiya
+    String currentShapeName = _shapeList[_selectedShapeIndex].name;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              // Yahan dynamic shape icon aayega
+              _getResultIcon(currentShapeName, label, isHighlighted),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                  fontSize: 15,
+                  fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // NAYA: Cube ka dynamic input sheet wrapper
+  void _showCubeSelectorSheet() {
+    _showDynamicInputSelectorSheet(
+      options: ['Side', 'Total area', 'Lateral area', 'Volume'],
+      currentSelection: _cubeInputType,
+      heightFraction: 0.55, // Cube mein 4 options hain, to thoda height badha diya
+      iconBuilder: (opt) => CustomPaint(
+        painter: CubeInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: AppColors.orangeColor(context),
+        ),
+      ),
+      onSelected: (selectedVal) {
+        setState(() => _cubeInputType = selectedVal);
+      },
+    );
+  }
+  Widget _buildCubeInputRow() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          // Dropdown Selector (Left Side)
+          Expanded(
+            flex: 5,
+            child: GestureDetector(
+              onTap: _showCubeSelectorSheet, // FIX: Direct naya wrapper function call kiya
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                height: 60,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceColor(context).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      // FIX: Yahan dynamic CubeInputPainter use kiya taaki selected option highlight ho
+                      child: CustomPaint(
+                        painter: CubeInputPainter(
+                          highlightType: _cubeInputType,
+                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                          highlightColor: AppColors.orangeColor(context),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _cubeInputType,
+                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Input Field (Right Side)
+          Expanded(
+            flex: 4,
+            child: Container(
+              height: 60,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: TextField(
+                controller: _cubeValCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                cursorColor: AppColors.orangeColor(context),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '--',
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 // ==========================================
@@ -351,4 +878,96 @@ class EllipsoidPainter extends CustomPainter {
   }
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
+}
+
+class CubeInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  CubeInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.7)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+    double off = w * 0.3; // 3D depth offset
+
+    // Cube ke 8 Points/Vertices mathematically
+    Offset fTL = Offset(0, off); // Front Top-Left
+    Offset fTR = Offset(w - off, off); // Front Top-Right
+    Offset fBL = Offset(0, h); // Front Bottom-Left
+    Offset fBR = Offset(w - off, h); // Front Bottom-Right
+
+    Offset bTL = Offset(off, 0); // Back Top-Left
+    Offset bTR = Offset(w, 0); // Back Top-Right
+    Offset bBL = Offset(off, h - off); // Back Bottom-Left
+    Offset bBR = Offset(w, h - off); // Back Bottom-Right
+
+    // Faces ke paths
+    Path topFace = Path()..moveTo(fTL.dx, fTL.dy)..lineTo(bTL.dx, bTL.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(fTR.dx, fTR.dy)..close();
+    Path rightFace = Path()..moveTo(fTR.dx, fTR.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(fBR.dx, fBR.dy)..close();
+    Rect frontFace = Rect.fromLTWH(0, off, w - off, h - off);
+    Rect backFace = Rect.fromLTWH(off, 0, w - off, h - off);
+
+    // 1. FILL HIGHLIGHTS
+    if (highlightType == 'Volume') {
+      // Volume me poora andar ka hissa solid fill hoga
+      canvas.drawRect(backFace, fillPaint);
+      canvas.drawPath(topFace, fillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+      canvas.drawRect(frontFace, darkFillPaint);
+    } else if (highlightType == 'Total area') {
+      // Total area me saare visible faces ko light color se fill karenge
+      canvas.drawRect(backFace, fillPaint);
+      canvas.drawPath(topFace, fillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+      canvas.drawRect(frontFace, fillPaint);
+    } else if (highlightType == 'Lateral area') {
+      // Lateral area me sirf side walls (Front aur Right) fill hongi, Top aur Bottom khali rahenge
+      canvas.drawPath(rightFace, fillPaint);
+      canvas.drawRect(frontFace, darkFillPaint);
+    }
+
+    // 2. DRAW BASE CUBE LINES (Edges)
+    canvas.drawRect(backFace, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+    canvas.drawRect(frontFace, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(fTL, bTL, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(fTR, bTR, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(fBL, bBL, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(fBR, bBR, highlightType == 'Total area' ? hlStrokePaint : basePaint);
+
+    // 3. STROKE HIGHLIGHTS (Lines / Diagonals)
+    if (highlightType == 'Side' || highlightType == 'Side (Edge)') {
+      // Sirf front bottom edge ko highlight karenge
+      canvas.drawLine(fBL, fBR, hlStrokePaint);
+    } else if (highlightType == 'Face Diagonal') {
+      // Front face ka diagonal (Top-Left se Bottom-Right)
+      canvas.drawLine(fTL, fBR, hlStrokePaint);
+    } else if (highlightType == 'Space Diagonal') {
+      // Body/Space diagonal (Front Bottom-Left se Back Top-Right, Cube ke beech se)
+      canvas.drawLine(fBL, bTR, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5..strokeCap = StrokeCap.round);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
