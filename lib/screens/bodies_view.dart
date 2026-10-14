@@ -56,6 +56,9 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _cylRadiusCtrl = TextEditingController();
   final TextEditingController _cylHeightCtrl = TextEditingController();
 
+  final TextEditingController _sCapRadiusCtrl = TextEditingController();
+  final TextEditingController _sCapHeightCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -1399,6 +1402,153 @@ class _BodiesViewState extends State<BodiesView> {
                                   },
                                 ),
                               ]
+                              /// ==========================================
+                              /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
+                              /// ==========================================
+                              /// ==========================================
+                              /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
+                              /// ==========================================
+                              else if (currentShape.name == 'Sphere cap') ...[
+                                  Builder(
+                                    builder: (context) {
+                                      double baseRadius = double.tryParse(_sCapRadiusCtrl.text) ?? 0; // Input: Base Radius (a)
+                                      double height = double.tryParse(_sCapHeightCtrl.text) ?? 0;     // Input: Cap Height (h)
+
+                                      double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, sphereRadius = 0;
+                                      bool isValid = false;
+
+                                      if (baseRadius > 0 && height > 0) {
+                                        // Sphere Radius (R) = (a² + h²) / (2h)
+                                        sphereRadius = ((baseRadius * baseRadius) + (height * height)) / (2 * height);
+
+                                        // Base Area = π * a²
+                                        baseArea = pi * baseRadius * baseRadius;
+
+                                        // Lateral (Dome) Area = 2 * π * R * h
+                                        lateralArea = 2 * pi * sphereRadius * height;
+
+                                        // Total Area = Lateral Area + Base Area
+                                        totalArea = lateralArea + baseArea;
+
+                                        // Volume = (1/3) * π * h² * (3R - h)
+                                        volume = (1 / 3) * pi * height * height * ((3 * sphereRadius) - height);
+
+                                        isValid = true;
+                                      }
+
+                                      bool hasPartialInput = _sCapRadiusCtrl.text.isNotEmpty || _sCapHeightCtrl.text.isNotEmpty;
+
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Input',
+                                            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(height: 12),
+
+                                          // 2 Fixed Inputs: Base radius and Height
+                                          _buildFixedInputRow(
+                                            title: 'Base radius (a)', // FIX: Ab yeh Base radius hai
+                                            ctrl: _sCapRadiusCtrl,
+                                            icon: CustomPaint(
+                                              painter: SphereCapInputPainter(
+                                                highlightType: 'Base radius', // Painter mein humne 'Base radius' ka highlight banaya tha
+                                                baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                highlightColor: AppColors.orangeColor(context),
+                                              ),
+                                            ),
+                                          ),
+                                          _buildFixedInputRow(
+                                            title: 'Height (h)',
+                                            ctrl: _sCapHeightCtrl,
+                                            icon: CustomPaint(
+                                              painter: SphereCapInputPainter(
+                                                highlightType: 'Height',
+                                                baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                highlightColor: AppColors.orangeColor(context),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+
+                                          // Dynamic Hint Banner
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  _getBodyHintMessage(currentShape.name),
+                                                  style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 24),
+
+                                          // Result Container
+                                          Container(
+                                            padding: const EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.cyanColor(context).withOpacity(0.05),
+                                              borderRadius: BorderRadius.circular(20),
+                                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    'Calculation Result',
+                                                    style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                                const SizedBox(height: 12),
+
+                                                if (!isValid && hasPartialInput)
+                                                  Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(16.0),
+                                                      child: Text(
+                                                        'Enter values greater than 0 for both Base Radius and Height.',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                                      ),
+                                                    ),
+                                                  )
+                                                else if (isValid) ...[
+                                                  _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                                  _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                                  _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                                    child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                                  ),
+
+                                                  _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                                  _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)), // FIX: Result mein Sphere radius dikhayenge
+                                                ] else ...[
+                                                  Center(
+                                                      child: Text(
+                                                        'Enter both values to see results.',
+                                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                                      )
+                                                  )
+                                                ],
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 40),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ]
                 ],
               ),
             ),
@@ -1673,7 +1823,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Sphere cap': painter = SphereCapPainter(color: iconColor); break;
+      case 'Sphere cap':
+        painter = SphereCapInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Sphere segment': painter = SphereSegPainter(color: iconColor); break;
       case 'Ellipsoid': painter = EllipsoidPainter(color: iconColor); break;
     }
@@ -2956,6 +3112,108 @@ class CylinderInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CylinderInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class SphereCapInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  SphereCapInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.8
+      ..strokeCap = StrokeCap.round;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.75)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Aapke exact purane rectangles
+    Rect arcRect = Rect.fromLTWH(0, 0, w, h * 1.5);
+    Rect baseOval = Rect.fromLTWH(0, h * 0.6, w, h * 0.3);
+
+    // Coordinates for highlights
+    Offset center = Offset(w / 2, h * 0.75); // Base oval ka center
+    Offset topPole = Offset(w / 2, 0);       // Cap ka top
+    Offset rightEdge = Offset(w, h * 0.75);  // Base oval ka right edge
+
+    // Dome Path (Top arc + bottom curve of oval)
+    Path domePath = Path()
+      ..addArc(arcRect, pi, pi)
+      ..arcTo(baseOval, 0, pi, false)
+      ..close();
+
+    // 1. FILL HIGHLIGHTS
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawPath(domePath, fillPaint);
+      canvas.drawOval(baseOval, darkFillPaint);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawPath(domePath, darkFillPaint);
+    } else if (highlightType == 'Base area') {
+      canvas.drawOval(baseOval, darkFillPaint);
+    }
+
+    // 2. DRAW BASE WIREFRAME (Aapke original design jaisa)
+    canvas.drawArc(
+      arcRect,
+      pi,
+      pi,
+      false,
+      highlightType == 'Lateral area' ? hlStrokePaint : basePaint,
+    );
+    canvas.drawOval(
+      baseOval,
+      highlightType == 'Base area' ? hlStrokePaint : basePaint,
+    );
+
+    // 3. SPECIFIC STROKE HIGHLIGHTS
+    if (highlightType == 'Base radius') {
+      // Base center se right edge tak (a)
+      canvas.drawLine(center, rightEdge, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+    } else if (highlightType == 'Height') {
+      // Top se base center tak vertical line (h)
+      canvas.drawLine(topPole, center, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+      canvas.drawCircle(topPole, 2.0, darkFillPaint);
+    } else if (highlightType == 'Sphere radius') { // FIX: Yahan 'Sphere radius' aayega Result ke label ke liye
+      // Sphere radius (R) ke liye ek slanted line draw karenge arc tak
+      Offset slantPoint = Offset(
+          w / 2 + (w / 2) * cos(pi / 4),
+          h * 0.75 - (h * 0.75) * sin(pi / 4) // FIX: Missing minus (-) operator lagaya
+      );
+      canvas.drawLine(center, slantPoint, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant SphereCapInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.highlightColor != highlightColor;
   }
