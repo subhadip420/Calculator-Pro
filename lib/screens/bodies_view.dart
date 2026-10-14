@@ -46,6 +46,9 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _pyrFrustTopCtrl = TextEditingController();
   final TextEditingController _pyrFrustHeightCtrl = TextEditingController();
 
+  final TextEditingController _coneRadiusCtrl = TextEditingController();
+  final TextEditingController _coneHeightCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -938,6 +941,150 @@ class _BodiesViewState extends State<BodiesView> {
                             },
                           ),
                         ]
+                        /// ==========================================
+                        /// YAHAN SE CONE KA CODE ADD KAREIN
+                        /// ==========================================
+                        else if (currentShape.name == 'Cone') ...[
+                            Builder(
+                              builder: (context) {
+                                double radius = double.tryParse(_coneRadiusCtrl.text) ?? 0; // r
+                                double height = double.tryParse(_coneHeightCtrl.text) ?? 0; // h
+
+                                double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, slantHeight = 0;
+                                bool isValid = false;
+
+                                if (radius > 0 && height > 0) {
+                                  // Slant Height (s) = √(r² + h²)
+                                  slantHeight = sqrt((radius * radius) + (height * height));
+
+                                  // Base Area = π * r²
+                                  baseArea = pi * radius * radius;
+
+                                  // Lateral Area = π * r * s
+                                  lateralArea = pi * radius * slantHeight;
+
+                                  // Total Area = Base Area + Lateral Area
+                                  totalArea = baseArea + lateralArea;
+
+                                  // Volume = (1/3) * π * r² * h
+                                  volume = (1 / 3) * baseArea * height;
+
+                                  isValid = true;
+                                }
+
+                                bool hasPartialInput = _coneRadiusCtrl.text.isNotEmpty || _coneHeightCtrl.text.isNotEmpty;
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Input',
+                                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    // 2 Fixed Inputs: Radius and Height
+                                    _buildFixedInputRow(
+                                      title: 'Radius (r)',
+                                      ctrl: _coneRadiusCtrl,
+                                      icon: CustomPaint(
+                                        painter: ConeInputPainter(
+                                          highlightType: 'Radius',
+                                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                          highlightColor: AppColors.orangeColor(context),
+                                        ),
+                                      ),
+                                    ),
+                                    _buildFixedInputRow(
+                                      title: 'Height (h)',
+                                      ctrl: _coneHeightCtrl,
+                                      icon: CustomPaint(
+                                        painter: ConeInputPainter(
+                                          highlightType: 'Height',
+                                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                          highlightColor: AppColors.orangeColor(context),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    // Dynamic Hint Banner
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            _getBodyHintMessage(currentShape.name),
+                                            style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+
+                                    // Result Container
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.cyanColor(context).withOpacity(0.05),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Text(
+                                              'Calculation Result',
+                                              style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                          const SizedBox(height: 12),
+
+                                          if (!isValid && hasPartialInput)
+                                            Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Text(
+                                                  'Enter values greater than 0 for both Radius and Height.',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                                ),
+                                              ),
+                                            )
+                                          else if (isValid) ...[
+                                            _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                            _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                            _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 8),
+                                              child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                            ),
+
+                                            _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                            _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                          ] else ...[
+                                            Center(
+                                                child: Text(
+                                                  'Enter both values to see results.',
+                                                  style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                                )
+                                            )
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 40),
+                                  ],
+                                );
+                              },
+                            ),
+                          ]
                 ],
               ),
             ),
@@ -1162,7 +1309,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Cone': painter = ConePainter(color: iconColor); break;
+      case 'Cone':
+        painter = ConeInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Cone frustum': painter = ConeFrustumPainter(color: iconColor); break;
       case 'Cylinder': painter = CylinderPainter(color: iconColor); break;
       case 'Sphere':
@@ -2165,6 +2318,93 @@ class PyrFrustumInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant PyrFrustumInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class ConeInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  ConeInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.75)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Coordinates for Cone
+    Offset apex = Offset(w * 0.5, h * 0.08);
+    Rect baseOval = Rect.fromLTWH(w * 0.1, h * 0.72, w * 0.8, h * 0.22);
+    Offset baseCenter = Offset(w * 0.5, h * 0.83);
+    Offset baseLeft = Offset(w * 0.1, h * 0.83);
+    Offset baseRight = Offset(w * 0.9, h * 0.83);
+
+    Path coneBody = Path()
+      ..moveTo(apex.dx, apex.dy)
+      ..lineTo(baseLeft.dx, baseLeft.dy)
+      ..arcTo(baseOval, pi, -pi, false)
+      ..close();
+
+    // 1. FILL HIGHLIGHTS
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawPath(coneBody, fillPaint);
+      canvas.drawOval(baseOval, darkFillPaint);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawPath(coneBody, darkFillPaint);
+    } else if (highlightType == 'Base area') {
+      canvas.drawOval(baseOval, darkFillPaint);
+    }
+
+    // 2. DRAW BASE WIREFRAME
+    canvas.drawOval(baseOval, highlightType == 'Base area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(apex, baseLeft, basePaint);
+    canvas.drawLine(apex, baseRight, basePaint);
+
+    // 3. SPECIFIC STROKE HIGHLIGHTS
+    if (highlightType == 'Radius') {
+      // Base center se right edge tak line
+      canvas.drawLine(baseCenter, baseRight, hlStrokePaint);
+      canvas.drawCircle(baseCenter, 2.0, darkFillPaint);
+    } else if (highlightType == 'Height') {
+      // Apex se base center tak straight vertical line
+      canvas.drawLine(apex, baseCenter, hlStrokePaint);
+      canvas.drawCircle(baseCenter, 2.0, darkFillPaint);
+    } else if (highlightType == 'Slant height') {
+      // Right slanted edge highlight
+      canvas.drawLine(apex, baseRight, hlStrokePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant ConeInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.highlightColor != highlightColor;
   }
