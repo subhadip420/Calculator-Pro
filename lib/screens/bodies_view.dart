@@ -35,6 +35,10 @@ class _BodiesViewState extends State<BodiesView> {
   String _sphereInputType = 'Radius'; // Image ke hisaab se default options
   final TextEditingController _sphereValCtrl = TextEditingController();
 
+  final TextEditingController _prismLengthCtrl = TextEditingController();
+  final TextEditingController _prismWidthCtrl = TextEditingController();
+  final TextEditingController _prismHeightCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -478,6 +482,157 @@ class _BodiesViewState extends State<BodiesView> {
                       },
                     ),
                   ]
+                  /// ==========================================
+                  /// YAHAN SE PRISM KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Prism') ...[
+                      Builder(
+                        builder: (context) {
+                          double l = double.tryParse(_prismLengthCtrl.text) ?? 0;
+                          double w = double.tryParse(_prismWidthCtrl.text) ?? 0;
+                          double h = double.tryParse(_prismHeightCtrl.text) ?? 0;
+
+                          double volume = 0, totalArea = 0, lateralArea = 0, spaceDiagonal = 0;
+                          bool isValid = false;
+
+                          if (l > 0 && w > 0 && h > 0) {
+                            volume = l * w * h;
+                            totalArea = 2 * ((l * w) + (l * h) + (w * h));
+                            lateralArea = 2 * ((l * h) + (w * h)); // Top aur bottom face ko chhod kar
+                            spaceDiagonal = sqrt((l * l) + (w * w) + (h * h));
+
+                            isValid = true;
+                          }
+
+                          bool hasPartialInput = _prismLengthCtrl.text.isNotEmpty ||
+                              _prismWidthCtrl.text.isNotEmpty ||
+                              _prismHeightCtrl.text.isNotEmpty;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Input',
+                                style: TextStyle(
+                                  color: AppColors.textColor(context),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // 3 Fixed Inputs for Prism
+                              _buildFixedInputRow(
+                                title: 'Length (l)',
+                                ctrl: _prismLengthCtrl,
+                                icon: CustomPaint(
+                                  painter: PrismInputPainter(
+                                    highlightType: 'Length',
+                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                    highlightColor: AppColors.orangeColor(context),
+                                  ),
+                                ),
+                              ),
+                              _buildFixedInputRow(
+                                title: 'Width (w)', // Ye depth ko represent karta hai
+                                ctrl: _prismWidthCtrl,
+                                icon: CustomPaint(
+                                  painter: PrismInputPainter(
+                                    highlightType: 'Width',
+                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                    highlightColor: AppColors.orangeColor(context),
+                                  ),
+                                ),
+                              ),
+                              _buildFixedInputRow(
+                                title: 'Height (h)',
+                                ctrl: _prismHeightCtrl,
+                                icon: CustomPaint(
+                                  painter: PrismInputPainter(
+                                    highlightType: 'Height',
+                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                    highlightColor: AppColors.orangeColor(context),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Dynamic Hint Banner
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      _getBodyHintMessage(currentShape.name),
+                                      style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+
+                              // Result Container
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cyanColor(context).withOpacity(0.05),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        'Calculation Result',
+                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                    const SizedBox(height: 12),
+
+                                    if (!isValid && hasPartialInput)
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            'Enter values greater than 0 for all three dimensions.',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    else if (isValid) ...[
+                                      _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                      _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                      _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                      ),
+
+                                      _buildResultRow('Space Diagonal', spaceDiagonal.toStringAsFixed(2)),
+                                    ] else ...[
+                                      Center(
+                                          child: Text(
+                                            'Enter all values to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          )
+                                      )
+                                    ],
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 40),
+                            ],
+                          );
+                        },
+                      ),
+                    ]
                 ],
               ),
             ),
@@ -681,7 +836,13 @@ class _BodiesViewState extends State<BodiesView> {
             highlightColor: iconColor
         );
         break;
-      case 'Prism': painter = PrismPainter(color: iconColor); break;
+      case 'Prism':
+        painter = PrismInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Pyramid': painter = PyramidPainter(color: iconColor); break;
       case 'Pyramid frustum': painter = PyrFrustumPainter(color: iconColor); break;
       case 'Cone': painter = ConePainter(color: iconColor); break;
@@ -964,22 +1125,64 @@ class CubePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
+// class PrismPainter extends CustomPainter {
+//   final Color color;
+//   PrismPainter({required this.color});
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+//     double w = size.width, h = size.height, offX = w * 0.3, offY = h * 0.3;
+//     canvas.drawRect(Rect.fromLTWH(offX, 0, w - offX, h - offY), p);
+//     canvas.drawRect(Rect.fromLTWH(0, offY, w - offX, h - offY), p);
+//     canvas.drawLine(Offset(0, offY), Offset(offX, 0), p);
+//     canvas.drawLine(Offset(w - offX, offY), Offset(w, 0), p);
+//     canvas.drawLine(Offset(0, h), Offset(offX, h - offY), p);
+//     canvas.drawLine(Offset(w - offX, h), Offset(w, h - offY), p);
+//   }
+//   @override
+//   bool shouldRepaint(covariant CustomPainter old) => false;
+// }
 class PrismPainter extends CustomPainter {
   final Color color;
   PrismPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    double w = size.width, h = size.height, offX = w * 0.3, offY = h * 0.3;
-    canvas.drawRect(Rect.fromLTWH(offX, 0, w - offX, h - offY), p);
-    canvas.drawRect(Rect.fromLTWH(0, offY, w - offX, h - offY), p);
-    canvas.drawLine(Offset(0, offY), Offset(offX, 0), p);
-    canvas.drawLine(Offset(w - offX, offY), Offset(w, 0), p);
-    canvas.drawLine(Offset(0, h), Offset(offX, h - offY), p);
-    canvas.drawLine(Offset(w - offX, h), Offset(w, h - offY), p);
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Prism ko rectangular banane ke liye width jyada aur height kam rakhi hai
+    double fw = w * 0.75; // Front face ki width
+    double fh = h * 0.45; // Front face ki height
+    double offX = w * 0.25; // 3D depth (Right ki taraf)
+    double offY = h * 0.30; // 3D depth (Upar ki taraf)
+
+    // Faces define kiye (Rectangular)
+    Rect frontRect = Rect.fromLTWH(0, h - fh, fw, fh);
+    Rect backRect = Rect.fromLTWH(offX, h - fh - offY, fw, fh);
+
+    // Pehle Back Face draw karein
+    canvas.drawRect(backRect, p);
+
+    // Phir Front Face draw karein
+    canvas.drawRect(frontRect, p);
+
+    // Corners ko connect karne wali 3D lines
+    canvas.drawLine(Offset(0, h - fh), Offset(offX, h - fh - offY), p); // Top-Left connect
+    canvas.drawLine(Offset(fw, h - fh), Offset(offX + fw, h - fh - offY), p); // Top-Right connect
+    canvas.drawLine(Offset(0, h), Offset(offX, h - offY), p); // Bottom-Left connect
+    canvas.drawLine(Offset(fw, h), Offset(offX + fw, h - offY), p); // Bottom-Right connect
   }
+
   @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
+  bool shouldRepaint(covariant PrismPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
 }
 
 class PyramidPainter extends CustomPainter {
@@ -1290,5 +1493,70 @@ class SphereInputPainter extends CustomPainter {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.baseColor != baseColor ||
         oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class PrismInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  PrismInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlStrokePaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.4)..style = PaintingStyle.fill;
+
+    double w = size.width, h = size.height;
+    double fw = w * 0.75, fh = h * 0.45;
+    double offX = w * 0.25, offY = h * 0.30;
+
+    Offset fTL = Offset(0, h - fh), fTR = Offset(fw, h - fh);
+    Offset fBL = Offset(0, h), fBR = Offset(fw, h);
+    Offset bTL = Offset(offX, h - fh - offY), bTR = Offset(offX + fw, h - fh - offY);
+    Offset bBL = Offset(offX, h - offY), bBR = Offset(offX + fw, h - offY);
+
+    Rect frontRect = Rect.fromLTWH(0, h - fh, fw, fh);
+    Rect backRect = Rect.fromLTWH(offX, h - fh - offY, fw, fh);
+    Path topFace = Path()..moveTo(fTL.dx, fTL.dy)..lineTo(bTL.dx, bTL.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(fTR.dx, fTR.dy)..close();
+    Path rightFace = Path()..moveTo(fTR.dx, fTR.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(fBR.dx, fBR.dy)..close();
+
+    // FILL HIGHLIGHTS
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawRect(backRect, fillPaint);
+      canvas.drawPath(topFace, fillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+      canvas.drawRect(frontRect, Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawRect(backRect, fillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+      canvas.drawRect(frontRect, Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill);
+    }
+
+    // DRAW BASE
+    canvas.drawRect(backRect, basePaint);
+    canvas.drawRect(frontRect, basePaint);
+    canvas.drawLine(fTL, bTL, basePaint);
+    canvas.drawLine(fTR, bTR, basePaint);
+    canvas.drawLine(fBL, bBL, basePaint);
+    canvas.drawLine(fBR, bBR, basePaint);
+
+    // STROKE HIGHLIGHTS
+    if (highlightType == 'Length') {
+      canvas.drawLine(fBL, fBR, hlStrokePaint); // Front bottom edge
+    } else if (highlightType == 'Height') {
+      canvas.drawLine(fTR, fBR, hlStrokePaint); // Front right vertical edge
+    } else if (highlightType == 'Width') {
+      canvas.drawLine(fBR, bBR, hlStrokePaint); // Bottom depth edge (right side)
+    } else if (highlightType == 'Space Diagonal') {
+      canvas.drawLine(fBL, bTR, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant PrismInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
