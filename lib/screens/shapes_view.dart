@@ -582,7 +582,8 @@ class _ShapesViewState extends State<ShapesView> {
       angAC = acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / pi); // Angle between A and C (Angle B)
     }
 
-    bool hasInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
+    bool hasRTInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
+    bool hasSQInput = _sqValCtrl.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -1114,7 +1115,7 @@ class _ShapesViewState extends State<ShapesView> {
                                   const SizedBox(height: 12),
 
                                   // STATE 1: Error tabhi dikhega jab input daala ho aur wo galat ho
-                                  if (!isValid && hasInput) // Yahan 'hasInput' ya 'hasPartialInput' lagana zaroori hai
+                                  if (!isValid && hasRTInput) // Yahan 'hasInput' ya 'hasPartialInput' lagana zaroori hai
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
@@ -1239,6 +1240,57 @@ class _ShapesViewState extends State<ShapesView> {
                             const SizedBox(height: 24),
 
                             // Result Container
+                            // Container(
+                            //   padding: const EdgeInsets.all(16),
+                            //   decoration: BoxDecoration(
+                            //     color: AppColors.cyanColor(context).withOpacity(0.05),
+                            //     borderRadius: BorderRadius.circular(20),
+                            //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                            //   ),
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Center(
+                            //         child: Text(
+                            //           'Calculation Result',
+                            //           style: TextStyle(
+                            //             color: AppColors.cyanColor(context),
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.bold,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       const SizedBox(height: 12),
+                            //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                            //       const SizedBox(height: 12),
+                            //
+                            //       if (!isValid)
+                            //         Center(
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(16.0),
+                            //             child: Text(
+                            //               errorMsg,
+                            //               textAlign: TextAlign.center,
+                            //               style: TextStyle(
+                            //                 color: AppColors.redColor(context).withOpacity(0.9),
+                            //                 fontSize: 14,
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         )
+                            //       else ...[
+                            //         _buildResultRow('Area', sqArea.toStringAsFixed(2), isHighlighted: true),
+                            //         _buildResultRow('Perimeter', sqPerimeter.toStringAsFixed(2)),
+                            //         Padding(
+                            //           padding: const EdgeInsets.symmetric(vertical: 8),
+                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                            //         ),
+                            //         _buildResultRow('Side', sqSide.toStringAsFixed(2)),
+                            //         _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
+                            //       ],
+                            //     ],
+                            //   ),
+                            // ),
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -1263,12 +1315,13 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  if (!isValid)
+                                  // STATE 1: Error tabhi dikhega jab input daala ho aur wo galat/invalid ho
+                                  if (!isValid && hasSQInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg,
+                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter a value greater than 0.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -1277,7 +1330,8 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-                                  else ...[
+                                  // STATE 2: Valid Results
+                                  else if (isValid) ...[
                                     _buildResultRow('Area', sqArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', sqPerimeter.toStringAsFixed(2)),
                                     Padding(
@@ -1286,7 +1340,19 @@ class _ShapesViewState extends State<ShapesView> {
                                     ),
                                     _buildResultRow('Side', sqSide.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
-                                  ],
+                                  ]
+                                  // STATE 3: Default Empty State
+                                  else ...[
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: Text(
+                                            'Enter a value to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                 ],
                               ),
                             ),
