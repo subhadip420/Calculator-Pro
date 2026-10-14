@@ -12,6 +12,7 @@ import '../widgets/shape_selector_sheet.dart';
 class BodyShapeItem {
   final String name;
   final Widget iconBuilder;
+
   BodyShapeItem({required this.name, required this.iconBuilder});
 }
 
@@ -98,7 +99,7 @@ class _BodiesViewState extends State<BodiesView> {
       case 'Ellipsoid':
         return 'Solve an ellipsoid knowing its semi-axes.';
       default:
-      // Agar koi future shape add hota hai, toh default message aayega
+        // Agar koi future shape add hota hai, toh default message aayega
         return 'Solve a ${shapeName.toLowerCase()} knowing its parameters.';
     }
   }
@@ -112,17 +113,50 @@ class _BodiesViewState extends State<BodiesView> {
       Color iconColor = AppColors.cyanColor(context);
 
       _shapeList = [
-        BodyShapeItem(name: 'Cube', iconBuilder: CustomPaint(painter: CubePainter(color: iconColor))),
-        BodyShapeItem(name: 'Prism', iconBuilder: CustomPaint(painter: PrismPainter(color: iconColor))),
-        BodyShapeItem(name: 'Pyramid', iconBuilder: CustomPaint(painter: PyramidPainter(color: iconColor))),
-        BodyShapeItem(name: 'Pyramid frustum', iconBuilder: CustomPaint(painter: PyrFrustumPainter(color: iconColor))),
-        BodyShapeItem(name: 'Cone', iconBuilder: CustomPaint(painter: ConePainter(color: iconColor))),
-        BodyShapeItem(name: 'Cone frustum', iconBuilder: CustomPaint(painter: ConeFrustumPainter(color: iconColor))),
-        BodyShapeItem(name: 'Cylinder', iconBuilder: CustomPaint(painter: CylinderPainter(color: iconColor))),
-        BodyShapeItem(name: 'Sphere', iconBuilder: CustomPaint(painter: SpherePainter(color: iconColor))),
-        BodyShapeItem(name: 'Sphere cap', iconBuilder: CustomPaint(painter: SphereCapPainter(color: iconColor))),
-        BodyShapeItem(name: 'Sphere segment', iconBuilder: CustomPaint(painter: SphereSegPainter(color: iconColor))),
-        BodyShapeItem(name: 'Ellipsoid', iconBuilder: CustomPaint(painter: EllipsoidPainter(color: iconColor))),
+        BodyShapeItem(
+          name: 'Cube',
+          iconBuilder: CustomPaint(painter: CubePainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Prism',
+          iconBuilder: CustomPaint(painter: PrismPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Pyramid',
+          iconBuilder: CustomPaint(painter: PyramidPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Pyramid frustum',
+          iconBuilder: CustomPaint(painter: PyrFrustumPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Cone',
+          iconBuilder: CustomPaint(painter: ConePainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Cone frustum',
+          iconBuilder: CustomPaint(painter: ConeFrustumPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Cylinder',
+          iconBuilder: CustomPaint(painter: CylinderPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Sphere',
+          iconBuilder: CustomPaint(painter: SpherePainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Sphere cap',
+          iconBuilder: CustomPaint(painter: SphereCapPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Sphere segment',
+          iconBuilder: CustomPaint(painter: SphereSegPainter(color: iconColor)),
+        ),
+        BodyShapeItem(
+          name: 'Ellipsoid',
+          iconBuilder: CustomPaint(painter: EllipsoidPainter(color: iconColor)),
+        ),
       ];
     }
   }
@@ -161,7 +195,6 @@ class _BodiesViewState extends State<BodiesView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // --- TITLE ---
                   Text(
                     'Select Bodies',
@@ -182,7 +215,8 @@ class _BodiesViewState extends State<BodiesView> {
                           setState(() {
                             _selectedShapeIndex = newIndex;
                           });
-                        }, title: 'Select Bodies',
+                        },
+                        title: 'Select Bodies',
                       );
                     },
                     behavior: HitTestBehavior.opaque,
@@ -196,11 +230,7 @@ class _BodiesViewState extends State<BodiesView> {
                       child: Row(
                         children: [
                           // FIX: Container ko SizedBox banaya aur alignment hata diya
-                          SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: currentShape.iconBuilder,
-                          ),
+                          SizedBox(width: 32, height: 32, child: currentShape.iconBuilder),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
@@ -340,7 +370,11 @@ class _BodiesViewState extends State<BodiesView> {
                                     // Primary Results (Highlighted)
                                     _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                    _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
 
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -354,11 +388,11 @@ class _BodiesViewState extends State<BodiesView> {
                                   ] else ...[
                                     // Jab input khali ho tab placeholder text
                                     Center(
-                                        child: Text(
-                                          'Enter a value to see results.',
-                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                        )
-                                    )
+                                      child: Text(
+                                        'Enter a value to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
                                   ],
                                 ],
                               ),
@@ -495,11 +529,11 @@ class _BodiesViewState extends State<BodiesView> {
                                     _buildResultRow('Diameter', diameter.toStringAsFixed(2)),
                                   ] else ...[
                                     Center(
-                                        child: Text(
-                                          'Enter a value to see results.',
-                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                        )
-                                    )
+                                      child: Text(
+                                        'Enter a value to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
                                   ],
                                 ],
                               ),
@@ -514,1361 +548,1559 @@ class _BodiesViewState extends State<BodiesView> {
                   /// YAHAN SE PRISM KA CODE ADD KAREIN
                   /// ==========================================
                   else if (currentShape.name == 'Prism') ...[
-                      Builder(
-                        builder: (context) {
-                          double l = double.tryParse(_prismLengthCtrl.text) ?? 0;
-                          double w = double.tryParse(_prismWidthCtrl.text) ?? 0;
-                          double h = double.tryParse(_prismHeightCtrl.text) ?? 0;
+                    Builder(
+                      builder: (context) {
+                        double l = double.tryParse(_prismLengthCtrl.text) ?? 0;
+                        double w = double.tryParse(_prismWidthCtrl.text) ?? 0;
+                        double h = double.tryParse(_prismHeightCtrl.text) ?? 0;
 
-                          double volume = 0, totalArea = 0, lateralArea = 0, spaceDiagonal = 0;
-                          bool isValid = false;
+                        double volume = 0, totalArea = 0, lateralArea = 0, spaceDiagonal = 0;
+                        bool isValid = false;
 
-                          if (l > 0 && w > 0 && h > 0) {
-                            volume = l * w * h;
-                            totalArea = 2 * ((l * w) + (l * h) + (w * h));
-                            lateralArea = 2 * ((l * h) + (w * h)); // Top aur bottom face ko chhod kar
-                            spaceDiagonal = sqrt((l * l) + (w * w) + (h * h));
+                        if (l > 0 && w > 0 && h > 0) {
+                          volume = l * w * h;
+                          totalArea = 2 * ((l * w) + (l * h) + (w * h));
+                          lateralArea = 2 * ((l * h) + (w * h)); // Top aur bottom face ko chhod kar
+                          spaceDiagonal = sqrt((l * l) + (w * w) + (h * h));
 
-                            isValid = true;
-                          }
+                          isValid = true;
+                        }
 
-                          bool hasPartialInput = _prismLengthCtrl.text.isNotEmpty ||
-                              _prismWidthCtrl.text.isNotEmpty ||
-                              _prismHeightCtrl.text.isNotEmpty;
+                        bool hasPartialInput =
+                            _prismLengthCtrl.text.isNotEmpty ||
+                            _prismWidthCtrl.text.isNotEmpty ||
+                            _prismHeightCtrl.text.isNotEmpty;
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Input',
-                                style: TextStyle(
-                                  color: AppColors.textColor(context),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 3 Fixed Inputs for Prism
+                            _buildFixedInputRow(
+                              title: 'Length (l)',
+                              ctrl: _prismLengthCtrl,
+                              icon: CustomPaint(
+                                painter: PrismInputPainter(
+                                  highlightType: 'Length',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
-                              const SizedBox(height: 12),
-
-                              // 3 Fixed Inputs for Prism
-                              _buildFixedInputRow(
-                                title: 'Length (l)',
-                                ctrl: _prismLengthCtrl,
-                                icon: CustomPaint(
-                                  painter: PrismInputPainter(
-                                    highlightType: 'Length',
-                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                    highlightColor: AppColors.orangeColor(context),
-                                  ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Width (w)', // Ye depth ko represent karta hai
+                              ctrl: _prismWidthCtrl,
+                              icon: CustomPaint(
+                                painter: PrismInputPainter(
+                                  highlightType: 'Width',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
-                              _buildFixedInputRow(
-                                title: 'Width (w)', // Ye depth ko represent karta hai
-                                ctrl: _prismWidthCtrl,
-                                icon: CustomPaint(
-                                  painter: PrismInputPainter(
-                                    highlightType: 'Width',
-                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                    highlightColor: AppColors.orangeColor(context),
-                                  ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _prismHeightCtrl,
+                              icon: CustomPaint(
+                                painter: PrismInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
                               ),
-                              _buildFixedInputRow(
-                                title: 'Height (h)',
-                                ctrl: _prismHeightCtrl,
-                                icon: CustomPaint(
-                                  painter: PrismInputPainter(
-                                    highlightType: 'Height',
-                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                    highlightColor: AppColors.orangeColor(context),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
+                            ),
+                            const SizedBox(height: 16),
 
-                              // Dynamic Hint Banner
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      _getBodyHintMessage(currentShape.name),
-                                      style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
-
-                              // Result Container
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: AppColors.cyanColor(context).withOpacity(0.05),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                        'Calculation Result',
-                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                    const SizedBox(height: 12),
-
-                                    if (!isValid && hasPartialInput)
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Text(
-                                            'Enter values greater than 0 for all three dimensions.',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                          ),
-                                        ),
-                                      )
-                                    else if (isValid) ...[
-                                      _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                      _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                      _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                      ),
-
-                                      _buildResultRow('Space Diagonal', spaceDiagonal.toStringAsFixed(2)),
-                                    ] else ...[
-                                      Center(
-                                          child: Text(
-                                            'Enter all values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          )
-                                      )
-                                    ],
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 40),
-                            ],
-                          );
-                        },
-                      ),
-                    ]
-                    /// ==========================================
-                    /// YAHAN SE PYRAMID KA CODE ADD KAREIN
-                    /// ==========================================
-                    else if (currentShape.name == 'Pyramid') ...[
-                        Builder(
-                          builder: (context) {
-                            double baseSide = double.tryParse(_pyrBaseCtrl.text) ?? 0;
-                            double height = double.tryParse(_pyrHeightCtrl.text) ?? 0;
-
-                            double volume = 0, totalArea = 0, lateralArea = 0;
-                            double slantHeight = 0, lateralEdge = 0;
-                            bool isValid = false;
-
-                            if (baseSide > 0 && height > 0) {
-                              // Calculations for Square-based Pyramid
-                              volume = (baseSide * baseSide * height) / 3;
-                              slantHeight = sqrt((height * height) + ((baseSide / 2) * (baseSide / 2)));
-                              lateralEdge = sqrt((height * height) + ((baseSide * baseSide) / 2));
-                              lateralArea = 2 * baseSide * slantHeight;
-                              totalArea = (baseSide * baseSide) + lateralArea;
-
-                              isValid = true;
-                            }
-
-                            bool hasPartialInput = _pyrBaseCtrl.text.isNotEmpty || _pyrHeightCtrl.text.isNotEmpty;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  'Input',
-                                  style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
                                 ),
-                                const SizedBox(height: 12),
-
-                                // 2 Fixed Inputs for Pyramid
-                                _buildFixedInputRow(
-                                  title: 'Base (a)',
-                                  ctrl: _pyrBaseCtrl,
-                                  icon: CustomPaint(
-                                    painter: PyramidInputPainter(
-                                      highlightType: 'Base',
-                                      baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                      highlightColor: AppColors.orangeColor(context),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ),
-                                _buildFixedInputRow(
-                                  title: 'Height (h)',
-                                  ctrl: _pyrHeightCtrl,
-                                  icon: CustomPaint(
-                                    painter: PyramidInputPainter(
-                                      highlightType: 'Height',
-                                      baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                      highlightColor: AppColors.orangeColor(context),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Dynamic Hint Banner
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        _getBodyHintMessage(currentShape.name),
-                                        style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 24),
-
-                                // Result Container
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.cyanColor(context).withOpacity(0.05),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          'Calculation Result',
-                                          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                      const SizedBox(height: 12),
-
-                                      if (!isValid && hasPartialInput)
-                                        Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Text(
-                                              'Enter values greater than 0 for both Base and Height.',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                            ),
-                                          ),
-                                        )
-                                      else if (isValid) ...[
-                                        _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                        _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                          child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                        ),
-
-                                        _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
-                                        _buildResultRow('Lateral edge', lateralEdge.toStringAsFixed(2)),
-                                      ] else ...[
-                                        Center(
-                                            child: Text(
-                                              'Enter both values to see results.',
-                                              style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                            )
-                                        )
-                                      ],
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
                               ],
-                            );
-                          },
-                        ),
-                      ]
-                      /// ==========================================
-                      /// YAHAN SE PYRAMID FRUSTUM KA CODE ADD KAREIN
-                      /// ==========================================
-                      else if (currentShape.name == 'Pyramid frustum') ...[
-                          Builder(
-                            builder: (context) {
-                              double baseSide = double.tryParse(_pyrFrustBaseCtrl.text) ?? 0; // a
-                              double topSide = double.tryParse(_pyrFrustTopCtrl.text) ?? 0;   // b
-                              double height = double.tryParse(_pyrFrustHeightCtrl.text) ?? 0; // h
+                            ),
+                            const SizedBox(height: 24),
 
-                              double volume = 0, totalArea = 0, lateralArea = 0;
-                              double slantHeight = 0, lateralEdge = 0;
-                              bool isValid = false;
-
-                              if (baseSide > 0 && topSide > 0 && height > 0) {
-                                double diff = (baseSide - topSide).abs();
-
-                                // Volume = (h / 3) * (a² + b² + a*b)
-                                volume = (height / 3) * ((baseSide * baseSide) + (topSide * topSide) + (baseSide * topSide));
-
-                                // Slant Height (s) = √(h² + ((a - b) / 2)²)
-                                slantHeight = sqrt((height * height) + pow(diff / 2, 2));
-
-                                // Lateral Edge (e) = √(h² + (a - b)² / 2)
-                                lateralEdge = sqrt((height * height) + (pow(diff, 2) / 2));
-
-                                // Lateral Area = 2 * (a + b) * s
-                                lateralArea = 2 * (baseSide + topSide) * slantHeight;
-
-                                // Total Area = Lateral Area + a² + b²
-                                totalArea = lateralArea + (baseSide * baseSide) + (topSide * topSide);
-
-                                isValid = true;
-                              }
-
-                              bool hasPartialInput = _pyrFrustBaseCtrl.text.isNotEmpty ||
-                                  _pyrFrustTopCtrl.text.isNotEmpty ||
-                                  _pyrFrustHeightCtrl.text.isNotEmpty;
-
-                              return Column(
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Input',
-                                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
 
-                                  // 3 Fixed Inputs: Height, Top, Base
-                                  _buildFixedInputRow(
-                                    title: 'Height (h)',
-                                    ctrl: _pyrFrustHeightCtrl,
-                                    icon: CustomPaint(
-                                      painter: PyrFrustumInputPainter(
-                                        highlightType: 'Height',
-                                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                        highlightColor: AppColors.orangeColor(context),
-                                      ),
-                                    ),
-                                  ),
-                                  _buildFixedInputRow(
-                                    title: 'Top (b)',
-                                    ctrl: _pyrFrustTopCtrl,
-                                    icon: CustomPaint(
-                                      painter: PyrFrustumInputPainter(
-                                        highlightType: 'Top',
-                                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                        highlightColor: AppColors.orangeColor(context),
-                                      ),
-                                    ),
-                                  ),
-                                  _buildFixedInputRow(
-                                    title: 'Base (a)',
-                                    ctrl: _pyrFrustBaseCtrl,
-                                    icon: CustomPaint(
-                                      painter: PyrFrustumInputPainter(
-                                        highlightType: 'Base',
-                                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                        highlightColor: AppColors.orangeColor(context),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // Dynamic Hint Banner
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                      const SizedBox(width: 12),
-                                      Expanded(
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          _getBodyHintMessage(currentShape.name),
-                                          style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
-
-                                  // Result Container
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.cyanColor(context).withOpacity(0.05),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            'Calculation Result',
-                                            style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                          'Enter values greater than 0 for all three dimensions.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
-                                        Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                        const SizedBox(height: 12),
-
-                                        if (!isValid && hasPartialInput)
-                                          Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(16.0),
-                                              child: Text(
-                                                'Enter values greater than 0 for Height, Top, and Base.',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                              ),
-                                            ),
-                                          )
-                                        else if (isValid) ...[
-                                          _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                          _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                          _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 8),
-                                            child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                          ),
-
-                                          _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
-                                          _buildResultRow('Lateral edge', lateralEdge.toStringAsFixed(2)),
-                                        ] else ...[
-                                          Center(
-                                              child: Text(
-                                                'Enter all values to see results.',
-                                                style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                              )
-                                          )
-                                        ],
-                                      ],
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
                                     ),
-                                  ),
-                                  const SizedBox(height: 40),
-                                ],
-                              );
-                            },
-                          ),
-                        ]
-                        /// ==========================================
-                        /// YAHAN SE CONE KA CODE ADD KAREIN
-                        /// ==========================================
-                        else if (currentShape.name == 'Cone') ...[
-                            Builder(
-                              builder: (context) {
-                                double radius = double.tryParse(_coneRadiusCtrl.text) ?? 0; // r
-                                double height = double.tryParse(_coneHeightCtrl.text) ?? 0; // h
 
-                                double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, slantHeight = 0;
-                                bool isValid = false;
-
-                                if (radius > 0 && height > 0) {
-                                  // Slant Height (s) = √(r² + h²)
-                                  slantHeight = sqrt((radius * radius) + (height * height));
-
-                                  // Base Area = π * r²
-                                  baseArea = pi * radius * radius;
-
-                                  // Lateral Area = π * r * s
-                                  lateralArea = pi * radius * slantHeight;
-
-                                  // Total Area = Base Area + Lateral Area
-                                  totalArea = baseArea + lateralArea;
-
-                                  // Volume = (1/3) * π * r² * h
-                                  volume = (1 / 3) * baseArea * height;
-
-                                  isValid = true;
-                                }
-
-                                bool hasPartialInput = _coneRadiusCtrl.text.isNotEmpty || _coneHeightCtrl.text.isNotEmpty;
-
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Input',
-                                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
                                     ),
-                                    const SizedBox(height: 12),
 
-                                    // 2 Fixed Inputs: Radius and Height
-                                    _buildFixedInputRow(
-                                      title: 'Radius (r)',
-                                      ctrl: _coneRadiusCtrl,
-                                      icon: CustomPaint(
-                                        painter: ConeInputPainter(
-                                          highlightType: 'Radius',
-                                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                          highlightColor: AppColors.orangeColor(context),
-                                        ),
+                                    _buildResultRow('Space Diagonal', spaceDiagonal.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter all values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                       ),
                                     ),
-                                    _buildFixedInputRow(
-                                      title: 'Height (h)',
-                                      ctrl: _coneHeightCtrl,
-                                      icon: CustomPaint(
-                                        painter: ConeInputPainter(
-                                          highlightType: 'Height',
-                                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                          highlightColor: AppColors.orangeColor(context),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Dynamic Hint Banner
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Text(
-                                            _getBodyHintMessage(currentShape.name),
-                                            style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 24),
-
-                                    // Result Container
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.cyanColor(context).withOpacity(0.05),
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              'Calculation Result',
-                                              style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                          const SizedBox(height: 12),
-
-                                          if (!isValid && hasPartialInput)
-                                            Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Text(
-                                                  'Enter values greater than 0 for both Radius and Height.',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                ),
-                                              ),
-                                            )
-                                          else if (isValid) ...[
-                                            _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                            _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                            _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 8),
-                                              child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                            ),
-
-                                            _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
-                                            _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
-                                          ] else ...[
-                                            Center(
-                                                child: Text(
-                                                  'Enter both values to see results.',
-                                                  style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                )
-                                            )
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 40),
                                   ],
-                                );
-                              },
-                            ),
-                          ]
-                          /// ==========================================
-                          /// YAHAN SE CONE FRUSTUM KA CODE ADD KAREIN
-                          /// ==========================================
-                          else if (currentShape.name == 'Cone frustum') ...[
-                              Builder(
-                                builder: (context) {
-                                  double height = double.tryParse(_coneFrustHeightCtrl.text) ?? 0;   // h
-                                  double topRad = double.tryParse(_coneFrustTopRadCtrl.text) ?? 0;   // r1 (Top radius)
-                                  double botRad = double.tryParse(_coneFrustBotRadCtrl.text) ?? 0;   // r2 (Bottom radius)
-
-                                  double volume = 0, totalArea = 0, lateralArea = 0;
-                                  double topArea = 0, baseArea = 0, slantHeight = 0;
-                                  bool isValid = false;
-
-                                  if (height > 0 && topRad > 0 && botRad > 0) {
-                                    double radDiff = (botRad - topRad).abs();
-
-                                    // Slant Height (s) = √(h² + (r2 - r1)²)
-                                    slantHeight = sqrt((height * height) + (radDiff * radDiff));
-
-                                    // Top & Bottom Base Areas
-                                    topArea = pi * topRad * topRad;
-                                    baseArea = pi * botRad * botRad;
-
-                                    // Lateral Area = π * (r1 + r2) * s
-                                    lateralArea = pi * (topRad + botRad) * slantHeight;
-
-                                    // Total Area = Lateral Area + Top Area + Base Area
-                                    totalArea = lateralArea + topArea + baseArea;
-
-                                    // Volume = (1/3) * π * h * (r1² + r2² + (r1 * r2))
-                                    volume = (1 / 3) * pi * height * ((topRad * topRad) + (botRad * botRad) + (topRad * botRad));
-
-                                    isValid = true;
-                                  }
-
-                                  bool hasPartialInput = _coneFrustHeightCtrl.text.isNotEmpty ||
-                                      _coneFrustTopRadCtrl.text.isNotEmpty ||
-                                      _coneFrustBotRadCtrl.text.isNotEmpty;
-
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Input',
-                                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(height: 12),
-
-                                      // 3 Fixed Inputs: Height, Top radius, Bottom radius
-                                      _buildFixedInputRow(
-                                        title: 'Height (h)',
-                                        ctrl: _coneFrustHeightCtrl,
-                                        icon: CustomPaint(
-                                          painter: ConeFrustumInputPainter(
-                                            highlightType: 'Height',
-                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                            highlightColor: AppColors.orangeColor(context),
-                                          ),
-                                        ),
-                                      ),
-                                      _buildFixedInputRow(
-                                        title: 'Top radius (r₁)',
-                                        ctrl: _coneFrustTopRadCtrl,
-                                        icon: CustomPaint(
-                                          painter: ConeFrustumInputPainter(
-                                            highlightType: 'Top radius',
-                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                            highlightColor: AppColors.orangeColor(context),
-                                          ),
-                                        ),
-                                      ),
-                                      _buildFixedInputRow(
-                                        title: 'Bottom radius (r₂)',
-                                        ctrl: _coneFrustBotRadCtrl,
-                                        icon: CustomPaint(
-                                          painter: ConeFrustumInputPainter(
-                                            highlightType: 'Bottom radius',
-                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                            highlightColor: AppColors.orangeColor(context),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // Dynamic Hint Banner
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Text(
-                                              _getBodyHintMessage(currentShape.name),
-                                              style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 24),
-
-                                      // Result Container
-                                      Container(
-                                        padding: const EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.cyanColor(context).withOpacity(0.05),
-                                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: Text(
-                                                'Calculation Result',
-                                                style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 12),
-                                            Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                            const SizedBox(height: 12),
-
-                                            if (!isValid && hasPartialInput)
-                                              Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(16.0),
-                                                  child: Text(
-                                                    'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                  ),
-                                                ),
-                                              )
-                                            else if (isValid) ...[
-                                              _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                              _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                              _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                                child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                              ),
-
-                                              _buildResultRow('Top area', topArea.toStringAsFixed(2)),
-                                              _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
-                                              _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
-                                            ] else ...[
-                                              Center(
-                                                  child: Text(
-                                                    'Enter all values to see results.',
-                                                    style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                  )
-                                              )
-                                            ],
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 40),
-                                    ],
-                                  );
-                                },
+                                ],
                               ),
-                            ]
-                            /// ==========================================
-                            /// YAHAN SE CYLINDER KA CODE ADD KAREIN
-                            /// ==========================================
-                            else if (currentShape.name == 'Cylinder') ...[
-                                Builder(
-                                  builder: (context) {
-                                    double radius = double.tryParse(_cylRadiusCtrl.text) ?? 0; // r
-                                    double height = double.tryParse(_cylHeightCtrl.text) ?? 0; // h
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE PYRAMID KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Pyramid') ...[
+                    Builder(
+                      builder: (context) {
+                        double baseSide = double.tryParse(_pyrBaseCtrl.text) ?? 0;
+                        double height = double.tryParse(_pyrHeightCtrl.text) ?? 0;
 
-                                    double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, diameter = 0;
-                                    bool isValid = false;
+                        double volume = 0, totalArea = 0, lateralArea = 0;
+                        double slantHeight = 0, lateralEdge = 0;
+                        bool isValid = false;
 
-                                    if (radius > 0 && height > 0) {
-                                      // Diameter (d) = 2 * r
-                                      diameter = 2 * radius;
+                        if (baseSide > 0 && height > 0) {
+                          // Calculations for Square-based Pyramid
+                          volume = (baseSide * baseSide * height) / 3;
+                          slantHeight = sqrt((height * height) + ((baseSide / 2) * (baseSide / 2)));
+                          lateralEdge = sqrt((height * height) + ((baseSide * baseSide) / 2));
+                          lateralArea = 2 * baseSide * slantHeight;
+                          totalArea = (baseSide * baseSide) + lateralArea;
 
-                                      // Base Area = π * r²
-                                      baseArea = pi * radius * radius;
+                          isValid = true;
+                        }
 
-                                      // Lateral Area = 2 * π * r * h
-                                      lateralArea = 2 * pi * radius * height;
+                        bool hasPartialInput = _pyrBaseCtrl.text.isNotEmpty || _pyrHeightCtrl.text.isNotEmpty;
 
-                                      // Total Area = 2 * Base Area + Lateral Area
-                                      totalArea = (2 * baseArea) + lateralArea;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
 
-                                      // Volume = π * r² * h
-                                      volume = baseArea * height;
-
-                                      isValid = true;
-                                    }
-
-                                    bool hasPartialInput = _cylRadiusCtrl.text.isNotEmpty || _cylHeightCtrl.text.isNotEmpty;
-
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Input',
-                                          style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                        // 2 Fixed Inputs: Radius and Height
-                                        _buildFixedInputRow(
-                                          title: 'Radius (r)',
-                                          ctrl: _cylRadiusCtrl,
-                                          icon: CustomPaint(
-                                            painter: CylinderInputPainter(
-                                              highlightType: 'Radius',
-                                              baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                              highlightColor: AppColors.orangeColor(context),
-                                            ),
-                                          ),
-                                        ),
-                                        _buildFixedInputRow(
-                                          title: 'Height (h)',
-                                          ctrl: _cylHeightCtrl,
-                                          icon: CustomPaint(
-                                            painter: CylinderInputPainter(
-                                              highlightType: 'Height',
-                                              baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                              highlightColor: AppColors.orangeColor(context),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-
-                                        // Dynamic Hint Banner
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                _getBodyHintMessage(currentShape.name),
-                                                style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 24),
-
-                                        // Result Container
-                                        Container(
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.cyanColor(context).withOpacity(0.05),
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Center(
-                                                child: Text(
-                                                  'Calculation Result',
-                                                  style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 12),
-                                              Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                              const SizedBox(height: 12),
-
-                                              if (!isValid && hasPartialInput)
-                                                Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(16.0),
-                                                    child: Text(
-                                                      'Enter values greater than 0 for both Radius and Height.',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                    ),
-                                                  ),
-                                                )
-                                              else if (isValid) ...[
-                                                _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                                _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                                _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                                  child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                                ),
-
-                                                _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
-                                                _buildResultRow('Diameter', diameter.toStringAsFixed(2)),
-                                              ] else ...[
-                                                Center(
-                                                    child: Text(
-                                                      'Enter both values to see results.',
-                                                      style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                    )
-                                                )
-                                              ],
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 40),
-                                      ],
-                                    );
-                                  },
+                            // 2 Fixed Inputs for Pyramid
+                            _buildFixedInputRow(
+                              title: 'Base (a)',
+                              ctrl: _pyrBaseCtrl,
+                              icon: CustomPaint(
+                                painter: PyramidInputPainter(
+                                  highlightType: 'Base',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
                                 ),
-                              ]
-                              /// ==========================================
-                              /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
-                              /// ==========================================
-                              /// ==========================================
-                              /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
-                              /// ==========================================
-                              else if (currentShape.name == 'Sphere cap') ...[
-                                  Builder(
-                                    builder: (context) {
-                                      double baseRadius = double.tryParse(_sCapRadiusCtrl.text) ?? 0; // Input: Base Radius (a)
-                                      double height = double.tryParse(_sCapHeightCtrl.text) ?? 0;     // Input: Cap Height (h)
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _pyrHeightCtrl,
+                              icon: CustomPaint(
+                                painter: PyramidInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
 
-                                      double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, sphereRadius = 0;
-                                      bool isValid = false;
-
-                                      if (baseRadius > 0 && height > 0) {
-                                        // Sphere Radius (R) = (a² + h²) / (2h)
-                                        sphereRadius = ((baseRadius * baseRadius) + (height * height)) / (2 * height);
-
-                                        // Base Area = π * a²
-                                        baseArea = pi * baseRadius * baseRadius;
-
-                                        // Lateral (Dome) Area = 2 * π * R * h
-                                        lateralArea = 2 * pi * sphereRadius * height;
-
-                                        // Total Area = Lateral Area + Base Area
-                                        totalArea = lateralArea + baseArea;
-
-                                        // Volume = (1/3) * π * h² * (3R - h)
-                                        volume = (1 / 3) * pi * height * height * ((3 * sphereRadius) - height);
-
-                                        isValid = true;
-                                      }
-
-                                      bool hasPartialInput = _sCapRadiusCtrl.text.isNotEmpty || _sCapHeightCtrl.text.isNotEmpty;
-
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Input',
-                                            style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 12),
-
-                                          // 2 Fixed Inputs: Base radius and Height
-                                          _buildFixedInputRow(
-                                            title: 'Base radius (a)', // FIX: Ab yeh Base radius hai
-                                            ctrl: _sCapRadiusCtrl,
-                                            icon: CustomPaint(
-                                              painter: SphereCapInputPainter(
-                                                highlightType: 'Base radius', // Painter mein humne 'Base radius' ka highlight banaya tha
-                                                baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                highlightColor: AppColors.orangeColor(context),
-                                              ),
-                                            ),
-                                          ),
-                                          _buildFixedInputRow(
-                                            title: 'Height (h)',
-                                            ctrl: _sCapHeightCtrl,
-                                            icon: CustomPaint(
-                                              painter: SphereCapInputPainter(
-                                                highlightType: 'Height',
-                                                baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                highlightColor: AppColors.orangeColor(context),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 16),
-
-                                          // Dynamic Hint Banner
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(
-                                                  _getBodyHintMessage(currentShape.name),
-                                                  style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 24),
-
-                                          // Result Container
-                                          Container(
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.cyanColor(context).withOpacity(0.05),
-                                              borderRadius: BorderRadius.circular(20),
-                                              border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                    'Calculation Result',
-                                                    style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                                const SizedBox(height: 12),
-
-                                                if (!isValid && hasPartialInput)
-                                                  Center(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(16.0),
-                                                      child: Text(
-                                                        'Enter values greater than 0 for both Base Radius and Height.',
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                      ),
-                                                    ),
-                                                  )
-                                                else if (isValid) ...[
-                                                  _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                                  _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                                  _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                    child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                                  ),
-
-                                                  _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
-                                                  _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)), // FIX: Result mein Sphere radius dikhayenge
-                                                ] else ...[
-                                                  Center(
-                                                      child: Text(
-                                                        'Enter both values to see results.',
-                                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                      )
-                                                  )
-                                                ],
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 40),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ]
-                                /// ==========================================
-                                /// YAHAN SE SPHERE SEGMENT KA CODE ADD KAREIN
-                                /// ==========================================
-                                else if (currentShape.name == 'Sphere segment') ...[
-                                    Builder(
-                                      builder: (context) {
-                                        double height = double.tryParse(_sSegHeightCtrl.text) ?? 0;   // h
-                                        double topRad = double.tryParse(_sSegTopRadCtrl.text) ?? 0;   // r₁
-                                        double botRad = double.tryParse(_sSegBotRadCtrl.text) ?? 0;   // r₂
-
-                                        double volume = 0, totalArea = 0, lateralArea = 0;
-                                        double topArea = 0, baseArea = 0, sphereRadius = 0;
-                                        bool isValid = false;
-
-                                        if (height > 0 && topRad > 0 && botRad > 0) {
-                                          // Distance 'd' ka logic Sphere Radius nikalne ke liye
-                                          double d = ((topRad * topRad) - (botRad * botRad) - (height * height)) / (2 * height);
-
-                                          // Sphere Radius (R)
-                                          sphereRadius = sqrt((topRad * topRad) + (d * d));
-
-                                          // Volume = (π * h / 6) * (3r₁² + 3r₂² + h²)
-                                          volume = (pi * height / 6) * ((3 * topRad * topRad) + (3 * botRad * botRad) + (height * height));
-
-                                          // Top aur Bottom Areas
-                                          topArea = pi * topRad * topRad;
-                                          baseArea = pi * botRad * botRad;
-
-                                          // Lateral Area = 2 * π * R * h
-                                          lateralArea = 2 * pi * sphereRadius * height;
-
-                                          // Total Area = Lateral Area + Top Area + Base Area
-                                          totalArea = lateralArea + topArea + baseArea;
-
-                                          isValid = true;
-                                        }
-
-                                        bool hasPartialInput = _sSegHeightCtrl.text.isNotEmpty ||
-                                            _sSegTopRadCtrl.text.isNotEmpty ||
-                                            _sSegBotRadCtrl.text.isNotEmpty;
-
-                                        return Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Input',
-                                              style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                            ),
-                                            const SizedBox(height: 12),
-
-                                            // 3 Fixed Inputs: Height, Top radius, Bottom radius
-                                            _buildFixedInputRow(
-                                              title: 'Height (h)',
-                                              ctrl: _sSegHeightCtrl,
-                                              icon: CustomPaint(
-                                                painter: SphereSegInputPainter(
-                                                  highlightType: 'Height',
-                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                  highlightColor: AppColors.orangeColor(context),
-                                                ),
-                                              ),
-                                            ),
-                                            _buildFixedInputRow(
-                                              title: 'Top radius (r₁)',
-                                              ctrl: _sSegTopRadCtrl,
-                                              icon: CustomPaint(
-                                                painter: SphereSegInputPainter(
-                                                  highlightType: 'Top radius',
-                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                  highlightColor: AppColors.orangeColor(context),
-                                                ),
-                                              ),
-                                            ),
-                                            _buildFixedInputRow(
-                                              title: 'Bottom radius (r₂)',
-                                              ctrl: _sSegBotRadCtrl,
-                                              icon: CustomPaint(
-                                                painter: SphereSegInputPainter(
-                                                  highlightType: 'Bottom radius',
-                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                  highlightColor: AppColors.orangeColor(context),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-
-                                            // Dynamic Hint Banner
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                                const SizedBox(width: 12),
-                                                Expanded(
-                                                  child: Text(
-                                                    _getBodyHintMessage(currentShape.name),
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 24),
-
-                                            // Result Container
-                                            Container(
-                                              padding: const EdgeInsets.all(16),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.cyanColor(context).withOpacity(0.05),
-                                                borderRadius: BorderRadius.circular(20),
-                                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Center(
-                                                    child: Text(
-                                                      'Calculation Result',
-                                                      style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 12),
-                                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                                  const SizedBox(height: 12),
-
-                                                  if (!isValid && hasPartialInput)
-                                                    Center(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(16.0),
-                                                        child: Text(
-                                                          'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  else if (isValid) ...[
-                                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                                    _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
-
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 8),
-                                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                                    ),
-
-                                                    _buildResultRow('Top area', topArea.toStringAsFixed(2)),
-                                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
-                                                    _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)),
-                                                  ] else ...[
-                                                    Center(
-                                                        child: Text(
-                                                          'Enter all values to see results.',
-                                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                        )
-                                                    )
-                                                  ],
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 40),
-                                          ],
-                                        );
-                                      },
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
                                     ),
-                                  ]
-                                  /// ==========================================
-                                  /// YAHAN SE ELLIPSOID KA CODE ADD KAREIN
-                                  /// ==========================================
-                                  else if (currentShape.name == 'Ellipsoid') ...[
-                                      Builder(
-                                        builder: (context) {
-                                          double a = double.tryParse(_ellipsoidRadACtrl.text) ?? 0; // Radius a (x-axis)
-                                          double b = double.tryParse(_ellipsoidRadBCtrl.text) ?? 0; // Radius b (y-axis)
-                                          double c = double.tryParse(_ellipsoidRadCCtrl.text) ?? 0; // Radius c (z-axis)
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
 
-                                          double volume = 0, totalArea = 0;
-                                          bool isValid = false;
-
-                                          if (a > 0 && b > 0 && c > 0) {
-                                            // Volume = (4/3) * π * a * b * c
-                                            volume = (4 / 3) * pi * a * b * c;
-
-                                            // Surface Area approximation (Knud Thomsen's formula, highly accurate)
-                                            // S ≈ 4 * π * [ ((ab)^p + (ac)^p + (bc)^p) / 3 ]^(1/p)  where p = 1.6075
-                                            double p = 1.6075;
-                                            double term1 = pow(a * b, p).toDouble();
-                                            double term2 = pow(a * c, p).toDouble();
-                                            double term3 = pow(b * c, p).toDouble();
-
-                                            totalArea = 4 * pi * pow((term1 + term2 + term3) / 3, 1 / p);
-
-                                            isValid = true;
-                                          }
-
-                                          bool hasPartialInput = _ellipsoidRadACtrl.text.isNotEmpty ||
-                                              _ellipsoidRadBCtrl.text.isNotEmpty ||
-                                              _ellipsoidRadCCtrl.text.isNotEmpty;
-
-                                          return Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Input',
-                                                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                              ),
-                                              const SizedBox(height: 12),
-
-                                              // 3 Fixed Inputs for Ellipsoid: Radius a, Radius b, Radius c
-                                              _buildFixedInputRow(
-                                                title: 'Radius a (x)',
-                                                ctrl: _ellipsoidRadACtrl,
-                                                icon: CustomPaint(
-                                                  painter: EllipsoidInputPainter(
-                                                    highlightType: 'Radius a (x)',
-                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                    highlightColor: AppColors.orangeColor(context),
-                                                  ),
-                                                ),
-                                              ),
-                                              _buildFixedInputRow(
-                                                title: 'Radius b (y)',
-                                                ctrl: _ellipsoidRadBCtrl,
-                                                icon: CustomPaint(
-                                                  painter: EllipsoidInputPainter(
-                                                    highlightType: 'Radius b (y)',
-                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                    highlightColor: AppColors.orangeColor(context),
-                                                  ),
-                                                ),
-                                              ),
-                                              _buildFixedInputRow(
-                                                title: 'Radius c (z)',
-                                                ctrl: _ellipsoidRadCCtrl,
-                                                icon: CustomPaint(
-                                                  painter: EllipsoidInputPainter(
-                                                    highlightType: 'Radius c (z)',
-                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                                                    highlightColor: AppColors.orangeColor(context),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16),
-
-                                              // Dynamic Hint Banner
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
-                                                  const SizedBox(width: 12),
-                                                  Expanded(
-                                                    child: Text(
-                                                      _getBodyHintMessage(currentShape.name),
-                                                      style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 24),
-
-                                              // Result Container
-                                              Container(
-                                                padding: const EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.cyanColor(context).withOpacity(0.05),
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Center(
-                                                      child: Text(
-                                                        'Calculation Result',
-                                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 12),
-                                                    Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                                                    const SizedBox(height: 12),
-
-                                                    if (!isValid && hasPartialInput)
-                                                      Center(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(16.0),
-                                                          child: Text(
-                                                            'Enter values greater than 0 for all three radii.',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    else if (isValid) ...[
-                                                      _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
-                                                      _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
-                                                    ] else ...[
-                                                      Center(
-                                                          child: Text(
-                                                            'Enter all three radii to see results.',
-                                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                                          )
-                                                      )
-                                                    ],
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 40),
-                                            ],
-                                          );
-                                        },
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ]
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for both Base and Height.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                    _buildResultRow('Lateral edge', lateralEdge.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter both values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE PYRAMID FRUSTUM KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Pyramid frustum') ...[
+                    Builder(
+                      builder: (context) {
+                        double baseSide = double.tryParse(_pyrFrustBaseCtrl.text) ?? 0; // a
+                        double topSide = double.tryParse(_pyrFrustTopCtrl.text) ?? 0; // b
+                        double height = double.tryParse(_pyrFrustHeightCtrl.text) ?? 0; // h
+
+                        double volume = 0, totalArea = 0, lateralArea = 0;
+                        double slantHeight = 0, lateralEdge = 0;
+                        bool isValid = false;
+
+                        if (baseSide > 0 && topSide > 0 && height > 0) {
+                          double diff = (baseSide - topSide).abs();
+
+                          // Volume = (h / 3) * (a² + b² + a*b)
+                          volume = (height / 3) * ((baseSide * baseSide) + (topSide * topSide) + (baseSide * topSide));
+
+                          // Slant Height (s) = √(h² + ((a - b) / 2)²)
+                          slantHeight = sqrt((height * height) + pow(diff / 2, 2));
+
+                          // Lateral Edge (e) = √(h² + (a - b)² / 2)
+                          lateralEdge = sqrt((height * height) + (pow(diff, 2) / 2));
+
+                          // Lateral Area = 2 * (a + b) * s
+                          lateralArea = 2 * (baseSide + topSide) * slantHeight;
+
+                          // Total Area = Lateral Area + a² + b²
+                          totalArea = lateralArea + (baseSide * baseSide) + (topSide * topSide);
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput =
+                            _pyrFrustBaseCtrl.text.isNotEmpty ||
+                            _pyrFrustTopCtrl.text.isNotEmpty ||
+                            _pyrFrustHeightCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 3 Fixed Inputs: Height, Top, Base
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _pyrFrustHeightCtrl,
+                              icon: CustomPaint(
+                                painter: PyrFrustumInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Top (b)',
+                              ctrl: _pyrFrustTopCtrl,
+                              icon: CustomPaint(
+                                painter: PyrFrustumInputPainter(
+                                  highlightType: 'Top',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Base (a)',
+                              ctrl: _pyrFrustBaseCtrl,
+                              icon: CustomPaint(
+                                painter: PyrFrustumInputPainter(
+                                  highlightType: 'Base',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for Height, Top, and Base.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                    _buildResultRow('Lateral edge', lateralEdge.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter all values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE CONE KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Cone') ...[
+                    Builder(
+                      builder: (context) {
+                        double radius = double.tryParse(_coneRadiusCtrl.text) ?? 0; // r
+                        double height = double.tryParse(_coneHeightCtrl.text) ?? 0; // h
+
+                        double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, slantHeight = 0;
+                        bool isValid = false;
+
+                        if (radius > 0 && height > 0) {
+                          // Slant Height (s) = √(r² + h²)
+                          slantHeight = sqrt((radius * radius) + (height * height));
+
+                          // Base Area = π * r²
+                          baseArea = pi * radius * radius;
+
+                          // Lateral Area = π * r * s
+                          lateralArea = pi * radius * slantHeight;
+
+                          // Total Area = Base Area + Lateral Area
+                          totalArea = baseArea + lateralArea;
+
+                          // Volume = (1/3) * π * r² * h
+                          volume = (1 / 3) * baseArea * height;
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput = _coneRadiusCtrl.text.isNotEmpty || _coneHeightCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 2 Fixed Inputs: Radius and Height
+                            _buildFixedInputRow(
+                              title: 'Radius (r)',
+                              ctrl: _coneRadiusCtrl,
+                              icon: CustomPaint(
+                                painter: ConeInputPainter(
+                                  highlightType: 'Radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _coneHeightCtrl,
+                              icon: CustomPaint(
+                                painter: ConeInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for both Radius and Height.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                    _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter both values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE CONE FRUSTUM KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Cone frustum') ...[
+                    Builder(
+                      builder: (context) {
+                        double height = double.tryParse(_coneFrustHeightCtrl.text) ?? 0; // h
+                        double topRad = double.tryParse(_coneFrustTopRadCtrl.text) ?? 0; // r1 (Top radius)
+                        double botRad = double.tryParse(_coneFrustBotRadCtrl.text) ?? 0; // r2 (Bottom radius)
+
+                        double volume = 0, totalArea = 0, lateralArea = 0;
+                        double topArea = 0, baseArea = 0, slantHeight = 0;
+                        bool isValid = false;
+
+                        if (height > 0 && topRad > 0 && botRad > 0) {
+                          double radDiff = (botRad - topRad).abs();
+
+                          // Slant Height (s) = √(h² + (r2 - r1)²)
+                          slantHeight = sqrt((height * height) + (radDiff * radDiff));
+
+                          // Top & Bottom Base Areas
+                          topArea = pi * topRad * topRad;
+                          baseArea = pi * botRad * botRad;
+
+                          // Lateral Area = π * (r1 + r2) * s
+                          lateralArea = pi * (topRad + botRad) * slantHeight;
+
+                          // Total Area = Lateral Area + Top Area + Base Area
+                          totalArea = lateralArea + topArea + baseArea;
+
+                          // Volume = (1/3) * π * h * (r1² + r2² + (r1 * r2))
+                          volume = (1 / 3) * pi * height * ((topRad * topRad) + (botRad * botRad) + (topRad * botRad));
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput =
+                            _coneFrustHeightCtrl.text.isNotEmpty ||
+                            _coneFrustTopRadCtrl.text.isNotEmpty ||
+                            _coneFrustBotRadCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 3 Fixed Inputs: Height, Top radius, Bottom radius
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _coneFrustHeightCtrl,
+                              icon: CustomPaint(
+                                painter: ConeFrustumInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Top radius (r₁)',
+                              ctrl: _coneFrustTopRadCtrl,
+                              icon: CustomPaint(
+                                painter: ConeFrustumInputPainter(
+                                  highlightType: 'Top radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Bottom radius (r₂)',
+                              ctrl: _coneFrustBotRadCtrl,
+                              icon: CustomPaint(
+                                painter: ConeFrustumInputPainter(
+                                  highlightType: 'Bottom radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Top area', topArea.toStringAsFixed(2)),
+                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                    _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter all values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE CYLINDER KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Cylinder') ...[
+                    Builder(
+                      builder: (context) {
+                        double radius = double.tryParse(_cylRadiusCtrl.text) ?? 0; // r
+                        double height = double.tryParse(_cylHeightCtrl.text) ?? 0; // h
+
+                        double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, diameter = 0;
+                        bool isValid = false;
+
+                        if (radius > 0 && height > 0) {
+                          // Diameter (d) = 2 * r
+                          diameter = 2 * radius;
+
+                          // Base Area = π * r²
+                          baseArea = pi * radius * radius;
+
+                          // Lateral Area = 2 * π * r * h
+                          lateralArea = 2 * pi * radius * height;
+
+                          // Total Area = 2 * Base Area + Lateral Area
+                          totalArea = (2 * baseArea) + lateralArea;
+
+                          // Volume = π * r² * h
+                          volume = baseArea * height;
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput = _cylRadiusCtrl.text.isNotEmpty || _cylHeightCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 2 Fixed Inputs: Radius and Height
+                            _buildFixedInputRow(
+                              title: 'Radius (r)',
+                              ctrl: _cylRadiusCtrl,
+                              icon: CustomPaint(
+                                painter: CylinderInputPainter(
+                                  highlightType: 'Radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _cylHeightCtrl,
+                              icon: CustomPaint(
+                                painter: CylinderInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for both Radius and Height.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                    _buildResultRow('Diameter', diameter.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter both values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
+                  /// ==========================================
+                  /// ==========================================
+                  /// YAHAN SE SPHERE CAP KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Sphere cap') ...[
+                    Builder(
+                      builder: (context) {
+                        double baseRadius = double.tryParse(_sCapRadiusCtrl.text) ?? 0; // Input: Base Radius (a)
+                        double height = double.tryParse(_sCapHeightCtrl.text) ?? 0; // Input: Cap Height (h)
+
+                        double volume = 0, totalArea = 0, lateralArea = 0, baseArea = 0, sphereRadius = 0;
+                        bool isValid = false;
+
+                        if (baseRadius > 0 && height > 0) {
+                          // Sphere Radius (R) = (a² + h²) / (2h)
+                          sphereRadius = ((baseRadius * baseRadius) + (height * height)) / (2 * height);
+
+                          // Base Area = π * a²
+                          baseArea = pi * baseRadius * baseRadius;
+
+                          // Lateral (Dome) Area = 2 * π * R * h
+                          lateralArea = 2 * pi * sphereRadius * height;
+
+                          // Total Area = Lateral Area + Base Area
+                          totalArea = lateralArea + baseArea;
+
+                          // Volume = (1/3) * π * h² * (3R - h)
+                          volume = (1 / 3) * pi * height * height * ((3 * sphereRadius) - height);
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput = _sCapRadiusCtrl.text.isNotEmpty || _sCapHeightCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 2 Fixed Inputs: Base radius and Height
+                            _buildFixedInputRow(
+                              title: 'Base radius (a)', // FIX: Ab yeh Base radius hai
+                              ctrl: _sCapRadiusCtrl,
+                              icon: CustomPaint(
+                                painter: SphereCapInputPainter(
+                                  highlightType: 'Base radius',
+                                  // Painter mein humne 'Base radius' ka highlight banaya tha
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _sCapHeightCtrl,
+                              icon: CustomPaint(
+                                painter: SphereCapInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for both Base Radius and Height.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                    _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)),
+                                    // FIX: Result mein Sphere radius dikhayenge
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter both values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE SPHERE SEGMENT KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Sphere segment') ...[
+                    Builder(
+                      builder: (context) {
+                        double height = double.tryParse(_sSegHeightCtrl.text) ?? 0; // h
+                        double topRad = double.tryParse(_sSegTopRadCtrl.text) ?? 0; // r₁
+                        double botRad = double.tryParse(_sSegBotRadCtrl.text) ?? 0; // r₂
+
+                        double volume = 0, totalArea = 0, lateralArea = 0;
+                        double topArea = 0, baseArea = 0, sphereRadius = 0;
+                        bool isValid = false;
+
+                        if (height > 0 && topRad > 0 && botRad > 0) {
+                          // Distance 'd' ka logic Sphere Radius nikalne ke liye
+                          double d = ((topRad * topRad) - (botRad * botRad) - (height * height)) / (2 * height);
+
+                          // Sphere Radius (R)
+                          sphereRadius = sqrt((topRad * topRad) + (d * d));
+
+                          // Volume = (π * h / 6) * (3r₁² + 3r₂² + h²)
+                          volume =
+                              (pi * height / 6) * ((3 * topRad * topRad) + (3 * botRad * botRad) + (height * height));
+
+                          // Top aur Bottom Areas
+                          topArea = pi * topRad * topRad;
+                          baseArea = pi * botRad * botRad;
+
+                          // Lateral Area = 2 * π * R * h
+                          lateralArea = 2 * pi * sphereRadius * height;
+
+                          // Total Area = Lateral Area + Top Area + Base Area
+                          totalArea = lateralArea + topArea + baseArea;
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput =
+                            _sSegHeightCtrl.text.isNotEmpty ||
+                            _sSegTopRadCtrl.text.isNotEmpty ||
+                            _sSegBotRadCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 3 Fixed Inputs: Height, Top radius, Bottom radius
+                            _buildFixedInputRow(
+                              title: 'Height (h)',
+                              ctrl: _sSegHeightCtrl,
+                              icon: CustomPaint(
+                                painter: SphereSegInputPainter(
+                                  highlightType: 'Height',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Top radius (r₁)',
+                              ctrl: _sSegTopRadCtrl,
+                              icon: CustomPaint(
+                                painter: SphereSegInputPainter(
+                                  highlightType: 'Top radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Bottom radius (r₂)',
+                              ctrl: _sSegBotRadCtrl,
+                              icon: CustomPaint(
+                                painter: SphereSegInputPainter(
+                                  highlightType: 'Bottom radius',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow(
+                                      'Lateral area',
+                                      lateralArea.toStringAsFixed(2),
+                                      isHighlighted: true,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    _buildResultRow('Top area', topArea.toStringAsFixed(2)),
+                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                    _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter all values to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE ELLIPSOID KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Ellipsoid') ...[
+                    Builder(
+                      builder: (context) {
+                        double a = double.tryParse(_ellipsoidRadACtrl.text) ?? 0; // Radius a (x-axis)
+                        double b = double.tryParse(_ellipsoidRadBCtrl.text) ?? 0; // Radius b (y-axis)
+                        double c = double.tryParse(_ellipsoidRadCCtrl.text) ?? 0; // Radius c (z-axis)
+
+                        double volume = 0, totalArea = 0;
+                        bool isValid = false;
+
+                        if (a > 0 && b > 0 && c > 0) {
+                          // Volume = (4/3) * π * a * b * c
+                          volume = (4 / 3) * pi * a * b * c;
+
+                          // Surface Area approximation (Knud Thomsen's formula, highly accurate)
+                          // S ≈ 4 * π * [ ((ab)^p + (ac)^p + (bc)^p) / 3 ]^(1/p)  where p = 1.6075
+                          double p = 1.6075;
+                          double term1 = pow(a * b, p).toDouble();
+                          double term2 = pow(a * c, p).toDouble();
+                          double term3 = pow(b * c, p).toDouble();
+
+                          totalArea = 4 * pi * pow((term1 + term2 + term3) / 3, 1 / p);
+
+                          isValid = true;
+                        }
+
+                        bool hasPartialInput =
+                            _ellipsoidRadACtrl.text.isNotEmpty ||
+                            _ellipsoidRadBCtrl.text.isNotEmpty ||
+                            _ellipsoidRadCCtrl.text.isNotEmpty;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // 3 Fixed Inputs for Ellipsoid: Radius a, Radius b, Radius c
+                            _buildFixedInputRow(
+                              title: 'Radius a (x)',
+                              ctrl: _ellipsoidRadACtrl,
+                              icon: CustomPaint(
+                                painter: EllipsoidInputPainter(
+                                  highlightType: 'Radius a (x)',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Radius b (y)',
+                              ctrl: _ellipsoidRadBCtrl,
+                              icon: CustomPaint(
+                                painter: EllipsoidInputPainter(
+                                  highlightType: 'Radius b (y)',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            _buildFixedInputRow(
+                              title: 'Radius c (z)',
+                              ctrl: _ellipsoidRadCCtrl,
+                              icon: CustomPaint(
+                                painter: EllipsoidInputPainter(
+                                  highlightType: 'Radius c (z)',
+                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                  highlightColor: AppColors.orangeColor(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && hasPartialInput)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'Enter values greater than 0 for all three radii.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                  ] else ...[
+                                    Center(
+                                      child: Text(
+                                        'Enter all three radii to see results.',
+                                        style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1877,9 +2109,10 @@ class _BodiesViewState extends State<BodiesView> {
       ),
     );
   }
+
   /// end main build widget
 
-// NAYA & MASTER: Dynamic Fixed Input Row Builder (Bina dropdown ke)
+  // NAYA & MASTER: Dynamic Fixed Input Row Builder (Bina dropdown ke)
   Widget _buildFixedInputRow({
     required String title,
     required TextEditingController ctrl,
@@ -1900,20 +2133,6 @@ class _BodiesViewState extends State<BodiesView> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
               ),
-              // child: Row(
-              //   children: [
-              //     SizedBox(
-              //       width: 24,
-              //       height: 24,
-              //       child: icon, // Dynamic icon yahan render hoga
-              //     ),
-              //     const SizedBox(width: 16),
-              //     Text(
-              //       title,
-              //       style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-              //     ),
-              //   ],
-              // ),
               child: Row(
                 children: [
                   SizedBox(
@@ -1922,16 +2141,13 @@ class _BodiesViewState extends State<BodiesView> {
                     child: icon, // Dynamic icon yahan render hoga
                   ),
                   const SizedBox(width: 16),
-                  Expanded( // FIX: Text wrap karne ke liye Expanded zaroori hai
+                  Expanded(
+                    // FIX: Text wrap karne ke liye Expanded zaroori hai
                     child: Text(
                       title,
                       maxLines: 2, // Max 2 lines set kiya
                       overflow: TextOverflow.ellipsis, // Agar 2 line se bada hua toh '...' dikhayega
-                      style: TextStyle(
-                        color: AppColors.textColor(context),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -2086,12 +2302,12 @@ class _BodiesViewState extends State<BodiesView> {
 
     CustomPainter? painter;
     switch (shapeName) {
-    // _getResultIcon function mein ise update karein:
+      // _getResultIcon function mein ise update karein:
       case 'Cube':
         painter = CubeInputPainter(
-            highlightType: label,
-            baseColor: AppColors.textGrey(context).withOpacity(0.2),
-            highlightColor: iconColor
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
         );
         break;
       case 'Prism':
@@ -2137,7 +2353,8 @@ class _BodiesViewState extends State<BodiesView> {
         );
         break;
       case 'Sphere':
-        painter = SphereInputPainter( // FIX: SpherePainter ki jagah SphereInputPainter lagaya
+        painter = SphereInputPainter(
+          // FIX: SpherePainter ki jagah SphereInputPainter lagaya
           highlightType: label,
           baseColor: AppColors.textGrey(context).withOpacity(0.2),
           highlightColor: iconColor,
@@ -2168,11 +2385,7 @@ class _BodiesViewState extends State<BodiesView> {
 
     if (painter == null) return const SizedBox.shrink();
 
-    return SizedBox(
-      width: 18,
-      height: 18,
-      child: CustomPaint(painter: painter),
-    );
+    return SizedBox(width: 18, height: 18, child: CustomPaint(painter: painter));
   }
 
   Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
@@ -2217,7 +2430,8 @@ class _BodiesViewState extends State<BodiesView> {
     _showDynamicInputSelectorSheet(
       options: ['Side', 'Total area', 'Lateral area', 'Volume'],
       currentSelection: _cubeInputType,
-      heightFraction: 0.55, // Cube mein 4 options hain, to thoda height badha diya
+      heightFraction: 0.55,
+      // Cube mein 4 options hain, to thoda height badha diya
       iconBuilder: (opt) => CustomPaint(
         painter: CubeInputPainter(
           highlightType: opt,
@@ -2230,6 +2444,7 @@ class _BodiesViewState extends State<BodiesView> {
       },
     );
   }
+
   Widget _buildCubeInputRow() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -2267,7 +2482,11 @@ class _BodiesViewState extends State<BodiesView> {
                     Expanded(
                       child: Text(
                         _cubeInputType,
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -2312,7 +2531,8 @@ class _BodiesViewState extends State<BodiesView> {
   // Sphere ka dynamic input sheet wrapper
   void _showSphereSelectorSheet() {
     _showDynamicInputSelectorSheet(
-      options: ['Radius', 'Area', 'Volume'], // Image wale 3 options[cite: 4]
+      options: ['Radius', 'Area', 'Volume'],
+      // Image wale 3 options[cite: 4]
       currentSelection: _sphereInputType,
       heightFraction: 0.5,
       iconBuilder: (opt) => CustomPaint(
@@ -2328,7 +2548,7 @@ class _BodiesViewState extends State<BodiesView> {
     );
   }
 
-// Sphere ka Input Row
+  // Sphere ka Input Row
   Widget _buildSphereInputRow() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -2365,7 +2585,11 @@ class _BodiesViewState extends State<BodiesView> {
                     Expanded(
                       child: Text(
                         _sphereInputType,
-                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppColors.textColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -2406,7 +2630,6 @@ class _BodiesViewState extends State<BodiesView> {
       ),
     );
   }
-
 }
 
 // ==========================================
@@ -2415,10 +2638,15 @@ class _BodiesViewState extends State<BodiesView> {
 
 class CubePainter extends CustomPainter {
   final Color color;
+
   CubePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height, off = w * 0.3;
     canvas.drawRect(Rect.fromLTWH(off, 0, w - off, h - off), p); // Back
     canvas.drawRect(Rect.fromLTWH(0, off, w - off, h - off), p); // Front
@@ -2427,29 +2655,14 @@ class CubePainter extends CustomPainter {
     canvas.drawLine(Offset(0, h), Offset(off, h - off), p);
     canvas.drawLine(Offset(w - off, h), Offset(w, h - off), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
-// class PrismPainter extends CustomPainter {
-//   final Color color;
-//   PrismPainter({required this.color});
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-//     double w = size.width, h = size.height, offX = w * 0.3, offY = h * 0.3;
-//     canvas.drawRect(Rect.fromLTWH(offX, 0, w - offX, h - offY), p);
-//     canvas.drawRect(Rect.fromLTWH(0, offY, w - offX, h - offY), p);
-//     canvas.drawLine(Offset(0, offY), Offset(offX, 0), p);
-//     canvas.drawLine(Offset(w - offX, offY), Offset(w, 0), p);
-//     canvas.drawLine(Offset(0, h), Offset(offX, h - offY), p);
-//     canvas.drawLine(Offset(w - offX, h), Offset(w, h - offY), p);
-//   }
-//   @override
-//   bool shouldRepaint(covariant CustomPainter old) => false;
-// }
 class PrismPainter extends CustomPainter {
   final Color color;
+
   PrismPainter({required this.color});
 
   @override
@@ -2491,48 +2704,9 @@ class PrismPainter extends CustomPainter {
   }
 }
 
-// class PyramidPainter extends CustomPainter {
-//   final Color color;
-//   PyramidPainter({required this.color});
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-//     double w = size.width, h = size.height;
-//     Offset apex = Offset(w / 2, 0);
-//     Offset bL = Offset(0, h * 0.8), bR = Offset(w * 0.7, h), bBack = Offset(w, h * 0.6);
-//     canvas.drawLine(bL, bR, p); canvas.drawLine(bR, bBack, p); canvas.drawLine(bBack, bL, p);
-//     canvas.drawLine(apex, bL, p); canvas.drawLine(apex, bR, p); canvas.drawLine(apex, bBack, p);
-//     canvas.drawLine(apex, Offset((bL.dx + bBack.dx)/2, (bL.dy + bBack.dy)/2), Paint()..color=color.withOpacity(0.3)..style=PaintingStyle.stroke);
-//   }
-//   @override
-//   bool shouldRepaint(covariant CustomPainter old) => false;
-// }
-
-// class PyrFrustumPainter extends CustomPainter {
-//   final Color color;
-//   PyrFrustumPainter({required this.color});
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-//     double w = size.width, h = size.height;
-//     Path path = Path()
-//       ..moveTo(w*0.3, h*0.2)
-//       ..lineTo(w*0.7, h*0.2)
-//       ..lineTo(w, h)
-//       ..lineTo(0, h*0.8)
-//       ..close();
-//     canvas.drawPath(path, p);
-//     canvas.drawLine(Offset(0, h*0.8), Offset(w*0.3, h*0.2), p);
-//     canvas.drawLine(Offset(w, h), Offset(w*0.7, h*0.2), p);
-//     canvas.drawLine(Offset(0, h*0.8), Offset(w*0.6, h*0.7), p);
-//     canvas.drawLine(Offset(w, h), Offset(w*0.6, h*0.7), p);
-//   }
-//   @override
-//   bool shouldRepaint(covariant CustomPainter old) => false;
-// }
-
 class PyramidPainter extends CustomPainter {
   final Color color;
+
   PyramidPainter({required this.color});
 
   @override
@@ -2580,6 +2754,7 @@ class PyramidPainter extends CustomPainter {
 
 class PyrFrustumPainter extends CustomPainter {
   final Color color;
+
   PyrFrustumPainter({required this.color});
 
   @override
@@ -2639,98 +2814,113 @@ class PyrFrustumPainter extends CustomPainter {
 
 class ConePainter extends CustomPainter {
   final Color color;
+
   ConePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height;
     Rect base = Rect.fromLTWH(0, h * 0.75, w, h * 0.25);
     canvas.drawOval(base, p);
     canvas.drawLine(Offset(w / 2, 0), Offset(0, h * 0.875), p);
     canvas.drawLine(Offset(w / 2, 0), Offset(w, h * 0.875), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
 class ConeFrustumPainter extends CustomPainter {
   final Color color;
+
   ConeFrustumPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height;
-    canvas.drawOval(Rect.fromLTWH(w*0.2, 0, w*0.6, h*0.2), p);
-    canvas.drawOval(Rect.fromLTWH(0, h*0.8, w, h*0.2), p);
-    canvas.drawLine(Offset(w*0.2, h*0.1), Offset(0, h*0.9), p);
-    canvas.drawLine(Offset(w*0.8, h*0.1), Offset(w, h*0.9), p);
+    canvas.drawOval(Rect.fromLTWH(w * 0.2, 0, w * 0.6, h * 0.2), p);
+    canvas.drawOval(Rect.fromLTWH(0, h * 0.8, w, h * 0.2), p);
+    canvas.drawLine(Offset(w * 0.2, h * 0.1), Offset(0, h * 0.9), p);
+    canvas.drawLine(Offset(w * 0.8, h * 0.1), Offset(w, h * 0.9), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
 class CylinderPainter extends CustomPainter {
   final Color color;
+
   CylinderPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height;
-    canvas.drawOval(Rect.fromLTWH(0, 0, w, h*0.2), p);
-    canvas.drawArc(Rect.fromLTWH(0, h*0.8, w, h*0.2), 0, 3.14159, false, p);
-    canvas.drawLine(Offset(0, h*0.1), Offset(0, h*0.9), p);
-    canvas.drawLine(Offset(w, h*0.1), Offset(w, h*0.9), p);
+    canvas.drawOval(Rect.fromLTWH(0, 0, w, h * 0.2), p);
+    canvas.drawArc(Rect.fromLTWH(0, h * 0.8, w, h * 0.2), 0, 3.14159, false, p);
+    canvas.drawLine(Offset(0, h * 0.1), Offset(0, h * 0.9), p);
+    canvas.drawLine(Offset(w, h * 0.1), Offset(w, h * 0.9), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
 class SpherePainter extends CustomPainter {
   final Color color;
+
   SpherePainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     Offset c = Offset(size.width / 2, size.height / 2);
     canvas.drawCircle(c, size.width / 2, p);
     canvas.drawOval(Rect.fromCenter(center: c, width: size.width, height: size.height * 0.3), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
 class SphereCapPainter extends CustomPainter {
   final Color color;
+
   SphereCapPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height;
-    canvas.drawArc(Rect.fromLTWH(0, 0, w, h*1.5), 3.14159, 3.14159, false, p);
-    canvas.drawOval(Rect.fromLTWH(0, h*0.6, w, h*0.3), p);
+    canvas.drawArc(Rect.fromLTWH(0, 0, w, h * 1.5), 3.14159, 3.14159, false, p);
+    canvas.drawOval(Rect.fromLTWH(0, h * 0.6, w, h * 0.3), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
-// class SphereSegPainter extends CustomPainter {
-//   final Color color;
-//   SphereSegPainter({required this.color});
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-//     double w = size.width, h = size.height;
-//     canvas.drawOval(Rect.fromLTWH(w*0.1, 0, w*0.8, h*0.25), p);
-//     canvas.drawOval(Rect.fromLTWH(0, h*0.75, w, h*0.25), p);
-//     canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), 2.5, 1.2, false, p);
-//     canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), -0.6, 1.2, false, p);
-//   }
-//   @override
-//   bool shouldRepaint(covariant CustomPainter old) => false;
-// }
-
 class SphereSegPainter extends CustomPainter {
   final Color color;
+
   SphereSegPainter({required this.color});
 
   @override
@@ -2762,11 +2952,10 @@ class SphereSegPainter extends CustomPainter {
     // 3. Side ki spherical curves draw karna
     Path sideEdges = Path()
       ..moveTo(topLeft.dx, topLeft.dy)
-    // Left side ka bahar ki taraf nikla hua curve (Bulge)
+      // Left side ka bahar ki taraf nikla hua curve (Bulge)
       ..quadraticBezierTo(-w * 0.05, h * 0.50, botLeft.dx, botLeft.dy)
-
       ..moveTo(topRight.dx, topRight.dy)
-    // Right side ka bahar ki taraf nikla hua curve (Bulge)
+      // Right side ka bahar ki taraf nikla hua curve (Bulge)
       ..quadraticBezierTo(w * 1.05, h * 0.50, botRight.dx, botRight.dy);
 
     canvas.drawPath(sideEdges, p);
@@ -2780,14 +2969,20 @@ class SphereSegPainter extends CustomPainter {
 
 class EllipsoidPainter extends CustomPainter {
   final Color color;
+
   EllipsoidPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
     double w = size.width, h = size.height;
-    canvas.drawOval(Rect.fromLTWH(0, h*0.2, w, h*0.6), p);
-    canvas.drawOval(Rect.fromLTWH(0, h*0.35, w, h*0.3), p);
+    canvas.drawOval(Rect.fromLTWH(0, h * 0.2, w, h * 0.6), p);
+    canvas.drawOval(Rect.fromLTWH(0, h * 0.35, w, h * 0.3), p);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
@@ -2835,8 +3030,18 @@ class CubeInputPainter extends CustomPainter {
     Offset bBR = Offset(w, h - off); // Back Bottom-Right
 
     // Faces ke paths
-    Path topFace = Path()..moveTo(fTL.dx, fTL.dy)..lineTo(bTL.dx, bTL.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(fTR.dx, fTR.dy)..close();
-    Path rightFace = Path()..moveTo(fTR.dx, fTR.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(fBR.dx, fBR.dy)..close();
+    Path topFace = Path()
+      ..moveTo(fTL.dx, fTL.dy)
+      ..lineTo(bTL.dx, bTL.dy)
+      ..lineTo(bTR.dx, bTR.dy)
+      ..lineTo(fTR.dx, fTR.dy)
+      ..close();
+    Path rightFace = Path()
+      ..moveTo(fTR.dx, fTR.dy)
+      ..lineTo(bTR.dx, bTR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(fBR.dx, fBR.dy)
+      ..close();
     Rect frontFace = Rect.fromLTWH(0, off, w - off, h - off);
     Rect backFace = Rect.fromLTWH(off, 0, w - off, h - off);
 
@@ -2876,7 +3081,15 @@ class CubeInputPainter extends CustomPainter {
       canvas.drawLine(fTL, fBR, hlStrokePaint);
     } else if (highlightType == 'Space Diagonal') {
       // Body/Space diagonal (Front Bottom-Left se Back Top-Right, Cube ke beech se)
-      canvas.drawLine(fBL, bTR, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5..strokeCap = StrokeCap.round);
+      canvas.drawLine(
+        fBL,
+        bTR,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5
+          ..strokeCap = StrokeCap.round,
+      );
     }
   }
 
@@ -2889,11 +3102,7 @@ class SphereInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  SphereInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  SphereInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -2920,11 +3129,7 @@ class SphereInputPainter extends CustomPainter {
     double radius = size.width / 2;
 
     // FIX: size.height * 0.35 mein '*' लगा diya hai
-    Rect equator = Rect.fromCenter(
-      center: center,
-      width: size.width,
-      height: size.height * 0.35,
-    );
+    Rect equator = Rect.fromCenter(center: center, width: size.width, height: size.height * 0.35);
 
     if (highlightType == 'Area' || highlightType == 'Total area') {
       // Area ke liye solid filled circle
@@ -2966,9 +3171,17 @@ class PrismInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlStrokePaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.4)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
 
     double w = size.width, h = size.height;
     double fw = w * 0.75, fh = h * 0.45;
@@ -2981,19 +3194,39 @@ class PrismInputPainter extends CustomPainter {
 
     Rect frontRect = Rect.fromLTWH(0, h - fh, fw, fh);
     Rect backRect = Rect.fromLTWH(offX, h - fh - offY, fw, fh);
-    Path topFace = Path()..moveTo(fTL.dx, fTL.dy)..lineTo(bTL.dx, bTL.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(fTR.dx, fTR.dy)..close();
-    Path rightFace = Path()..moveTo(fTR.dx, fTR.dy)..lineTo(bTR.dx, bTR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(fBR.dx, fBR.dy)..close();
+    Path topFace = Path()
+      ..moveTo(fTL.dx, fTL.dy)
+      ..lineTo(bTL.dx, bTL.dy)
+      ..lineTo(bTR.dx, bTR.dy)
+      ..lineTo(fTR.dx, fTR.dy)
+      ..close();
+    Path rightFace = Path()
+      ..moveTo(fTR.dx, fTR.dy)
+      ..lineTo(bTR.dx, bTR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(fBR.dx, fBR.dy)
+      ..close();
 
     // FILL HIGHLIGHTS
     if (highlightType == 'Volume' || highlightType == 'Total area') {
       canvas.drawRect(backRect, fillPaint);
       canvas.drawPath(topFace, fillPaint);
       canvas.drawPath(rightFace, fillPaint);
-      canvas.drawRect(frontRect, Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill);
+      canvas.drawRect(
+        frontRect,
+        Paint()
+          ..color = highlightColor.withOpacity(0.7)
+          ..style = PaintingStyle.fill,
+      );
     } else if (highlightType == 'Lateral area') {
       canvas.drawRect(backRect, fillPaint);
       canvas.drawPath(rightFace, fillPaint);
-      canvas.drawRect(frontRect, Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill);
+      canvas.drawRect(
+        frontRect,
+        Paint()
+          ..color = highlightColor.withOpacity(0.7)
+          ..style = PaintingStyle.fill,
+      );
     }
 
     // DRAW BASE
@@ -3012,7 +3245,14 @@ class PrismInputPainter extends CustomPainter {
     } else if (highlightType == 'Width') {
       canvas.drawLine(fBR, bBR, hlStrokePaint); // Bottom depth edge (right side)
     } else if (highlightType == 'Space Diagonal') {
-      canvas.drawLine(fBL, bTR, Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.5);
+      canvas.drawLine(
+        fBL,
+        bTR,
+        Paint()
+          ..color = highlightColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      );
     }
   }
 
@@ -3031,11 +3271,24 @@ class PyramidInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlStrokePaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint dashedPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.4)..style = PaintingStyle.fill;
-    Paint darkFillPaint = Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint dashedPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.7)
+      ..style = PaintingStyle.fill;
 
     double w = size.width, h = size.height;
 
@@ -3049,9 +3302,22 @@ class PyramidInputPainter extends CustomPainter {
     Offset slantMid = Offset(w * 0.8, h * 0.875); // Mid of fR and bR (for Slant Height)
 
     // Base Polygon Paths
-    Path basePath = Path()..moveTo(fL.dx, fL.dy)..lineTo(fR.dx, fR.dy)..lineTo(bR.dx, bR.dy)..lineTo(bL.dx, bL.dy)..close();
-    Path frontFace = Path()..moveTo(apex.dx, apex.dy)..lineTo(fL.dx, fL.dy)..lineTo(fR.dx, fR.dy)..close();
-    Path rightFace = Path()..moveTo(apex.dx, apex.dy)..lineTo(fR.dx, fR.dy)..lineTo(bR.dx, bR.dy)..close();
+    Path basePath = Path()
+      ..moveTo(fL.dx, fL.dy)
+      ..lineTo(fR.dx, fR.dy)
+      ..lineTo(bR.dx, bR.dy)
+      ..lineTo(bL.dx, bL.dy)
+      ..close();
+    Path frontFace = Path()
+      ..moveTo(apex.dx, apex.dy)
+      ..lineTo(fL.dx, fL.dy)
+      ..lineTo(fR.dx, fR.dy)
+      ..close();
+    Path rightFace = Path()
+      ..moveTo(apex.dx, apex.dy)
+      ..lineTo(fR.dx, fR.dy)
+      ..lineTo(bR.dx, bR.dy)
+      ..close();
 
     // 1. FILL HIGHLIGHTS
     if (highlightType == 'Volume' || highlightType == 'Total area') {
@@ -3065,7 +3331,10 @@ class PyramidInputPainter extends CustomPainter {
 
     // 2. DRAW BASE PYRAMID (Visible & Hidden edges)
     // Hidden edges (lighter/thinner)
-    Paint hiddenPaint = Paint()..color = baseColor.withOpacity(0.4)..style = PaintingStyle.stroke..strokeWidth = 1.0;
+    Paint hiddenPaint = Paint()
+      ..color = baseColor.withOpacity(0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
     canvas.drawLine(fL, bL, hiddenPaint);
     canvas.drawLine(bL, bR, hiddenPaint);
     canvas.drawLine(apex, bL, hiddenPaint);
@@ -3109,11 +3378,7 @@ class PyrFrustumInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  PyrFrustumInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  PyrFrustumInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3154,10 +3419,30 @@ class PyrFrustumInputPainter extends CustomPainter {
     Offset tBL = Offset(w * 0.42, h * 0.16);
 
     // Paths for Faces
-    Path bottomBase = Path()..moveTo(bFL.dx, bFL.dy)..lineTo(bFR.dx, bFR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(bBL.dx, bBL.dy)..close();
-    Path topBase = Path()..moveTo(tFL.dx, tFL.dy)..lineTo(tFR.dx, tFR.dy)..lineTo(tBR.dx, tBR.dy)..lineTo(tBL.dx, tBL.dy)..close();
-    Path frontFace = Path()..moveTo(tFL.dx, tFL.dy)..lineTo(tFR.dx, tFR.dy)..lineTo(bFR.dx, bFR.dy)..lineTo(bFL.dx, bFL.dy)..close();
-    Path rightFace = Path()..moveTo(tFR.dx, tFR.dy)..lineTo(tBR.dx, tBR.dy)..lineTo(bBR.dx, bBR.dy)..lineTo(bFR.dx, bFR.dy)..close();
+    Path bottomBase = Path()
+      ..moveTo(bFL.dx, bFL.dy)
+      ..lineTo(bFR.dx, bFR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(bBL.dx, bBL.dy)
+      ..close();
+    Path topBase = Path()
+      ..moveTo(tFL.dx, tFL.dy)
+      ..lineTo(tFR.dx, tFR.dy)
+      ..lineTo(tBR.dx, tBR.dy)
+      ..lineTo(tBL.dx, tBL.dy)
+      ..close();
+    Path frontFace = Path()
+      ..moveTo(tFL.dx, tFL.dy)
+      ..lineTo(tFR.dx, tFR.dy)
+      ..lineTo(bFR.dx, bFR.dy)
+      ..lineTo(bFL.dx, bFL.dy)
+      ..close();
+    Path rightFace = Path()
+      ..moveTo(tFR.dx, tFR.dy)
+      ..lineTo(tBR.dx, tBR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(bFR.dx, bFR.dy)
+      ..close();
 
     // 1. FILL HIGHLIGHTS (Volume, Total area, Lateral area)
     if (highlightType == 'Volume' || highlightType == 'Total area') {
@@ -3203,8 +3488,7 @@ class PyrFrustumInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant PyrFrustumInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3213,11 +3497,7 @@ class ConeInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  ConeInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  ConeInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3290,8 +3570,7 @@ class ConeInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ConeInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3300,11 +3579,7 @@ class ConeFrustumInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  ConeFrustumInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  ConeFrustumInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3394,8 +3669,7 @@ class ConeFrustumInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ConeFrustumInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3404,11 +3678,7 @@ class CylinderInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  CylinderInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  CylinderInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3493,8 +3763,7 @@ class CylinderInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CylinderInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3503,11 +3772,7 @@ class SphereCapInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  SphereCapInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  SphereCapInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3540,8 +3805,8 @@ class SphereCapInputPainter extends CustomPainter {
 
     // Coordinates for highlights
     Offset center = Offset(w / 2, h * 0.75); // Base oval ka center
-    Offset topPole = Offset(w / 2, 0);       // Cap ka top
-    Offset rightEdge = Offset(w, h * 0.75);  // Base oval ka right edge
+    Offset topPole = Offset(w / 2, 0); // Cap ka top
+    Offset rightEdge = Offset(w, h * 0.75); // Base oval ka right edge
 
     // Dome Path (Top arc + bottom curve of oval)
     Path domePath = Path()
@@ -3560,17 +3825,8 @@ class SphereCapInputPainter extends CustomPainter {
     }
 
     // 2. DRAW BASE WIREFRAME (Aapke original design jaisa)
-    canvas.drawArc(
-      arcRect,
-      pi,
-      pi,
-      false,
-      highlightType == 'Lateral area' ? hlStrokePaint : basePaint,
-    );
-    canvas.drawOval(
-      baseOval,
-      highlightType == 'Base area' ? hlStrokePaint : basePaint,
-    );
+    canvas.drawArc(arcRect, pi, pi, false, highlightType == 'Lateral area' ? hlStrokePaint : basePaint);
+    canvas.drawOval(baseOval, highlightType == 'Base area' ? hlStrokePaint : basePaint);
 
     // 3. SPECIFIC STROKE HIGHLIGHTS
     if (highlightType == 'Base radius') {
@@ -3582,11 +3838,12 @@ class SphereCapInputPainter extends CustomPainter {
       canvas.drawLine(topPole, center, hlStrokePaint);
       canvas.drawCircle(center, 2.0, darkFillPaint);
       canvas.drawCircle(topPole, 2.0, darkFillPaint);
-    } else if (highlightType == 'Sphere radius') { // FIX: Yahan 'Sphere radius' aayega Result ke label ke liye
+    } else if (highlightType == 'Sphere radius') {
+      // FIX: Yahan 'Sphere radius' aayega Result ke label ke liye
       // Sphere radius (R) ke liye ek slanted line draw karenge arc tak
       Offset slantPoint = Offset(
-          w / 2 + (w / 2) * cos(pi / 4),
-          h * 0.75 - (h * 0.75) * sin(pi / 4) // FIX: Missing minus (-) operator lagaya
+        w / 2 + (w / 2) * cos(pi / 4),
+        h * 0.75 - (h * 0.75) * sin(pi / 4), // FIX: Missing minus (-) operator lagaya
       );
       canvas.drawLine(center, slantPoint, hlStrokePaint);
       canvas.drawCircle(center, 2.0, darkFillPaint);
@@ -3595,8 +3852,7 @@ class SphereCapInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SphereCapInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3605,11 +3861,7 @@ class SphereSegInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  SphereSegInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  SphereSegInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3709,8 +3961,7 @@ class SphereSegInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SphereSegInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
 
@@ -3719,11 +3970,7 @@ class EllipsoidInputPainter extends CustomPainter {
   final Color baseColor;
   final Color highlightColor;
 
-  EllipsoidInputPainter({
-    required this.highlightType,
-    required this.baseColor,
-    required this.highlightColor,
-  });
+  EllipsoidInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -3799,7 +4046,6 @@ class EllipsoidInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant EllipsoidInputPainter oldDelegate) {
-    return oldDelegate.highlightType != highlightType ||
-        oldDelegate.highlightColor != highlightColor;
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
