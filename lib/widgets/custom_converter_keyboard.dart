@@ -196,7 +196,7 @@ class ConverterKeyboard extends StatelessWidget {
   }
 
   BorderRadius _getShapeRadius() {
-    return buttonShape == 'circle' ? BorderRadius.circular(100) : BorderRadius.circular(16);
+    return buttonShape == 'circle' ? BorderRadius.circular(100) : BorderRadius.circular(10);
   }
 
   @override
@@ -266,35 +266,127 @@ class ConverterKeyboard extends StatelessWidget {
   }
 
   // 1. NUMBER KEYS WALA FUNCTION
+  // Widget _buildKey(BuildContext context, String text, {required VoidCallback onTap, Color? textColor}) {
+  //   final isDark = AppColors.isDark(context);
+  //
+  //   return Expanded(
+  //     child: Material(
+  //       color: AppColors.surfaceColor(context).withOpacity(isDark ? 0.5 : 1.0),
+  //       borderRadius: _getShapeRadius(),
+  //       clipBehavior: Clip.antiAlias,
+  //       child: InkWell(
+  //         onTap: () {
+  //           _triggerHaptic();
+  //           onTap();
+  //         },
+  //         borderRadius: _getShapeRadius(),
+  //
+  //         // NAYA FIX 1: textColor check aur opacity ekdum theek syntax me
+  //         splashColor: textColor != null ? textColor.withOpacity(0.2) : AppColors.cyanColor(context).withOpacity(0.2),
+  //         highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
+  //
+  //         child: Container(
+  //           height: 65,
+  //           alignment: Alignment.center,
+  //           child: Text(
+  //             text,
+  //             style: TextStyle(
+  //               // NAYA FIX 2: AppColors.textColor ke baad (context) lagana zaroori hai
+  //               color: textColor ?? AppColors.textColor(context),
+  //               fontSize: 26,
+  //               fontWeight: FontWeight.w500,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // // 2. ICON KEYS (BACKSPACE) WALA FUNCTION
+  // Widget _buildIconKey(BuildContext context, IconData icon, {required VoidCallback onTap}) {
+  //   final isDark = AppColors.isDark(context);
+  //
+  //   return Expanded(
+  //     child: Material(
+  //       color: AppColors.surfaceColor(context).withOpacity(isDark ? 0.5 : 1.0),
+  //       borderRadius: _getShapeRadius(),
+  //       clipBehavior: Clip.antiAlias,
+  //       child: InkWell(
+  //         onTap: () {
+  //           _triggerHaptic();
+  //           onTap();
+  //         },
+  //         onLongPress: () {
+  //           _triggerHaptic();
+  //           onClear();
+  //         },
+  //         borderRadius: _getShapeRadius(),
+  //
+  //         // NAYA FIX 3: Yahan textColor nahi hai, direct Cyan color use karna hai
+  //         splashColor: AppColors.cyanColor(context).withOpacity(0.2),
+  //         highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
+  //
+  //         child: Container(
+  //           height: 65,
+  //           alignment: Alignment.center,
+  //           child: Icon(icon, color: AppColors.cyanColor(context), size: 28),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+// 1. NUMBER KEYS WALA FUNCTION
   Widget _buildKey(BuildContext context, String text, {required VoidCallback onTap, Color? textColor}) {
     final isDark = AppColors.isDark(context);
+    final resolvedTextColor = textColor ?? AppColors.textColor(context);
 
     return Expanded(
-      child: Material(
-        color: AppColors.surfaceColor(context).withOpacity(isDark ? 0.5 : 1.0),
-        borderRadius: _getShapeRadius(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            _triggerHaptic();
-            onTap();
-          },
-          borderRadius: _getShapeRadius(),
-
-          // NAYA FIX 1: textColor check aur opacity ekdum theek syntax me
-          splashColor: textColor != null ? textColor.withOpacity(0.2) : AppColors.cyanColor(context).withOpacity(0.2),
-          highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
-
-          child: Container(
-            height: 65,
-            alignment: Alignment.center,
-            child: Text(
-              text,
-              style: TextStyle(
-                // NAYA FIX 2: AppColors.textColor ke baad (context) lagana zaroori hai
-                color: textColor ?? AppColors.textColor(context),
-                fontSize: 26,
-                fontWeight: FontWeight.w500,
+      child: Padding(
+        padding: const EdgeInsets.all(0.0), // NAYA: CalculatorButton jaisi padding
+        child: Container(
+          // NAYA: Shadow aur Border bahar wale Container mein
+          decoration: BoxDecoration(
+            borderRadius: _getShapeRadius(),
+            border: Border.all(
+              color: AppColors.textGrey(context).withOpacity(0.15),
+              width: 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+            ],
+          ),
+          // NAYA: Material use kiya background color aur ripple ke liye
+          child: Material(
+            color: AppColors.surfaceColor(context),
+            borderRadius: _getShapeRadius(),
+            clipBehavior: Clip.antiAlias, // Taaki ripple gol corners ke bahar na nikle
+            child: InkWell(
+              onTap: () {
+                _triggerHaptic();
+                onTap();
+              },
+              splashColor: resolvedTextColor.withOpacity(0.2),
+              highlightColor: Colors.white.withOpacity(0.1),
+              child: Container(
+                height: 65,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: FittedBox( // NAYA: FittedBox taaki text kabhi cut na ho
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: resolvedTextColor,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -308,29 +400,45 @@ class ConverterKeyboard extends StatelessWidget {
     final isDark = AppColors.isDark(context);
 
     return Expanded(
-      child: Material(
-        color: AppColors.surfaceColor(context).withOpacity(isDark ? 0.5 : 1.0),
-        borderRadius: _getShapeRadius(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            _triggerHaptic();
-            onTap();
-          },
-          onLongPress: () {
-            _triggerHaptic();
-            onClear();
-          },
-          borderRadius: _getShapeRadius(),
-
-          // NAYA FIX 3: Yahan textColor nahi hai, direct Cyan color use karna hai
-          splashColor: AppColors.cyanColor(context).withOpacity(0.2),
-          highlightColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
-
-          child: Container(
-            height: 65,
-            alignment: Alignment.center,
-            child: Icon(icon, color: AppColors.cyanColor(context), size: 28),
+      child: Padding(
+        padding: const EdgeInsets.all(0.0), // NAYA: CalculatorButton jaisi padding
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: _getShapeRadius(),
+            border: Border.all(
+              color: AppColors.textGrey(context),
+              width: 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+            ],
+          ),
+          child: Material(
+            color: AppColors.surfaceColor(context).withOpacity(isDark ? 0.5 : 1.0),
+            borderRadius: _getShapeRadius(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () {
+                _triggerHaptic();
+                onTap();
+              },
+              onLongPress: () {
+                _triggerHaptic();
+                onClear();
+              },
+              splashColor: AppColors.cyanColor(context).withOpacity(0.2),
+              highlightColor: Colors.white.withOpacity(0.1),
+              child: Container(
+                height: 65,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: Icon(icon, color: AppColors.cyanColor(context), size: 28),
+              ),
+            ),
           ),
         ),
       ),
