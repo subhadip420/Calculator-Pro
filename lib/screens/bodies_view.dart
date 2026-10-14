@@ -63,6 +63,10 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _sSegTopRadCtrl = TextEditingController();
   final TextEditingController _sSegBotRadCtrl = TextEditingController();
 
+  final TextEditingController _ellipsoidRadACtrl = TextEditingController();
+  final TextEditingController _ellipsoidRadBCtrl = TextEditingController();
+  final TextEditingController _ellipsoidRadCCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -1719,6 +1723,152 @@ class _BodiesViewState extends State<BodiesView> {
                                       },
                                     ),
                                   ]
+                                  /// ==========================================
+                                  /// YAHAN SE ELLIPSOID KA CODE ADD KAREIN
+                                  /// ==========================================
+                                  else if (currentShape.name == 'Ellipsoid') ...[
+                                      Builder(
+                                        builder: (context) {
+                                          double a = double.tryParse(_ellipsoidRadACtrl.text) ?? 0; // Radius a (x-axis)
+                                          double b = double.tryParse(_ellipsoidRadBCtrl.text) ?? 0; // Radius b (y-axis)
+                                          double c = double.tryParse(_ellipsoidRadCCtrl.text) ?? 0; // Radius c (z-axis)
+
+                                          double volume = 0, totalArea = 0;
+                                          bool isValid = false;
+
+                                          if (a > 0 && b > 0 && c > 0) {
+                                            // Volume = (4/3) * π * a * b * c
+                                            volume = (4 / 3) * pi * a * b * c;
+
+                                            // Surface Area approximation (Knud Thomsen's formula, highly accurate)
+                                            // S ≈ 4 * π * [ ((ab)^p + (ac)^p + (bc)^p) / 3 ]^(1/p)  where p = 1.6075
+                                            double p = 1.6075;
+                                            double term1 = pow(a * b, p).toDouble();
+                                            double term2 = pow(a * c, p).toDouble();
+                                            double term3 = pow(b * c, p).toDouble();
+
+                                            totalArea = 4 * pi * pow((term1 + term2 + term3) / 3, 1 / p);
+
+                                            isValid = true;
+                                          }
+
+                                          bool hasPartialInput = _ellipsoidRadACtrl.text.isNotEmpty ||
+                                              _ellipsoidRadBCtrl.text.isNotEmpty ||
+                                              _ellipsoidRadCCtrl.text.isNotEmpty;
+
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Input',
+                                                style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                              const SizedBox(height: 12),
+
+                                              // 3 Fixed Inputs for Ellipsoid: Radius a, Radius b, Radius c
+                                              _buildFixedInputRow(
+                                                title: 'Radius a (x)',
+                                                ctrl: _ellipsoidRadACtrl,
+                                                icon: CustomPaint(
+                                                  painter: EllipsoidInputPainter(
+                                                    highlightType: 'Radius a (x)',
+                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                    highlightColor: AppColors.orangeColor(context),
+                                                  ),
+                                                ),
+                                              ),
+                                              _buildFixedInputRow(
+                                                title: 'Radius b (y)',
+                                                ctrl: _ellipsoidRadBCtrl,
+                                                icon: CustomPaint(
+                                                  painter: EllipsoidInputPainter(
+                                                    highlightType: 'Radius b (y)',
+                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                    highlightColor: AppColors.orangeColor(context),
+                                                  ),
+                                                ),
+                                              ),
+                                              _buildFixedInputRow(
+                                                title: 'Radius c (z)',
+                                                ctrl: _ellipsoidRadCCtrl,
+                                                icon: CustomPaint(
+                                                  painter: EllipsoidInputPainter(
+                                                    highlightType: 'Radius c (z)',
+                                                    baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                    highlightColor: AppColors.orangeColor(context),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+
+                                              // Dynamic Hint Banner
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                                  const SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Text(
+                                                      _getBodyHintMessage(currentShape.name),
+                                                      style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 24),
+
+                                              // Result Container
+                                              Container(
+                                                padding: const EdgeInsets.all(16),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.cyanColor(context).withOpacity(0.05),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Center(
+                                                      child: Text(
+                                                        'Calculation Result',
+                                                        style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 12),
+                                                    Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                                    const SizedBox(height: 12),
+
+                                                    if (!isValid && hasPartialInput)
+                                                      Center(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(16.0),
+                                                          child: Text(
+                                                            'Enter values greater than 0 for all three radii.',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    else if (isValid) ...[
+                                                      _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                                      _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                                    ] else ...[
+                                                      Center(
+                                                          child: Text(
+                                                            'Enter all three radii to see results.',
+                                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                                          )
+                                                      )
+                                                    ],
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(height: 40),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ]
                 ],
               ),
             ),
@@ -2007,7 +2157,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Ellipsoid': painter = EllipsoidPainter(color: iconColor); break;
+      case 'Ellipsoid':
+        painter = EllipsoidInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
     }
 
     if (painter == null) return const SizedBox.shrink();
@@ -3553,6 +3709,96 @@ class SphereSegInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SphereSegInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class EllipsoidInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  EllipsoidInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint faintPaint = Paint()
+      ..color = baseColor.withOpacity(0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.8
+      ..strokeCap = StrokeCap.round;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.75)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+    Offset center = Offset(w / 2, h / 2);
+
+    // Ellipsoid outer boundary (A wide horizontal oval)
+    Rect outerOval = Rect.fromCenter(center: center, width: w * 0.9, height: h * 0.65);
+
+    // 3D Equator (Horizontal depth ring)
+    Rect equator = Rect.fromCenter(center: center, width: w * 0.9, height: h * 0.25);
+
+    // 3D Meridian (Vertical depth ring)
+    Rect meridian = Rect.fromCenter(center: center, width: w * 0.35, height: h * 0.65);
+
+    // --- FILL HIGHLIGHTS ---
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawOval(outerOval, fillPaint);
+      canvas.drawOval(equator, darkFillPaint);
+      canvas.drawOval(meridian, darkFillPaint);
+    }
+
+    // --- DRAW BASE WIREFRAME ---
+    canvas.drawOval(outerOval, basePaint);
+    canvas.drawOval(equator, faintPaint);
+    canvas.drawOval(meridian, faintPaint);
+
+    // --- SPECIFIC RADIUS HIGHLIGHTS ---
+    if (highlightType == 'Radius a (x)') {
+      // Radius 'a' (x-axis): Center se horizontal right edge tak
+      Offset rightEdge = Offset(center.dx + (w * 0.45), center.dy);
+      canvas.drawLine(center, rightEdge, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+    } else if (highlightType == 'Radius b (y)') {
+      // Radius 'b' (y-axis / depth): Center se equator ke bottom edge tak (3D perspective)
+      Offset depthBottomEdge = Offset(center.dx, center.dy + (h * 0.125));
+      canvas.drawLine(center, depthBottomEdge, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+    } else if (highlightType == 'Radius c (z)') {
+      // Radius 'c' (z-axis): Center se top edge tak
+      Offset topEdge = Offset(center.dx, center.dy - (h * 0.325));
+      canvas.drawLine(center, topEdge, hlStrokePaint);
+      canvas.drawCircle(center, 2.0, darkFillPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant EllipsoidInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.highlightColor != highlightColor;
   }
