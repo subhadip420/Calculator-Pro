@@ -1331,44 +1331,150 @@ class PrismPainter extends CustomPainter {
   }
 }
 
+// class PyramidPainter extends CustomPainter {
+//   final Color color;
+//   PyramidPainter({required this.color});
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+//     double w = size.width, h = size.height;
+//     Offset apex = Offset(w / 2, 0);
+//     Offset bL = Offset(0, h * 0.8), bR = Offset(w * 0.7, h), bBack = Offset(w, h * 0.6);
+//     canvas.drawLine(bL, bR, p); canvas.drawLine(bR, bBack, p); canvas.drawLine(bBack, bL, p);
+//     canvas.drawLine(apex, bL, p); canvas.drawLine(apex, bR, p); canvas.drawLine(apex, bBack, p);
+//     canvas.drawLine(apex, Offset((bL.dx + bBack.dx)/2, (bL.dy + bBack.dy)/2), Paint()..color=color.withOpacity(0.3)..style=PaintingStyle.stroke);
+//   }
+//   @override
+//   bool shouldRepaint(covariant CustomPainter old) => false;
+// }
+
+// class PyrFrustumPainter extends CustomPainter {
+//   final Color color;
+//   PyrFrustumPainter({required this.color});
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+//     double w = size.width, h = size.height;
+//     Path path = Path()
+//       ..moveTo(w*0.3, h*0.2)
+//       ..lineTo(w*0.7, h*0.2)
+//       ..lineTo(w, h)
+//       ..lineTo(0, h*0.8)
+//       ..close();
+//     canvas.drawPath(path, p);
+//     canvas.drawLine(Offset(0, h*0.8), Offset(w*0.3, h*0.2), p);
+//     canvas.drawLine(Offset(w, h), Offset(w*0.7, h*0.2), p);
+//     canvas.drawLine(Offset(0, h*0.8), Offset(w*0.6, h*0.7), p);
+//     canvas.drawLine(Offset(w, h), Offset(w*0.6, h*0.7), p);
+//   }
+//   @override
+//   bool shouldRepaint(covariant CustomPainter old) => false;
+// }
+
 class PyramidPainter extends CustomPainter {
   final Color color;
   PyramidPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    double w = size.width, h = size.height;
-    Offset apex = Offset(w / 2, 0);
-    Offset bL = Offset(0, h * 0.8), bR = Offset(w * 0.7, h), bBack = Offset(w, h * 0.6);
-    canvas.drawLine(bL, bR, p); canvas.drawLine(bR, bBack, p); canvas.drawLine(bBack, bL, p);
-    canvas.drawLine(apex, bL, p); canvas.drawLine(apex, bR, p); canvas.drawLine(apex, bBack, p);
-    canvas.drawLine(apex, Offset((bL.dx + bBack.dx)/2, (bL.dy + bBack.dy)/2), Paint()..color=color.withOpacity(0.3)..style=PaintingStyle.stroke);
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+
+    double w = size.width;
+    double h = size.height;
+
+    // 1. Top Apex Point
+    Offset apex = Offset(w * 0.50, h * 0.08);
+
+    // 2. Bottom Base (3D Parallelogram)
+    Offset bFL = Offset(w * 0.08, h * 0.88); // Bottom Front-Left
+    Offset bFR = Offset(w * 0.70, h * 0.88); // Bottom Front-Right
+    Offset bBR = Offset(w * 0.92, h * 0.62); // Bottom Back-Right
+    Offset bBL = Offset(w * 0.30, h * 0.62); // Bottom Back-Left
+
+    // Base Draw Karein
+    Path basePath = Path()
+      ..moveTo(bFL.dx, bFL.dy)
+      ..lineTo(bFR.dx, bFR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(bBL.dx, bBL.dy)
+      ..close();
+    canvas.drawPath(basePath, p);
+
+    // 3. Charo Corners ko Apex (Top) se Connect Karein
+    canvas.drawLine(apex, bFL, p); // Front-Left edge
+    canvas.drawLine(apex, bFR, p); // Front-Right edge
+    canvas.drawLine(apex, bBR, p); // Back-Right edge
+    canvas.drawLine(apex, bBL, p); // Back-Left edge
   }
+
   @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
+  bool shouldRepaint(covariant PyramidPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
 }
 
 class PyrFrustumPainter extends CustomPainter {
   final Color color;
   PyrFrustumPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    double w = size.width, h = size.height;
-    Path path = Path()
-      ..moveTo(w*0.3, h*0.2)
-      ..lineTo(w*0.7, h*0.2)
-      ..lineTo(w, h)
-      ..lineTo(0, h*0.8)
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+
+    double w = size.width;
+    double h = size.height;
+
+    // 1. Bottom Base (Bada 3D Parallelogram)
+    Offset bFL = Offset(w * 0.05, h * 0.85); // Bottom Front-Left
+    Offset bFR = Offset(w * 0.72, h * 0.85); // Bottom Front-Right
+    Offset bBR = Offset(w * 0.95, h * 0.60); // Bottom Back-Right
+    Offset bBL = Offset(w * 0.28, h * 0.60); // Bottom Back-Left
+
+    // 2. Top Base (Chota 3D Parallelogram)
+    Offset tFL = Offset(w * 0.28, h * 0.32); // Top Front-Left
+    Offset tFR = Offset(w * 0.58, h * 0.32); // Top Front-Right
+    Offset tBR = Offset(w * 0.72, h * 0.16); // Top Back-Right
+    Offset tBL = Offset(w * 0.42, h * 0.16); // Top Back-Left
+
+    // Bottom Base Draw Karein
+    Path bottomBase = Path()
+      ..moveTo(bFL.dx, bFL.dy)
+      ..lineTo(bFR.dx, bFR.dy)
+      ..lineTo(bBR.dx, bBR.dy)
+      ..lineTo(bBL.dx, bBL.dy)
       ..close();
-    canvas.drawPath(path, p);
-    canvas.drawLine(Offset(0, h*0.8), Offset(w*0.3, h*0.2), p);
-    canvas.drawLine(Offset(w, h), Offset(w*0.7, h*0.2), p);
-    canvas.drawLine(Offset(0, h*0.8), Offset(w*0.6, h*0.7), p);
-    canvas.drawLine(Offset(w, h), Offset(w*0.6, h*0.7), p);
+    canvas.drawPath(bottomBase, p);
+
+    // Top Base Draw Karein
+    Path topBase = Path()
+      ..moveTo(tFL.dx, tFL.dy)
+      ..lineTo(tFR.dx, tFR.dy)
+      ..lineTo(tBR.dx, tBR.dy)
+      ..lineTo(tBL.dx, tBL.dy)
+      ..close();
+    canvas.drawPath(topBase, p);
+
+    // 3. Dono Bases ke 4 Corners ko Connect Karein (Slanted Edges)
+    canvas.drawLine(bFL, tFL, p); // Front-Left edge
+    canvas.drawLine(bFR, tFR, p); // Front-Right edge
+    canvas.drawLine(bBR, tBR, p); // Back-Right edge
+    canvas.drawLine(bBL, tBL, p); // Back-Left edge
   }
+
   @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
+  bool shouldRepaint(covariant PyrFrustumPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
 }
 
 class ConePainter extends CustomPainter {
