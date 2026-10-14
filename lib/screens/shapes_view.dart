@@ -561,6 +561,8 @@ class _ShapesViewState extends State<ShapesView> {
 
     // Check if triangle is valid (Sum of two sides must be > third side)
     bool isValidTriangle = (a + b > c) && (a + c > b) && (b + c > a) && a > 0 && b > 0 && c > 0;
+    // Yeh check karega ki teeno inputs me kuch na kuch value hai ya nahi
+    bool hasAllInputs = a > 0 && b > 0 && c > 0;
 
     double area = 0, perimeter = 0, hA = 0, hB = 0, hC = 0, angAB = 0, angBC = 0, angAC = 0;
 
@@ -730,6 +732,64 @@ class _ShapesViewState extends State<ShapesView> {
                     const SizedBox(height: 24),
 
                     // --- RESULTS SECTION ---
+                    // Container(
+                    //   padding: const EdgeInsets.all(16),
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.cyanColor(context).withOpacity(0.05),
+                    //     borderRadius: BorderRadius.circular(20),
+                    //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                    //   ),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Center(
+                    //         child: Text(
+                    //           'Calculation Result',
+                    //           style: TextStyle(
+                    //             color: AppColors.cyanColor(context),
+                    //             fontSize: 16,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       const SizedBox(height: 12),
+                    //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                    //       const SizedBox(height: 12),
+                    //
+                    //       if (!isValidTriangle)
+                    //         Center(
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.all(16.0),
+                    //             child: Text(
+                    //               'Invalid Triangle!\nSum of any two sides must be greater than the third side.',
+                    //               textAlign: TextAlign.center,
+                    //               style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                    //             ),
+                    //           ),
+                    //         )
+                    //       else ...[
+                    //         _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
+                    //         _buildResultRow('Perimeter', perimeter.toStringAsFixed(2)),
+                    //         Padding(
+                    //           padding: const EdgeInsets.symmetric(vertical: 8),
+                    //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                    //         ),
+                    //         _buildResultRow('Angle: AB', '${angAB.toStringAsFixed(2)}°'),
+                    //         _buildResultRow('Angle: BC', '${angBC.toStringAsFixed(2)}°'),
+                    //         _buildResultRow('Angle: AC', '${angAC.toStringAsFixed(2)}°'),
+                    //         Padding(
+                    //           padding: const EdgeInsets.symmetric(vertical: 8),
+                    //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                    //         ),
+                    //         _buildResultRow('Height: A', hA.toStringAsFixed(2)),
+                    //         _buildResultRow('Height: B', hB.toStringAsFixed(2)),
+                    //         _buildResultRow('Height: C', hC.toStringAsFixed(2)),
+                    //       ],
+                    //     ],
+                    //   ),
+                    // ),
+
+                    // --- RESULTS SECTION ---
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -754,7 +814,8 @@ class _ShapesViewState extends State<ShapesView> {
                           Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                           const SizedBox(height: 12),
 
-                          if (!isValidTriangle)
+                          // STATE 1: Error Message (Sirf tab dikhega jab teeno inputs daal diye hon aur wo galat hon)
+                          if (!isValidTriangle && hasAllInputs)
                             Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -765,24 +826,41 @@ class _ShapesViewState extends State<ShapesView> {
                                 ),
                               ),
                             )
-                          else ...[
+                          // STATE 2: Valid Results
+                          else if (isValidTriangle) ...[
                             _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
                             _buildResultRow('Perimeter', perimeter.toStringAsFixed(2)),
+
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
                             ),
+
                             _buildResultRow('Angle: AB', '${angAB.toStringAsFixed(2)}°'),
                             _buildResultRow('Angle: BC', '${angBC.toStringAsFixed(2)}°'),
                             _buildResultRow('Angle: AC', '${angAC.toStringAsFixed(2)}°'),
+
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
                             ),
+
                             _buildResultRow('Height: A', hA.toStringAsFixed(2)),
                             _buildResultRow('Height: B', hB.toStringAsFixed(2)),
                             _buildResultRow('Height: C', hC.toStringAsFixed(2)),
-                          ],
+                          ]
+                          // STATE 3: Empty ya Incomplete Input ka normal message
+                          else ...[
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                  child: Text(
+                                    'Enter all three sides to see results.',
+                                    style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                  ),
+                                ),
+                              )
+                            ],
                         ],
                       ),
                     ),
