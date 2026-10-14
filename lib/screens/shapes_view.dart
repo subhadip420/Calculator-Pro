@@ -228,7 +228,6 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _rtVal1Ctrl = TextEditingController(text: '');
   final TextEditingController _rtVal2Ctrl = TextEditingController(text: '');
 
-
   String _sqType = 'Side'; // Default selection
   final TextEditingController _sqValCtrl = TextEditingController(text: '');
 
@@ -445,112 +444,6 @@ class _ShapesViewState extends State<ShapesView> {
     }
   }
 
-  // void _showShapeSelectorGrid() {
-  //   if (_isHapticsEnabled) HapticFeedback.lightImpact();
-  //
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     isScrollControlled: true,
-  //     builder: (BuildContext context) {
-  //       return SafeArea(
-  //         // SafeArea add kiya taaki bottom edge se touch na ho
-  //         child: Container(
-  //           // FIX: Fixed height yahan se hata di gayi hai
-  //           decoration: BoxDecoration(
-  //             color: AppColors.surfaceColor(context),
-  //             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-  //             border: Border(top: BorderSide(color: AppColors.textGrey(context).withOpacity(0.3))),
-  //           ),
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min, // FIX: Jitna content utni jagah lega
-  //             children: [
-  //               // Sheet Handle
-  //               Container(
-  //                 width: 40,
-  //                 height: 4,
-  //                 margin: const EdgeInsets.only(top: 10, bottom: 10),
-  //                 decoration: BoxDecoration(
-  //                   color: AppColors.textGrey(context).withOpacity(0.5),
-  //                   borderRadius: BorderRadius.circular(10),
-  //                 ),
-  //               ),
-  //
-  //               // Header
-  //               Text(
-  //                 'Select Shape',
-  //                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-  //               ),
-  //               const SizedBox(height: 10),
-  //               Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-  //
-  //               // Grid View
-  //               // FIX: Expanded hata diya aur GridView me shrinkWrap: true laga diya
-  //               GridView.builder(
-  //                 shrinkWrap: true,
-  //                 // FIX: Apni height khud grid ke hisaab se adjust karega
-  //                 padding: const EdgeInsets.all(5),
-  //                 physics: const BouncingScrollPhysics(),
-  //                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //                   crossAxisCount: 3,
-  //                   crossAxisSpacing: 2,
-  //                   mainAxisSpacing: 2,
-  //                   childAspectRatio: 1,
-  //                 ),
-  //                 itemCount: _shapeList.length,
-  //                 itemBuilder: (context, index) {
-  //                   bool isSelected = index == _selectedShapeIndex;
-  //                   ShapeItem item = _shapeList[index];
-  //
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       if (_isHapticsEnabled) HapticFeedback.selectionClick();
-  //                       setState(() {
-  //                         _selectedShapeIndex = index;
-  //                       });
-  //                       Navigator.pop(context);
-  //                     },
-  //                     child: Container(
-  //                       decoration: BoxDecoration(
-  //                         color: isSelected ? AppColors.cyanColor(context).withOpacity(0.1) : Colors.transparent,
-  //                         borderRadius: BorderRadius.circular(16),
-  //                         border: Border.all(
-  //                           color: isSelected ? AppColors.cyanColor(context).withOpacity(0.5) : Colors.transparent,
-  //                         ),
-  //                       ),
-  //                       child: Column(
-  //                         mainAxisAlignment: MainAxisAlignment.center,
-  //                         children: [
-  //                           SizedBox(height: 45, child: Center(child: item.iconBuilder)),
-  //                           const SizedBox(height: 5),
-  //                           Text(
-  //                             item.name,
-  //                             textAlign: TextAlign.center,
-  //                             maxLines: 1,
-  //                             overflow: TextOverflow.ellipsis,
-  //                             style: TextStyle(
-  //                               color: AppColors.textColor(context),
-  //                               fontSize: 13,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                           const SizedBox(height: 2),
-  //                           Text('Shapes', style: TextStyle(color: AppColors.textGrey(context), fontSize: 11)),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               ),
-  //               const SizedBox(height: 10), // Bottom mein thodi extra space
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     ShapeItem currentShape = _shapeList[_selectedShapeIndex];
@@ -585,9 +478,8 @@ class _ShapesViewState extends State<ShapesView> {
     bool hasRTInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
     bool hasSQInput = _sqValCtrl.text.isNotEmpty;
     bool hasRectInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
-    bool hasTrapInput = _trapHeightCtrl.text.isNotEmpty ||
-        _trapTopCtrl.text.isNotEmpty ||
-        _trapBaseCtrl.text.isNotEmpty;
+    bool hasTrapInput =
+        _trapHeightCtrl.text.isNotEmpty || _trapTopCtrl.text.isNotEmpty || _trapBaseCtrl.text.isNotEmpty;
     bool hasRhomInput = _rhomLenCtrl.text.isNotEmpty || _rhomWidCtrl.text.isNotEmpty;
     bool hasArcInput = _arcRadiusCtrl.text.isNotEmpty || _arcAngleCtrl.text.isNotEmpty;
     bool hasEllipInput = _ellipRadACtrl.text.isNotEmpty || _ellipRadBCtrl.text.isNotEmpty;
@@ -634,7 +526,8 @@ class _ShapesViewState extends State<ShapesView> {
                           setState(() {
                             _selectedShapeIndex = newIndex;
                           });
-                        }, title: 'Select Shapes',
+                        },
+                        title: 'Select Shapes',
                       );
                     },
                     behavior: HitTestBehavior.opaque,
@@ -648,7 +541,8 @@ class _ShapesViewState extends State<ShapesView> {
                       child: Row(
                         children: [
                           // Left side: Shape Image/Icon
-                          SizedBox( // FIX: Container ko SizedBox kar diya aur alignment hata diya
+                          SizedBox(
+                            // FIX: Container ko SizedBox kar diya aur alignment hata diya
                             width: 40,
                             height: 40,
                             child: currentShape.iconBuilder,
@@ -745,65 +639,6 @@ class _ShapesViewState extends State<ShapesView> {
 
                     const SizedBox(height: 24),
 
-                    // --- RESULTS SECTION ---
-                    // Container(
-                    //   padding: const EdgeInsets.all(16),
-                    //   decoration: BoxDecoration(
-                    //     color: AppColors.cyanColor(context).withOpacity(0.05),
-                    //     borderRadius: BorderRadius.circular(20),
-                    //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                    //   ),
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       Center(
-                    //         child: Text(
-                    //           'Calculation Result',
-                    //           style: TextStyle(
-                    //             color: AppColors.cyanColor(context),
-                    //             fontSize: 16,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       const SizedBox(height: 12),
-                    //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                    //       const SizedBox(height: 12),
-                    //
-                    //       if (!isValidTriangle)
-                    //         Center(
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.all(16.0),
-                    //             child: Text(
-                    //               'Invalid Triangle!\nSum of any two sides must be greater than the third side.',
-                    //               textAlign: TextAlign.center,
-                    //               style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
-                    //             ),
-                    //           ),
-                    //         )
-                    //       else ...[
-                    //         _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
-                    //         _buildResultRow('Perimeter', perimeter.toStringAsFixed(2)),
-                    //         Padding(
-                    //           padding: const EdgeInsets.symmetric(vertical: 8),
-                    //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                    //         ),
-                    //         _buildResultRow('Angle: AB', '${angAB.toStringAsFixed(2)}°'),
-                    //         _buildResultRow('Angle: BC', '${angBC.toStringAsFixed(2)}°'),
-                    //         _buildResultRow('Angle: AC', '${angAC.toStringAsFixed(2)}°'),
-                    //         Padding(
-                    //           padding: const EdgeInsets.symmetric(vertical: 8),
-                    //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                    //         ),
-                    //         _buildResultRow('Height: A', hA.toStringAsFixed(2)),
-                    //         _buildResultRow('Height: B', hB.toStringAsFixed(2)),
-                    //         _buildResultRow('Height: C', hC.toStringAsFixed(2)),
-                    //       ],
-                    //     ],
-                    //   ),
-                    // ),
-
-                    // --- RESULTS SECTION ---
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -865,16 +700,16 @@ class _ShapesViewState extends State<ShapesView> {
                           ]
                           // STATE 3: Empty ya Incomplete Input ka normal message
                           else ...[
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                  child: Text(
-                                    'Enter all three sides to see results.',
-                                    style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                  ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                child: Text(
+                                  'Enter all three sides to see results.',
+                                  style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                 ),
-                              )
-                            ],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -1040,66 +875,6 @@ class _ShapesViewState extends State<ShapesView> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Result Container
-                            // Container(
-                            //   padding: const EdgeInsets.all(16),
-                            //   decoration: BoxDecoration(
-                            //     color: AppColors.cyanColor(context).withOpacity(0.05),
-                            //     borderRadius: BorderRadius.circular(20),
-                            //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                            //   ),
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       Center(
-                            //         child: Text(
-                            //           'Calculation Result',
-                            //           style: TextStyle(
-                            //             color: AppColors.cyanColor(context),
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.bold,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       const SizedBox(height: 12),
-                            //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                            //       const SizedBox(height: 12),
-                            //
-                            //       if (!isValid)
-                            //         Center(
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.all(16.0),
-                            //             child: Text(
-                            //               errorMsg,
-                            //               textAlign: TextAlign.center,
-                            //               style: TextStyle(
-                            //                 color: AppColors.redColor(context).withOpacity(0.9),
-                            //                 fontSize: 14,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         )
-                            //       else ...[
-                            //         _buildResultRow('Area', rtArea.toStringAsFixed(2), isHighlighted: true),
-                            //         _buildResultRow('Perimeter', rtPerimeter.toStringAsFixed(2)),
-                            //         Padding(
-                            //           padding: const EdgeInsets.symmetric(vertical: 8),
-                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                            //         ),
-                            //         _buildResultRow('Side A', rtA.toStringAsFixed(2)),
-                            //         _buildResultRow('Side B', rtB.toStringAsFixed(2)),
-                            //         _buildResultRow('Hypotenuse', rtC.toStringAsFixed(2)),
-                            //         Padding(
-                            //           padding: const EdgeInsets.symmetric(vertical: 8),
-                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                            //         ),
-                            //         _buildResultRow('Angle A', '${rtAngA.toStringAsFixed(2)}°'),
-                            //         _buildResultRow('Angle B', '${rtAngB.toStringAsFixed(2)}°'),
-                            //       ]
-                            //
-                            //     ],
-                            //   ),
-                            // ),
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -1125,7 +900,8 @@ class _ShapesViewState extends State<ShapesView> {
                                   const SizedBox(height: 12),
 
                                   // STATE 1: Error tabhi dikhega jab input daala ho aur wo galat ho
-                                  if (!isValid && hasRTInput) // Yahan 'hasInput' ya 'hasPartialInput' lagana zaroori hai
+                                  if (!isValid &&
+                                      hasRTInput) // Yahan 'hasInput' ya 'hasPartialInput' lagana zaroori hai
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
@@ -1159,16 +935,16 @@ class _ShapesViewState extends State<ShapesView> {
                                   ]
                                   // STATE 3: Default Empty State
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ]
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -1249,58 +1025,6 @@ class _ShapesViewState extends State<ShapesView> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Result Container
-                            // Container(
-                            //   padding: const EdgeInsets.all(16),
-                            //   decoration: BoxDecoration(
-                            //     color: AppColors.cyanColor(context).withOpacity(0.05),
-                            //     borderRadius: BorderRadius.circular(20),
-                            //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
-                            //   ),
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       Center(
-                            //         child: Text(
-                            //           'Calculation Result',
-                            //           style: TextStyle(
-                            //             color: AppColors.cyanColor(context),
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.bold,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       const SizedBox(height: 12),
-                            //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
-                            //       const SizedBox(height: 12),
-                            //
-                            //       if (!isValid)
-                            //         Center(
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.all(16.0),
-                            //             child: Text(
-                            //               errorMsg,
-                            //               textAlign: TextAlign.center,
-                            //               style: TextStyle(
-                            //                 color: AppColors.redColor(context).withOpacity(0.9),
-                            //                 fontSize: 14,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         )
-                            //       else ...[
-                            //         _buildResultRow('Area', sqArea.toStringAsFixed(2), isHighlighted: true),
-                            //         _buildResultRow('Perimeter', sqPerimeter.toStringAsFixed(2)),
-                            //         Padding(
-                            //           padding: const EdgeInsets.symmetric(vertical: 8),
-                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                            //         ),
-                            //         _buildResultRow('Side', sqSide.toStringAsFixed(2)),
-                            //         _buildResultRow('Diagonal', sqDiagonal.toStringAsFixed(2)),
-                            //       ],
-                            //     ],
-                            //   ),
-                            // ),
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -1331,7 +1055,9 @@ class _ShapesViewState extends State<ShapesView> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter a value greater than 0.',
+                                          errorMsg.isNotEmpty
+                                              ? errorMsg
+                                              : 'Invalid input! Enter a value greater than 0.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -1353,16 +1079,16 @@ class _ShapesViewState extends State<ShapesView> {
                                   ]
                                   // STATE 3: Default Empty State
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter a value to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -1480,32 +1206,6 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Length', l.toStringAsFixed(2)),
-                                  //   _buildResultRow('Width', w.toStringAsFixed(2)),
-                                  //   _buildResultRow('Diagonal', rectDiagonal.toStringAsFixed(2)),
-                                  // ],
-                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho aur result invalid ho
                                   if (!isValid && hasRectInput)
                                     Center(
                                       child: Padding(
@@ -1520,7 +1220,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
@@ -1534,16 +1234,16 @@ class _ShapesViewState extends State<ShapesView> {
                                   ]
                                   // STATE 3: Default Empty State
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -1677,30 +1377,6 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
-                                  //   _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
-                                  // ],
-                                  // STATE 1: Error tabhi dikhega jab kisi field me input ho par values galat/adhuri hon
                                   if (!isValid && hasTrapInput)
                                     Center(
                                       child: Padding(
@@ -1715,7 +1391,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results (Jo aapne bheje the)
+                                  // STATE 2: Valid Results (Jo aapne bheje the)
                                   else if (isValid) ...[
                                     _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
                                     Padding(
@@ -1725,18 +1401,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
                                     _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -1856,31 +1532,6 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', rhomArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
-                                  // ],
-
-                                  // STATE 1: Error tabhi dikhega jab input ho aur calculation galat/invalid ho
                                   if (!isValid && hasRhomInput)
                                     Center(
                                       child: Padding(
@@ -1895,7 +1546,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', rhomArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', rhomPerimeter.toStringAsFixed(2)),
@@ -1905,18 +1556,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     ),
                                     _buildResultRow('Side (Edge)', rhomSide.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -2041,31 +1692,6 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Sector Area', sectorArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Arc Length', arcLength.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Chord Length', chordLength.toStringAsFixed(2)),
-                                  //   _buildResultRow('Sector Perimeter', perimeter.toStringAsFixed(2)),
-                                  // ],
-
                                   if (!isValid && hasArcInput)
                                     Center(
                                       child: Padding(
@@ -2080,7 +1706,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Sector Area', sectorArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Arc Length', arcLength.toStringAsFixed(2)),
@@ -2091,18 +1717,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Chord Length', chordLength.toStringAsFixed(2)),
                                     _buildResultRow('Sector Perimeter', perimeter.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -2223,32 +1849,6 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Radius A', a.toStringAsFixed(2)),
-                                  //   _buildResultRow('Radius B', b.toStringAsFixed(2)),
-                                  // ],
-
-                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho par value galat ho
                                   if (!isValid && hasEllipInput)
                                     Center(
                                       child: Padding(
@@ -2263,7 +1863,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
@@ -2274,18 +1874,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Radius A', a.toStringAsFixed(2)),
                                     _buildResultRow('Radius B', b.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter values to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter values to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -2398,38 +1998,14 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', pentArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Perimeter', pentPerimeter.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Side (Edge)', pentSide.toStringAsFixed(2)),
-                                  //   _buildResultRow('Diagonal', pentDiagonal.toStringAsFixed(2)),
-                                  // ],
-
-                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho par value galat ho
                                   if (!isValid && hasPentInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter a value greater than 0.',
+                                          errorMsg.isNotEmpty
+                                              ? errorMsg
+                                              : 'Invalid input! Enter a value greater than 0.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -2438,7 +2014,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', pentArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', pentPerimeter.toStringAsFixed(2)),
@@ -2449,18 +2025,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Side (Edge)', pentSide.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', pentDiagonal.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter a value to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -2574,39 +2150,14 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', hexArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Perimeter', hexPerimeter.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Side (Edge)', hexSide.toStringAsFixed(2)),
-                                  //   _buildResultRow('Long Diagonal', hexLongDiag.toStringAsFixed(2)),
-                                  //   _buildResultRow('Short Diagonal', hexShortDiag.toStringAsFixed(2)),
-                                  // ],
-
-                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho par value galat ho
                                   if (!isValid && hasHexInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter a value greater than 0.',
+                                          errorMsg.isNotEmpty
+                                              ? errorMsg
+                                              : 'Invalid input! Enter a value greater than 0.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -2615,7 +2166,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', hexArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', hexPerimeter.toStringAsFixed(2)),
@@ -2627,18 +2178,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Long Diagonal', hexLongDiag.toStringAsFixed(2)),
                                     _buildResultRow('Short Diagonal', hexShortDiag.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter a value to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -2746,38 +2297,14 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  // if (!isValid)
-                                  //   Center(
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: Text(
-                                  //         errorMsg,
-                                  //         textAlign: TextAlign.center,
-                                  //         style: TextStyle(
-                                  //           color: AppColors.redColor(context).withOpacity(0.9),
-                                  //           fontSize: 14,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   )
-                                  // else ...[
-                                  //   _buildResultRow('Area', circArea.toStringAsFixed(2), isHighlighted: true),
-                                  //   _buildResultRow('Circumference', circCircumference.toStringAsFixed(2)),
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
-                                  //   ),
-                                  //   _buildResultRow('Radius', circRadius.toStringAsFixed(2)),
-                                  //   _buildResultRow('Diameter', circDiameter.toStringAsFixed(2)),
-                                  // ],
-
-                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho par value galat ho
                                   if (!isValid && hasCircleInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter a value greater than 0.',
+                                          errorMsg.isNotEmpty
+                                              ? errorMsg
+                                              : 'Invalid input! Enter a value greater than 0.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -2786,7 +2313,7 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-// STATE 2: Valid Results
+                                  // STATE 2: Valid Results
                                   else if (isValid) ...[
                                     _buildResultRow('Area', circArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Circumference', circCircumference.toStringAsFixed(2)),
@@ -2797,18 +2324,18 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Radius', circRadius.toStringAsFixed(2)),
                                     _buildResultRow('Diameter', circDiameter.toStringAsFixed(2)),
                                   ]
-// STATE 3: Default Empty State (Bina input ke)
+                                  // STATE 3: Default Empty State (Bina input ke)
                                   else ...[
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: Text(
-                                            'Enter a value to see results.',
-                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
-                                          ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -3011,26 +2538,44 @@ class _ShapesViewState extends State<ShapesView> {
 
     CustomPainter? painter;
     switch (shapeName) {
-      case 'Triangle': painter = TriInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Right triangle': painter = RtInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Square': painter = SqInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Rectangle': painter = RectInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Trapezoid': painter = TrapInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Rhombus': painter = RhomInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Circle arc': painter = ArcInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Ellipse': painter = EllipInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Pentagon': painter = PentInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Hexagon': painter = HexInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Circle': painter = CircInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Triangle':
+        painter = TriInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Right triangle':
+        painter = RtInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Square':
+        painter = SqInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Rectangle':
+        painter = RectInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Trapezoid':
+        painter = TrapInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Rhombus':
+        painter = RhomInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Circle arc':
+        painter = ArcInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Ellipse':
+        painter = EllipInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Pentagon':
+        painter = PentInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Hexagon':
+        painter = HexInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
+      case 'Circle':
+        painter = CircInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor);
+        break;
     }
 
     if (painter == null) return const SizedBox.shrink();
 
-    return SizedBox(
-      width: 18,
-      height: 18,
-      child: CustomPaint(painter: painter),
-    );
+    return SizedBox(width: 18, height: 18, child: CustomPaint(painter: painter));
   }
 
   Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
@@ -3097,6 +2642,7 @@ class _ShapesViewState extends State<ShapesView> {
       },
     );
   }
+
   // NAYA: Right Triangle Input Row Builder[cite: 4]
   Widget _buildRtInputRow(int index) {
     String type = index == 1 ? _rtType1 : _rtType2;
@@ -3631,7 +3177,6 @@ class TriInputPainter extends CustomPainter {
       } else if (highlightType == 'Side C') {
         canvas.drawLine(pBottomRight, pTop, hlPaint); // Right side
       }
-
       // ANGLES
       else if (highlightType == 'Angle: AB') {
         // Bottom-Left Angle (Side A aur Side B ke beech)
@@ -3647,7 +3192,6 @@ class TriInputPainter extends CustomPainter {
         double sweep = pi - (2 * start);
         canvas.drawArc(Rect.fromCircle(center: pTop, radius: 8), start, sweep, true, fillHl);
       }
-
       // HEIGHTS (Altitudes)
       else if (highlightType == 'Height: A') {
         // Height to Side A (Right Vertex se Left Side par perpendicular)
@@ -3683,9 +3227,10 @@ class RtInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
-    Paint fillPaint = Paint() // NAYA: Area fill karne ke liye
-      ..color = highlightColor.withOpacity(0.6)
-      ..style = PaintingStyle.fill;
+    Paint fillPaint =
+        Paint() // NAYA: Area fill karne ke liye
+          ..color = highlightColor.withOpacity(0.6)
+          ..style = PaintingStyle.fill;
 
     Offset pTop = const Offset(0, 0); // Angle A
     Offset pBottomLeft = Offset(0, size.height); // 90 degree
@@ -3816,9 +3361,10 @@ class RectInputPainter extends CustomPainter {
       ..color = highlightColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
-    Paint fillPaint = Paint() // NAYA: Area fill karne ke liye paint
-      ..color = highlightColor.withOpacity(0.6)
-      ..style = PaintingStyle.fill;
+    Paint fillPaint =
+        Paint() // NAYA: Area fill karne ke liye paint
+          ..color = highlightColor.withOpacity(0.6)
+          ..style = PaintingStyle.fill;
 
     // Rectangle draw karne ke liye thoda chauda (wide) box banayenge
     Rect rect = Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5);
@@ -4038,7 +3584,13 @@ class ArcInputPainter extends CustomPainter {
           ..style = PaintingStyle.fill;
         canvas.drawArc(Rect.fromCircle(center: center, radius: 10), -pi / 2, pi / 2, true, fillHl);
       } else if (highlightType == 'Arc Length') {
-        canvas.drawArc(Rect.fromCircle(center: center, radius: w), -pi / 2, pi / 2, false, hlPaint); // Sirf curve highlight hoga
+        canvas.drawArc(
+          Rect.fromCircle(center: center, radius: w),
+          -pi / 2,
+          pi / 2,
+          false,
+          hlPaint,
+        ); // Sirf curve highlight hoga
       } else if (highlightType == 'Chord Length') {
         canvas.drawLine(Offset(0, 0), Offset(w, h), hlPaint); // Top-left se bottom-right straight line
       }
@@ -4058,9 +3610,17 @@ class EllipInputPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    Paint hlPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
-    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.6)..style = PaintingStyle.fill;
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    Paint hlPaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
 
     double w = size.width;
     double h = size.height;
