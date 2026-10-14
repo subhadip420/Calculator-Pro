@@ -40,12 +40,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   final TextEditingController _tenureController = TextEditingController(text: '10');
   double _tenureValue = 10.0;
 
-  // Result Variables
-  // bool _showResult = false;
-  // double _totalInvestment = 0;
-  // double _estimatedReturns = 0;
-  // double _totalValue = 0;
-
   @override
   void initState() {
     super.initState();
@@ -150,47 +144,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
   }
 
   // --- HELPER: Option Card (Side-by-Side) ---
-  // Widget _buildOptionCard({required String id, required String title, required IconData icon}) {
-  //   bool isSelected = _selectedMode == id;
-  //
-  //   return GestureDetector(
-  //     onTap: () => _onModeSelect(id),
-  //     behavior: HitTestBehavior.opaque,
-  //     child: Container(
-  //       //height: 100, // Fixed height taaki dono cards barabar dikhein
-  //       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-  //       decoration: BoxDecoration(
-  //         color: isSelected
-  //             ? AppColors.cyanColor(context).withOpacity(0.1)
-  //             : AppColors.surfaceColor(context).withOpacity(0.6),
-  //         borderRadius: BorderRadius.circular(16),
-  //         border: Border.all(
-  //           color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.5),
-  //           width: isSelected ? 2 : 1,
-  //         ),
-  //       ),
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Icon(icon, color: isSelected ? AppColors.cyanColor(context) : AppColors.textGrey(context), size: 22),
-  //           const SizedBox(height: 5),
-  //           Text(
-  //             title,
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(
-  //               color: isSelected ? AppColors.cyanColor(context) : AppColors.textColor(context),
-  //               fontSize: 12,
-  //               fontWeight: FontWeight.bold,
-  //               height: 1.2,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // --- HELPER: Option Card (Side-by-Side) ---
   Widget _buildOptionCard({required String id, required String title, required IconData icon}) {
     bool isSelected = _selectedMode == id;
 
@@ -234,31 +187,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
       ),
     );
   }
-
-  // --- HELPER TO BUILD RESULT ROWS ---
-  // Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Text(
-  //         label,
-  //         style: TextStyle(
-  //           color: isHighlighted ? AppColors.textColor(context) : AppColors.textGrey(context),
-  //           fontSize: isHighlighted ? 18 : 15,
-  //           fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
-  //         ),
-  //       ),
-  //       Text(
-  //         '₹${value.toInt()}', // Comma formatting aap apne hisaab se baad mein add kar sakte hain
-  //         style: TextStyle(
-  //           color: valueColor ?? (isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context)),
-  //           fontSize: isHighlighted ? 22 : 16,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   // --- HELPER TO BUILD RESULT ROWS ---
   Widget _buildResultRow(String label, double value, {bool isHighlighted = false, Color? valueColor}) {
@@ -317,10 +245,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),
-
-            // --- MAIN SCROLL VIEW ---
-            // Expanded(
-            //   child: SingleChildScrollView(
             Expanded(
               child: Stack(
                 children: [
@@ -803,10 +727,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Column(
-                                //   mainAxisSize: MainAxisSize.min,
-                                //   crossAxisAlignment: CrossAxisAlignment.start,
-                                //   children: [
                                 Text(
                                   'Maturity Amount',
                                   style: TextStyle(
@@ -826,11 +746,6 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
                                 ),
                               ],
                             ),
-
-                            // Optional: Ek chota sa arrow taaki user ko pata chale ki niche aur details hain
-                            // Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context)),
-                            //   ],
-                            // ),
                           ),
                         ),
                       ),
