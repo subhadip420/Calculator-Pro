@@ -558,7 +558,7 @@ class _DateAddSubtractViewState extends State<DateAddSubtractView> {
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                            'Addition',
+                                            'Addition (+)',
                                             style: TextStyle(
                                               color: _operation == 'add'
                                                   ? AppColors.textColor(context)
@@ -591,7 +591,7 @@ class _DateAddSubtractViewState extends State<DateAddSubtractView> {
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                            'Subtraction',
+                                            'Subtraction (-)',
                                             style: TextStyle(
                                               color: _operation == 'subtract'
                                                   ? AppColors.textColor(context)
