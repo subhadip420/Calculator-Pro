@@ -187,12 +187,74 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     }
   }
 
+  // Future<void> _loadHistory() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.reload();
+  //
+  //   setState(() {
+  //     _historyList = prefs.getStringList('calculator_history') ?? [];
+  //   });
+  // }
+
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();
 
+    List<String> rawHistory = prefs.getStringList('calculator_history') ?? [];
+    List<String> validHistory = [];
+    bool isDataChanged = false; // Check karne ke liye ki kuch delete hua ya nahi
+
+    DateTime now = DateTime.now();
+
+    for (String entry in rawHistory) {
+      try {
+        Map<String, dynamic> item = jsonDecode(entry);
+        String dateStr = item['datetime'] ?? ''; // Format: "dd-MM-yyyy HH:mm"
+
+        if (dateStr.isNotEmpty) {
+          // Date ko tod kar (split) DateTime object banayenge
+          List<String> parts = dateStr.split(' ');
+          List<String> dateParts = parts[0].split('-');
+
+          if (dateParts.length == 3) {
+            int day = int.parse(dateParts[0]);
+            int month = int.parse(dateParts[1]);
+            int year = int.parse(dateParts[2]);
+
+            // Time parse karna (Optional but good for accuracy)
+            int hour = 0;
+            int minute = 0;
+            if (parts.length > 1) {
+              List<String> timeParts = parts[1].split(':');
+              if (timeParts.length == 2) {
+                hour = int.parse(timeParts[0]);
+                minute = int.parse(timeParts[1]);
+              }
+            }
+
+            DateTime entryDate = DateTime(year, month, day, hour, minute);
+
+            // Difference check karein (Agar 30 din ya usse kam purana hai, toh rakh lo)
+            if (now.difference(entryDate).inDays <= 30) {
+              validHistory.add(entry);
+            } else {
+              isDataChanged = true; // 30 din se purana item mila jo delete ho raha hai
+            }
+          }
+        }
+      } catch (e) {
+        // Agar date format me koi error ho toh us item ko skip kar denge
+        isDataChanged = true;
+      }
+    }
+
+    // Agar humne koi purana data hataya hai, toh SharedPreferences ko naye data se update kar do
+    if (isDataChanged) {
+      await prefs.setStringList('calculator_history', validHistory);
+    }
+
     setState(() {
-      _historyList = prefs.getStringList('calculator_history') ?? [];
+      _historyList = validHistory;
     });
   }
 
