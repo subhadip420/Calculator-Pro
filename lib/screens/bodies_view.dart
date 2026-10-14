@@ -39,6 +39,9 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _prismWidthCtrl = TextEditingController();
   final TextEditingController _prismHeightCtrl = TextEditingController();
 
+  final TextEditingController _pyrBaseCtrl = TextEditingController();
+  final TextEditingController _pyrHeightCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -633,6 +636,143 @@ class _BodiesViewState extends State<BodiesView> {
                         },
                       ),
                     ]
+                    /// ==========================================
+                    /// YAHAN SE PYRAMID KA CODE ADD KAREIN
+                    /// ==========================================
+                    else if (currentShape.name == 'Pyramid') ...[
+                        Builder(
+                          builder: (context) {
+                            double baseSide = double.tryParse(_pyrBaseCtrl.text) ?? 0;
+                            double height = double.tryParse(_pyrHeightCtrl.text) ?? 0;
+
+                            double volume = 0, totalArea = 0, lateralArea = 0;
+                            double slantHeight = 0, lateralEdge = 0;
+                            bool isValid = false;
+
+                            if (baseSide > 0 && height > 0) {
+                              // Calculations for Square-based Pyramid
+                              volume = (baseSide * baseSide * height) / 3;
+                              slantHeight = sqrt((height * height) + ((baseSide / 2) * (baseSide / 2)));
+                              lateralEdge = sqrt((height * height) + ((baseSide * baseSide) / 2));
+                              lateralArea = 2 * baseSide * slantHeight;
+                              totalArea = (baseSide * baseSide) + lateralArea;
+
+                              isValid = true;
+                            }
+
+                            bool hasPartialInput = _pyrBaseCtrl.text.isNotEmpty || _pyrHeightCtrl.text.isNotEmpty;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Input',
+                                  style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 12),
+
+                                // 2 Fixed Inputs for Pyramid
+                                _buildFixedInputRow(
+                                  title: 'Base (a)',
+                                  ctrl: _pyrBaseCtrl,
+                                  icon: CustomPaint(
+                                    painter: PyramidInputPainter(
+                                      highlightType: 'Base',
+                                      baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                      highlightColor: AppColors.orangeColor(context),
+                                    ),
+                                  ),
+                                ),
+                                _buildFixedInputRow(
+                                  title: 'Height (h)',
+                                  ctrl: _pyrHeightCtrl,
+                                  icon: CustomPaint(
+                                    painter: PyramidInputPainter(
+                                      highlightType: 'Height',
+                                      baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                      highlightColor: AppColors.orangeColor(context),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Dynamic Hint Banner
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        _getBodyHintMessage(currentShape.name),
+                                        style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Result Container
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cyanColor(context).withOpacity(0.05),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          'Calculation Result',
+                                          style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                      const SizedBox(height: 12),
+
+                                      if (!isValid && hasPartialInput)
+                                        Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Text(
+                                              'Enter values greater than 0 for both Base and Height.',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                            ),
+                                          ),
+                                        )
+                                      else if (isValid) ...[
+                                        _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                        _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 8),
+                                          child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                        ),
+
+                                        _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                        _buildResultRow('Lateral edge', lateralEdge.toStringAsFixed(2)),
+                                      ] else ...[
+                                        Center(
+                                            child: Text(
+                                              'Enter both values to see results.',
+                                              style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                            )
+                                        )
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            );
+                          },
+                        ),
+                      ]
                 ],
               ),
             ),
@@ -843,7 +983,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Pyramid': painter = PyramidPainter(color: iconColor); break;
+      case 'Pyramid':
+        painter = PyramidInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Pyramid frustum': painter = PyrFrustumPainter(color: iconColor); break;
       case 'Cone': painter = ConePainter(color: iconColor); break;
       case 'Cone frustum': painter = ConeFrustumPainter(color: iconColor); break;
@@ -1557,6 +1703,88 @@ class PrismInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant PrismInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class PyramidInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  PyramidInputPainter({required this.highlightType, required this.baseColor, required this.highlightColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()..color = baseColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint hlStrokePaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 3.0;
+    Paint dashedPaint = Paint()..color = highlightColor..style = PaintingStyle.stroke..strokeWidth = 2.0;
+    Paint fillPaint = Paint()..color = highlightColor.withOpacity(0.4)..style = PaintingStyle.fill;
+    Paint darkFillPaint = Paint()..color = highlightColor.withOpacity(0.7)..style = PaintingStyle.fill;
+
+    double w = size.width, h = size.height;
+
+    // 3D Parallelogram Base & Apex (Top) points
+    Offset apex = Offset(w * 0.5, 0);
+    Offset fL = Offset(0, h * 0.85); // Front-Left
+    Offset fR = Offset(w * 0.6, h); // Front-Right
+    Offset bL = Offset(w * 0.4, h * 0.6); // Back-Left
+    Offset bR = Offset(w, h * 0.75); // Back-Right
+    Offset baseCenter = Offset(w * 0.5, h * 0.8); // Center of base (for Height)
+    Offset slantMid = Offset(w * 0.8, h * 0.875); // Mid of fR and bR (for Slant Height)
+
+    // Base Polygon Paths
+    Path basePath = Path()..moveTo(fL.dx, fL.dy)..lineTo(fR.dx, fR.dy)..lineTo(bR.dx, bR.dy)..lineTo(bL.dx, bL.dy)..close();
+    Path frontFace = Path()..moveTo(apex.dx, apex.dy)..lineTo(fL.dx, fL.dy)..lineTo(fR.dx, fR.dy)..close();
+    Path rightFace = Path()..moveTo(apex.dx, apex.dy)..lineTo(fR.dx, fR.dy)..lineTo(bR.dx, bR.dy)..close();
+
+    // 1. FILL HIGHLIGHTS
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawPath(frontFace, darkFillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+      if (highlightType == 'Total area') canvas.drawPath(basePath, fillPaint);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawPath(frontFace, darkFillPaint);
+      canvas.drawPath(rightFace, fillPaint);
+    }
+
+    // 2. DRAW BASE PYRAMID (Visible & Hidden edges)
+    // Hidden edges (lighter/thinner)
+    Paint hiddenPaint = Paint()..color = baseColor.withOpacity(0.4)..style = PaintingStyle.stroke..strokeWidth = 1.0;
+    canvas.drawLine(fL, bL, hiddenPaint);
+    canvas.drawLine(bL, bR, hiddenPaint);
+    canvas.drawLine(apex, bL, hiddenPaint);
+
+    // Visible edges
+    canvas.drawLine(fL, fR, highlightType == 'Base' ? hlStrokePaint : basePaint);
+    canvas.drawLine(fR, bR, highlightType == 'Base' ? hlStrokePaint : basePaint);
+
+    // Sirf Base par back lines ko bhi highlight karna hai
+    if (highlightType == 'Base') {
+      canvas.drawLine(fL, bL, hlStrokePaint);
+      canvas.drawLine(bL, bR, hlStrokePaint);
+    }
+
+    canvas.drawLine(apex, fL, basePaint);
+    canvas.drawLine(apex, fR, basePaint);
+    canvas.drawLine(apex, bR, basePaint);
+
+    // 3. SPECIFIC STROKE HIGHLIGHTS
+    if (highlightType == 'Height') {
+      // Center se Apex tak straight vertical dashed line (hum simple solid rakhenge for clarity)
+      canvas.drawLine(apex, baseCenter, hlStrokePaint);
+      canvas.drawCircle(baseCenter, 2, fillPaint);
+    } else if (highlightType == 'Slant height') {
+      // Apex se side-face ke mid tak
+      canvas.drawLine(apex, slantMid, hlStrokePaint);
+    } else if (highlightType == 'Lateral edge') {
+      // Apex se Front-Right corner tak
+      canvas.drawLine(apex, fR, hlStrokePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant PyramidInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType || oldDelegate.highlightColor != highlightColor;
   }
 }
