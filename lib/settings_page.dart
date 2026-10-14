@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isHapticsEnabled = prefs.getBool('haptics_enabled') ?? true;
-      _buttonShape = prefs.getString('button_shape') ?? 'oval';
+      _buttonShape = prefs.getString('button_shape') ?? 'rounded';
     });
   }
 
@@ -88,6 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () {
                             if (_isHapticsEnabled) HapticFeedback.selectionClick();
                             setDialogState(() => _buttonShape = 'rounded');
+                            setState(() => _buttonShape = 'rounded');
                             _saveButtonShape('rounded');
 
                             Future.delayed(const Duration(milliseconds: 250), () {
@@ -142,6 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () {
                             if (_isHapticsEnabled) HapticFeedback.selectionClick();
                             setDialogState(() => _buttonShape = 'circle');
+                            setState(() => _buttonShape = 'circle');
                             _saveButtonShape('circle');
 
                             Future.delayed(const Duration(milliseconds: 250), () {
