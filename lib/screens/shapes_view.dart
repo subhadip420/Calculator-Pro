@@ -228,6 +228,7 @@ class _ShapesViewState extends State<ShapesView> {
   final TextEditingController _rtVal1Ctrl = TextEditingController(text: '');
   final TextEditingController _rtVal2Ctrl = TextEditingController(text: '');
 
+
   String _sqType = 'Side'; // Default selection
   final TextEditingController _sqValCtrl = TextEditingController(text: '');
 
@@ -580,6 +581,8 @@ class _ShapesViewState extends State<ShapesView> {
       angBC = acos((b * b + c * c - a * a) / (2 * b * c)) * (180 / pi); // Angle between B and C (Angle A)
       angAC = acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / pi); // Angle between A and C (Angle B)
     }
+
+    bool hasInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -1027,6 +1030,65 @@ class _ShapesViewState extends State<ShapesView> {
                             const SizedBox(height: 24),
 
                             // Result Container
+                            // Container(
+                            //   padding: const EdgeInsets.all(16),
+                            //   decoration: BoxDecoration(
+                            //     color: AppColors.cyanColor(context).withOpacity(0.05),
+                            //     borderRadius: BorderRadius.circular(20),
+                            //     border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                            //   ),
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Center(
+                            //         child: Text(
+                            //           'Calculation Result',
+                            //           style: TextStyle(
+                            //             color: AppColors.cyanColor(context),
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.bold,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       const SizedBox(height: 12),
+                            //       Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                            //       const SizedBox(height: 12),
+                            //
+                            //       if (!isValid)
+                            //         Center(
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(16.0),
+                            //             child: Text(
+                            //               errorMsg,
+                            //               textAlign: TextAlign.center,
+                            //               style: TextStyle(
+                            //                 color: AppColors.redColor(context).withOpacity(0.9),
+                            //                 fontSize: 14,
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         )
+                            //       else ...[
+                            //         _buildResultRow('Area', rtArea.toStringAsFixed(2), isHighlighted: true),
+                            //         _buildResultRow('Perimeter', rtPerimeter.toStringAsFixed(2)),
+                            //         Padding(
+                            //           padding: const EdgeInsets.symmetric(vertical: 8),
+                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                            //         ),
+                            //         _buildResultRow('Side A', rtA.toStringAsFixed(2)),
+                            //         _buildResultRow('Side B', rtB.toStringAsFixed(2)),
+                            //         _buildResultRow('Hypotenuse', rtC.toStringAsFixed(2)),
+                            //         Padding(
+                            //           padding: const EdgeInsets.symmetric(vertical: 8),
+                            //           child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                            //         ),
+                            //         _buildResultRow('Angle A', '${rtAngA.toStringAsFixed(2)}°'),
+                            //         _buildResultRow('Angle B', '${rtAngB.toStringAsFixed(2)}°'),
+                            //       ]
+                            //
+                            //     ],
+                            //   ),
+                            // ),
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -1051,7 +1113,8 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  if (!isValid)
+                                  // STATE 1: Error tabhi dikhega jab input daala ho aur wo galat ho
+                                  if (!isValid && hasInput) // Yahan 'hasInput' ya 'hasPartialInput' lagana zaroori hai
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
@@ -1065,7 +1128,8 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-                                  else ...[
+                                  // STATE 2: Valid Results
+                                  else if (isValid) ...[
                                     _buildResultRow('Area', rtArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', rtPerimeter.toStringAsFixed(2)),
                                     Padding(
@@ -1081,7 +1145,19 @@ class _ShapesViewState extends State<ShapesView> {
                                     ),
                                     _buildResultRow('Angle A', '${rtAngA.toStringAsFixed(2)}°'),
                                     _buildResultRow('Angle B', '${rtAngB.toStringAsFixed(2)}°'),
-                                  ],
+                                  ]
+                                  // STATE 3: Default Empty State
+                                  else ...[
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: Text(
+                                            'Enter values to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ]
                                 ],
                               ),
                             ),
