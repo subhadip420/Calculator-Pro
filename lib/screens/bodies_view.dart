@@ -59,6 +59,10 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _sCapRadiusCtrl = TextEditingController();
   final TextEditingController _sCapHeightCtrl = TextEditingController();
 
+  final TextEditingController _sSegHeightCtrl = TextEditingController();
+  final TextEditingController _sSegTopRadCtrl = TextEditingController();
+  final TextEditingController _sSegBotRadCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -1549,6 +1553,172 @@ class _BodiesViewState extends State<BodiesView> {
                                     },
                                   ),
                                 ]
+                                /// ==========================================
+                                /// YAHAN SE SPHERE SEGMENT KA CODE ADD KAREIN
+                                /// ==========================================
+                                else if (currentShape.name == 'Sphere segment') ...[
+                                    Builder(
+                                      builder: (context) {
+                                        double height = double.tryParse(_sSegHeightCtrl.text) ?? 0;   // h
+                                        double topRad = double.tryParse(_sSegTopRadCtrl.text) ?? 0;   // r₁
+                                        double botRad = double.tryParse(_sSegBotRadCtrl.text) ?? 0;   // r₂
+
+                                        double volume = 0, totalArea = 0, lateralArea = 0;
+                                        double topArea = 0, baseArea = 0, sphereRadius = 0;
+                                        bool isValid = false;
+
+                                        if (height > 0 && topRad > 0 && botRad > 0) {
+                                          // Distance 'd' ka logic Sphere Radius nikalne ke liye
+                                          double d = ((topRad * topRad) - (botRad * botRad) - (height * height)) / (2 * height);
+
+                                          // Sphere Radius (R)
+                                          sphereRadius = sqrt((topRad * topRad) + (d * d));
+
+                                          // Volume = (π * h / 6) * (3r₁² + 3r₂² + h²)
+                                          volume = (pi * height / 6) * ((3 * topRad * topRad) + (3 * botRad * botRad) + (height * height));
+
+                                          // Top aur Bottom Areas
+                                          topArea = pi * topRad * topRad;
+                                          baseArea = pi * botRad * botRad;
+
+                                          // Lateral Area = 2 * π * R * h
+                                          lateralArea = 2 * pi * sphereRadius * height;
+
+                                          // Total Area = Lateral Area + Top Area + Base Area
+                                          totalArea = lateralArea + topArea + baseArea;
+
+                                          isValid = true;
+                                        }
+
+                                        bool hasPartialInput = _sSegHeightCtrl.text.isNotEmpty ||
+                                            _sSegTopRadCtrl.text.isNotEmpty ||
+                                            _sSegBotRadCtrl.text.isNotEmpty;
+
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Input',
+                                              style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 12),
+
+                                            // 3 Fixed Inputs: Height, Top radius, Bottom radius
+                                            _buildFixedInputRow(
+                                              title: 'Height (h)',
+                                              ctrl: _sSegHeightCtrl,
+                                              icon: CustomPaint(
+                                                painter: SphereSegInputPainter(
+                                                  highlightType: 'Height',
+                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                  highlightColor: AppColors.orangeColor(context),
+                                                ),
+                                              ),
+                                            ),
+                                            _buildFixedInputRow(
+                                              title: 'Top radius (r₁)',
+                                              ctrl: _sSegTopRadCtrl,
+                                              icon: CustomPaint(
+                                                painter: SphereSegInputPainter(
+                                                  highlightType: 'Top radius',
+                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                  highlightColor: AppColors.orangeColor(context),
+                                                ),
+                                              ),
+                                            ),
+                                            _buildFixedInputRow(
+                                              title: 'Bottom radius (r₂)',
+                                              ctrl: _sSegBotRadCtrl,
+                                              icon: CustomPaint(
+                                                painter: SphereSegInputPainter(
+                                                  highlightType: 'Bottom radius',
+                                                  baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                                  highlightColor: AppColors.orangeColor(context),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+
+                                            // Dynamic Hint Banner
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Text(
+                                                    _getBodyHintMessage(currentShape.name),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 24),
+
+                                            // Result Container
+                                            Container(
+                                              padding: const EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                                borderRadius: BorderRadius.circular(20),
+                                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Center(
+                                                    child: Text(
+                                                      'Calculation Result',
+                                                      style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                                  const SizedBox(height: 12),
+
+                                                  if (!isValid && hasPartialInput)
+                                                    Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(16.0),
+                                                        child: Text(
+                                                          'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  else if (isValid) ...[
+                                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                                    _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                                    _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                                    ),
+
+                                                    _buildResultRow('Top area', topArea.toStringAsFixed(2)),
+                                                    _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                                    _buildResultRow('Sphere radius', sphereRadius.toStringAsFixed(2)),
+                                                  ] else ...[
+                                                    Center(
+                                                        child: Text(
+                                                          'Enter all values to see results.',
+                                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                                        )
+                                                    )
+                                                  ],
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 40),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ]
                 ],
               ),
             ),
@@ -1830,7 +2000,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Sphere segment': painter = SphereSegPainter(color: iconColor); break;
+      case 'Sphere segment':
+        painter = SphereSegInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Ellipsoid': painter = EllipsoidPainter(color: iconColor); break;
     }
 
@@ -2381,20 +2557,69 @@ class SphereCapPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
+// class SphereSegPainter extends CustomPainter {
+//   final Color color;
+//   SphereSegPainter({required this.color});
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
+//     double w = size.width, h = size.height;
+//     canvas.drawOval(Rect.fromLTWH(w*0.1, 0, w*0.8, h*0.25), p);
+//     canvas.drawOval(Rect.fromLTWH(0, h*0.75, w, h*0.25), p);
+//     canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), 2.5, 1.2, false, p);
+//     canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), -0.6, 1.2, false, p);
+//   }
+//   @override
+//   bool shouldRepaint(covariant CustomPainter old) => false;
+// }
+
 class SphereSegPainter extends CustomPainter {
   final Color color;
   SphereSegPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2.0;
-    double w = size.width, h = size.height;
-    canvas.drawOval(Rect.fromLTWH(w*0.1, 0, w*0.8, h*0.25), p);
-    canvas.drawOval(Rect.fromLTWH(0, h*0.75, w, h*0.25), p);
-    canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), 2.5, 1.2, false, p);
-    canvas.drawArc(Rect.fromLTWH(-w*0.2, 0, w*1.4, h), -0.6, 1.2, false, p);
+    Paint p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    double w = size.width;
+    double h = size.height;
+
+    // 1. Top Base Oval (Chota circle)
+    Rect topOval = Rect.fromLTWH(w * 0.20, h * 0.10, w * 0.60, h * 0.20);
+    // 2. Bottom Base Oval (Bada circle)
+    Rect botOval = Rect.fromLTWH(w * 0.05, h * 0.70, w * 0.90, h * 0.20);
+
+    canvas.drawOval(topOval, p);
+    canvas.drawOval(botOval, p);
+
+    // Ovals ke exact left aur right center points
+    Offset topLeft = Offset(w * 0.20, h * 0.20);
+    Offset botLeft = Offset(w * 0.05, h * 0.80);
+    Offset topRight = Offset(w * 0.80, h * 0.20);
+    Offset botRight = Offset(w * 0.95, h * 0.80);
+
+    // 3. Side ki spherical curves draw karna
+    Path sideEdges = Path()
+      ..moveTo(topLeft.dx, topLeft.dy)
+    // Left side ka bahar ki taraf nikla hua curve (Bulge)
+      ..quadraticBezierTo(-w * 0.05, h * 0.50, botLeft.dx, botLeft.dy)
+
+      ..moveTo(topRight.dx, topRight.dy)
+    // Right side ka bahar ki taraf nikla hua curve (Bulge)
+      ..quadraticBezierTo(w * 1.05, h * 0.50, botRight.dx, botRight.dy);
+
+    canvas.drawPath(sideEdges, p);
   }
+
   @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
+  bool shouldRepaint(covariant SphereSegPainter old) {
+    return old.color != color;
+  }
 }
 
 class EllipsoidPainter extends CustomPainter {
@@ -3214,6 +3439,120 @@ class SphereCapInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SphereCapInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class SphereSegInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  SphereSegInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.75)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+
+    // 1. Top Base Oval
+    Rect topOval = Rect.fromLTWH(w * 0.20, h * 0.10, w * 0.60, h * 0.20);
+    Offset topCenter = Offset(w * 0.50, h * 0.20);
+    Offset topLeft = Offset(w * 0.20, h * 0.20);
+    Offset topRight = Offset(w * 0.80, h * 0.20);
+
+    // 2. Bottom Base Oval
+    Rect botOval = Rect.fromLTWH(w * 0.05, h * 0.70, w * 0.90, h * 0.20);
+    Offset botCenter = Offset(w * 0.50, h * 0.80);
+    Offset botLeft = Offset(w * 0.05, h * 0.80);
+    Offset botRight = Offset(w * 0.95, h * 0.80);
+
+    // 3. Complete Barrel Path for solid fills
+    Path barrelPath = Path()
+      ..moveTo(topLeft.dx, topLeft.dy)
+      ..quadraticBezierTo(-w * 0.05, h * 0.50, botLeft.dx, botLeft.dy)
+      ..arcTo(botOval, pi, -pi, false)
+      ..quadraticBezierTo(w * 1.05, h * 0.50, topRight.dx, topRight.dy)
+      ..arcTo(topOval, 0, pi, false)
+      ..close();
+
+    // Side curved borders ke liye alag path (sirf lines draw karne ke liye)
+    Path sideEdges = Path()
+      ..moveTo(topLeft.dx, topLeft.dy)
+      ..quadraticBezierTo(-w * 0.05, h * 0.50, botLeft.dx, botLeft.dy)
+      ..moveTo(topRight.dx, topRight.dy)
+      ..quadraticBezierTo(w * 1.05, h * 0.50, botRight.dx, botRight.dy);
+
+    // --- FILL HIGHLIGHTS ---
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawPath(barrelPath, fillPaint);
+      canvas.drawOval(topOval, darkFillPaint);
+      canvas.drawOval(botOval, darkFillPaint);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawPath(barrelPath, darkFillPaint);
+    } else if (highlightType == 'Top area') {
+      canvas.drawOval(topOval, darkFillPaint);
+    } else if (highlightType == 'Base area') {
+      canvas.drawOval(botOval, darkFillPaint);
+    }
+
+    // --- DRAW BASE WIREFRAME ---
+    canvas.drawOval(topOval, highlightType == 'Top area' ? hlStrokePaint : basePaint);
+    canvas.drawOval(botOval, highlightType == 'Base area' ? hlStrokePaint : basePaint);
+    canvas.drawPath(sideEdges, highlightType == 'Lateral area' ? hlStrokePaint : basePaint);
+
+    // --- SPECIFIC STROKE HIGHLIGHTS ---
+    if (highlightType == 'Height') {
+      // Top se bottom center tak straight vertical line
+      canvas.drawLine(topCenter, botCenter, hlStrokePaint);
+      canvas.drawCircle(topCenter, 1.8, darkFillPaint);
+      canvas.drawCircle(botCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Top radius') {
+      // Top center se right edge tak (r1)
+      canvas.drawLine(topCenter, topRight, hlStrokePaint);
+      canvas.drawCircle(topCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Bottom radius') {
+      // Bottom center se right edge tak (r2)
+      canvas.drawLine(botCenter, botRight, hlStrokePaint);
+      canvas.drawCircle(botCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Sphere radius') {
+      // Center of segment se curve tak (R)
+      Offset midCenter = Offset(w * 0.50, h * 0.50);
+      Offset midCurveRight = Offset(w * 0.98, h * 0.50);
+      canvas.drawLine(midCenter, midCurveRight, hlStrokePaint);
+      canvas.drawCircle(midCenter, 1.8, darkFillPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant SphereSegInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.highlightColor != highlightColor;
   }
