@@ -585,6 +585,9 @@ class _ShapesViewState extends State<ShapesView> {
     bool hasRTInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
     bool hasSQInput = _sqValCtrl.text.isNotEmpty;
     bool hasRectInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
+    bool hasTrapInput = _trapHeightCtrl.text.isNotEmpty ||
+        _trapTopCtrl.text.isNotEmpty ||
+        _trapBaseCtrl.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -1668,12 +1671,36 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  if (!isValid)
+                                  // if (!isValid)
+                                  //   Center(
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(16.0),
+                                  //       child: Text(
+                                  //         errorMsg,
+                                  //         textAlign: TextAlign.center,
+                                  //         style: TextStyle(
+                                  //           color: AppColors.redColor(context).withOpacity(0.9),
+                                  //           fontSize: 14,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   )
+                                  // else ...[
+                                  //   _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
+                                  //   Padding(
+                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
+                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                  //   ),
+                                  //   _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
+                                  //   _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
+                                  // ],
+                                  // STATE 1: Error tabhi dikhega jab kisi field me input ho par values galat/adhuri hon
+                                  if (!isValid && hasTrapInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg,
+                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter valid values.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -1682,7 +1709,8 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-                                  else ...[
+// STATE 2: Valid Results (Jo aapne bheje the)
+                                  else if (isValid) ...[
                                     _buildResultRow('Area', trapArea.toStringAsFixed(2), isHighlighted: true),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -1690,7 +1718,19 @@ class _ShapesViewState extends State<ShapesView> {
                                     ),
                                     _buildResultRow('Median (Midline)', trapMedian.toStringAsFixed(2)),
                                     _buildResultRow('Leg (If Isosceles)', trapIsoLeg.toStringAsFixed(2)),
-                                  ],
+                                  ]
+// STATE 3: Default Empty State (Bina input ke)
+                                  else ...[
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: Text(
+                                            'Enter values to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                 ],
                               ),
                             ),
