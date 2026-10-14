@@ -32,6 +32,9 @@ class _BodiesViewState extends State<BodiesView> {
   String _cubeInputType = 'Side'; // Default input type
   final TextEditingController _cubeValCtrl = TextEditingController();
 
+  String _sphereInputType = 'Radius'; // Image ke hisaab se default options
+  final TextEditingController _sphereValCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -333,7 +336,148 @@ class _BodiesViewState extends State<BodiesView> {
                         );
                       },
                     ),
-                  ],// end
+                  ]
+                  /// ==========================================
+                  /// YAHAN SE SPHERE KA CODE ADD KAREIN
+                  /// ==========================================
+                  else if (currentShape.name == 'Sphere') ...[
+                    Builder(
+                      builder: (context) {
+                        double val = double.tryParse(_sphereValCtrl.text) ?? 0;
+                        double radius = 0, diameter = 0, area = 0, volume = 0;
+                        bool isValid = false;
+                        String errorMsg = '';
+
+                        if (val > 0) {
+                          // Reverse Engineering the Radius based on input type
+                          if (_sphereInputType == 'Radius') {
+                            radius = val;
+                          } else if (_sphereInputType == 'Area') {
+                            // Area = 4 * pi * r² => r = √(Area / (4*pi))
+                            radius = sqrt(val / (4 * pi));
+                          } else if (_sphereInputType == 'Volume') {
+                            // Volume = (4/3) * pi * r³ => r = ∛(3*Volume / (4*pi))
+                            radius = pow((3 * val) / (4 * pi), 1 / 3).toDouble();
+                          }
+
+                          // Calculate baaki saari values
+                          diameter = 2 * radius;
+                          area = 4 * pi * radius * radius;
+                          volume = (4 / 3) * pi * pow(radius, 3);
+
+                          isValid = true;
+                        } else if (_sphereValCtrl.text.isNotEmpty) {
+                          errorMsg = 'Enter a value greater than 0.';
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Input',
+                              style: TextStyle(
+                                color: AppColors.textColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            _buildSphereInputRow(),
+                            const SizedBox(height: 16),
+
+                            // Dynamic Hint Banner
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.subdirectory_arrow_right_rounded,
+                                  color: AppColors.textGrey(context),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _getBodyHintMessage(currentShape.name),
+                                    style: TextStyle(
+                                      color: AppColors.textColor(context).withOpacity(0.9),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Result Container
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.cyanColor(context).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Calculation Result',
+                                      style: TextStyle(
+                                        color: AppColors.cyanColor(context),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                  const SizedBox(height: 12),
+
+                                  if (!isValid && _sphereValCtrl.text.isNotEmpty)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          errorMsg,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: AppColors.redColor(context).withOpacity(0.9),
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (isValid) ...[
+                                    // Primary Results
+                                    _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                    _buildResultRow('Area', area.toStringAsFixed(2), isHighlighted: true),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                    ),
+
+                                    // Secondary Results
+                                    _buildResultRow('Radius', radius.toStringAsFixed(2)),
+                                    _buildResultRow('Diameter', diameter.toStringAsFixed(2)),
+                                  ] else ...[
+                                    Center(
+                                        child: Text(
+                                          'Enter a value to see results.',
+                                          style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                        )
+                                    )
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      },
+                    ),
+                  ]
                 ],
               ),
             ),
@@ -543,7 +687,13 @@ class _BodiesViewState extends State<BodiesView> {
       case 'Cone': painter = ConePainter(color: iconColor); break;
       case 'Cone frustum': painter = ConeFrustumPainter(color: iconColor); break;
       case 'Cylinder': painter = CylinderPainter(color: iconColor); break;
-      case 'Sphere': painter = SpherePainter(color: iconColor); break;
+      case 'Sphere':
+        painter = SphereInputPainter( // FIX: SpherePainter ki jagah SphereInputPainter lagaya
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Sphere cap': painter = SphereCapPainter(color: iconColor); break;
       case 'Sphere segment': painter = SphereSegPainter(color: iconColor); break;
       case 'Ellipsoid': painter = EllipsoidPainter(color: iconColor); break;
@@ -674,6 +824,104 @@ class _BodiesViewState extends State<BodiesView> {
               ),
               child: TextField(
                 controller: _cubeValCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+                cursorColor: AppColors.orangeColor(context),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '--',
+                  hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Sphere ka dynamic input sheet wrapper
+  void _showSphereSelectorSheet() {
+    _showDynamicInputSelectorSheet(
+      options: ['Radius', 'Area', 'Volume'], // Image wale 3 options[cite: 4]
+      currentSelection: _sphereInputType,
+      heightFraction: 0.5,
+      iconBuilder: (opt) => CustomPaint(
+        painter: SphereInputPainter(
+          highlightType: opt,
+          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+          highlightColor: AppColors.orangeColor(context),
+        ),
+      ),
+      onSelected: (selectedVal) {
+        setState(() => _sphereInputType = selectedVal);
+      },
+    );
+  }
+
+// Sphere ka Input Row
+  Widget _buildSphereInputRow() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          // Dropdown Selector (Left Side)
+          Expanded(
+            flex: 5,
+            child: GestureDetector(
+              onTap: _showSphereSelectorSheet,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                height: 60,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceColor(context).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CustomPaint(
+                        painter: SphereInputPainter(
+                          highlightType: _sphereInputType,
+                          baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                          highlightColor: AppColors.orangeColor(context),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _sphereInputType,
+                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Input Field (Right Side)
+          Expanded(
+            flex: 4,
+            child: Container(
+              height: 60,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: TextField(
+                controller: _sphereValCtrl,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
@@ -970,4 +1218,77 @@ class CubeInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class SphereInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  SphereInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
+
+    Paint areaFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
+
+    Paint volumeFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.9)
+      ..style = PaintingStyle.fill;
+
+    Offset center = Offset(size.width / 2, size.height / 2);
+    double radius = size.width / 2;
+
+    // FIX: size.height * 0.35 mein '*' लगा diya hai
+    Rect equator = Rect.fromCenter(
+      center: center,
+      width: size.width,
+      height: size.height * 0.35,
+    );
+
+    if (highlightType == 'Area' || highlightType == 'Total area') {
+      // Area ke liye solid filled circle
+      canvas.drawCircle(center, radius, areaFillPaint);
+    } else if (highlightType == 'Volume') {
+      // Volume mein solid fill ke upar base border aur equator line
+      canvas.drawCircle(center, radius, volumeFillPaint);
+      canvas.drawCircle(center, radius, basePaint);
+      canvas.drawOval(equator, basePaint);
+    } else {
+      // Radius aur Diameter ke liye Base sphere
+      canvas.drawCircle(center, radius, basePaint);
+      canvas.drawOval(equator, basePaint);
+
+      if (highlightType == 'Radius') {
+        // Center se top tak single vertical line
+        canvas.drawLine(Offset(center.dx, 0), center, hlStrokePaint);
+      } else if (highlightType == 'Diameter') {
+        // Top se bottom tak full vertical line
+        canvas.drawLine(Offset(center.dx, 0), Offset(center.dx, size.height), hlStrokePaint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant SphereInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.baseColor != baseColor ||
+        oldDelegate.highlightColor != highlightColor;
+  }
 }
