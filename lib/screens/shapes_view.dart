@@ -2359,166 +2359,6 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
-  // NAYA: Result row ke liye dynamic icon generator
-  Widget _getResultIcon(String shapeName, String label, bool isHighlighted) {
-    // Highlighted row (jaise Area) ke liye Cyan color, baaki ke liye thoda halka Grey/Cyan
-    Color hlColor = isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.8);
-    Color baseColor = AppColors.textGrey(context).withOpacity(0.2);
-
-    CustomPainter? painter;
-    switch (shapeName) {
-      case 'Triangle': painter = TriInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Right triangle': painter = RtInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Square': painter = SqInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Rectangle': painter = RectInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Trapezoid': painter = TrapInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Rhombus': painter = RhomInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Circle arc': painter = ArcInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Ellipse': painter = EllipInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Pentagon': painter = PentInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Hexagon': painter = HexInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-      case 'Circle': painter = CircInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
-    }
-
-    if (painter == null) return const SizedBox.shrink();
-
-    return SizedBox(
-      width: 18,
-      height: 18,
-      child: CustomPaint(painter: painter),
-    );
-  }
-
-  Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
-    // FIX: currentShape.name ki jagah _shapeList[_selectedShapeIndex].name use kiya
-    String currentShapeName = _shapeList[_selectedShapeIndex].name;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              // Yahan dynamic shape icon aayega
-              _getResultIcon(currentShapeName, label, isHighlighted),
-              const SizedBox(width: 12),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
-                  fontSize: 15,
-                  fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // NAYA: Right Triangle Input Row Builder[cite: 4]
-  Widget _buildRtInputRow(int index) {
-    String type = index == 1 ? _rtType1 : _rtType2;
-    TextEditingController ctrl = index == 1 ? _rtVal1Ctrl : _rtVal2Ctrl;
-
-    List<String> parts = type.split(' ');
-    String mainTitle = parts[0];
-    String subTitle = parts.length > 1 ? parts[1] : '';
-
-    return Row(
-      children: [
-        // Dropdown Selector Button
-        Expanded(
-          flex: 6,
-          child: GestureDetector(
-            onTap: () => _showRtSelectorSheet(index),
-            child: Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceColor(context).withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CustomPaint(
-                      painter: RtInputPainter(
-                        highlightType: type,
-                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
-                        highlightColor: AppColors.orangeColor(context),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          mainTitle,
-                          style: TextStyle(
-                            color: AppColors.textColor(context),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (subTitle.isNotEmpty)
-                          Text(subTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        // TextField
-        Expanded(
-          flex: 3,
-          child: Container(
-            height: 60,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceColor(context).withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
-            ),
-            child: TextField(
-              controller: ctrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
-              cursorColor: AppColors.orangeColor(context),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: '--',
-                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
-              ),
-              onChanged: (_) => setState(() {}),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   // NAYA & MASTER: Dynamic Bottom Sheet for ALL Shapes
   void _showDynamicInputSelectorSheet({
     required List<String> options,
@@ -2624,6 +2464,73 @@ class _ShapesViewState extends State<ShapesView> {
     );
   }
 
+  // NAYA: Result row ke liye dynamic icon generator
+  Widget _getResultIcon(String shapeName, String label, bool isHighlighted) {
+    // Highlighted row (jaise Area) ke liye Cyan color, baaki ke liye thoda halka Grey/Cyan
+    Color hlColor = isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context).withOpacity(0.8);
+    Color baseColor = AppColors.textGrey(context).withOpacity(0.2);
+
+    CustomPainter? painter;
+    switch (shapeName) {
+      case 'Triangle': painter = TriInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Right triangle': painter = RtInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Square': painter = SqInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Rectangle': painter = RectInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Trapezoid': painter = TrapInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Rhombus': painter = RhomInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Circle arc': painter = ArcInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Ellipse': painter = EllipInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Pentagon': painter = PentInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Hexagon': painter = HexInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+      case 'Circle': painter = CircInputPainter(highlightType: label, baseColor: baseColor, highlightColor: hlColor); break;
+    }
+
+    if (painter == null) return const SizedBox.shrink();
+
+    return SizedBox(
+      width: 18,
+      height: 18,
+      child: CustomPaint(painter: painter),
+    );
+  }
+
+  Widget _buildResultRow(String label, String value, {bool isHighlighted = false}) {
+    // FIX: currentShape.name ki jagah _shapeList[_selectedShapeIndex].name use kiya
+    String currentShapeName = _shapeList[_selectedShapeIndex].name;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              // Yahan dynamic shape icon aayega
+              _getResultIcon(currentShapeName, label, isHighlighted),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textGrey(context),
+                  fontSize: 15,
+                  fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: isHighlighted ? AppColors.cyanColor(context) : AppColors.textColor(context),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showRtSelectorSheet(int inputIndex) {
     List<String> options = ['Side A', 'Side B', 'Hypotenuse', 'Angle A', 'Angle B'];
     String currentSelection = inputIndex == 1 ? _rtType1 : _rtType2;
@@ -2649,6 +2556,98 @@ class _ShapesViewState extends State<ShapesView> {
           }
         });
       },
+    );
+  }
+  // NAYA: Right Triangle Input Row Builder[cite: 4]
+  Widget _buildRtInputRow(int index) {
+    String type = index == 1 ? _rtType1 : _rtType2;
+    TextEditingController ctrl = index == 1 ? _rtVal1Ctrl : _rtVal2Ctrl;
+
+    List<String> parts = type.split(' ');
+    String mainTitle = parts[0];
+    String subTitle = parts.length > 1 ? parts[1] : '';
+
+    return Row(
+      children: [
+        // Dropdown Selector Button
+        Expanded(
+          flex: 6,
+          child: GestureDetector(
+            onTap: () => _showRtSelectorSheet(index),
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor(context).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CustomPaint(
+                      painter: RtInputPainter(
+                        highlightType: type,
+                        baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                        highlightColor: AppColors.orangeColor(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          mainTitle,
+                          style: TextStyle(
+                            color: AppColors.textColor(context),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (subTitle.isNotEmpty)
+                          Text(subTitle, style: TextStyle(color: AppColors.textGrey(context), fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textGrey(context), size: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // TextField
+        Expanded(
+          flex: 3,
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceColor(context).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
+            ),
+            child: TextField(
+              controller: ctrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textColor(context), fontSize: 18, fontWeight: FontWeight.bold),
+              cursorColor: AppColors.orangeColor(context),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: '--',
+                hintStyle: TextStyle(color: AppColors.textGrey(context).withOpacity(0.5)),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -3029,7 +3028,7 @@ class _ShapesViewState extends State<ShapesView> {
   }
 }
 
-/// main class
+/// end main class
 
 class TriInputPainter extends CustomPainter {
   final String highlightType;
