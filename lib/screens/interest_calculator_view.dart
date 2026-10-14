@@ -147,7 +147,7 @@ class _InterestCalculatorViewState extends State<InterestCalculatorView> {
             CustomTopBar(
               toolId: 'interest',
               title: 'Interest Calculator',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/interest.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

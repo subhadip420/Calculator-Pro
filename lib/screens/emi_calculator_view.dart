@@ -168,7 +168,7 @@ class _EmiCalculatorViewState extends State<EmiCalculatorView> {
             CustomTopBar(
               toolId: 'emi',
               title: 'EMI Calculator',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/emi_calculator.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

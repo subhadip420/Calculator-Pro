@@ -143,7 +143,7 @@ class _RdCalculatorViewState extends State<RdCalculatorView> {
             CustomTopBar(
               toolId: 'rd',
               title: 'RD Calculator',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/rd.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

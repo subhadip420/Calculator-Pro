@@ -337,7 +337,7 @@ class _AgeCalculatorViewState extends State<AgeCalculatorView> {
           CustomTopBar(
             toolId: 'age',
             title: 'Age Calculator',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/age_calculator.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

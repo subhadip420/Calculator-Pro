@@ -101,6 +101,16 @@ flutter:
     - assets/images/random_number.png
     - assets/images/average.png
     - assets/images/prime.png
+    - assets/images/shapes.png
+    - assets/images/bodies.png
+    - assets/images/sip.png
+    - assets/images/rd.png
+    - assets/images/interest.png
+    - assets/images/fixed_deposit.png
+    - assets/images/emi_calculator.png
+    - assets/images/calendar_calculator.png
+    - assets/images/age_difference.png
+    - assets/images/age_calculator.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

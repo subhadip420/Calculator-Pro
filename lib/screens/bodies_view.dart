@@ -183,7 +183,7 @@ class _BodiesViewState extends State<BodiesView> {
           CustomTopBar(
             toolId: 'bodies',
             title: 'Bodies',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/bodies.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

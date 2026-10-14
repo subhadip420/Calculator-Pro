@@ -161,7 +161,7 @@ class _FdCalculatorViewState extends State<FdCalculatorView> {
             CustomTopBar(
               toolId: 'fd',
               title: 'FD Calculator',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/fixed_deposit.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

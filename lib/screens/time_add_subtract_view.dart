@@ -303,7 +303,7 @@ class _DateAddSubtractViewState extends State<DateAddSubtractView> {
             CustomTopBar(
               toolId: 'date_add_subtract',
               title: 'Add & Subtract Time',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/calendar_calculator.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),

@@ -215,7 +215,7 @@ class _AgeDifferenceViewState extends State<AgeDifferenceView> {
           CustomTopBar(
             toolId: 'age_difference',
             title: 'Age Difference',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/age_difference.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

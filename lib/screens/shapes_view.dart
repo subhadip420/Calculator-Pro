@@ -494,7 +494,7 @@ class _ShapesViewState extends State<ShapesView> {
           CustomTopBar(
             toolId: 'shapes',
             title: 'Shapes',
-            iconPath: 'assets/images/percentage-discount-symbol.png',
+            iconPath: 'assets/images/shapes.png',
             onBack: widget.onBack,
             isHapticsEnabled: _isHapticsEnabled,
           ),

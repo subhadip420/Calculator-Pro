@@ -313,7 +313,7 @@ class _SipCalculatorViewState extends State<SipCalculatorView> {
             CustomTopBar(
               toolId: 'sip',
               title: 'SIP Calculator',
-              iconPath: 'assets/images/percentage-discount-symbol.png',
+              iconPath: 'assets/images/sip.png',
               onBack: widget.onBack,
               isHapticsEnabled: _isHapticsEnabled,
             ),
