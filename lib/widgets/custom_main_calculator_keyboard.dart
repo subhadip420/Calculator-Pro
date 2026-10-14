@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
+
 class CalculatorButton extends StatelessWidget {
   final String? text;
   final IconData? icon;
@@ -27,7 +29,7 @@ class CalculatorButton extends StatelessWidget {
   BorderRadius _getShapeRadius() {
     return buttonShape == 'circle'
         ? BorderRadius.circular(100) // Circle ke liye full round
-        : BorderRadius.circular(16); // Rounded ke liye normal curve
+        : BorderRadius.circular(10); // Rounded ke liye normal curve
   }
 
   @override
@@ -37,11 +39,30 @@ class CalculatorButton extends StatelessWidget {
         padding: const EdgeInsets.all(4.0),
         child: Container(
           // 1. Shadow aur Border ko bahar wale Container me rakha hai
+          // decoration: BoxDecoration(
+          //   //borderRadius: BorderRadius.circular(16),
+          //   borderRadius: _getShapeRadius(),
+          //   border: Border.all(color: Colors.white.withOpacity(0.05)),
+          //   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))],
+          // ),
           decoration: BoxDecoration(
-            //borderRadius: BorderRadius.circular(16),
             borderRadius: _getShapeRadius(),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))],
+
+            // NAYA FIX: Hardcoded white ki jagah AppColors.textGrey use kiya
+            // Taaki Light aur Dark dono theme me border saaf dikhe
+            border: Border.all(
+              color: AppColors.textGrey(context).withOpacity(0.15),
+              width: 1.0, // Aap width apne hisaab se adjust kar sakte hain
+            ),
+
+            boxShadow: [
+              BoxShadow(
+                // Shadow hamesha dark hoti hai, isliye isko soft black rakha hai
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+            ],
           ),
           // 2. Material widget use kiya background color aur ripple ke liye
           child: Material(
