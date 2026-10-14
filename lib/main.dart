@@ -119,6 +119,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _loadCurrentState();
     _loadSyncState();
     _loadHistory();
     _loadAd();
@@ -165,8 +166,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     super.dispose();
   }
 
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     _loadSyncState();
+  //   }
+  // }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // NAYA: Jab app background me jaye ya close ho rahi ho, tab data save kar lo
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _saveCurrentState();
+    }
+
+    // Purana: Jab app wapas open ho (mini calculator se sync ke liye)
     if (state == AppLifecycleState.resumed) {
       _loadSyncState();
     }
@@ -256,6 +270,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     setState(() {
       _historyList = validHistory;
     });
+  }
+
+  // --- NAYA: App open hone par last calculation load karna ---
+  Future<void> _loadCurrentState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _equationController.text = prefs.getString('last_eq') ?? '';
+      result = prefs.getString('last_res') ?? '';
+      isEvaluated = prefs.getBool('last_eval') ?? false;
+    });
+  }
+
+  // --- NAYA: App band hone par current calculation save karna ---
+  Future<void> _saveCurrentState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('last_eq', _equationController.text);
+    await prefs.setString('last_res', result);
+    await prefs.setBool('last_eval', isEvaluated);
   }
 
   Future<void> _loadSettings() async {
