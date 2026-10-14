@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_colors.dart';
-import '../custom_shoe_size_selector_sheet.dart';
-import '../custom_top_bar.dart'; // Apna correct path check kar lena
-import '../custom_unit_selector_sheet.dart';
+import '../widgets/custom_shoe_size_selector_sheet.dart';
+import '../widgets/custom_top_bar.dart'; // Apna correct path check kar lena
+import '../widgets/custom_unit_selector_sheet.dart';
 
 class ShoeSizeConverterView extends StatefulWidget {
   final VoidCallback onBack;

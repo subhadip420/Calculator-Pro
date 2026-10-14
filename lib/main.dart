@@ -12,10 +12,10 @@ import 'package:math_expressions/math_expressions.dart' hide Stack;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'app_colors.dart';
-import 'custom_main_calculator_keyboard.dart';
-import 'custom_action_button.dart';
-import 'custom_dialog.dart';
-import 'custom_toast.dart';
+import 'widgets/custom_main_calculator_keyboard.dart';
+import 'widgets/custom_action_button.dart';
+import 'widgets/custom_dialog.dart';
+import 'widgets/custom_toast.dart';
 import 'menu_options.dart';
 
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';

@@ -5,8 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // NAYA: SharedPreferences import kiya
 import 'package:url_launcher/url_launcher.dart';
 import 'app_colors.dart';
-import 'custom_action_button.dart';
-import 'custom_dialog.dart';
+import 'widgets/custom_action_button.dart';
+import 'widgets/custom_dialog.dart';
 import 'main.dart';
 
 class SettingsPage extends StatefulWidget {

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_colors.dart';
-import '../custom_action_button.dart';
-import '../custom_conversion_card.dart';
-import '../custom_converter_keyboard.dart';
-import 'package:calculator_pro/custom_unit_selector_sheet.dart';
+import '../widgets/custom_action_button.dart';
+import '../widgets/custom_conversion_card.dart';
+import '../widgets/custom_converter_keyboard.dart';
+import 'package:calculator_pro/widgets/custom_unit_selector_sheet.dart';
 
-import '../custom_top_bar.dart';
-import '../custom_unit_selector_sheet.dart';
+import '../widgets/custom_top_bar.dart';
+import '../widgets/custom_unit_selector_sheet.dart';
 
 class WeightMassConverterView extends StatefulWidget {
   final VoidCallback onBack;

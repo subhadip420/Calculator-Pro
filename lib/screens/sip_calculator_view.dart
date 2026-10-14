@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:calculator_pro/custom_toast.dart';
+import 'package:calculator_pro/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
-import '../custom_top_bar.dart';
+import '../widgets/custom_top_bar.dart';
 import '../widgets/custom_ruler_slider_card.dart';
 import '../widgets/percentage_slider_card.dart';
 

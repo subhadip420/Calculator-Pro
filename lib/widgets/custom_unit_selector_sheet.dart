@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import '../app_colors.dart';
 
 class UnitSelectorSheet extends StatefulWidget {
   final String category; // 'Length', 'Weight' etc.

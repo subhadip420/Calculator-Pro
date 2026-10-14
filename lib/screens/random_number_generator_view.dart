@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math; // Random logic ke liye
 
 import '../app_colors.dart';
-import '../custom_top_bar.dart';
+import '../widgets/custom_top_bar.dart';
 
 class RandomNumberGeneratorView extends StatefulWidget {
   final VoidCallback onBack;

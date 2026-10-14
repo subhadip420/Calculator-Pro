@@ -171,7 +171,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'app_colors.dart'; // NAYA: AppColors file import karni hai
+import '../app_colors.dart'; // NAYA: AppColors file import karni hai
 
 class ConverterKeyboard extends StatelessWidget {
   final Function(String) onKeyPress;

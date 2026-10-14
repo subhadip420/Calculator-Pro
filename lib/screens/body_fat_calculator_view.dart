@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_colors.dart';
-import '../custom_top_bar.dart';
-import '../custom_toast.dart'; // Apna custom toast import karein
+import '../widgets/custom_top_bar.dart';
+import '../widgets/custom_toast.dart'; // Apna custom toast import karein
 
 class BodyFatCalculatorView extends StatefulWidget {
   final VoidCallback onBack;

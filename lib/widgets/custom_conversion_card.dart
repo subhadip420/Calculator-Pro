@@ -151,7 +151,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import '../app_colors.dart';
 
 // --- REUSABLE RESPONSIVE CONVERSION CARD WIDGET ---
 class ConversionCard extends StatefulWidget {
