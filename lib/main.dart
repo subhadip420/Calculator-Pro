@@ -1000,7 +1000,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                         elevation: 0,
                                                         shape: RoundedRectangleBorder(
                                                           borderRadius: BorderRadius.circular(24),
-                                                          side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                                          side: BorderSide(
+                                                            color: AppColors.textGrey(context).withOpacity(0.2),
+                                                            width: 1.5,
+                                                          ),
                                                         ),
                                                         child: Padding(
                                                           padding: const EdgeInsets.symmetric(
@@ -1265,7 +1268,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
                                                                 ),
                                                               CalculatorButton(
                                                                 text: 'AC',
-                                                                textColor: Colors.orangeAccent,
+                                                                textColor:AppColors.orangeColor(context),
                                                                 bgColor: AppColors.surfaceColor(context),
                                                                 buttonShape: _buttonShape,
                                                                 onTap: () => _onKeyPress('AC'),
