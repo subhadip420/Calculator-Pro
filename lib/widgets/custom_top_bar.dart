@@ -93,15 +93,15 @@ class _CustomTopBarState extends State<CustomTopBar> {
         //   bottomRight: Radius.circular(32.0),
         // ),
         // NAYA: Light mode mein shadow taaki radius cut clearly visible ho
-        boxShadow: isDark
-            ? []
-            : [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
+        // boxShadow: isDark
+        //     ? []
+        //     : [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.04),
+        //     blurRadius: 10,
+        //     offset: const Offset(0, 4),
+        //   )
+        // ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
