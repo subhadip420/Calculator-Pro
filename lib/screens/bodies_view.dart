@@ -74,6 +74,58 @@ class _BodiesViewState extends State<BodiesView> {
     _loadSettings();
   }
 
+  @override
+  void dispose() {
+    // 1. Cube
+    _cubeValCtrl.dispose();
+
+    // 2. Sphere
+    _sphereValCtrl.dispose();
+
+    // 3. Prism
+    _prismLengthCtrl.dispose();
+    _prismWidthCtrl.dispose();
+    _prismHeightCtrl.dispose();
+
+    // 4. Pyramid
+    _pyrBaseCtrl.dispose();
+    _pyrHeightCtrl.dispose();
+
+    // 5. Pyramid Frustum
+    _pyrFrustBaseCtrl.dispose();
+    _pyrFrustTopCtrl.dispose();
+    _pyrFrustHeightCtrl.dispose();
+
+    // 6. Cone
+    _coneRadiusCtrl.dispose();
+    _coneHeightCtrl.dispose();
+
+    // 7. Cone Frustum
+    _coneFrustHeightCtrl.dispose();
+    _coneFrustTopRadCtrl.dispose();
+    _coneFrustBotRadCtrl.dispose();
+
+    // 8. Cylinder
+    _cylRadiusCtrl.dispose();
+    _cylHeightCtrl.dispose();
+
+    // 9. Sphere Cap
+    _sCapRadiusCtrl.dispose();
+    _sCapHeightCtrl.dispose();
+
+    // 10. Sphere Segment
+    _sSegHeightCtrl.dispose();
+    _sSegTopRadCtrl.dispose();
+    _sSegBotRadCtrl.dispose();
+
+    // 11. Ellipsoid
+    _ellipsoidRadACtrl.dispose();
+    _ellipsoidRadBCtrl.dispose();
+    _ellipsoidRadCCtrl.dispose();
+
+    super.dispose(); // Ise last mein call karna zaruri hai
+  }
+
   String _getBodyHintMessage(String shapeName) {
     switch (shapeName) {
       case 'Cube':
