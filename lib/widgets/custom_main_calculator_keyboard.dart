@@ -38,13 +38,6 @@ class CalculatorButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
-          // 1. Shadow aur Border ko bahar wale Container me rakha hai
-          // decoration: BoxDecoration(
-          //   //borderRadius: BorderRadius.circular(16),
-          //   borderRadius: _getShapeRadius(),
-          //   border: Border.all(color: Colors.white.withOpacity(0.05)),
-          //   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))],
-          // ),
           decoration: BoxDecoration(
             borderRadius: _getShapeRadius(),
 
