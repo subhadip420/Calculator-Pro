@@ -584,6 +584,7 @@ class _ShapesViewState extends State<ShapesView> {
 
     bool hasRTInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
     bool hasSQInput = _sqValCtrl.text.isNotEmpty;
+    bool hasRectInput = _rectLenCtrl.text.isNotEmpty || _rectWidCtrl.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -1470,12 +1471,38 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  if (!isValid)
+                                  // if (!isValid)
+                                  //   Center(
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(16.0),
+                                  //       child: Text(
+                                  //         errorMsg,
+                                  //         textAlign: TextAlign.center,
+                                  //         style: TextStyle(
+                                  //           color: AppColors.redColor(context).withOpacity(0.9),
+                                  //           fontSize: 14,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   )
+                                  // else ...[
+                                  //   _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
+                                  //   _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
+                                  //   Padding(
+                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
+                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                  //   ),
+                                  //   _buildResultRow('Length', l.toStringAsFixed(2)),
+                                  //   _buildResultRow('Width', w.toStringAsFixed(2)),
+                                  //   _buildResultRow('Diagonal', rectDiagonal.toStringAsFixed(2)),
+                                  // ],
+                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho aur result invalid ho
+                                  if (!isValid && hasRectInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg,
+                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter valid values.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -1484,7 +1511,8 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-                                  else ...[
+// STATE 2: Valid Results
+                                  else if (isValid) ...[
                                     _buildResultRow('Area', rectArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter', rectPerimeter.toStringAsFixed(2)),
                                     Padding(
@@ -1494,7 +1522,19 @@ class _ShapesViewState extends State<ShapesView> {
                                     _buildResultRow('Length', l.toStringAsFixed(2)),
                                     _buildResultRow('Width', w.toStringAsFixed(2)),
                                     _buildResultRow('Diagonal', rectDiagonal.toStringAsFixed(2)),
-                                  ],
+                                  ]
+                                  // STATE 3: Default Empty State
+                                  else ...[
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: Text(
+                                            'Enter values to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                 ],
                               ),
                             ),
