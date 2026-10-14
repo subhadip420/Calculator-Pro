@@ -49,6 +49,10 @@ class _BodiesViewState extends State<BodiesView> {
   final TextEditingController _coneRadiusCtrl = TextEditingController();
   final TextEditingController _coneHeightCtrl = TextEditingController();
 
+  final TextEditingController _coneFrustHeightCtrl = TextEditingController();
+  final TextEditingController _coneFrustTopRadCtrl = TextEditingController();
+  final TextEditingController _coneFrustBotRadCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +72,7 @@ class _BodiesViewState extends State<BodiesView> {
       case 'Cone':
         return 'Solve a cone knowing its base radius and height.';
       case 'Cone frustum':
-        return 'Solve a cone frustum knowing its base radii and height.';
+        return 'Solve a cone frustum knowing its two radius and height.';
       case 'Cylinder':
         return 'Solve a cylinder knowing its base radius and height.';
       case 'Sphere':
@@ -1085,6 +1089,169 @@ class _BodiesViewState extends State<BodiesView> {
                               },
                             ),
                           ]
+                          /// ==========================================
+                          /// YAHAN SE CONE FRUSTUM KA CODE ADD KAREIN
+                          /// ==========================================
+                          else if (currentShape.name == 'Cone frustum') ...[
+                              Builder(
+                                builder: (context) {
+                                  double height = double.tryParse(_coneFrustHeightCtrl.text) ?? 0;   // h
+                                  double topRad = double.tryParse(_coneFrustTopRadCtrl.text) ?? 0;   // r1 (Top radius)
+                                  double botRad = double.tryParse(_coneFrustBotRadCtrl.text) ?? 0;   // r2 (Bottom radius)
+
+                                  double volume = 0, totalArea = 0, lateralArea = 0;
+                                  double topArea = 0, baseArea = 0, slantHeight = 0;
+                                  bool isValid = false;
+
+                                  if (height > 0 && topRad > 0 && botRad > 0) {
+                                    double radDiff = (botRad - topRad).abs();
+
+                                    // Slant Height (s) = √(h² + (r2 - r1)²)
+                                    slantHeight = sqrt((height * height) + (radDiff * radDiff));
+
+                                    // Top & Bottom Base Areas
+                                    topArea = pi * topRad * topRad;
+                                    baseArea = pi * botRad * botRad;
+
+                                    // Lateral Area = π * (r1 + r2) * s
+                                    lateralArea = pi * (topRad + botRad) * slantHeight;
+
+                                    // Total Area = Lateral Area + Top Area + Base Area
+                                    totalArea = lateralArea + topArea + baseArea;
+
+                                    // Volume = (1/3) * π * h * (r1² + r2² + (r1 * r2))
+                                    volume = (1 / 3) * pi * height * ((topRad * topRad) + (botRad * botRad) + (topRad * botRad));
+
+                                    isValid = true;
+                                  }
+
+                                  bool hasPartialInput = _coneFrustHeightCtrl.text.isNotEmpty ||
+                                      _coneFrustTopRadCtrl.text.isNotEmpty ||
+                                      _coneFrustBotRadCtrl.text.isNotEmpty;
+
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Input',
+                                        style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 12),
+
+                                      // 3 Fixed Inputs: Height, Top radius, Bottom radius
+                                      _buildFixedInputRow(
+                                        title: 'Height (h)',
+                                        ctrl: _coneFrustHeightCtrl,
+                                        icon: CustomPaint(
+                                          painter: ConeFrustumInputPainter(
+                                            highlightType: 'Height',
+                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                            highlightColor: AppColors.orangeColor(context),
+                                          ),
+                                        ),
+                                      ),
+                                      _buildFixedInputRow(
+                                        title: 'Top radius (r₁)',
+                                        ctrl: _coneFrustTopRadCtrl,
+                                        icon: CustomPaint(
+                                          painter: ConeFrustumInputPainter(
+                                            highlightType: 'Top radius',
+                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                            highlightColor: AppColors.orangeColor(context),
+                                          ),
+                                        ),
+                                      ),
+                                      _buildFixedInputRow(
+                                        title: 'Bottom radius (r₂)',
+                                        ctrl: _coneFrustBotRadCtrl,
+                                        icon: CustomPaint(
+                                          painter: ConeFrustumInputPainter(
+                                            highlightType: 'Bottom radius',
+                                            baseColor: AppColors.textGrey(context).withOpacity(0.5),
+                                            highlightColor: AppColors.orangeColor(context),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      // Dynamic Hint Banner
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.subdirectory_arrow_right_rounded, color: AppColors.textGrey(context), size: 24),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              _getBodyHintMessage(currentShape.name),
+                                              style: TextStyle(color: AppColors.textColor(context).withOpacity(0.9), fontSize: 15),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 24),
+
+                                      // Result Container
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.cyanColor(context).withOpacity(0.05),
+                                          borderRadius: BorderRadius.circular(20),
+                                          border: Border.all(color: AppColors.cyanColor(context).withOpacity(0.3), width: 1.5),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Center(
+                                              child: Text(
+                                                'Calculation Result',
+                                                style: TextStyle(color: AppColors.cyanColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
+                                            const SizedBox(height: 12),
+
+                                            if (!isValid && hasPartialInput)
+                                              Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(16.0),
+                                                  child: Text(
+                                                    'Enter values greater than 0 for Height, Top radius, and Bottom radius.',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(color: AppColors.redColor(context).withOpacity(0.9), fontSize: 14),
+                                                  ),
+                                                ),
+                                              )
+                                            else if (isValid) ...[
+                                              _buildResultRow('Volume', volume.toStringAsFixed(2), isHighlighted: true),
+                                              _buildResultRow('Total area', totalArea.toStringAsFixed(2), isHighlighted: true),
+                                              _buildResultRow('Lateral area', lateralArea.toStringAsFixed(2), isHighlighted: true),
+
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                                child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                              ),
+
+                                              _buildResultRow('Top area', topArea.toStringAsFixed(2)),
+                                              _buildResultRow('Base area', baseArea.toStringAsFixed(2)),
+                                              _buildResultRow('Slant height', slantHeight.toStringAsFixed(2)),
+                                            ] else ...[
+                                              Center(
+                                                  child: Text(
+                                                    'Enter all values to see results.',
+                                                    style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                                  )
+                                              )
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 40),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ]
                 ],
               ),
             ),
@@ -1107,7 +1274,7 @@ class _BodiesViewState extends State<BodiesView> {
         children: [
           // Icon aur Title Box
           Expanded(
-            flex: 5,
+            flex: 6,
             child: Container(
               height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1116,6 +1283,20 @@ class _BodiesViewState extends State<BodiesView> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.textGrey(context).withOpacity(0.2)),
               ),
+              // child: Row(
+              //   children: [
+              //     SizedBox(
+              //       width: 24,
+              //       height: 24,
+              //       child: icon, // Dynamic icon yahan render hoga
+              //     ),
+              //     const SizedBox(width: 16),
+              //     Text(
+              //       title,
+              //       style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+              //     ),
+              //   ],
+              // ),
               child: Row(
                 children: [
                   SizedBox(
@@ -1124,9 +1305,17 @@ class _BodiesViewState extends State<BodiesView> {
                     child: icon, // Dynamic icon yahan render hoga
                   ),
                   const SizedBox(width: 16),
-                  Text(
-                    title,
-                    style: TextStyle(color: AppColors.textColor(context), fontSize: 16, fontWeight: FontWeight.bold),
+                  Expanded( // FIX: Text wrap karne ke liye Expanded zaroori hai
+                    child: Text(
+                      title,
+                      maxLines: 2, // Max 2 lines set kiya
+                      overflow: TextOverflow.ellipsis, // Agar 2 line se bada hua toh '...' dikhayega
+                      style: TextStyle(
+                        color: AppColors.textColor(context),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1316,7 +1505,13 @@ class _BodiesViewState extends State<BodiesView> {
           highlightColor: iconColor,
         );
         break;
-      case 'Cone frustum': painter = ConeFrustumPainter(color: iconColor); break;
+      case 'Cone frustum':
+        painter = ConeFrustumInputPainter(
+          highlightType: label,
+          baseColor: AppColors.textGrey(context).withOpacity(0.2),
+          highlightColor: iconColor,
+        );
+        break;
       case 'Cylinder': painter = CylinderPainter(color: iconColor); break;
       case 'Sphere':
         painter = SphereInputPainter( // FIX: SpherePainter ki jagah SphereInputPainter lagaya
@@ -2405,6 +2600,110 @@ class ConeInputPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ConeInputPainter oldDelegate) {
+    return oldDelegate.highlightType != highlightType ||
+        oldDelegate.highlightColor != highlightColor;
+  }
+}
+
+class ConeFrustumInputPainter extends CustomPainter {
+  final String highlightType;
+  final Color baseColor;
+  final Color highlightColor;
+
+  ConeFrustumInputPainter({
+    required this.highlightType,
+    required this.baseColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint basePaint = Paint()
+      ..color = baseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint hlStrokePaint = Paint()
+      ..color = highlightColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    Paint fillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.4)
+      ..style = PaintingStyle.fill;
+
+    Paint darkFillPaint = Paint()
+      ..color = highlightColor.withOpacity(0.75)
+      ..style = PaintingStyle.fill;
+
+    double w = size.width;
+    double h = size.height;
+
+    // Top Oval (Chota Circle in 3D)
+    Rect topOval = Rect.fromLTWH(w * 0.22, h * 0.08, w * 0.56, h * 0.18);
+    Offset topCenter = Offset(w * 0.50, h * 0.17);
+    Offset topLeft = Offset(w * 0.22, h * 0.17);
+    Offset topRight = Offset(w * 0.78, h * 0.17);
+
+    // Bottom Oval (Bada Circle in 3D)
+    Rect botOval = Rect.fromLTWH(w * 0.05, h * 0.72, w * 0.90, h * 0.22);
+    Offset botCenter = Offset(w * 0.50, h * 0.83);
+    Offset botLeft = Offset(w * 0.05, h * 0.83);
+    Offset botRight = Offset(w * 0.95, h * 0.83);
+
+    // Lateral Body Path
+    Path bodyPath = Path()
+      ..moveTo(topLeft.dx, topLeft.dy)
+      ..lineTo(botLeft.dx, botLeft.dy)
+      ..arcTo(botOval, pi, -pi, false)
+      ..lineTo(topRight.dx, topRight.dy)
+      ..arcTo(topOval, 0, pi, false)
+      ..close();
+
+    // 1. FILL HIGHLIGHTS
+    if (highlightType == 'Volume' || highlightType == 'Total area') {
+      canvas.drawPath(bodyPath, fillPaint);
+      canvas.drawOval(botOval, darkFillPaint);
+      canvas.drawOval(topOval, darkFillPaint);
+    } else if (highlightType == 'Lateral area') {
+      canvas.drawPath(bodyPath, darkFillPaint);
+    } else if (highlightType == 'Top area') {
+      canvas.drawOval(topOval, darkFillPaint);
+    } else if (highlightType == 'Base area') {
+      canvas.drawOval(botOval, darkFillPaint);
+    }
+
+    // 2. DRAW BASE WIREFRAME
+    canvas.drawOval(topOval, highlightType == 'Top area' ? hlStrokePaint : basePaint);
+    canvas.drawOval(botOval, highlightType == 'Base area' ? hlStrokePaint : basePaint);
+    canvas.drawLine(topLeft, botLeft, basePaint);
+    canvas.drawLine(topRight, botRight, basePaint);
+
+    // 3. SPECIFIC STROKE HIGHLIGHTS
+    if (highlightType == 'Height') {
+      // Top center se Bottom center tak straight vertical line
+      canvas.drawLine(topCenter, botCenter, hlStrokePaint);
+      canvas.drawCircle(topCenter, 1.8, darkFillPaint);
+      canvas.drawCircle(botCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Top radius') {
+      // Top center se Top right edge tak line
+      canvas.drawLine(topCenter, topRight, hlStrokePaint);
+      canvas.drawCircle(topCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Bottom radius') {
+      // Bottom center se Bottom right edge tak line
+      canvas.drawLine(botCenter, botRight, hlStrokePaint);
+      canvas.drawCircle(botCenter, 1.8, darkFillPaint);
+    } else if (highlightType == 'Slant height') {
+      // Right slanted edge highlight
+      canvas.drawLine(topRight, botRight, hlStrokePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant ConeFrustumInputPainter oldDelegate) {
     return oldDelegate.highlightType != highlightType ||
         oldDelegate.highlightColor != highlightColor;
   }
