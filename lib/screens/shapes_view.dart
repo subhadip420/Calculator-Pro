@@ -590,6 +590,7 @@ class _ShapesViewState extends State<ShapesView> {
         _trapBaseCtrl.text.isNotEmpty;
     bool hasRhomInput = _rhomLenCtrl.text.isNotEmpty || _rhomWidCtrl.text.isNotEmpty;
     bool hasArcInput = _arcRadiusCtrl.text.isNotEmpty || _arcAngleCtrl.text.isNotEmpty;
+    bool hasEllipInput = _ellipRadACtrl.text.isNotEmpty || _ellipRadBCtrl.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -2219,12 +2220,38 @@ class _ShapesViewState extends State<ShapesView> {
                                   Divider(color: AppColors.cyanColor(context).withOpacity(0.2), height: 1),
                                   const SizedBox(height: 12),
 
-                                  if (!isValid)
+                                  // if (!isValid)
+                                  //   Center(
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(16.0),
+                                  //       child: Text(
+                                  //         errorMsg,
+                                  //         textAlign: TextAlign.center,
+                                  //         style: TextStyle(
+                                  //           color: AppColors.redColor(context).withOpacity(0.9),
+                                  //           fontSize: 14,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   )
+                                  // else ...[
+                                  //   _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
+                                  //   _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
+                                  //   Padding(
+                                  //     padding: const EdgeInsets.symmetric(vertical: 8),
+                                  //     child: Divider(color: AppColors.textGrey(context).withOpacity(0.2), height: 1),
+                                  //   ),
+                                  //   _buildResultRow('Radius A', a.toStringAsFixed(2)),
+                                  //   _buildResultRow('Radius B', b.toStringAsFixed(2)),
+                                  // ],
+
+                                  // STATE 1: Error tabhi dikhega jab input field me kuch ho par value galat ho
+                                  if (!isValid && hasEllipInput)
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Text(
-                                          errorMsg,
+                                          errorMsg.isNotEmpty ? errorMsg : 'Invalid input! Enter valid values.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: AppColors.redColor(context).withOpacity(0.9),
@@ -2233,7 +2260,8 @@ class _ShapesViewState extends State<ShapesView> {
                                         ),
                                       ),
                                     )
-                                  else ...[
+// STATE 2: Valid Results
+                                  else if (isValid) ...[
                                     _buildResultRow('Area', ellipArea.toStringAsFixed(2), isHighlighted: true),
                                     _buildResultRow('Perimeter (Approx)', ellipPerimeter.toStringAsFixed(2)),
                                     Padding(
@@ -2242,7 +2270,19 @@ class _ShapesViewState extends State<ShapesView> {
                                     ),
                                     _buildResultRow('Radius A', a.toStringAsFixed(2)),
                                     _buildResultRow('Radius B', b.toStringAsFixed(2)),
-                                  ],
+                                  ]
+// STATE 3: Default Empty State (Bina input ke)
+                                  else ...[
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: Text(
+                                            'Enter values to see results.',
+                                            style: TextStyle(color: AppColors.textGrey(context), fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                 ],
                               ),
                             ),
