@@ -590,6 +590,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with WidgetsBinding
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
+        //statusBarColor: AppColors.cyanColor(context).withOpacity(0.1),
         statusBarIconBrightness: AppColors.isDark(context) ? Brightness.light : Brightness.dark,
       ),
       child: Scaffold(
